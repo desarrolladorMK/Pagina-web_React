@@ -1,19 +1,23 @@
-import React from 'react';
-import './Header.css'
-import { Link } from 'react-router-dom'; 
-
+import React, { useState } from 'react';
+import './Header.css';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(prevState => !prevState);
+    };
+
     return (
         <header>
             <nav className="navbar">
                 <div className="container-navbar">
                     <a href="#" className="logo">
-                        {/* Ruta para el logo en la carpeta public */}
                         <img src="/logoMK.png" alt="Logo de Merkahorro" />
                     </a>
-                    <button className="menu-toggle">☰</button>
-                    <ul className="nav-list">
+                    <button className="menu-toggle" onClick={toggleMenu}>☰</button>
+                    <ul className={`nav-list ${isMenuOpen ? 'show' : ''}`}>
                         <li>
                             <a href="#" className="nav-item" id="compania-toggle">Nosotros</a>
                             <ul className="sub-nav-list" id="compania-info">
@@ -35,4 +39,4 @@ const Header = () => {
     );
 };
 
-export{Header};
+export { Header };

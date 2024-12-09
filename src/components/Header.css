@@ -1,12 +1,20 @@
 /* Estilos generales */
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    color: #333;
-    background-color: hsl(60, 47%, 97%); /* Fondo suave azul claro */
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  color: #333;
+  background-color: hsl(60, 47%, 97%);
+  /* Fondo suave azul claro */
+
 }
+
+
+html {
+  scroll-behavior: smooth; /* Establece el desplazamiento suave a nivel global */
+}
+
 
 /* Estilos del navbar */
 .navbar {
@@ -15,8 +23,11 @@ body {
   top: 0;
   z-index: 1000;
   width: 100%;
-  padding: 10px 0;
-  
+  display: flex;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 0%;
+
 }
 
 /* Contenedor del navbar */
@@ -26,8 +37,10 @@ body {
   justify-content: space-between;
   padding: 10px 20px;
   max-width: 1200px;
-  margin: 0 auto;
-  
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0%;
+
 }
 
 /* Logo */
@@ -44,7 +57,6 @@ body {
   background: none;
   border: none;
   color: #ffffff;
-  
 }
 
 /* Lista del navbar */
@@ -69,7 +81,7 @@ body {
   font-weight: 500;
   padding: 10px;
   transition: color 0.3s, background-color 0.3s;
- 
+  font-size: 19px;
 }
 
 .nav-list a:hover {
@@ -78,48 +90,55 @@ body {
   border-radius: 5px;
 }
 
-.sub-nav-list {
-    display: none;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 200px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-    transform: translateY(-10px);
-    z-index: 1000;
-  }
-  .sub-nav-list.show {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
 
-  .sub-nav-list li {
-    margin: 0;
-  }
-  
+/* Lista desplegable */
+.sub-nav-list {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  transform: translateY(-10px);
+  z-index: 1000;
+
+}
+
+
+.sub-nav-list.show {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.sub-nav-list li {
+  margin: 0;
+}
+
 .sub-nav-list a {
-  color: #210D65;  /* Color blanco para el texto */
+  color: #210D65;
+  /* Color blanco para el texto */
   text-decoration: none;
   display: block;
   padding: 8px;
 }
 
 .sub-nav-list li {
-    margin: 0;
-  }
-  
+  margin: 0;
+}
+
 .sub-nav-list a:hover {
-  background-color: #89DC00;  /* Fondo cuando el enlace es hover */
+  background-color: #89DC00;
+  /* Fondo cuando el enlace es hover */
 }
 
 /* Estilo para el ítem "Nosotros" */
@@ -150,6 +169,7 @@ body {
     z-index: 1001;
     transition: transform 0.3s ease-in-out;
     transform: translateY(-100%);
+
   }
 
   .nav-list.show {
@@ -189,74 +209,3 @@ body {
     color: #000;
   }
 }
-
-/* Estilos del pie de página */
-.footer {
-    width: 100%;
-    padding: 20px;
-    background-color: #89DC00;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.footer-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-content div {
-    flex: 1;
-    min-width: 200px;
-    margin: 10px;
-}
-
-.footer-content h3 {
-    margin-top: 0;
-    color: #ffffff;
-}
-
-.social-media img {
-    width: 37px;
-    margin: 0 5px;
-}
-
-.quick-links ul {
-    padding: 0;
-    list-style: none;
-}
-
-.quick-links li {
-    margin-bottom: 5px;
-}
-
-.quick-links a {
-    color: #ffffff;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.quick-links a:hover {
-    color: black; /* Verde agua brillante */
-}
-
-.derechos {
-    color: #ffffff;
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* Media Queries para pie de página en dispositivos móviles */
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-

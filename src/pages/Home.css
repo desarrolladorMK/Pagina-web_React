@@ -1,93 +1,379 @@
+/* Estilos generales */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  color: #333;
+  background-color: hsl(60, 47%, 97%); /* Fondo suave azul claro */
+}
+
+
+
+
+/* Estilos del carrusel */
 .carousel {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    margin: auto;
-    overflow: hidden;
-   
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    height: auto; /* Se adapta automáticamente al contenido */
-    transition: all 0.3s ease;
-  }
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  overflow: hidden;
+ 
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  height: auto; /* Se adapta automáticamente al contenido */
+  transition: all 0.3s ease;
+}
 
 .container-slides {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
+  display: flex;
+  transition: transform 0.5s ease-in-out;
 }
 
 .slide {
-    min-width: 100%;
-    transition: opacity 0.5s ease-in-out;
+  min-width: 100%;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .slide img {
-    width: 100%;
-    height: auto; /* Mantén la altura automática para adaptarse al ancho */
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
+width: 100%;
+height: auto; /* Mantén la altura automática para adaptarse al ancho */
+object-fit: cover;
+transition: transform 0.5s ease;
+}
 
 /* Efecto de hover en imágenes */
 .slide img:hover {
-    transform: scale(1.07);
-  }
-  
-
-img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.prev {
-    left: 10px;
-}
-
-.next {
-    right: 10px;
+transform: scale(1.07);
 }
 
 /* Botones del carrusel */
 .dots {
-    text-align: center;
-    position: relative;
+text-align: center;
+position: relative;
+width: 100%;
+padding: 10px 0;
+top: 1rem;
+}
+
+.dot {
+display: inline-block;
+width: 12px;
+height: 12px;
+margin: 5px;
+background-color: rgba(0, 0, 0, 0.3);
+border-radius: 50%;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.dot.active {
+background-color: #210D65;
+transform: scale(1.2);
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+.dot {
+  width: 10px;
+  height: 10px;
+}
+
+.slide img {
+  border-radius: 8px;
+}
+}
+
+/* Media Query para pantallas de 480px o menos */
+@media (max-width: 480px) {
+.dot {
+  position: relative;;
+  width: 10px;
+  height: 10px;
+  top: -1rem;
+  left: 1rem;
+  
+}
+
+.slide img {
     width: 100%;
-    padding: 10px 0;
-    top: 1rem;
-  }
+    height: auto;
+    object-fit: cover;
+    transition: transform 
+}
+
+/* Asegura que el navbar ocupe todo el ancho de la pantalla */
+.navbar {
+  width: 110%;
+  margin: 0; /* Elimina cualquier margen que pueda estar reduciendo el ancho */
+  padding: 0; /* Elimina cualquier padding adicional */
+  box-sizing: border-box; /* Incluye el padding en el ancho total */
+}
+
+/* Asegura que el contenedor del carrusel ocupe todo el ancho de la pantalla */
+.carousel{
+  position: relative;
+  width: 110%;
+  max-width: 110%;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  height: auto; /* Se adapta automáticamente al contenido */
+  transition: all 0.3s ease;
   
-  .dot {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin: 5px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-  }
   
-  .dot.active {
-    background-color: #210D65;
-    transform: scale(1.2);
+}
+}
+
+
+
+
+
+
+
+
+
+/* Estilo general para el main */
+main {
+  padding: 20px;
+  font-family: 'Roboto', sans-serif; /* Asegúrate de incluir la fuente en tu HTML */
+  color: #333; /* Color del texto */
+  background-color: #f9f9f9; /* Color de fondo del main */
+  max-width: 1200px; /* Ancho máximo del contenedor */
+  margin: 0 auto; /* Centra el main horizontalmente */
+
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  position: relative;
+  top: 6rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px  #210D65;
+  overflow: hidden;
+  padding: 20px;
+  width: 300px;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #333333;
+}
+
+.card p,
+.card ul {
+  color: #666666;
+  line-height: 1.5;
+}
+
+.card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.card ul li {
+  margin-bottom: 10px;
+}
+
+.card ul li strong {
+  color: #333333;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+      padding: 15px;
   }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+      padding: 10px;
+  }
+}
+.logosmain{
+  position: relative;
+  top: 0rem;
+  left: 5rem;
+  height: 100px;
+}
+
+.video-container {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative ;
+  padding: 20px; /* Espacio alrededor del video */
+  box-sizing: border-box;
+  text-align: center; /* Centra el título */
+  top: 9rem;
+  margin-bottom: 150px;
+}
+
+.video-container h1 {
+  color: #210D65;
+  margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+.video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Query para mejorar la responsividad en pantallas más pequeñas */
+@media (max-width: 768px) {
+  .video-container {
+    padding: 15px;
+  }
+  .video-container h1 {
+    font-size: 24px; /* Tamaño de fuente más pequeño para dispositivos móviles */
+  }
+}
+
+/* Estilo general para las tarjetas */
+.tarjeta-container {
+display: flex;
+flex-wrap: wrap; /* Permite que las tarjetas se muevan a la siguiente línea en pantallas pequeñas */
+justify-content: center;
+align-items: center; /* Alinea las tarjetas al centro verticalmente */
+padding: 20px;
+gap: 25px;
+position: relative;
+top: 8rem;
+}
+
+.tarjeta {
+background-color: #ffffff;
+border-radius: 12px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+overflow: hidden;
+width: 300px; /* Ancho fijo para tarjetas */
+max-width: 100%; /* Asegura que la tarjeta no exceda el ancho del contenedor */
+text-align: center;
+transition: transform 0.2s, box-shadow 0.2s;
+margin-bottom: 20px; /* Espacio entre las filas de tarjetas */
+position: relative;
+}
+
+.tarjeta:hover {
+transform: scale(1.05);
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Incrementa la sombra en hover */
+}
+
+.logo-sedes {
+width: 100%; /* Asegura que la imagen cubra el ancho del contenedor */
+height: auto; /* Mantiene la proporción de la imagen */
+object-fit: cover; /* Asegura que la imagen cubra el contenedor sin distorsionarse */
+border-bottom: 4px solid #210D65; /* Borde para resaltar la imagen */
+}
+
+.tarjeta h2 {
+font-size: 1.5em;
+margin: 15px 0;
+color: #210D65; /* Color oscuro para el título */
+}
+
+.tarjeta p {
+font-size: 1em;
+color: #555;
+margin: 0 15px 15px 15px;
+}
+
+.title-sedes {
+color: #210D65;
+margin-bottom: 20px; /* Espacio debajo del título */
+text-align: center; /* Alinea el título al centro */
+position: relative;
+top: 7rem;
+}
+
+/* Media Queries para hacer responsivo el diseño */
+@media (max-width: 768px) {
+.tarjeta-container {
+  padding: 10px;
+}
+
+.tarjeta {
+  width: 90%; /* Ajusta el ancho para pantallas pequeñas */
+  margin-bottom: 20px;
+}
+
+.logo-sedes {
+  max-height: 300px; /* Aumenta la altura máxima para pantallas más pequeñas */
+}
+
+.title-sedes {
+  font-size: 1.8em; /* Ajusta el tamaño del texto para pantallas más pequeñas */
+  top: 2rem;
+}
+
+}
+
+@media (max-width: 480px) {
+.tarjeta {
+  width: 100%; /* Tarjetas de ancho completo en móviles */
+  margin-bottom: 15px;
+}
+
+.logo-sedes {
+  max-height: 400px; /* Aumenta la altura máxima para dispositivos móviles */
+}
+
+.title-sedes {
+  font-size: 1.5em;
+  top: 1.5rem;
+}
 
 
+}
 
+.logocorporativo {
+max-width: 100%;
+height: auto;
+margin: 0 auto;
+position: relative;
+top: 9rem;
+left: 0rem;
+}
+.container-logocorporativo {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh; /* Ajusta la altura según tus necesidades */
+}
+.icono-tarjetas, .icono-tarjetatel {
+width: 24px; /* Ancho de los iconos */
+height: auto; /* Mantener proporciones */
+vertical-align: middle; /* Alinear verticalmente con el texto */
+margin-right: 8px; /* Espacio entre el icono y el texto */
+transition: transform 0.2s; /* Efecto de transición al pasar el ratón */
+}
 
+/* Efecto al pasar el ratón */
+.icono-tarjetas:hover, .icono-tarjetatel:hover {
+transform: scale(1.1); /* Aumentar ligeramente el tamaño al pasar el ratón */
+}
 
-  
+/* Estilos responsivos */
+@media (max-width: 600px) {
+.icono-tarjetas, .icono-tarjetatel {
+    width: 20px; /* Reducir tamaño en pantallas pequeñas */
+}
+}
