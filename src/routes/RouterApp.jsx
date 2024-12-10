@@ -3,6 +3,8 @@ import { Contribucion } from "../pages/Contribucion"
 import {Promociones} from "../pages/Promociones"
 import { Politicas } from "../pages/Politicas"
 import { Condiciones } from "../pages/Condiciones"
+import { Trabaja} from "../pages/Trabaja"
+import {Reserva} from"../pages/Reserva"
 
 export let routes = [
     {
@@ -25,5 +27,13 @@ export let routes = [
         path: '/condiciones',
         element: <Condiciones/>
     },
+    {
+        path: '/trabaja-con-nosotros',
+        element: <Trabaja/>
+    },
+    {
+        path: '/reservas',
+        element: <Reserva/>
+    }
    
 ]
