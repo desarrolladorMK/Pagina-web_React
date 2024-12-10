@@ -1,7 +1,7 @@
 const Reserva = () =>{
     return(
         <marquee >
-       <h1>Inicia Sesion</h1>
+       <h1>Reservas</h1>
        </marquee>
     )
 }
