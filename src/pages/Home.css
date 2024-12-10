@@ -136,7 +136,7 @@ transform: scale(1.2);
 
 
 /* Estilo general para el main */
-main {
+main.Home {
   padding: 20px;
   font-family: 'Roboto', sans-serif; /* Asegúrate de incluir la fuente en tu HTML */
   color: #333; /* Color del texto */

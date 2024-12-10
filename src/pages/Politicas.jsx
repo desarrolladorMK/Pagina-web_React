@@ -1,5 +1,5 @@
 import './Politicas.css'
-import { Footer } from '../components/Footer.jsx';
+
 
 const Politicas = () => {
     return (
@@ -102,7 +102,7 @@ const Politicas = () => {
         <li>Por correo electrónico: paginaweb@merkahorrosas.com</li>
         <li>Por teléfono: 324 5597862</li>
       </ul>
-      <Footer/>
+    
     </div>
   );
 };
