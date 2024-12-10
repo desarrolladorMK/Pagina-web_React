@@ -1,0 +1,82 @@
+@keyframes contribucionGradientAnimation {
+    0% { background-color: #210D65; }
+    50% { background-color: #89DC00; }
+    100% { background-color: #210D65; }
+  }
+  
+  .contribucion-body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    animation: contribucionGradientAnimation 8s ease infinite;
+  }
+  
+  /* Título principal */
+  .contribucion-header h1 {
+    text-align: center;
+    padding: 20px;
+    background-color: #210D65;
+    color: #ffffff;
+    margin: 0;
+    margin-bottom: 100px;
+  }
+  
+  /* Títulos de secciones */
+  .contribucion-section h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: rgb(255, 244, 244);
+    font-size: 2em;
+  }
+  
+  /* Contenedor de videos */
+  .contribucion-video-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Añade espacio entre los videos */
+    padding: 20px;
+    margin-bottom: 40px;
+  }
+  
+  /* Estilos para los videos */
+  .contribucion-video-container video {
+    width: 100%;
+    max-width: 300px; /* Limita el tamaño máximo de los videos */
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .contribucion-video-container video:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Media Queries para adaptarse a diferentes tamaños de pantalla */
+  
+  /* Pantallas pequeñas (móviles) */
+  @media (max-width: 600px) {
+    .contribucion-video-container {
+      gap: 25px; /* Espacio más pequeño entre los videos */
+    }
+  
+    .contribucion-video-container video {
+      width: 90%; /* Los videos ocuparán casi todo el ancho en pantallas pequeñas */
+      max-width: none; /* Quita el límite de tamaño máximo */
+    }
+  }
+  
+  /* Pantallas medianas (tabletas) */
+  @media (min-width: 600px) and (max-width: 1024px) {
+    .contribucion-video-container video {
+      width: 45%; /* Ajusta el tamaño de los videos para tabletas */
+    }
+  }
+  
+  /* Pantallas grandes (escritorio) */
+  @media (min-width: 1025px) {
+    .contribucion-video-container video {
+      width: 20%; /* Ajusta el tamaño de los videos para pantallas grandes */
+    }
+  }
+  
