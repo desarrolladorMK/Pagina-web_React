@@ -1,233 +1,272 @@
 import { Header } from "../components/Header";
-import { useState, useEffect } from "react";
+import { useState, useEffect, } from "react";
 import './Home.css';
 import { Footer } from "../components/Footer";
+import React, { useRef } from 'react';
 
 const Home = () => {
-    const [currentIndex, setCurrentIndex] = useState(0); // Índice de la imagen actual
-    const images = [
-        "/mk1.jpg",
-        "/mk2.jpg",
-        "/mk3.jpg",
-        "/mk4.jpg"
-    ];
+  const [currentIndex, setCurrentIndex] = useState(0); // Índice de la imagen actual
+  const audioRef = useRef(null); // Referencia al reproductor de audio
+  const playButtonRef = useRef(null); // Referencia al botón de reproducción
 
-    // Función para cambiar al siguiente slide
-    const nextSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Avanza al siguiente slide
-    };
+  const images = [
+    "/mk1.jpg",
+    "/mk2.jpg",
+    "/mk3.jpg",
+    "/mk4.jpg"
+  ];
 
-    // Función para cambiar al slide anterior
-    const prevSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length); // Retrocede al slide anterior
-    };
+  // Función para cambiar al siguiente slide
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Avanza al siguiente slide
+  };
 
-    // Función para ir a un slide específico
-    const goToSlide = (index) => {
-        setCurrentIndex(index); // Ir a un slide específico
-    };
+  // Función para cambiar al slide anterior
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length); // Retrocede al slide anterior
+  };
 
-    // useEffect para cambiar las imágenes automáticamente
-    useEffect(() => {
-        const interval = setInterval(nextSlide, 3000); // Cambia cada 3 segundos
+  // Función para ir a un slide específico
+  const goToSlide = (index) => {
+    setCurrentIndex(index); // Ir a un slide específico
+  };
 
-        // Limpiamos el intervalo cuando el componente se desmonte
-        return () => clearInterval(interval);
-    }, []); // El segundo parámetro vacío asegura que el intervalo se establezca solo una vez al montar el componente
 
-    return (
-        <div>
-            <Header />
-            {/* Carrusel */}
-            <div className="carousel">
-                <div className="container-slides">
-                    {images.map((image, index) => (
-                        <div
-                            key={index}
-                            className={`slide ${index === currentIndex ? "active" : ""}`}
-                            style={{
-                                display: index === currentIndex ? "block" : "none",
-                            }}
-                        >
-                            <img src={image} alt={`Imagen ${index + 1}`} />
-                        </div>
-                    ))}
-                </div>
-                <div className="dots">
-                    {images.map((_, index) => (
-                        <span
-                            key={index}
-                            className={`dot ${index === currentIndex ? "active" : ""}`}
-                            onClick={() => goToSlide(index)}
-                        ></span>
-                    ))}
-                </div>
+
+ // Reproducción del audio al hacer clic en el botón
+ const handlePlay = () => {
+  if (audioRef.current.paused) {
+      audioRef.current.play();
+      playButtonRef.current.classList.add('playing'); // Cambiar icono o estilo
+  } else {
+      audioRef.current.pause();
+      playButtonRef.current.classList.remove('playing');
+  }
+};
+
+
+
+  // useEffect para cambiar las imágenes automáticamente
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 3000); // Cambia cada 3 segundos
+
+    // Limpiamos el intervalo cuando el componente se desmonte
+    return () => clearInterval(interval);
+  }, []); // El segundo parámetro vacío asegura que el intervalo se establezca solo una vez al montar el componente
+
+  return (
+  
+    <div>
+      <Header />
+      {/* Carrusel */}
+      <div className="carousel">
+        <div className="container-slides">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`slide ${index === currentIndex ? "active" : ""}`}
+              style={{
+                display: index === currentIndex ? "block" : "none",
+              }}
+            >
+              <img src={image} alt={`Imagen ${index + 1}`} />
             </div>
-            {/* Código de las sedes */}
-            <h1 className="title-sedes">Conoce nuestras sedes</h1>
-            <div className="tarjeta-container">
-                {/* Tarjeta 1 */}
-                <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/Plaza.jpg" alt="Logo de Copacabana Plaza" />
-                    <h2>Copacabana Plaza</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Calle 52 #52-27
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573147956325" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono: 3147956325
-                    </p>
-                </section>
-                {/* Tarjeta 2 */}
-                <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/centro A.JPG" alt="Logo del Centro Administrativo" />
-                    <h2>Centro Administrativo</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Calle 52 #52-27
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573147956325" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono: 3147956325
-                    </p>
-                </section>
-                {/* Tarjeta 3 */}
-                <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/villahermosa.jpg" alt="Logo de Villa Hermosa" />
-                    <h2>Villa Hermosa</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Carrera+40+%2364-51" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Carrera 40 #64-51
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573185369987" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono: 3185369987
-                    </p>
-                </section>
-                
-                {/* Tarjeta 4 */}
-                <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/girardota parque.jpeg" alt="Logo de Girardota parque" />
-                    <h2>Girardota parque</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Calle+7+%2315-61" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección:Calle 7 #15-61
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573186247765" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono: 3186247765
-                    </p>
-                </section>
+          ))}
+        </div>
+        <div className="dots">
+          {images.map((_, index) => (
+            <span
+              key={index}
+              className={`dot ${index === currentIndex ? "active" : ""}`}
+              onClick={() => goToSlide(index)}
+            ></span>
+          ))}
+        </div>
 
-                 {/* Tarjeta 5 */}
-                 <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/girardota llano.jpg" alt="Logo de Girardota llano" />
-                    <h2>Girardota llano</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Calle+11+%2316-43" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Calle 11 #16-43
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573182681285" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono:  3182681285
-                    </p>
-                </section>
 
-                 {/* Tarjeta 6 */}
-                 <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/carnes barbosa.jpg" alt="Logo de carnes barbosa" />
-                    <h2>Carnes barbosa</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%2311-09" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Carrera 14 #11-09
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573225105463" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono:  3225105463
-                    </p>
-                </section>
+        {/* Reproductor de audio */}
+        <div className="audio-player-container">
+          <button
+            id="playButton"
+            className="play-button draggable"
+            ref={playButtonRef}
+            onClick={handlePlay}
+          >
+            <span className="play-icon"></span>
+          </button>
+          <audio id="live-audio" preload="auto" ref={audioRef}>
+            <source src="https://radiolatina.info/8016/stream" type="audio/mpeg" />
+            Tu navegador no soporta la reproducción de audio.
+          </audio>
+        </div>
 
-                  {/* Tarjeta 7 */}
-                  <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/copacabana vegas.jpg" alt="Logo de Copacabana Vegas" />
-                    <h2>Copacabana Vegas</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Carrera+56+%23+43-159" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Carrera 56 # 43 - 159
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573243638526" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono:   3243638526
-                    </p>
-                </section>
 
-                  {/* Tarjeta 8 */}
-                  <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/barbosa.jpg" alt="Logo de Barbosa" />
-                    <h2>Barbosa</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%23+11-18" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Carrera 56 # 43 - 159
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573006828595" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono:   3243638526
-                    </p>
-                </section>
+      </div>
+      {/* Código de las sedes */}
+      <h1 className="title-sedes">Conoce nuestras sedes</h1>
+      <div className="tarjeta-container">
+        {/* Tarjeta 1 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/Plaza.jpg" alt="Logo de Copacabana Plaza" />
+          <h2>Copacabana Plaza</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Calle 52 #52-27
+          </p>
+          <p>
+            <a href="https://wa.me/573147956325" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono: 3147956325
+          </p>
+        </section>
+        {/* Tarjeta 2 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/centro A.JPG" alt="Logo del Centro Administrativo" />
+          <h2>Centro Administrativo</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Calle 52 #52-27
+          </p>
+          <p>
+            <a href="https://wa.me/573147956325" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono: 3147956325
+          </p>
+        </section>
+        {/* Tarjeta 3 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/villahermosa.jpg" alt="Logo de Villa Hermosa" />
+          <h2>Villa Hermosa</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+40+%2364-51" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Carrera 40 #64-51
+          </p>
+          <p>
+            <a href="https://wa.me/573185369987" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono: 3185369987
+          </p>
+        </section>
 
-                {/* Tarjeta 9 */}
-                <section className="tarjeta" id="tarjeta">
-                    <img className="logo-sedes" src="/copacabana san juan.jpg" alt="Logo de copacabana San juan" />
-                    <h2>Copacabana San Juan</h2>
-                    <p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Carrera+28+%23+45-41" target="_blank">
-                            <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
-                        </a>
-                        Dirección: Carrera 28 # 45-41
-                    </p>
-                    <p>
-                        <a href="https://wa.me/573165563838" target="_blank">
-                            <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
-                        </a>
-                        Teléfono:   3165563838
-                    </p>
-                </section>
-            </div>
+        {/* Tarjeta 4 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/girardota parque.jpeg" alt="Logo de Girardota parque" />
+          <h2>Girardota parque</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+7+%2315-61" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección:Calle 7 #15-61
+          </p>
+          <p>
+            <a href="https://wa.me/573186247765" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono: 3186247765
+          </p>
+        </section>
 
-            
+        {/* Tarjeta 5 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/girardota llano.jpg" alt="Logo de Girardota llano" />
+          <h2>Girardota llano</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+11+%2316-43" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Calle 11 #16-43
+          </p>
+          <p>
+            <a href="https://wa.me/573182681285" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono:  3182681285
+          </p>
+        </section>
+
+        {/* Tarjeta 6 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/carnes barbosa.jpg" alt="Logo de carnes barbosa" />
+          <h2>Carnes barbosa</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%2311-09" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Carrera 14 #11-09
+          </p>
+          <p>
+            <a href="https://wa.me/573225105463" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono:  3225105463
+          </p>
+        </section>
+
+        {/* Tarjeta 7 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/copacabana vegas.jpg" alt="Logo de Copacabana Vegas" />
+          <h2>Copacabana Vegas</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+56+%23+43-159" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Carrera 56 # 43 - 159
+          </p>
+          <p>
+            <a href="https://wa.me/573243638526" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono:   3243638526
+          </p>
+        </section>
+
+        {/* Tarjeta 8 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/barbosa.jpg" alt="Logo de Barbosa" />
+          <h2>Barbosa</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%23+11-18" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Carrera 56 # 43 - 159
+          </p>
+          <p>
+            <a href="https://wa.me/573006828595" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono:   3243638526
+          </p>
+        </section>
+
+        {/* Tarjeta 9 */}
+        <section className="tarjeta" id="tarjeta">
+          <img className="logo-sedes" src="/copacabana san juan.jpg" alt="Logo de copacabana San juan" />
+          <h2>Copacabana San Juan</h2>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+28+%23+45-41" target="_blank">
+              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            </a>
+            Dirección: Carrera 28 # 45-41
+          </p>
+          <p>
+            <a href="https://wa.me/573165563838" target="_blank">
+              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            </a>
+            Teléfono:   3165563838
+          </p>
+        </section>
+      </div>
+
+
       <div className="container-logocorporativo">
         <img
           id="logocorporativo"
@@ -357,7 +396,7 @@ const Home = () => {
       </div>
       <Footer />
     </div>
-    
+
   );
 };
 
