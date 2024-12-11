@@ -4,7 +4,7 @@ import {Promociones} from "../pages/Promociones"
 import { Politicas } from "../pages/Politicas"
 import { Condiciones } from "../pages/Condiciones"
 import { Trabaja} from "../pages/Trabaja"
-import {Reserva} from"../pages/Reserva"
+import {Reservas} from"../pages/Reservas"
 
 export let routes = [
     {
@@ -33,7 +33,7 @@ export let routes = [
     },
     {
         path: '/reservas',
-        element: <Reserva/>
+        element: <Reservas/>
     }
    
 ]
