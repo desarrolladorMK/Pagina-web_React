@@ -56,7 +56,7 @@ const Home = () => {
 
   return (
   
-    <div>
+    <div className="Home-body">
       <Header />
       {/* Carrusel */}
       <div className="carousel">

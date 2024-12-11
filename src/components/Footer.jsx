@@ -49,12 +49,8 @@ const Footer = () => {
                 <div className="quick-links">
                     <h3>Políticas</h3>
                     <ul>
-                        <li>
                         <li><Link to="/politicas">Politicas de privacidad</Link></li>
-                        </li>
-                        <li>
                         <li><Link to="/condiciones">Terminos y Condiciones</Link></li>
-                        </li>
                     </ul>
                 </div>
 
@@ -64,7 +60,6 @@ const Footer = () => {
                     <p>Kevin Pineda</p>
                     <p>Juan Isaza</p>
                     <p>Johan Sanchez</p>
-                   
                 </div>
             </div>
         </footer>

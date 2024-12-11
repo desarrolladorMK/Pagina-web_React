@@ -15,8 +15,8 @@ const Header = () => {
 
     return (
         <header>
-            <nav className="navbar">
-                <div className="container-navbar">
+            <nav className="navbar-header">
+                <div className="container-navbar-header">
                     <a href="#" className="logo">
                         <img src="/logoMK.png" alt="Logo de Merkahorro" />
                     </a>

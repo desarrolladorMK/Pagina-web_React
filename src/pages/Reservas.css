@@ -1,0 +1,97 @@
+
+
+/* Estilos generales */
+.reservas-body{
+    font-family: Arial, sans-serif;
+    background-color: #F5F5F5; /* Fondo gris claro */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+/* Estilo del contenedor del formulario */
+.reservas-login-container {
+    background-color: #210d65; /* Color morado oscuro */
+    color: #FFFFFF; /* Texto blanco */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    text-align: center;
+}
+
+/* Estilo del título */
+.reservas-h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Estilo del formulario */
+.reservas-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio consistente entre elementos */
+}
+
+/* Estilo de las etiquetas */
+.reservas-label {
+    text-align: left;
+    font-size: 16px;
+}
+
+/* Estilo de los campos de entrada */
+.reservas-input {
+    padding: 12px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    color: #000;
+    font-size: 16px;
+    width: 100%;
+}
+
+/* Estilo de los botones */
+.reservas-button {
+    background-color: #89DC00; /* Verde brillante */
+    color: #210d65; /* Color de texto morado oscuro */
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+    width: 100%; /* Hace que los botones ocupen todo el ancho */
+}
+
+.reservas-button:hover {
+    background-color: #76C700; /* Verde más oscuro */
+}
+
+/* Estilos responsivos */
+@media (max-width: 600px) {
+    .reservas-login-container {
+        padding: 20px;
+        width: 100%;
+    }
+
+    .reservas-h2 {
+        font-size: 20px;
+    }
+
+    .reservas-input {
+        font-size: 14px;
+    }
+
+    .reservas-button {
+        font-size: 14px;
+    }
+}
+
+
