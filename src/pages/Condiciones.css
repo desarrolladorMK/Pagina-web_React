@@ -1,4 +1,6 @@
-.terminos {
+
+/* Estilos generales */
+.condiciones-container {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 20px;
@@ -6,16 +8,45 @@
     background-color: #f9f9f9;
 }
 
-h1,
-h2 {
+.condiciones-title,
+.condiciones-subtitle {
     color: #333;
 }
 
-p {
+/* Estilo de los encabezados */
+.condiciones-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.condiciones-subtitle {
+    font-size: 22px;
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
-a {
+/* Estilo de los párrafos */
+.condiciones-text {
+    margin-bottom: 10px;
+}
+
+/* Estilo de los enlaces */
+.condiciones-link {
     color: #007bff;
     text-decoration: none;
+}
+
+.condiciones-link:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para listas */
+.condiciones-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.condiciones-list li {
+    margin-bottom: 5px;
 }

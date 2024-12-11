@@ -1,4 +1,4 @@
-body {
+.trabaja-body {
     font-family: "Roboto", sans-serif;
     background-color: white;
     position: relative;
@@ -90,19 +90,19 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.form-group {
+.form-group, label {
     margin-bottom: 25px; 
 }
 
 .form-group input[type="checkbox"] {
-    accent-color: #89DC00; /* Cambia el color del checkbox */
-    width: 20px;
-    height: 20px;
+    accent-color: #89DC00;
+    width: 26px;
+    height: 19px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 15px;
     position: relative;
-    top: 2.5rem;
-    left: -0.5rem;
+    top: 0.2rem;
+    left: 0.6rem;
 }
 
 #terminos-condiciones {
@@ -113,11 +113,18 @@ body {
     position: relative;
 }
 
-label {
+.terminos-{
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1b1a1a;
+    display: flexbox;
+}
+
+.label-trabaja {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #333;
+    color: #1b1a1a;
 }
 
 input[type="text"], input[type="date"], select, input[type="file"] {

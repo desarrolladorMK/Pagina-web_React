@@ -15,7 +15,7 @@ const Promociones = () => {
   };
 
   return (
-    <div>
+    <div className='promociones-body'>
       <h1 className='titulo-ofertas'>Súper Ofertas Merkahorro</h1>
       <div className="container-ofertas">
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>

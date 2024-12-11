@@ -1,4 +1,4 @@
-body {
+.politicas-body   {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: #333;
@@ -14,7 +14,11 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-h1, h2, h3, h4 {
+h1, h3, h4 {
+    color: #333;
+}
+
+.h2-politicas{
     color: #333;
 }
 p {
