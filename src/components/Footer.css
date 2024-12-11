@@ -1,3 +1,5 @@
+
+
 /* Asegúrate de que el body y html ocupen toda la altura disponible */
 body, html {
     margin: 0;
@@ -130,3 +132,5 @@ body, html {
 .social-media img:hover {
     transform: scale(1.1); /* Pequeño zoom al pasar el cursor */
 }
+
+

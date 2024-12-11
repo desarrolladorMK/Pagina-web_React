@@ -1,4 +1,4 @@
-.terminos {
+.condiciones-body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 20px;
@@ -6,8 +6,7 @@
     background-color: #f9f9f9;
 }
 
-h1,
-h2 {
+.condiciones-h2 {
     color: #333;
 }
 
