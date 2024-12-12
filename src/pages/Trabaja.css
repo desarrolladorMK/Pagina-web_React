@@ -28,7 +28,7 @@
   .header {
     background-color: #210D65; 
     color: white;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     position: sticky;
     top: 0;
@@ -227,3 +227,11 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     }
 }
   
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
