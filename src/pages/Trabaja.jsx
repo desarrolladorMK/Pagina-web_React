@@ -249,6 +249,22 @@ const Trabaja = () => {
                     </p>
                 </div>
 
+
+                <div class="benefits">
+                    <h3>Beneficios de Trabajar con Nosotros</h3>
+                    <ul>
+                        <li>Trabaja en una cultura de crecimiento personal y laboral.</li>
+                        <li>Trabaja sobre principios.</li>
+                        <li>Oportunidades de desarrollo profesional y capacitación.</li>
+                        <li>Ambiente de trabajo inclusivo y colaborativo.</li>
+                        <li>Seguro médico y beneficios adicionales.</li>
+                        <li>Salario competitivo y bonificaciones.</li>
+                    </ul>
+                </div>
+                <div class="intro">
+                    <h2>Postúlate y forma parte de nuestra compañía</h2>
+                </div>
+
                 <div className="form-container">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         {/* Fecha de Postulación */}

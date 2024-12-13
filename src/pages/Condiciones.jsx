@@ -5,6 +5,7 @@ const Condiciones = () => {
   return (
     <div className="condiciones-body">
       <div className="terminos">
+      <a href="/Home"> <img src="/logoMK.png" alt="" /></a>
         <h1>Términos y Condiciones</h1>
 
         <h2 className="condiciones-h2">1. Aceptación de Términos</h2>

@@ -5,10 +5,12 @@ import { Politicas } from "../pages/Politicas"
 import { Condiciones } from "../pages/Condiciones"
 import { Trabaja} from "../pages/Trabaja"
 import {Reservas} from"../pages/Reservas"
+import { Vacantes } from "../pages/Vacantes"
+
 
 export let routes = [
     {
-        path: '/',
+        path: '/Home',
         element: <Home/>,
     },
     {
@@ -29,6 +31,10 @@ export let routes = [
     },
     {
         path: '/trabaja-con-nosotros',
+        element: <Vacantes/>
+    },
+    {
+        path: '/aplicar',
         element: <Trabaja/>
     },
     {
