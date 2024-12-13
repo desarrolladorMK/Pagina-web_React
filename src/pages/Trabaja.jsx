@@ -1,10 +1,15 @@
-import  React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./Trabaja.css";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Footer } from "../components/Footer";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+// Crea una instancia de SweetAlert2 compatible con React
+const MySwal = withReactContent(Swal);
+
 
 const Trabaja = () => {
-    const [captchaToken, setCaptchaToken] = useState(null);
     const [formData, setFormData] = useState({
         fechaPostulacion: "",
         nombreApellido: "",
@@ -12,7 +17,7 @@ const Trabaja = () => {
         cargo: "",
         telefono: "",
         genero: "",
-        paisDomicilio: "",
+        paisDomicilio: "Antioquia",
         municipioDomicilio: "",
         zonaResidencia: "",
         barrio: "",
@@ -20,141 +25,187 @@ const Trabaja = () => {
         tipoDocumento: "",
         numeroDocumento: "",
         recomendado: "",
-        hojaVida: null,
-        terminos: false
     });
-    const [errors, setErrors] = useState({});
 
-    const handleCaptchaChange = (token) => {
-        setCaptchaToken(token);
-    };
+    const [errors, setErrors] = useState({});
+    const [captchaValido, setCaptchaValido] = useState(false);
+    const inputHojaVida = useRef(null);
 
     const handleChange = (e) => {
-        const { name, value, type, checked, files } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : 
-                    type === 'file' ? files[0] : value
-        }));
-        
-        // Clear the specific error when user starts typing/selecting
-        if (errors[name]) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [name]: ""
-            }));
-        }
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        validateField(name, value);
     };
 
-    const validateForm = () => {
-        const newErrors = {};
+    const handleCaptchaChange = (value) => {
+        setCaptchaValido(!!value);
+        validateField("captcha", value);
+    };
 
-        // Validate each field
-        Object.keys(formData).forEach(key => {
-            if (key === 'terminos') {
-                // Special handling for terms checkbox
-                if (!formData[key]) {
-                    newErrors[key] = "Debe aceptar los términos y condiciones";
-                }
-            } else if (key === 'hojaVida') {
-                // Validate file upload
-                if (!formData[key]) {
-                    newErrors[key] = "Debe adjuntar su hoja de vida";
+    const validateField = (name, value) => {
+        const nuevosErrores = { ...errors };
+
+        switch (name) {
+            case "nombreApellido":
+                const nombreApellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{1,50}$/;
+                if (!nombreApellidoRegex.test(value)) {
+                    nuevosErrores.nombreApellido = "Por favor, ingrese solo letras y espacios (máximo 50 caracteres).";
                 } else {
-                    // Additional file validation
-                    const allowedTypes = ['application/pdf'];
-                    const maxSize = 600 * 1024; // 600 KB
-                    
-                    if (!allowedTypes.includes(formData[key].type)) {
-                        newErrors[key] = "Solo se permiten archivos PDF";
-                    }
-                    
-                    if (formData[key].size > maxSize) {
-                        newErrors[key] = "El archivo debe ser menor a 600 KB";
-                    }
+                    delete nuevosErrores.nombreApellido;
                 }
-            } else {
-                // General validation for other fields
-                if (!formData[key] || (typeof formData[key] === 'string' && formData[key].trim() === '')) {
-                    // Map form field names to more readable error messages
-                    const errorMessages = {
-                        fechaPostulacion: "Fecha de postulación es requerida",
-                        nombreApellido: "Nombre y Apellido son requeridos",
-                        nivelEducativo: "Nivel educativo es requerido",
-                        cargo: "Cargo es requerido",
-                        telefono: "Número de contacto es requerido",
-                        genero: "Género es requerido",
-                        paisDomicilio: "Departamento es requerido",
-                        municipioDomicilio: "Ciudad es requerida",
-                        zonaResidencia: "Zona de residencia es requerida",
-                        barrio: "Barrio es requerido",
-                        fechaNacimiento: "Fecha de nacimiento es requerida",
-                        tipoDocumento: "Tipo de documento es requerido",
-                        numeroDocumento: "Número de documento es requerido",
-                        recomendado: "Campo de recomendación es requerido"
-                    };
-
-                    newErrors[key] = errorMessages[key] || "Este campo es requerido";
+                break;
+            case "telefono":
+                const telefonoLimpiado = value.replace(/\D/g, "");
+                const telefonoRegex = /^(3\d{9}|[1-9]\d{6}|\d{10})$/;
+                if (!telefonoRegex.test(telefonoLimpiado)) {
+                    nuevosErrores.telefono = "Por favor, ingrese un número de teléfono válido.";
+                } else {
+                    delete nuevosErrores.telefono;
                 }
-            }
-        });
-
-        // Validate phone number format
-        if (formData.telefono && !/^\d{10}$/.test(formData.telefono)) {
-            newErrors.telefono = "Número de teléfono debe ser de 10 dígitos";
+                break;
+            case "numeroDocumento":
+                const documentoRegex = /^\d{5,10}$/;
+                if (!documentoRegex.test(value)) {
+                    nuevosErrores.numeroDocumento = "Por favor, ingrese un número de documento válido.";
+                } else {
+                    delete nuevosErrores.numeroDocumento;
+                }
+                break;
+            case "nivelEducativo":
+                if (!value.trim()) {
+                    nuevosErrores.nivelEducativo = "El nivel educativo es obligatorio.";
+                } else {
+                    delete nuevosErrores.nivelEducativo;
+                }
+                break;
+            case "cargo":
+                if (!value.trim()) {
+                    nuevosErrores.cargo = "Debe seleccionar un cargo.";
+                } else {
+                    delete nuevosErrores.cargo;
+                }
+                break;
+            case "genero":
+                if (!value.trim()) {
+                    nuevosErrores.genero = "Debe seleccionar un género.";
+                } else {
+                    delete nuevosErrores.genero;
+                }
+                break;
+            case "paisDomicilio":
+                if (!value.trim()) {
+                    nuevosErrores.paisDomicilio = "Debe seleccionar un departamento.";
+                } else {
+                    delete nuevosErrores.paisDomicilio;
+                }
+                break;
+            case "municipioDomicilio":
+                if (!value.trim()) {
+                    nuevosErrores.municipioDomicilio = "Debe seleccionar una ciudad.";
+                } else {
+                    delete nuevosErrores.municipioDomicilio;
+                }
+                break;
+            case "zonaResidencia":
+                if (!value.trim()) {
+                    nuevosErrores.zonaResidencia = "Debe seleccionar su zona de residencia.";
+                } else {
+                    delete nuevosErrores.zonaResidencia;
+                }
+                break;
+            case "barrio":
+                if (!value.trim()) {
+                    nuevosErrores.barrio = "Debe ingresar su barrio.";
+                } else {
+                    delete nuevosErrores.barrio;
+                }
+                break;
+            case "fechaNacimiento":
+                if (!value.trim()) {
+                    nuevosErrores.fechaNacimiento = "Debe ingresar su fecha de nacimiento.";
+                } else {
+                    delete nuevosErrores.fechaNacimiento;
+                }
+                break;
+            case "tipoDocumento":
+                if (!value.trim()) {
+                    nuevosErrores.tipoDocumento = "Debe seleccionar un tipo de documento.";
+                } else {
+                    delete nuevosErrores.tipoDocumento;
+                }
+                break;
+            case "recomendado":
+                if (!value.trim()) {
+                    nuevosErrores.recomendado = "Debe ingresar quién lo recomienda.";
+                } else {
+                    delete nuevosErrores.recomendado;
+                }
+                break;
+            case "captcha":
+                if (!value) {
+                    nuevosErrores.captcha = "Por favor, complete el reCAPTCHA.";
+                } else {
+                    delete nuevosErrores.captcha;
+                }
+                break;
+            default:
+                break;
         }
 
-        // Validate document number format
-        if (formData.numeroDocumento && !/^\d+$/.test(formData.numeroDocumento)) {
-            newErrors.numeroDocumento = "Número de documento solo debe contener números";
-        }
-
-        // Validate age (must be at least 18)
-        if (formData.fechaNacimiento) {
-            const birthDate = new Date(formData.fechaNacimiento);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            if (age < 18) {
-                newErrors.fechaNacimiento = "Debe ser mayor de 18 años para postularse";
-            }
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        setErrors(nuevosErrores);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // First, validate the form
-        const isValid = validateForm();
-
-        // Check reCAPTCHA
-        if (!captchaToken) {
-            alert("Por favor, verifica que no eres un robot.");
-            return;
+    
+        // Primero verificar si el captcha es válido
+        if (!captchaValido) {
+            MySwal.fire({
+                title: 'Error',
+                text: 'Por favor, complete el reCAPTCHA.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            });
+            return; // Detener el envío del formulario
         }
-
-        // If form is valid and captcha is verified, proceed
-        if (isValid) {
-            // Here you would typically send the form data to a backend service
-            alert("Formulario enviado exitosamente!");
-            // Reset form or do something with the data
-        } else {
-            // Optionally scroll to the first error
-            const firstErrorField = Object.keys(errors)[0];
-            const errorElement = document.getElementById(firstErrorField);
-            if (errorElement) {
-                errorElement.focus();
+    
+        const nuevosErrores = {};
+        let isValid = true;
+        let firstErrorField = null;
+    
+        // Validar todos los campos antes de enviar
+        for (const field in formData) {
+            if (formData.hasOwnProperty(field)) {
+                validateField(field, formData[field]);
             }
         }
+    
+        if (Object.keys(errors).length > 0) {
+            // Encontrar el primer campo con error
+            firstErrorField = Object.keys(errors)[0];
+    
+            // Desplazar la vista al primer campo con error
+            const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+            errorElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+            // Resaltar el campo con error
+            const fieldElement = document.querySelector(`[name="${firstErrorField}"]`);
+            fieldElement?.classList.add("error-highlight");
+    
+            return; // Detener el envío del formulario
+        }
+    
+        // Si todas las validaciones pasan y el captcha es válido
+        if (Object.keys(errors).length === 0 && captchaValido) {
+            MySwal.fire({
+                title: '¡Éxito!',
+                text: 'Formulario enviado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+            });
+        }
     };
+
 
     return (
         <div className="trabaja-body">
@@ -179,79 +230,60 @@ const Trabaja = () => {
                     </p>
                 </div>
 
-                <div className="benefits">
-                    <h3>Beneficios de Trabajar con Nosotros</h3>
-                    <ul>
-                        <li>Trabaja en una cultura de crecimiento personal y laboral.</li>
-                        <li>Trabaja sobre principios.</li>
-                        <li>Oportunidades de desarrollo profesional y capacitación.</li>
-                        <li>Ambiente de trabajo inclusivo y colaborativo.</li>
-                        <li>Seguro médico y beneficios adicionales.</li>
-                        <li>Salario competitivo y bonificaciones.</li>
-                    </ul>
-                </div>
-
-                <div className="intro">
-                    <h2>Postúlate y forma parte de nuestra compañía</h2>
-                </div>
-
                 <div className="form-container">
-                    <form id="miformacion" onSubmit={handleSubmit} encType="multipart/form-data">
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
                         {/* Fecha de Postulación */}
                         <div className="form-group">
                             <label className="label-trabaja">Fecha de Postulación:</label>
-                            <input 
-                                type="date" 
-                                id="fechaPostulacion" 
-                                name="fechaPostulacion" 
+                            <input
+                                type="date"
+                                name="fechaPostulacion"
                                 onChange={handleChange}
                                 value={formData.fechaPostulacion}
                                 required
                             />
-                            
                         </div>
 
                         {/* Nombre y Apellido */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="nombreApellido">Nombre y Apellido:</label>
-                            <input 
-                                type="text" 
-                                id="nombreApellido" 
-                                name="nombreApellido" 
-                                onChange={handleChange}
+                            <label className="label-trabaja">Nombre y Apellido:</label>
+                            <input
+                                type="text"
+                                name="nombreApellido"
                                 value={formData.nombreApellido}
-                                required
+                                onChange={handleChange}
                             />
-                            
+                            {errors.nombreApellido && <div className="alert">{errors.nombreApellido}</div>}
                         </div>
 
                         {/* Nivel Educativo */}
                         <div className="form-group">
                             <label className="label-trabaja" htmlFor="nivelEducativo">Nivel Educativo:</label>
-                            <select 
-                                id="nivelEducativo" 
-                                name="nivelEducativo" 
+                            <select
+                                id="nivelEducativo"
+                                name="nivelEducativo"
                                 onChange={handleChange}
                                 value={formData.nivelEducativo}
                                 required
                             >
                                 <option value="" disabled>Seleccione su nivel educativo</option>
-                                <option value="primaria">Primaria culminada</option>
-                                <option value="bachiller">Bachiller culminado</option>
-                                <option value="Estudiante">Estudiante</option>
+                                <option value="primaria">Primaria</option>
+                                <option value="secundaria">Secundaria</option>
                                 <option value="tecnico">Técnico</option>
                                 <option value="tecnologo">Tecnólogo</option>
-                                <option value="Profesional">Profesional</option>
+                                <option value="universitario">Universitario</option>
+                                <option value="postgrado">Postgrado</option>
                             </select>
-                           
+                            {errors.nivelEducativo && <p className="error-message">{errors.nivelEducativo}</p>}
                         </div>
 
-                        {/* Cargo */}
+                        {/* Cargo al que desea aplicar */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="cargo">Seleccione el Cargo al cual se quiere presentar:</label>
-                            <select 
-                                id="cargo" 
-                                name="cargo" 
+                            <label className="label-trabaja" htmlFor="cargo">Cargo al que desea aplicar:</label>
+                            <select
+                                type="text"
+                                id="cargo"
+                                name="cargo"
                                 onChange={handleChange}
                                 value={formData.cargo}
                                 required
@@ -277,16 +309,16 @@ const Trabaja = () => {
                             {errors.cargo && <p className="error-message">{errors.cargo}</p>}
                         </div>
 
-                        {/* Teléfono */}
+                        {/* Número de Contacto */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="telefono">Número de contacto:</label>
-                            <input 
-                                type="text" 
-                                id="telefono" 
-                                name="telefono" 
+                            <label className="label-trabaja" htmlFor="telefono">Número de Contacto:</label>
+                            <input
+                                type="tel"
+                                id="telefono"
+                                name="telefono"
                                 onChange={handleChange}
                                 value={formData.telefono}
-                                placeholder="Ej: 3001234567"
+                                required
                             />
                             {errors.telefono && <p className="error-message">{errors.telefono}</p>}
                         </div>
@@ -294,42 +326,48 @@ const Trabaja = () => {
                         {/* Género */}
                         <div className="form-group">
                             <label className="label-trabaja" htmlFor="genero">Género:</label>
-                            <select 
-                                id="genero" 
-                                name="genero" 
+                            <select
+                                id="genero"
+                                name="genero"
                                 onChange={handleChange}
                                 value={formData.genero}
+                                required
                             >
                                 <option value="" disabled>Seleccione su género</option>
                                 <option value="masculino">Masculino</option>
                                 <option value="femenino">Femenino</option>
                                 <option value="otro">Otro</option>
+                                <option value="prefiero_no_decirlo">Prefiero no decirlo</option>
                             </select>
                             {errors.genero && <p className="error-message">{errors.genero}</p>}
                         </div>
 
-                        {/* Departamento */}
+                        {/* Departamento de Domicilio */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="paisDomicilio">Departamento:</label>
-                            <select 
-                                id="paisDomicilio" 
-                                name="paisDomicilio" 
+                            <label className="label-trabaja" htmlFor="paisDomicilio">Departamento de Domicilio:</label>
+                            <select
+                                id="paisDomicilio"
+                                name="paisDomicilio"
                                 onChange={handleChange}
                                 value={formData.paisDomicilio}
+                                required
                             >
+                                <option value="" disabled>Seleccione su departamento</option>
                                 <option value="Antioquia">Antioquia</option>
                             </select>
-                            
+                            {errors.paisDomicilio && <p className="error-message">{errors.paisDomicilio}</p>}
                         </div>
 
-                        {/* Ciudad */}
+                        {/* Ciudad de Domicilio */}
                         <div className="form-group">
                             <label className="label-trabaja" htmlFor="municipioDomicilio">Ciudad:</label>
-                            <select 
-                                id="municipioDomicilio" 
-                                name="municipioDomicilio" 
+                            <select
+                                type="text"
+                                id="municipioDomicilio"
+                                name="municipioDomicilio"
                                 onChange={handleChange}
                                 value={formData.municipioDomicilio}
+                                required
                             >
                                 <option value="">Seleccione una ciudad</option>
                                 <option value="Medellín">Medellín</option>
@@ -347,82 +385,144 @@ const Trabaja = () => {
                             {errors.municipioDomicilio && <p className="error-message">{errors.municipioDomicilio}</p>}
                         </div>
 
+                        {/* Zona de Residencia */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="zona-residencia">Zona de Residencia:</label>
-                            <select id="zona-residencia" name="zona-residencia" required>
-                                <option value="" disabled>
-                                    Seleccione su zona de residencia
-                                </option>
+                            <label className="label-trabaja" htmlFor="zonaResidencia">Zona de Residencia:</label>
+                            <select
+                                id="zonaResidencia"
+                                name="zonaResidencia"
+                                onChange={handleChange}
+                                value={formData.zonaResidencia}
+                                required
+                            >
+                                <option value="" disabled>Seleccione su zona de residencia</option>
                                 <option value="urbana">Urbana</option>
                                 <option value="rural">Rural</option>
                             </select>
+                            {errors.zonaResidencia && <p className="error-message">{errors.zonaResidencia}</p>}
                         </div>
 
+                        {/* Barrio */}
                         <div className="form-group">
                             <label className="label-trabaja" htmlFor="barrio">Barrio:</label>
-                            <input type="text" id="barrio" name="barrio" required />
-                        </div>
-
-
-                        <div className="form-group">
-                            <label className="label-trabaja" htmlFor="fecha-nacimiento">Fecha de Nacimiento:</label>
                             <input
-                                type="date"
-                                id="fecha-nacimiento"
-                                name="fecha-nacimiento"
+                                type="text"
+                                id="barrio"
+                                name="barrio"
+                                onChange={handleChange}
+                                value={formData.barrio}
                                 required
                             />
+                            {errors.barrio && <p className="error-message">{errors.barrio}</p>}
                         </div>
 
-
+                        {/* Fecha de Nacimiento */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="tipo-documento">Tipo de Documento de Identidad:</label>
-                            <select id="tipo-documento" name="tipo-documento" required>
-                                <option value="" disabled>
-                                    Seleccione su tipo de documento
-                                </option>
+                            <label className="label-trabaja" htmlFor="fechaNacimiento">Fecha de Nacimiento:</label>
+                            <input
+                                type="date"
+                                id="fechaNacimiento"
+                                name="fechaNacimiento"
+                                onChange={handleChange}
+                                value={formData.fechaNacimiento}
+                                required
+                            />
+                            {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento}</p>}
+                        </div>
+
+                        {/* Tipo de Documento */}
+                        <div className="form-group">
+                            <label className="label-trabaja" htmlFor="tipoDocumento">Tipo de Documento de Identidad:</label>
+                            <select
+                                id="tipoDocumento"
+                                name="tipoDocumento"
+                                onChange={handleChange}
+                                value={formData.tipoDocumento}
+                                required
+                            >
+                                <option value="" disabled>Seleccione su tipo de documento</option>
                                 <option value="cedula">Cédula de Ciudadanía</option>
                                 <option value="cedula_extranjeria">Cédula de Extranjería</option>
                                 <option value="pasaporte">Pasaporte</option>
                                 <option value="permiso">Permiso Especial de Permanencia</option>
                             </select>
+                            {errors.tipoDocumento && <p className="error-message">{errors.tipoDocumento}</p>}
                         </div>
 
+                        {/* Número de Documento */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="numero-documento">Número de Documento:</label>
-                            <input type="text" id="numero-documento" name="numero-documento" required />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="label-trabaja" htmlFor="recomendado">¿Quién lo recomienda?</label>
-                            <input type="text" id="recomendado" name="recomendado" required />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="label-trabaja" htmlFor="hoja_vida">Adjuntar Hoja de Vida:</label>
-                            <input type="file" id="hoja_vida" name="hoja_vida" accept=".pdf" required />
-                            <small>Solo se permiten archivos PDF. Tamaño máximo: 600 KB.</small>
-                        </div>
-                        <br /><br />
-
-                        <div className="form-group">
+                            <label className="label-trabaja" htmlFor="numeroDocumento">Número de Documento:</label>
                             <input
-                                type="checkbox"
-                                id="terminos"
-                                name="terminos"
+                                type="text"
+                                id="numeroDocumento"
+                                name="numeroDocumento"
+                                onChange={handleChange}
+                                value={formData.numeroDocumento}
                                 required
                             />
-
-                            <label className="terminos-" htmlFor="terminos">Acepto los <a href="condiciones">términos y condiciones</a></label>
-
+                            {errors.numeroDocumento && <p className="error-message">{errors.numeroDocumento}</p>}
                         </div>
 
-                        <div className="form-group recaptcha-container">
-                            <ReCAPTCHA
-                                sitekey="6LejBUEqAAAAAMY0KFh7KCN9TTH2kJYNV3i8VJbm"
-                                onChange={handleCaptchaChange}
+                        {/* ¿Quién lo recomienda? */}
+                        <div className="form-group">
+                            <label className="label-trabaja" htmlFor="recomendado">¿Quién lo recomienda?</label>
+                            <input
+                                type="text"
+                                id="recomendado"
+                                name="recomendado"
+                                onChange={handleChange}
+                                value={formData.recomendado}
+                                required
                             />
+                            {errors.recomendado && <p className="error-message">{errors.recomendado}</p>}
                         </div>
+
+
+                        {/* Adjuntar Hoja de Vida */}
+                        <div className="form-group">
+                            <label className="label-trabaja">Adjuntar Hoja de Vida:</label>
+                            <input
+                                type="file"
+                                ref={inputHojaVida}
+                                accept=".pdf"
+                                required
+                            />
+                            <small>Solo se permiten archivos PDF. Tamaño máximo: 600 KB.</small>
+                            {errors.hojaVida && (
+                                <p className="error-message">{errors.hojaVida}</p>
+                            )}
+                        </div>
+
+
+                        {/* Acepto Términos y Condiciones */}
+                        <div className="form-group">
+                            <label className="checkbox-container">
+                                <input
+                                    type="checkbox"
+                                    name="aceptoTerminos"
+                                    onChange={(e) => setFormData({ ...formData, aceptoTerminos: e.target.checked })}
+                                    required
+                                />
+                                Acepto los <a href="/condiciones" target="_blank" rel="noopener noreferrer">términos y condiciones</a>.
+                            </label>
+                            {errors.aceptoTerminos && (
+                                <p className="error-message">{errors.aceptoTerminos}</p>
+                            )}
+                        </div>
+
+
+
+                    {/* Captcha */}
+<div className="form-group recaptcha-container">
+    <ReCAPTCHA
+        sitekey="6LejBUEqAAAAAMY0KFh7KCN9TTH2kJYNV3i8VJbm"
+        onChange={handleCaptchaChange}
+    />
+    {errors.captcha && (
+        <p className="error-message">{errors.captcha}</p>
+    )}
+</div>
+
 
                         <button type="submit" className="submit-button">
                             Enviar Solicitud
