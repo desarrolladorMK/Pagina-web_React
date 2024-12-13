@@ -32,7 +32,7 @@ const Vacantes = () => {
 
     return (
         <div className="vacantes-container">
-            <a href="/Home">
+            <a href="/">
                 <img src="/logoMK.png" alt="Logo" className="logo" />
             </a>
             <h2>Vacantes Disponibles</h2>
