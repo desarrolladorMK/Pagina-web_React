@@ -506,7 +506,7 @@ const Trabaja = () => {
                                 name="hojaVida"
                                 ref={inputHojaVida}
                                 onChange={handleFileChange} // Vincular el evento onChange
-                                accept=".pdf,.doc,.docx" // Opcional: limitar tipos de archivo aceptados
+                                accept=".pdf" // Opcional: limitar tipos de archivo aceptados
                             />
                             {errors.hojaVida && <p className="error-message">{errors.hojaVida}</p>}
                         </div>
