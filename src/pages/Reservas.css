@@ -19,8 +19,9 @@
   
   .logo-containermk img {
     width: 300px; /* Tamaño ligeramente reducido */
-    max-width: 80%;
+    max-width: 100%;
     height: auto;
+    margin-top: 20px;
   }
   
   .grad {
