@@ -4,10 +4,22 @@
     margin: 20px;
     padding: 20px;
     background-color: #f9f9f9;
+    margin-top: 100px;
 }
 
 .condiciones-h2 {
     color: #333;
+}
+
+
+.terminos img{
+    position: absolute;
+    top: 20px; /* Ajusta la posición vertical */
+    left: 20px; /* Ajusta la posición horizontal */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */ /* Sombra para darle estilo */
+    width: 180px; /* Tamaño ajustable del logo */
+    height: auto; /* Mantén las proporciones */
 }
 
 p {
