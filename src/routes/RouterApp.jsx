@@ -10,7 +10,7 @@ import { Vacantes } from "../pages/Vacantes"
 
 export let routes = [
     {
-        path: '/Home',
+        path: '/',
         element: <Home/>,
     },
     {

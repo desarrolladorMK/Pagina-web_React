@@ -4,7 +4,7 @@ const Politicas = () => {
   return (
     <div className="politicas-body">
       <div className="container">
-      <a href="/Home"> <img src="/logoMK.png" alt="" /></a>
+      <a href="/"> <img src="/logoMK.png" alt="" /></a>
         <h1>Política de Privacidad</h1>
         <p>
           <strong>Última actualización: 17/09/2024</strong>

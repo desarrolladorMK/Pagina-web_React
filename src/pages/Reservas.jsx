@@ -11,7 +11,7 @@ const Reservas = () => {
   return (
     <div className="body-login">
       <div className="logo-containermk">
-      <a href="/Home"> <img src="/logoMK.png" alt="" /></a> 
+      <a href="/"> <img src="/logoMK.png" alt="" /></a> 
       </div>
       <div className="grad"></div>
       <div className="login-box">
