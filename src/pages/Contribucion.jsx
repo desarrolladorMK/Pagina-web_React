@@ -53,7 +53,7 @@ const Contribucion = () => {
     <div className="contribucion-body">
    
       <header className="contribucion-header">
-      <a href="/Home"> <img src="logoMK.png" alt="" /></a>
+      <a href="/"> <img src="logoMK.png" alt="" /></a>
         <h1>Contribución Merkahorro</h1>
       </header> 
       <main>
