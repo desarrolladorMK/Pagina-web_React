@@ -8,7 +8,6 @@ import withReactContent from 'sweetalert2-react-content';
 // Crea una instancia de SweetAlert2 compatible con React
 const MySwal = withReactContent(Swal);
 
-
 const Trabaja = () => {
     const [formData, setFormData] = useState({
         fechaPostulacion: "",
@@ -40,6 +39,27 @@ const Trabaja = () => {
     const handleCaptchaChange = (value) => {
         setCaptchaValido(!!value);
         validateField("captcha", value);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            const maxSize = 600 * 1024; // 600 KB en bytes
+            if (file.size > maxSize) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    hojaVida: "El archivo no debe exceder los 600 KB.",
+                }));
+                inputHojaVida.current.value = ""; // Limpiar el archivo seleccionado
+            } else {
+                setFormData({ ...formData, hojaVida: file });
+                setErrors((prevErrors) => {
+                    const { hojaVida, ...rest } = prevErrors; // Eliminar el error de hoja de vida si es válido
+                    return rest;
+                });
+            }
+        }
     };
 
     const validateField = (name, value) => {
@@ -157,7 +177,7 @@ const Trabaja = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+
         // Primero verificar si el captcha es válido
         if (!captchaValido) {
             MySwal.fire({
@@ -168,33 +188,33 @@ const Trabaja = () => {
             });
             return; // Detener el envío del formulario
         }
-    
+
         const nuevosErrores = {};
         let isValid = true;
         let firstErrorField = null;
-    
+
         // Validar todos los campos antes de enviar
         for (const field in formData) {
             if (formData.hasOwnProperty(field)) {
                 validateField(field, formData[field]);
             }
         }
-    
+
         if (Object.keys(errors).length > 0) {
             // Encontrar el primer campo con error
             firstErrorField = Object.keys(errors)[0];
-    
+
             // Desplazar la vista al primer campo con error
             const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
             errorElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
+
             // Resaltar el campo con error
             const fieldElement = document.querySelector(`[name="${firstErrorField}"]`);
             fieldElement?.classList.add("error-highlight");
-    
+
             return; // Detener el envío del formulario
         }
-    
+
         // Si todas las validaciones pasan y el captcha es válido
         if (Object.keys(errors).length === 0 && captchaValido) {
             MySwal.fire({
@@ -205,7 +225,6 @@ const Trabaja = () => {
             });
         }
     };
-
 
     return (
         <div className="trabaja-body">
@@ -480,17 +499,16 @@ const Trabaja = () => {
 
                         {/* Adjuntar Hoja de Vida */}
                         <div className="form-group">
-                            <label className="label-trabaja">Adjuntar Hoja de Vida:</label>
+                            <label className="label-trabaja" htmlFor="hojaVida">Hoja de Vida (máximo 600 KB):</label>
                             <input
                                 type="file"
+                                id="hojaVida"
+                                name="hojaVida"
                                 ref={inputHojaVida}
-                                accept=".pdf"
-                                required
+                                onChange={handleFileChange} // Vincular el evento onChange
+                                accept=".pdf,.doc,.docx" // Opcional: limitar tipos de archivo aceptados
                             />
-                            <small>Solo se permiten archivos PDF. Tamaño máximo: 600 KB.</small>
-                            {errors.hojaVida && (
-                                <p className="error-message">{errors.hojaVida}</p>
-                            )}
+                            {errors.hojaVida && <p className="error-message">{errors.hojaVida}</p>}
                         </div>
 
 
@@ -512,16 +530,16 @@ const Trabaja = () => {
 
 
 
-                    {/* Captcha */}
-<div className="form-group recaptcha-container">
-    <ReCAPTCHA
-        sitekey="6LejBUEqAAAAAMY0KFh7KCN9TTH2kJYNV3i8VJbm"
-        onChange={handleCaptchaChange}
-    />
-    {errors.captcha && (
-        <p className="error-message">{errors.captcha}</p>
-    )}
-</div>
+                        {/* Captcha */}
+                        <div className="form-group recaptcha-container">
+                            <ReCAPTCHA
+                                sitekey="6LejBUEqAAAAAMY0KFh7KCN9TTH2kJYNV3i8VJbm"
+                                onChange={handleCaptchaChange}
+                            />
+                            {errors.captcha && (
+                                <p className="error-message">{errors.captcha}</p>
+                            )}
+                        </div>
 
 
                         <button type="submit" className="submit-button">
