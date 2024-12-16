@@ -3,7 +3,7 @@ import "./Politicas.css";
 const Politicas = () => {
   return (
     <div className="politicas-body">
-      <div className="container">
+      <div className="container-politicas">
       <a href="/"> <img src="/logoMK.png" alt="" /></a>
         <h1>Política de Privacidad</h1>
         <p>

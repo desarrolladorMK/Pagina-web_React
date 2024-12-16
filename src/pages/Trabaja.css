@@ -5,15 +5,15 @@
     position: relative;
   }
   
-  .logo {
-    max-width: 500px;
+  .container-trabaja img {
+    width: 300px;
     margin: 20px auto;
     display: block;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   
-  .container {
+  .container-trabaja {
     max-width: 921px;
     margin: 20px auto;
     padding: 30px;
@@ -25,7 +25,7 @@
   
 
   
-  .header {
+  .header-trabaja {
     background-color: #210D65; 
     color: white;
     padding: 16px;
@@ -37,7 +37,7 @@
     transition: background-color 0.3s ease;
 }
 
-.header h1 {
+.header-trabaja h1 {
     margin: 0;
     font-size: 2.5em;
     color: white;
@@ -170,10 +170,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .header h1 {
+    .header-trabaja h1 {
         font-size: 2em;
     }
-    .container {
+    .container-trabaja {
         padding: 20px;
         margin: 10px; /* Reduce el margen en pantallas más pequeñas */
     }
@@ -194,7 +194,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 @media (max-width: 480px) {
-    .container {
+    .container-trabaja {
         padding: 15px;
         margin: 5px; /* Reduce aún más el margen para pantallas pequeñas */
     }
@@ -217,7 +217,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         padding: 10px;
         font-size: 1em;
     }
-    .header h1 {
+    .header-trabaja h1 {
         font-size: 1.8em; /* Reducción adicional del tamaño del texto en pantallas muy pequeñas */
     }
     .intro h2, .benefits h3 {
