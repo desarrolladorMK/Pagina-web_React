@@ -29,7 +29,7 @@
     /* Separación superior */
 }
 
-p {
+.p-condicciones {
     margin-bottom: 10px;
     font-size: 1rem;
     text-align: justify;
@@ -57,7 +57,7 @@ a {
         /* Reduce el tamaño de la imagen */
     }
 
-    p {
+    .p-politicas {
         font-size: 0.95rem;
     }
 }
@@ -73,7 +73,7 @@ a {
         /* Imagen más pequeña para móviles */
     }
 
-    p {
+    .p-politicas {
         font-size: 0.9rem;
     }
 }

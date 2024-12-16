@@ -36,7 +36,7 @@
     font-size: 1.5em; /* Escalado adecuado */
 }
 
-p {
+.p-politicas {
     margin: 0 0 1em;
     font-size: 1em; /* Tamaño de texto legible en móviles */
     text-align: justify; /* Mejor lectura para párrafos largos */
@@ -69,7 +69,7 @@ a {
         font-size: 1.2em;
     }
 
-    p {
+    .p-politicas {
         font-size: 0.9em;
     }
 
@@ -91,7 +91,7 @@ a {
         font-size: 1.1em;
     }
 
-    p {
+    .p-politicas {
         font-size: 0.85em;
     }
 
@@ -113,7 +113,7 @@ a {
         font-size: 0.9em;
     }
 
-    p {
+    .p-politicas {
         font-size: 0.75em;
     }
 
