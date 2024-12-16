@@ -1,14 +1,22 @@
-
-.vacantes-container img{
+.vacantes-container img {
     width: 100%;
     max-width: 300px;
 }
 
-.logo {
-    box-shadow: 2px 2px 2px #210d65;
+.logo-container {
+    display: inline-block; /* Asegura que solo envuelva el contenido necesario */
+    margin-bottom: 20px;
+    text-align: center;
+    margin-top: 40px; /* Agrega un margen superior para separar el logo de la parte superior */
 }
 
-
+.logo-vacantes {
+    display: block;
+    max-width: 150px;
+    margin: 0 auto; /* Centra el logo si es necesario */
+    box-shadow: 3px 3px 3px #210d65;
+    border-radius: 5px;
+}
 
 .vacantes-container {
     text-align: center;
@@ -62,8 +70,15 @@
     background-color: #89dc00;
 }
 
-.aplicar-color{
+.aplicar-color {
     color: white;
     text-decoration: none;
 }
 
+.titulo-vacantes {
+    color: #210d65;
+    font-size: 2em;
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 15px;
+}
