@@ -6,11 +6,11 @@ const Politicas = () => {
       <div className="container-politicas">
       <a href="/"> <img src="/logoMK.png" alt="" /></a>
         <h1>Política de Privacidad</h1>
-        <p>
+        <p  className="p-politicas">
           <strong>Última actualización: 17/09/2024</strong>
         </p>
 
-        <p>
+        <p  className="p-politicas">
           Esta Política de Privacidad describe nuestras políticas y
           procedimientos sobre la recopilación, uso y divulgación de su
           información cuando utiliza el Servicio y le informa sobre sus derechos
@@ -20,7 +20,7 @@ const Politicas = () => {
         <h2 className="politicas-h2">Interpretación y Definiciones</h2>
 
         <h3>Interpretación</h3>
-        <p>
+        <p  className="p-politicas">
           Las palabras con la primera letra en mayúscula tienen significados
           definidos bajo las siguientes condiciones. Las siguientes definiciones
           tendrán el mismo significado sin importar si aparecen en singular o en
@@ -28,7 +28,7 @@ const Politicas = () => {
         </p>
 
         <h3>Definiciones</h3>
-        <p>Para los fines de esta Política de Privacidad:</p>
+        <p  className="p-politicas">Para los fines de esta Política de Privacidad:</p>
         <ul>
           <li>
             <strong>Cuenta:</strong> significa una cuenta única creada para usted
@@ -84,7 +84,7 @@ const Politicas = () => {
         <h3>Tipos de Datos Recopilados</h3>
 
         <h4>Datos Personales</h4>
-        <p>
+        <p  className="p-politicas">
           Mientras utiliza nuestro Servicio, podemos pedirle que nos proporcione
           cierta información personal identificable que puede ser utilizada para
           contactarlo o identificarlo. La información personal identificable
@@ -98,7 +98,7 @@ const Politicas = () => {
         </ul>
 
         <h4>Datos de Uso</h4>
-        <p>
+        <p  className="p-politicas">
           Los Datos de Uso se recopilan automáticamente al usar el Servicio. Los
           Datos de Uso pueden incluir información como la dirección IP de su
           dispositivo, tipo de navegador, versión del navegador, las páginas de
@@ -108,7 +108,7 @@ const Politicas = () => {
         </p>
 
         <h4>Información de Servicios de Redes Sociales de Terceros</h4>
-        <p>
+        <p  className="p-politicas">
           La Empresa le permite crear una cuenta e iniciar sesión para usar el
           Servicio a través de los siguientes Servicios de Redes Sociales de
           Terceros: Cuenta de Microsoft. Si decide registrarse a través de una
@@ -118,7 +118,7 @@ const Politicas = () => {
         </p>
 
         <h2 className="politicas-h2">Uso de sus Datos Personales</h2>
-        <p>La Empresa utiliza los Datos Personales para los siguientes fines:</p>
+        <p  className="p-politicas">La Empresa utiliza los Datos Personales para los siguientes fines:</p>
         <ul>
           <li>Para proporcionar y mantener nuestro Servicio</li>
           <li>Para gestionar su Cuenta</li>
@@ -130,7 +130,7 @@ const Politicas = () => {
         <h2 className="politicas-h2">
           Derechos de los Titulares de Datos Personales
         </h2>
-        <p>
+        <p  className="p-politicas">
           De acuerdo con la Ley 1581 de 2012, como titular de sus datos
           personales, usted tiene derecho a:
         </p>
@@ -154,7 +154,7 @@ const Politicas = () => {
         </ul>
 
         <h2 className="politicas-h2">Seguridad de sus Datos Personales</h2>
-        <p>
+        <p  className="p-politicas">
           La seguridad de sus Datos Personales es importante para nosotros, pero
           recuerde que ningún método de transmisión a través de Internet o
           método de almacenamiento electrónico es 100% seguro. Mientras nos
@@ -163,7 +163,7 @@ const Politicas = () => {
         </p>
 
         <h2 className="politicas-h2">Enlaces a Otros Sitios Web</h2>
-        <p>
+        <p  className="p-politicas">
           Nuestro Servicio puede contener enlaces a otros sitios web que no son
           operados por nosotros. Si hace clic en un enlace de terceros, será
           dirigido al sitio web de ese tercero. Le recomendamos encarecidamente
@@ -171,14 +171,14 @@ const Politicas = () => {
         </p>
 
         <h2 className="politicas-h2">Cambio en esta Política de Privacidad</h2>
-        <p>
+        <p  className="p-politicas">
           Podemos actualizar nuestra Política de Privacidad de vez en cuando. Le
           notificaremos cualquier cambio publicando la nueva Política de
           Privacidad en esta página.
         </p>
 
         <h2 className="politicas-h2">Contáctenos</h2>
-        <p>
+        <p  className="p-politicas">
           Si tiene alguna pregunta sobre esta Política de Privacidad, por favor
           contáctenos:
         </p>
