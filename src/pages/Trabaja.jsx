@@ -287,6 +287,7 @@ const Trabaja = () => {
                                 name="nombreApellido"
                                 value={formData.nombreApellido}
                                 onChange={handleChange}
+                                required
                             />
                             {errors.nombreApellido && <div className="alert">{errors.nombreApellido}</div>}
                         </div>

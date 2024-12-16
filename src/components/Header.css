@@ -150,7 +150,6 @@ html {
   .menu-toggle {
     display: block;
     position: absolute;
-    top: 5px;
     right: 20px;
     font-size: 32px;
     color: #ffffff;
