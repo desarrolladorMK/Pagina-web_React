@@ -53,7 +53,9 @@ const Contribucion = () => {
     <div className="contribucion-body">
    
       <header className="contribucion-header">
-      <a href="/"> <img src="logoMK.png" alt="" /></a>
+        <div className="logo-container">
+          <a href="/"><img src="logoMK.png" alt="" /></a>
+        </div>
         <h1>Contribución Merkahorro</h1>
       </header> 
       <main>
