@@ -29,6 +29,21 @@ body, html {
     margin-top: auto; /* Empuja el footer hacia el fondo */
 }
 
+.contact-info {
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+    text-align: left;
+}
+
+.contact-info p{
+    align-items: center;
+    max-width: 200px;
+}
+
+
+
+
 .footer-content {
     display: flex;
     flex-direction: row;
