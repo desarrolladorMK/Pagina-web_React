@@ -228,11 +228,11 @@ const Trabaja = () => {
 
     return (
         <div className="trabaja-body">
-            <header className="header">
+            <header className="header-trabaja">
                 <h1>Bienvenido a Nuestra Compañía</h1>
             </header>
 
-            <div className="container">
+            <div className="container-trabaja">
                 <img
                     src="/img_fondo.jpg"
                     alt="Logo de la Compañía"
@@ -250,7 +250,7 @@ const Trabaja = () => {
                 </div>
 
 
-                <div class="benefits">
+                <div className="benefits">
                     <h3>Beneficios de Trabajar con Nosotros</h3>
                     <ul>
                         <li>Trabaja en una cultura de crecimiento personal y laboral.</li>
@@ -261,7 +261,7 @@ const Trabaja = () => {
                         <li>Salario competitivo y bonificaciones.</li>
                     </ul>
                 </div>
-                <div class="intro">
+                <div className="intro">
                     <h2>Postúlate y forma parte de nuestra compañía</h2>
                 </div>
 
