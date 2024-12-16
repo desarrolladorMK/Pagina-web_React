@@ -38,9 +38,12 @@ html {
 }
 
 /* Logo */
-.logo img {
-  height: 40px;
-  margin-left: -10rem;
+.logo-header img { 
+  max-width: 150px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Botón de alternar menú (hamburguesa) */
