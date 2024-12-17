@@ -7,6 +7,9 @@ const port = 5000;
 app.get('/', (req, res) => {
   res.send('¡Servidor funcionando correctamente!');
 });
+app.post('/almacenar', (req, res) => {
+    res.send('¡Servidor funcionando correctamente!');
+  });
 
 // Levanta el servidor
 app.listen(port, () => {
