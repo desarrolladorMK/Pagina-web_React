@@ -1,4 +1,8 @@
-import express from 'express';
+import express from "express";
+import cors from "cors";
+import pkg from "pg";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
 const app = express();
 const port = 5000;
