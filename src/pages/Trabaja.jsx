@@ -2,33 +2,35 @@ import React, { useState, useRef } from "react";
 import "./Trabaja.css";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Footer } from "../components/Footer";
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-// Crea una instancia de SweetAlert2 compatible con React
 const MySwal = withReactContent(Swal);
 
 const Trabaja = () => {
     const [formData, setFormData] = useState({
-        fechaPostulacion: "",
+        fechaPostulacion: new Date().toISOString().split("T")[0],
         nombreApellido: "",
         nivelEducativo: "",
         cargo: "",
         telefono: "",
         genero: "",
-        paisDomicilio: "Antioquia",
-        municipioDomicilio: "",
+        Departamento: "Antioquia",
+        Ciudad: "",
         zonaResidencia: "",
         barrio: "",
         fechaNacimiento: "",
         tipoDocumento: "",
         numeroDocumento: "",
         recomendado: "",
+        hojaVida: null,
     });
 
     const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
     const [captchaValido, setCaptchaValido] = useState(false);
     const inputHojaVida = useRef(null);
+    const recaptchaRef = useRef(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -45,17 +47,23 @@ const Trabaja = () => {
         const file = e.target.files[0];
 
         if (file) {
-            const maxSize = 600 * 1024; // 600 KB en bytes
+            const maxSize = 600 * 1024;
             if (file.size > maxSize) {
                 setErrors((prevErrors) => ({
                     ...prevErrors,
                     hojaVida: "El archivo no debe exceder los 600 KB.",
                 }));
-                inputHojaVida.current.value = ""; // Limpiar el archivo seleccionado
+                inputHojaVida.current.value = "";
+            } else if (file.type !== "application/pdf") {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    hojaVida: "Solo se permiten archivos PDF.",
+                }));
+                inputHojaVida.current.value = "";
             } else {
                 setFormData({ ...formData, hojaVida: file });
                 setErrors((prevErrors) => {
-                    const { hojaVida, ...rest } = prevErrors; // Eliminar el error de hoja de vida si es válido
+                    const { hojaVida, ...rest } = prevErrors;
                     return rest;
                 });
             }
@@ -67,75 +75,44 @@ const Trabaja = () => {
 
         switch (name) {
             case "nombreApellido":
-                const nombreApellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{1,50}$/;
-                if (!nombreApellidoRegex.test(value)) {
+                if (!/^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{1,50}$/.test(value)) {
                     nuevosErrores.nombreApellido = "Por favor, ingrese solo letras y espacios (máximo 50 caracteres).";
                 } else {
                     delete nuevosErrores.nombreApellido;
                 }
                 break;
             case "telefono":
-                const telefonoLimpiado = value.replace(/\D/g, "");
-                const telefonoRegex = /^(3\d{9}|[1-9]\d{6}|\d{10})$/;
-                if (!telefonoRegex.test(telefonoLimpiado)) {
+                if (!/^(3\d{9}|[1-9]\d{6}|\d{10})$/.test(value.replace(/\D/g, ""))) {
                     nuevosErrores.telefono = "Por favor, ingrese un número de teléfono válido.";
                 } else {
                     delete nuevosErrores.telefono;
                 }
                 break;
             case "numeroDocumento":
-                const documentoRegex = /^\d{5,10}$/;
-                if (!documentoRegex.test(value)) {
+                if (!/^\d{5,10}$/.test(value)) {
                     nuevosErrores.numeroDocumento = "Por favor, ingrese un número de documento válido.";
                 } else {
                     delete nuevosErrores.numeroDocumento;
                 }
                 break;
             case "nivelEducativo":
-                if (!value.trim()) {
-                    nuevosErrores.nivelEducativo = "El nivel educativo es obligatorio.";
-                } else {
-                    delete nuevosErrores.nivelEducativo;
-                }
-                break;
             case "cargo":
-                if (!value.trim()) {
-                    nuevosErrores.cargo = "Debe seleccionar un cargo.";
-                } else {
-                    delete nuevosErrores.cargo;
-                }
-                break;
             case "genero":
-                if (!value.trim()) {
-                    nuevosErrores.genero = "Debe seleccionar un género.";
-                } else {
-                    delete nuevosErrores.genero;
-                }
-                break;
-            case "paisDomicilio":
-                if (!value.trim()) {
-                    nuevosErrores.paisDomicilio = "Debe seleccionar un departamento.";
-                } else {
-                    delete nuevosErrores.paisDomicilio;
-                }
-                break;
-            case "municipioDomicilio":
-                if (!value.trim()) {
-                    nuevosErrores.municipioDomicilio = "Debe seleccionar una ciudad.";
-                } else {
-                    delete nuevosErrores.municipioDomicilio;
-                }
-                break;
+            case "Departamento":
+            case "Ciudad":
             case "zonaResidencia":
+            case "tipoDocumento":
                 if (!value.trim()) {
-                    nuevosErrores.zonaResidencia = "Debe seleccionar su zona de residencia.";
+                    nuevosErrores[name] = `El campo ${name} es obligatorio.`;
                 } else {
-                    delete nuevosErrores.zonaResidencia;
+                    delete nuevosErrores[name];
                 }
                 break;
             case "barrio":
                 if (!value.trim()) {
                     nuevosErrores.barrio = "Debe ingresar su barrio.";
+                } else if (value.trim().length > 25) {
+                    nuevosErrores.barrio = "El barrio no puede tener más de 25 caracteres.";
                 } else {
                     delete nuevosErrores.barrio;
                 }
@@ -147,16 +124,11 @@ const Trabaja = () => {
                     delete nuevosErrores.fechaNacimiento;
                 }
                 break;
-            case "tipoDocumento":
-                if (!value.trim()) {
-                    nuevosErrores.tipoDocumento = "Debe seleccionar un tipo de documento.";
-                } else {
-                    delete nuevosErrores.tipoDocumento;
-                }
-                break;
             case "recomendado":
                 if (!value.trim()) {
                     nuevosErrores.recomendado = "Debe ingresar quién lo recomienda.";
+                } else if (value.trim().length > 30) {
+                    nuevosErrores.recomendado = "El texto no puede tener más de 30 caracteres.";
                 } else {
                     delete nuevosErrores.recomendado;
                 }
@@ -175,57 +147,93 @@ const Trabaja = () => {
         setErrors(nuevosErrores);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Primero verificar si el captcha es válido
         if (!captchaValido) {
             MySwal.fire({
-                title: 'Error',
-                text: 'Por favor, complete el reCAPTCHA.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar',
+                title: "Error",
+                text: "Por favor, complete el reCAPTCHA.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
             });
-            return; // Detener el envío del formulario
+            return;
         }
 
         const nuevosErrores = {};
-        let isValid = true;
-        let firstErrorField = null;
+        Object.keys(formData).forEach((key) => validateField(key, formData[key]));
+        setErrors(nuevosErrores);  // Actualizar el estado con los nuevos errores
 
-        // Validar todos los campos antes de enviar
-        for (const field in formData) {
-            if (formData.hasOwnProperty(field)) {
-                validateField(field, formData[field]);
+        if (Object.keys(nuevosErrores).length > 0) {
+            return;
+        }
+
+        const formDataToSend = new FormData();
+        Object.keys(formData).forEach((key) => {
+            if (key !== "hojaVida") {
+                formDataToSend.append(key, formData[key]);
             }
+        });
+
+        if (formData.hojaVida) {
+            formDataToSend.append("hojaVida", formData.hojaVida);
         }
 
-        if (Object.keys(errors).length > 0) {
-            // Encontrar el primer campo con error
-            firstErrorField = Object.keys(errors)[0];
+        setIsLoading(true);
 
-            // Desplazar la vista al primer campo con error
-            const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
-            errorElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Resaltar el campo con error
-            const fieldElement = document.querySelector(`[name="${firstErrorField}"]`);
-            fieldElement?.classList.add("error-highlight");
-
-            return; // Detener el envío del formulario
-        }
-
-        // Si todas las validaciones pasan y el captcha es válido
-        if (Object.keys(errors).length === 0 && captchaValido) {
-            MySwal.fire({
-                title: '¡Éxito!',
-                text: 'Formulario enviado correctamente.',
-                icon: 'success',
-                confirmButtonText: 'Aceptar',
+        try {
+            const response = await fetch("http://localhost:7777/enviar", {
+                method: "POST",
+                body: formDataToSend,
             });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                MySwal.fire({
+                    title: "¡Éxito!",
+                    text: result.message || "Formulario enviado correctamente.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                });
+
+                // Verificar si recaptchaRef.current está disponible antes de llamar a reset
+                if (recaptchaRef.current) {
+                    recaptchaRef.current.reset();
+                } 
+
+                setCaptchaValido(false);
+                setFormData({
+                    fechaPostulacion: new Date().toISOString().split("T")[0],
+                    nombreApellido: "",
+                    nivelEducativo: "",
+                    cargo: "",
+                    telefono: "",
+                    genero: "",
+                    Departamento: "Antioquia",
+                    Ciudad: "",
+                    zonaResidencia: "",
+                    barrio: "",
+                    fechaNacimiento: "",
+                    tipoDocumento: "",
+                    numeroDocumento: "",
+                    recomendado: "",
+                    hojaVida: null,
+                });
+            } else {
+                throw new Error(result.message || "Error al enviar el formulario.");
+            }
+        } catch (error) {
+            MySwal.fire({
+                title: "Error",
+                text: error.message || "No se pudo conectar con el servidor.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
-
     return (
         <div className="trabaja-body">
             <header className="header-trabaja">
@@ -380,29 +388,29 @@ const Trabaja = () => {
 
                         {/* Departamento de Domicilio */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="paisDomicilio">Departamento de Domicilio:</label>
+                            <label className="label-trabaja" htmlFor="Departamento">Departamento de Domicilio:</label>
                             <select
-                                id="paisDomicilio"
-                                name="paisDomicilio"
+                                id="Departamento"
+                                name="Departamento"
                                 onChange={handleChange}
-                                value={formData.paisDomicilio}
+                                value={formData.Departamento}
                                 required
                             >
                                 <option value="" disabled>Seleccione su departamento</option>
                                 <option value="Antioquia">Antioquia</option>
                             </select>
-                            {errors.paisDomicilio && <p className="error-message">{errors.paisDomicilio}</p>}
+                            {errors.Departamento && <p className="error-message">{errors.Departamento}</p>}
                         </div>
 
                         {/* Ciudad de Domicilio */}
                         <div className="form-group">
-                            <label className="label-trabaja" htmlFor="municipioDomicilio">Ciudad:</label>
+                            <label className="label-trabaja" htmlFor="Ciudad">Ciudad:</label>
                             <select
                                 type="text"
-                                id="municipioDomicilio"
-                                name="municipioDomicilio"
+                                id="Ciudad"
+                                name="Ciudad"
                                 onChange={handleChange}
-                                value={formData.municipioDomicilio}
+                                value={formData.Ciudad}
                                 required
                             >
                                 <option value="">Seleccione una ciudad</option>
@@ -418,7 +426,7 @@ const Trabaja = () => {
                                 <option value="Rionegro">Rionegro</option>
                                 <option value="Retiro">Retiro</option>
                             </select>
-                            {errors.municipioDomicilio && <p className="error-message">{errors.municipioDomicilio}</p>}
+                            {errors.Ciudad && <p className="error-message">{errors.Ciudad}</p>}
                         </div>
 
                         {/* Zona de Residencia */}
@@ -560,8 +568,8 @@ const Trabaja = () => {
                         </div>
 
 
-                        <button type="submit" className="submit-button">
-                            Enviar Solicitud
+                        <button type="submit"  className="submit-button">
+                        Enviar Solicitud
                         </button>
                     </form>
                 </div>
@@ -570,5 +578,6 @@ const Trabaja = () => {
         </div>
     );
 };
+
 
 export { Trabaja };
