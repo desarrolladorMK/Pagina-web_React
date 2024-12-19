@@ -1,19 +1,22 @@
 .vacantes-container img {
     width: 100%;
-    max-width: 300px;
+    max-width: 400px; /* Aumentar el tamaño de las imágenes */
+    border-radius: 10px;
+    margin: 0; /* Elimina márgenes extra */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logo-container {
-    display: inline-block; /* Asegura que solo envuelva el contenido necesario */
+    display: inline-block;
     margin-bottom: 20px;
     text-align: center;
-    margin-top: 40px; /* Agrega un margen superior para separar el logo de la parte superior */
+    margin-top: 40px;
 }
 
 .logo-vacantes {
-    display: block;
+    display: inline-block; /* Solo la imagen será clickeable */
     max-width: 150px;
-    margin: 0 auto; /* Centra el logo si es necesario */
+    margin: 0 auto;
     box-shadow: 3px 3px 3px #210d65;
     border-radius: 5px;
 }
@@ -25,35 +28,44 @@
 }
 
 .vacantes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    display: flex; /* Usamos flexbox para un control más fino */
+    flex-wrap: wrap;
+    justify-content: center; /* Centra las tarjetas */
+    gap: 50px; /* Elimina el espacio entre las tarjetas */
     margin-top: 20px;
 }
 
 .vacante-card {
-    background: #ffffff;
-    border: 1px solid #ddd;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    margin: 0; /* Elimina márgenes extra de las tarjetas */
+}
+
+.vacante-card-img {
+    width: 100%; /* La imagen ocupará todo el ancho disponible */
+    max-width: 400px; /* Tamaño máximo de la imagen */
     border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.vacante-card:hover {
+.vacante-card:hover .vacante-card-img {
     transform: translateY(-5px);
-    box-shadow: 0 5px 10px #89dc00;
+    box-shadow: 0 10px 10px #89dc00;
 }
 
-.vacante-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.vacante-card p {
-    margin-bottom: 10px;
-    color: #555;
-    line-height: 1.5;
+.vacante-footer {
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra el botón */
 }
 
 .btn-aplicar {
@@ -64,6 +76,7 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    text-decoration: none;
 }
 
 .btn-aplicar:hover {
@@ -72,7 +85,6 @@
 
 .aplicar-color {
     color: white;
-    text-decoration: none;
 }
 
 .titulo-vacantes {
