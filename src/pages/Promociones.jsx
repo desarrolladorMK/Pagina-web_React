@@ -22,20 +22,20 @@ const Promociones = () => {
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
           <img src="/promo1.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('assets/imagenes/promo2.jpg')}>
-          <img src="assets/imagenes/promo2.jpg" alt="Promo 2" />
+        <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
+          <img src="/promo1.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('assets/imagenes/promo3.jpg')}>
-          <img src="assets/imagenes/promo3.jpg" alt="Promo 3" />
+        <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
+          <img src="/promo1.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('assets/imagenes/promo4.jpg')}>
-          <img src="assets/imagenes/promo4.jpg" alt="Promo 4" />
+        <div className="ofertas" onClick={() => openModal('/promo41jpg')}>
+          <img src="/promo1.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('assets/imagenes/promo5.jpg')}>
-          <img src="assets/imagenes/promo5.jpg" alt="Promo 5" />
+        <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
+          <img src="/promo.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('assets/imagenes/promo6.jpg')}>
-          <img src="assets/imagenes/promo6.jpg" alt="Promo 6" />
+        <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
+          <img src="/promo.jpg" alt="Promo 1" />
         </div>
       </div>
 
