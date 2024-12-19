@@ -1,26 +1,21 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import pkg from 'pg';
 import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
 const app = express();
 
-// Configuración de Multer para almacenamiento de archivos
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `${Date.now()}-${file.fieldname}${ext}`);
-    },
-});
+// Inicializar Supabase
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+
+// Configuración de Multer para solo usar memoria
+const storage = multer.memoryStorage(); // Usamos memoryStorage para mantener el archivo solo en la memoria
 const upload = multer({
     storage,
     limits: { fileSize: 600 * 1024 }, // Limita el tamaño a 600KB
@@ -32,6 +27,7 @@ const upload = multer({
         }
     },
 });
+
 
 // Conexión a la base de datos
 const { Pool } = pkg;
@@ -54,6 +50,14 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Función para normalizar el nombre del archivo
+function normalizeFileName(fileName) {
+    return fileName
+        .normalize("NFD") // Descompone los caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
+        .replace(/[^a-zA-Z0-9._-]/g, "_"); // Reemplaza caracteres no válidos por "_"
+}
+
 // Ruta POST para recibir datos del formulario
 app.post('/enviar', upload.single('hojaVida'), async (req, res) => {
     try {
@@ -70,10 +74,24 @@ app.post('/enviar', upload.single('hojaVida'), async (req, res) => {
             return res.status(400).json({ success: false, message: "La hoja de vida es obligatoria." });
         }
 
-        // Validación de campos requeridos
-        if (!fechaPostulacion || !nombreApellido || !nivelEducativo || !telefono || !tipoDocumento || !numeroDocumento) {
-            return res.status(400).json({ success: false, message: "Por favor complete todos los campos requeridos." });
+        // Generar un nombre seguro y normalizado para el archivo
+        const safeFileName = normalizeFileName(hojaVidaFile.originalname);
+        const filePath = `hojas-vida/${Date.now()}-${safeFileName}`;
+
+        // Subir el archivo PDF a Supabase
+        const { data, error } = await supabase.storage
+            .from('hojas-vida') // Reemplaza con el nombre de tu bucket
+            .upload(filePath, hojaVidaFile.buffer, {
+                contentType: hojaVidaFile.mimetype,
+            });
+
+        if (error) {
+            console.error("Error al subir el archivo a Supabase: ", error.message);
+            return res.status(500).json({ success: false, message: "Error al subir el archivo." });
         }
+
+        // URL pública del archivo
+        const hojaVidaURL = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.path}`;
 
         // Consulta para insertar en la base de datos
         const query = `
@@ -101,7 +119,7 @@ app.post('/enviar', upload.single('hojaVida'), async (req, res) => {
             tipoDocumento,
             numeroDocumento,
             recomendado,
-            hojaVidaFile.path,
+            hojaVidaURL, // Guardar la URL del archivo en la base de datos
         ]);
 
         // Respuesta al cliente
@@ -123,7 +141,7 @@ app.post('/enviar', upload.single('hojaVida'), async (req, res) => {
                 tipoDocumento,
                 numeroDocumento,
                 recomendado,
-                hojaVida: hojaVidaFile.path,
+                hojaVida: hojaVidaURL,
             },
         });
     } catch (err) {
