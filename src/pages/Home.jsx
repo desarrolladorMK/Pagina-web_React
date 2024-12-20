@@ -56,7 +56,7 @@ const Home = () => {
 
   return (
   
-    <div>
+    <div className="Home-body">
       <Header />
       {/* Carrusel */}
       <div className="carousel">
@@ -237,13 +237,13 @@ const Home = () => {
             <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%23+11-18" target="_blank">
               <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
             </a>
-            Dirección: Carrera 56 # 43 - 159
+            Dirección:  Carrera 14 # 11-18
           </p>
           <p>
             <a href="https://wa.me/573006828595" target="_blank">
               <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
             </a>
-            Teléfono:   3243638526
+            Teléfono:   3006828595
           </p>
         </section>
 

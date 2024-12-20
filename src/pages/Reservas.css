@@ -1,0 +1,196 @@
+.body-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #ffffff;
+    overflow: hidden;
+    padding: 10px; /* Espacio en dispositivos pequeños */
+  }
+  
+  .logo-containermk {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .logo-containermk img {
+    width: 300px; /* Tamaño ligeramente reducido */
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
+  }
+  
+  .grad {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #89DC00, #210D65);
+    z-index: -1;
+  }
+  
+  .login-box {
+    position: relative;
+    width: 100%;
+    max-width: 350px; /* Tamaño máximo reducido */
+    padding: 30px; /* Menor relleno */
+    background: #210D65;
+    box-sizing: border-box;
+    box-shadow: 8px 20px 20px #150644; /* Sombra más sutil */
+    border-radius: 12px; /* Bordes redondeados */
+    transform: translateY(-5%);
+    margin-top: 80px; /* Más compacto */
+  }
+  
+  .login-box h2 {
+    margin: 0 0 20px; /* Espaciado ajustado */
+    color: #fff;
+    text-align: center;
+    font-size: 1.8rem; /* Tamaño reducido */
+  }
+  
+  .login-box .user-box {
+    position: relative;
+    margin-top: 10px; /* Aumenta el margen superior para acercar los campos */
+  }
+
+  .login-box .user-box input {
+    width: 100%;
+    padding: 12px 5px; /* Menor espacio interno */
+    font-size: 1rem; /* Tamaño más pequeño */
+    color: #fff;
+    margin-bottom: 20px; /* Menor separación */
+    border: none;
+    border-bottom: 2px solid #fff;
+    outline: none;
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 1rem; /* Tamaño reducido */
+    color: #fff;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+
+  .login-box .user-box input:focus ~ label,
+  .login-box .user-box input:valid ~ label {
+    top: -27px;
+    left: 0;
+    color: #89DC00;
+    font-size: 0.8rem;
+  }
+
+  
+  .login-box form button {
+    width: 100%;
+    padding: 12px; /* Botón más pequeño */
+    background-color: #89DC00;
+    color: #000000;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px; /* Redondeado más pequeño */
+    font-family: "Roboto", sans-serif;
+    font-size: 1rem; /* Texto más compacto */
+    font-weight: 500;
+    margin-top: 12px; /* Menor espacio superior */
+    transition: opacity 0.3s;
+  }
+  
+  .login-box form button:hover {
+    opacity: 0.8;
+  }
+  
+  .login-box form button:active {
+    opacity: 0.6;
+  }
+  
+  .login-box .user-box input:focus,
+  .login-box form button:focus {
+    outline: none;
+    border: 1px solid #89DC00;
+    border-radius: 5px;
+    box-shadow: 0 3px 3px #89DC00;
+  }
+  
+  /* Media Queries para Responsividad */
+  @media (max-width: 1024px) {
+    .login-box {
+      padding: 25px; /* Menor relleno */
+      margin-top: 50px; /* Más compacto */
+    }
+  
+    .login-box h2 {
+      font-size: 1.6rem;
+    }
+  
+    .login-box .user-box input {
+      font-size: 0.85rem;
+      padding: 10px 6px; /* Ajuste para pantallas medianas */
+    }
+  
+    .login-box form button {
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .body-login {
+      padding: 15px;
+    }
+  
+    .login-box {
+      padding: 20px;
+    }
+  
+    .login-box h2 {
+      font-size: 1.4rem;
+    }
+  
+    .login-box .user-box input {
+      font-size: 0.8rem;
+      padding: 10px 5px;
+    }
+  
+    .login-box form button {
+      font-size: 0.85rem;
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .logo-containermk img {
+      width: 180px; /* Más pequeño en pantallas pequeñas */
+    }
+  
+    .login-box {
+      width: 95%; /* Ocupa más del ancho disponible */
+      padding: 15px;
+    }
+  
+    .login-box h2 {
+      font-size: 1.2rem;
+    }
+  
+    .login-box .user-box input {
+      font-size: 0.75rem;
+      padding: 8px 5px;
+    }
+  
+    .login-box form button {
+      font-size: 0.8rem;
+      padding: 8px;
+    }
+  }
+  

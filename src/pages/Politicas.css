@@ -1,4 +1,5 @@
-body {
+/* Estilos generales para el cuerpo de las políticas */
+.politicas-body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: #333;
@@ -6,20 +7,42 @@ body {
     margin: 0;
     padding: 0;
 }
-.container {
-    max-width: 800px;
+
+/* Contenedor principal */
+.container-politicas {
+    max-width: 800px; /* Asegura que ocupe todo el ancho disponible */
     margin: 0 auto;
     padding: 20px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-h1, h2, h3, h4 {
+
+.container-politicas img {
+    flex-shrink: 0;
+    /* Evita que la imagen se redimensione */
+    width: 150px;
+    /* Tamaño fijo de la imagen */
+    height: auto;
+    /* Mantén la proporción */
+    border-radius: 8px;
+    margin-top: 10px;
+    /* Separación superior */
+}
+
+/* Títulos */
+.politicas-h2, h1, h3, h4 {
     color: #333;
+    font-size: 1.5em; /* Escalado adecuado */
 }
-p {
+
+.p-politicas {
     margin: 0 0 1em;
+    font-size: 1em; /* Tamaño de texto legible en móviles */
+    text-align: justify; /* Mejor lectura para párrafos largos */
 }
+
+/* Listas */
 ul {
     margin: 0;
     padding-left: 20px;
@@ -27,7 +50,78 @@ ul {
 ul li {
     margin-bottom: 0.5em;
 }
+
+/* Enlaces */
 a {
     color: #1a73e8;
     text-decoration: none;
+    word-wrap: break-word; /* Evita desbordamientos en URLs largas */
+}
+
+/* Media Queries para diferentes dispositivos */
+@media (max-width: 1024px) {
+    .container-politicas {
+        padding: 15px;
+        box-shadow: none;
+    }
+
+    .politicas-h2, h1, h3, h4 {
+        font-size: 1.2em;
+    }
+
+    .p-politicas {
+        font-size: 0.9em;
+    }
+
+    ul li {
+        margin-bottom: 0.4em;
+    }
+
+    .container-politicas img {
+        max-width: 90%; /* Reduce el tamaño de la imagen en tabletas */
+    }
+}
+
+@media (max-width: 768px) {
+    .container-politicas {
+        padding: 10px;
+    }
+
+    .politicas-h2, h1, h3, h4 {
+        font-size: 1.1em;
+    }
+
+    .p-politicas {
+        font-size: 0.85em;
+    }
+
+    ul li {
+        margin-bottom: 0.3em;
+    }
+
+    .container-politicas img {
+        max-width: 100%; /* Asegura que la imagen ocupe todo el ancho */
+    }
+}
+
+@media (max-width: 480px) {
+    .container-politicas  {
+        padding: 5px;
+    }
+
+    .politicas-h2, h1, h3, h4 {
+        font-size: 0.9em;
+    }
+
+    .p-politicas {
+        font-size: 0.75em;
+    }
+
+    ul li {
+        margin-bottom: 0.25em;
+    }
+
+    .container-politicas  img {
+        max-width: 100%; /* Asegura que la imagen ocupe todo el ancho */
+    }
 }

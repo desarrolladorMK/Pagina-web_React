@@ -49,10 +49,15 @@ const Contribucion = () => {
   ];
 
   return (
+    
     <div className="contribucion-body">
+   
       <header className="contribucion-header">
+        <div className="logo-container">
+          <a href="/"><img src="logoMK.png" alt="" /></a>
+        </div>
         <h1>Contribución Merkahorro</h1>
-      </header>
+      </header> 
       <main>
         {sections.map((section, index) => (
           <section key={index} className="contribucion-section">

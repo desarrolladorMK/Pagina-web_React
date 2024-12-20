@@ -15,9 +15,9 @@ const Header = () => {
 
     return (
         <header>
-            <nav className="navbar">
-                <div className="container-navbar">
-                    <a href="#" className="logo">
+            <nav className="navbar-header">
+                <div className="container-navbar-header">
+                    <a href="#" className="logo-header">
                         <img src="/logoMK.png" alt="Logo de Merkahorro" />
                     </a>
                     {/* Botón de menú para dispositivos móviles */}
