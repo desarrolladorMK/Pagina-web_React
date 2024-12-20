@@ -61,7 +61,7 @@
 
 .vacante-card:hover .vacante-card-img {
     transform: translateY(-5px);
-    box-shadow: 0 10px 10px #89dc00;
+    box-shadow: 0 10px 10px #626460;
 }
 
 .vacante-footer {
