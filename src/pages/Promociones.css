@@ -14,6 +14,19 @@ body {
   margin: 0 auto;
 }
 
+.img-logo {
+  position: absolute; /* Cambiado de absolute a fixed */
+  top: 10px;
+  left: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  width: 10%;
+  max-width: 150px; /* Reduce el tamaño máximo del logo para pantallas pequeñas */
+  height: auto;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
 .ofertas {
   border-radius: 10px;
   overflow: hidden;
@@ -21,7 +34,7 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   margin-bottom: 16px;
-  cursor: pointer; /* Cambia el cursor para indicar que es clickeable */
+  cursor: pointer;
 }
 
 .ofertas img {
@@ -86,4 +99,42 @@ body {
   color: #bbb;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Mejoras responsivas */
+@media (max-width: 768px) {
+  .img-logo {
+    width: 15%; /* Escala el logo en pantallas pequeñas */
+    max-width: 100px;
+  }
+
+  .titulo-ofertas {
+    font-size: 1.5em; /* Reduce el tamaño del texto */
+    margin: 10px 0;
+  }
+
+  .container-ofertas {
+    padding: 10px;
+    gap: 12px; /* Reduce el espacio entre tarjetas */
+  }
+
+  .ofertas {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .img-logo {
+    top: 5px;
+    left: 5px;
+    width: 20%; /* Escala adicional para dispositivos muy pequeños */
+  }
+
+  .titulo-ofertas {
+    font-size: 1rem; /* Aún más pequeño */
+  }
+
+  .container-ofertas {
+    grid-template-columns: 1fr; /* Una sola columna */
+  }
 }

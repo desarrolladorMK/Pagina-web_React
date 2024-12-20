@@ -79,9 +79,7 @@ transform: scale(1.2);
   height: 10px;
 }
 
-.slide img {
-  border-radius: 8px;
-}
+
 }
 
 /* Media Query para pantallas de 480px o menos */
@@ -111,19 +109,25 @@ transform: scale(1.2);
 }
 
 /* Asegura que el contenedor del carrusel ocupe todo el ancho de la pantalla */
-.carousel{
+
+/* Estilos del carrusel */
+.carousel {
   position: relative;
-  width: 110%;
-  max-width: 110%;
-  margin: auto;
+  width: 90%; /* Asegura que el carrusel ocupe el 100% del ancho disponible */
+  max-width: 90%; /* No debe superar el 100% del ancho de la página */
+  margin: auto; /* Centra el carrusel */
   overflow: hidden;
-  border-radius: 10px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   height: auto; /* Se adapta automáticamente al contenido */
   transition: all 0.3s ease;
-  
-  
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    width: 100%;
+    max-width: 100%; /* Asegura que en pantallas pequeñas tampoco sobrepase */
+  }
 }
 }
 
@@ -437,7 +441,7 @@ top: 7rem;
 
 @media (max-width: 480px) {
 .tarjeta {
-  width: 100%; /* Tarjetas de ancho completo en móviles */
+  width: 90%; /* Tarjetas de ancho completo en móviles */
   margin-bottom: 15px;
 }
 

@@ -1,82 +1,136 @@
 @keyframes contribucionGradientAnimation {
-    0% { background-color: #210D65; }
-    50% { background-color: #89DC00; }
-    100% { background-color: #210D65; }
-  }
-  
-  .contribucion-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    animation: contribucionGradientAnimation 8s ease infinite;
-  }
-  
-  /* Título principal */
+  0% { background-color: #210D65; }
+  50% { background-color: #89DC00; }
+  100% { background-color: #210D65; }
+}
+
+.contribucion-body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  animation: contribucionGradientAnimation 8s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título principal */
+.contribucion-header  {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #210D65;
+  color: #ffffff;
+  width: 100%;
+  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+.contribucion-header h1 {
+  color: #ffffff;
+}
+
+/* Contenedor para el logo */
+.logo-container {
+  position: relative;
+  width: 100%; /* Mantiene el logo centrado horizontalmente */
+  display: flex;
+  justify-content: center; /* Centra el logo horizontalmente */
+}
+
+.logo-container img {
+  position: relative;
+  top: -20px; /* Asegura que el logo esté arriba del título */
+  border-radius: 8px;
+  width: 20%; /* Tamaño más grande para el logo en todas las pantallas */
+  max-width: 250px; /* Máximo tamaño del logo ajustado */
+  height: auto;
+  z-index: 100;
+}
+
+/* Títulos de secciones */
+.contribucion-section h2 {
+  text-align: center;
+  margin: 20px 10px;
+  color: rgb(255, 244, 244);
+  font-size: 1.8em;
+}
+
+/* Contenedor de videos */
+.contribucion-video-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+/* Estilos para los videos */
+.contribucion-video-container video {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.contribucion-video-container video:hover {
+  transform: scale(1.05);
+}
+
+/* Media Queries para adaptarse a diferentes tamaños de pantalla */
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 600px) {
   .contribucion-header h1 {
-    text-align: center;
-    padding: 20px;
-    background-color: #210D65;
-    color: #ffffff;
-    margin: 0;
-    margin-bottom: 100px;
+    font-size: 1.5em;
+    padding: 15px;
   }
-  
-  /* Títulos de secciones */
-  .contribucion-section h2 {
-    text-align: center;
-    margin: 20px 0;
-    color: rgb(255, 244, 244);
-    font-size: 2em;
+
+  .logo-container img {
+    width: 100%; /* Más grande para móviles */
+    max-width: 200px; /* Tamaño máximo para móviles */
   }
-  
-  /* Contenedor de videos */
+
   .contribucion-video-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px; /* Añade espacio entre los videos */
-    padding: 20px;
-    margin-bottom: 40px;
+    gap: 20px;
   }
-  
-  /* Estilos para los videos */
+
   .contribucion-video-container video {
-    width: 100%;
-    max-width: 300px; /* Limita el tamaño máximo de los videos */
-    height: auto;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
+    width: 95%; /* Ocupará casi todo el ancho */
+    margin-bottom: 15px; /* Espaciado adicional */
   }
-  
-  .contribucion-video-container video:hover {
-    transform: scale(1.05);
+}
+
+/* Pantallas medianas (tabletas) */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .contribucion-video-container video {
+    width: 45%;
   }
-  
-  /* Media Queries para adaptarse a diferentes tamaños de pantalla */
-  
-  /* Pantallas pequeñas (móviles) */
-  @media (max-width: 600px) {
-    .contribucion-video-container {
-      gap: 25px; /* Espacio más pequeño entre los videos */
-    }
-  
-    .contribucion-video-container video {
-      width: 90%; /* Los videos ocuparán casi todo el ancho en pantallas pequeñas */
-      max-width: none; /* Quita el límite de tamaño máximo */
-    }
+
+  .contribucion-header h1 {
+    font-size: 1.8em;
   }
-  
-  /* Pantallas medianas (tabletas) */
-  @media (min-width: 600px) and (max-width: 1024px) {
-    .contribucion-video-container video {
-      width: 45%; /* Ajusta el tamaño de los videos para tabletas */
-    }
+
+  .logo-container img {
+    width: 25%; /* Más grande para tabletas */
   }
-  
-  /* Pantallas grandes (escritorio) */
-  @media (min-width: 1025px) {
-    .contribucion-video-container video {
-      width: 20%; /* Ajusta el tamaño de los videos para pantallas grandes */
-    }
+}
+
+/* Pantallas grandes (escritorio) */
+@media (min-width: 1025px) {
+  .contribucion-video-container video {
+    width: 23%;
   }
-  
+
+  .contribucion-header h1 {
+    font-size: 2.2em;
+  }
+
+  .logo-container img {
+    margin-left: auto; /* Mueve el logo a la derecha */
+    width: 30%; /* Tamaño más grande para escritorio */
+  }
+}

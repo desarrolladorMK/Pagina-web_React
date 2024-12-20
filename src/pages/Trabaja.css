@@ -1,18 +1,19 @@
-body {
+
+.trabaja-body {
     font-family: "Roboto", sans-serif;
     background-color: white;
     position: relative;
   }
   
-  .logo {
-    max-width: 500px;
+  .container-trabaja img {
+    width: 300px;
     margin: 20px auto;
     display: block;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   
-  .container {
+  .container-trabaja {
     max-width: 921px;
     margin: 20px auto;
     padding: 30px;
@@ -24,10 +25,10 @@ body {
   
 
   
-  .header {
+  .header-trabaja {
     background-color: #210D65; 
     color: white;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     position: sticky;
     top: 0;
@@ -36,7 +37,7 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.header h1 {
+.header-trabaja h1 {
     margin: 0;
     font-size: 2.5em;
     color: white;
@@ -90,19 +91,19 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.form-group {
+.form-group, label {
     margin-bottom: 25px; 
 }
 
 .form-group input[type="checkbox"] {
-    accent-color: #89DC00; /* Cambia el color del checkbox */
-    width: 20px;
-    height: 20px;
+    accent-color: #89DC00;
+    width: 26px;
+    height: 19px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 15px;
     position: relative;
-    top: 2.5rem;
-    left: -0.5rem;
+    top: 0.2rem;
+    left: 0.6rem;
 }
 
 #terminos-condiciones {
@@ -113,14 +114,21 @@ body {
     position: relative;
 }
 
-label {
+.terminos-{
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1b1a1a;
+    display: flexbox;
+}
+
+.label-trabaja {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #333;
+    color: #1b1a1a;
 }
 
-input[type="text"], input[type="date"], select, input[type="file"] {
+input[type="text"], input[type="date"], select, input[type="file"], input[type="tel"] {
     width: 100%;
     padding: 15px;
     border: 1px solid #ddd;
@@ -128,8 +136,9 @@ input[type="text"], input[type="date"], select, input[type="file"] {
     box-sizing: border-box;
     font-size: 1.1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: #f9f9f9; 
+    background-color: #f9f9f9;
 }
+
 
 input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-color: #89DC00; 
@@ -161,10 +170,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .header h1 {
+    .header-trabaja h1 {
         font-size: 2em;
     }
-    .container {
+    .container-trabaja {
         padding: 20px;
         margin: 10px; /* Reduce el margen en pantallas más pequeñas */
     }
@@ -185,7 +194,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 @media (max-width: 480px) {
-    .container {
+    .container-trabaja {
         padding: 15px;
         margin: 5px; /* Reduce aún más el margen para pantallas pequeñas */
     }
@@ -208,7 +217,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         padding: 10px;
         font-size: 1em;
     }
-    .header h1 {
+    .header-trabaja h1 {
         font-size: 1.8em; /* Reducción adicional del tamaño del texto en pantallas muy pequeñas */
     }
     .intro h2, .benefits h3 {
@@ -219,3 +228,13 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     }
 }
   
+
+.error-message {
+    color: red !important;
+}
+
+
+.alert {
+    color: red !important;
+    
+}
