@@ -8,7 +8,6 @@
 
 .logo-container {
     display: inline-block;
-    margin-bottom: 20px;
     text-align: center;
     margin-top: 40px;
 }
@@ -17,14 +16,18 @@
     display: inline-block; /* Solo la imagen será clickeable */
     max-width: 150px;
     margin: 0 auto;
-    box-shadow: 3px 3px 3px #210d65;
-    border-radius: 5px;
+    border-radius: 5px;    
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-vacantes:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 20px #89dc00;
 }
 
 .vacantes-container {
     text-align: center;
     padding: 20px;
-    background-color: #f8f9fa;
 }
 
 .vacantes-grid {
@@ -76,11 +79,13 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    text-decoration: none;
+    text-decoration: none; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-aplicar:hover {
     background-color: #89dc00;
+    transform: translateY(-3px);
 }
 
 .aplicar-color {
