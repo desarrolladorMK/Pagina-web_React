@@ -21,7 +21,7 @@ body, html {
 .footer {
     width: 100%;
     padding: 20px;
-    background-color: #0a0401; /* Verde brillante */
+    background-color: #e619e6; /* Verde brillante */
     color: #ffffff;
     display: flex;
     flex-direction: column;
