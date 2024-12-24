@@ -557,7 +557,7 @@ const Trabaja = () => {
 
 
                         {/* Captcha */}
-                        <div className="form-group recaptcha-container">
+                       {/*  <div className="form-group recaptcha-container">
                             <ReCAPTCHA
                                 sitekey="6LejBUEqAAAAAMY0KFh7KCN9TTH2kJYNV3i8VJbm"
                                 onChange={handleCaptchaChange}
@@ -565,7 +565,7 @@ const Trabaja = () => {
                             {errors.captcha && (
                                 <p className="error-message">{errors.captcha}</p>
                             )}
-                        </div>
+                        </div> */}
 
 
                         <button type="submit"  className="submit-button">
