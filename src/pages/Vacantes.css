@@ -1,0 +1,101 @@
+.vacantes-container img {
+    width: 100%;
+    max-width: 400px; /* Aumentar el tamaño de las imágenes */
+    border-radius: 10px;
+    margin: 0; /* Elimina márgenes extra */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-container {
+    display: inline-block;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.logo-vacantes {
+    display: inline-block; /* Solo la imagen será clickeable */
+    max-width: 150px;
+    margin: 0 auto;
+    border-radius: 5px;    
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-vacantes:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 20px #89dc00;
+}
+
+.vacantes-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.vacantes-grid {
+    display: flex; /* Usamos flexbox para un control más fino */
+    flex-wrap: wrap;
+    justify-content: center; /* Centra las tarjetas */
+    gap: 50px; /* Elimina el espacio entre las tarjetas */
+    margin-top: 20px;
+}
+
+.vacante-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    margin: 0; /* Elimina márgenes extra de las tarjetas */
+}
+
+.vacante-card-img {
+    width: 100%; /* La imagen ocupará todo el ancho disponible */
+    max-width: 400px; /* Tamaño máximo de la imagen */
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vacante-card:hover .vacante-card-img {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 10px #919989;
+}
+
+.vacante-footer {
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra el botón */
+}
+
+.btn-aplicar {
+    background-color: #210d65;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-aplicar:hover {
+    background-color: #89dc00;
+    transform: translateY(-3px);
+}
+
+.aplicar-color {
+    color: white;
+}
+
+.titulo-vacantes {
+    color: #210d65;
+    font-size: 2em;
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 15px;
+}

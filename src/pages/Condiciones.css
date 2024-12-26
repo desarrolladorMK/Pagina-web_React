@@ -1,0 +1,79 @@
+.condiciones-body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 10px;
+    padding: 18px;
+    background-color: #f9f9f9;
+    margin-top: 2px;
+    border-radius: 9px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.condiciones-h2 {
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.terminos img {
+    flex-shrink: 0;
+    /* Evita que la imagen se redimensione */
+    width: 150px;
+    /* Tamaño fijo de la imagen */
+    height: auto;
+    /* Mantén la proporción */
+    border-radius: 8px;
+    margin-top: 10px;
+    /* Separación superior */
+}
+
+.p-condicciones {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    word-wrap: break-word;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .condiciones-body {
+        flex-direction: column;
+        /* Coloca imagen y texto en columnas en pantallas pequeñas */
+        align-items: center;
+        /* Centra la imagen y el texto */
+    }
+
+    .terminos img {
+        margin-bottom: 15px;
+        /* Añade espacio entre la imagen y el texto */
+        width: 120px;
+        /* Reduce el tamaño de la imagen */
+    }
+
+    .p-politicas {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .condiciones-body {
+        margin: 5px;
+        padding: 10px;
+    }
+
+    .terminos img {
+        width: 150px;
+        /* Imagen más pequeña para móviles */
+    }
+
+    .p-politicas {
+        font-size: 0.9rem;
+    }
+}

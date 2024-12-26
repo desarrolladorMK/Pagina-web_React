@@ -1,0 +1,240 @@
+
+.trabaja-body {
+    font-family: "Roboto", sans-serif;
+    background-color: white;
+    position: relative;
+  }
+  
+  .container-trabaja img {
+    width: 300px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .container-trabaja {
+    max-width: 921px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    line-height: 1.6;
+  }
+  
+
+  
+  .header-trabaja {
+    background-color: #210D65; 
+    color: white;
+    padding: 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.header-trabaja h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: white;
+}
+
+.intro h2, .benefits h3 {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #210D65;
+    text-align: center;
+}
+
+.intro p, .benefits ul {
+    font-size: 1.2em;
+    color: #555;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.benefits ul li {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    padding-left: 30px;
+    position: relative;
+}
+
+.benefits ul li::before {
+    content: '✔';
+    color: #89DC00; 
+    font-size: 1.5em;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.benefits ul li:hover::before {
+    color: #210D65; /* Cambia el color al hacer hover */
+}
+
+.form-container {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-group, label {
+    margin-bottom: 25px; 
+}
+
+.form-group input[type="checkbox"] {
+    accent-color: #89DC00;
+    width: 26px;
+    height: 19px;
+    cursor: pointer;
+    margin-right: 15px;
+    position: relative;
+    top: 0.2rem;
+    left: 0.6rem;
+}
+
+#terminos-condiciones {
+    font-size: 1em;
+    color: black;
+    margin-top: 10px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.terminos-{
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1b1a1a;
+    display: flexbox;
+}
+
+.label-trabaja {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1b1a1a;
+}
+
+input[type="text"], input[type="date"], select, input[type="file"], input[type="tel"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+
+input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: #89DC00; 
+    outline: none;
+    box-shadow: 0 0 5px rgba(137, 220, 0, 0.5); 
+}
+
+.submit-button {
+    background-color: #89DC00;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #210D65;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.g-recaptcha {
+    margin-bottom: 20px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header-trabaja h1 {
+        font-size: 2em;
+    }
+    .container-trabaja {
+        padding: 20px;
+        margin: 10px; /* Reduce el margen en pantallas más pequeñas */
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .submit-button {
+        font-size: 1.1em;
+    }
+    .logo{
+        max-width: 100%; /* Asegura que la imagen no se salga del contenedor */
+        height: auto; /* Mantiene la relación de aspecto de la imagen */
+        margin: 0 auto; /* Centra la imagen horizontalmente */
+        display: block; /* Asegura que la imagen se comporte como un bloque */
+        border-radius: 10px; /* Mantiene los bordes redondeados */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+    }
+}
+
+@media (max-width: 480px) {
+    .container-trabaja {
+        padding: 15px;
+        margin: 5px; /* Reduce aún más el margen para pantallas pequeñas */
+    }
+    .logo {
+        max-width: 100%; /* Asegura que la imagen no se salga del contenedor */
+        height: auto; /* Mantiene la relación de aspecto de la imagen */
+        margin: 0 auto; /* Centra la imagen horizontalmente */
+        display: block; /* Asegura que la imagen se comporte como un bloque */
+        border-radius: 10px; /* Mantiene los bordes redondeados */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+    }
+    .g-recaptcha {
+        margin-bottom: 20px; /* Espaciado debajo del captcha */
+        max-width: 100%; /* Limita el ancho del captcha al contenedor */
+        box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+        display: flex; /* Permite centrar el captcha en su contenedor */
+        justify-content: center; /* Centra horizontalmente el captcha */
+    }
+    input[type="text"], input[type="date"], select, input[type="file"] {
+        padding: 10px;
+        font-size: 1em;
+    }
+    .header-trabaja h1 {
+        font-size: 1.8em; /* Reducción adicional del tamaño del texto en pantallas muy pequeñas */
+    }
+    .intro h2, .benefits h3 {
+        font-size: 1.8em; /* Tamaño de texto reducido para títulos */
+    }
+    .intro p, .benefits ul {
+        font-size: 1em; /* Tamaño de texto reducido para párrafos */
+    }
+}
+  
+
+.error-message {
+    color: red !important;
+}
+
+
+.alert {
+    color: red !important;
+    
+}
