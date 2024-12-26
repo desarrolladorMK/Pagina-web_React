@@ -17,6 +17,16 @@ html {
 
 /* Estilos del pie de página */
 .footer {
+
+    width: 100%;
+    padding: 20px;
+    background-color: #89DC00; /* Verde brillante */
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto; /* Empuja el footer hacia el fondo */
+
   width: 100%;
   padding: 20px;
   background-color: #e619e6; /* Verde brillante */
@@ -25,6 +35,7 @@ html {
   flex-direction: column;
   align-items: center;
   margin-top: auto; /* Empuja el footer hacia el fondo */
+
 }
 
 .contact-info {
