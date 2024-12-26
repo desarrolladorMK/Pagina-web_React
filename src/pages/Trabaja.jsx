@@ -133,13 +133,13 @@ const Trabaja = () => {
                     delete nuevosErrores.recomendado;
                 }
                 break;
-            case "captcha":
+            /* case "captcha":
                 if (!value) {
                     nuevosErrores.captcha = "Por favor, complete el reCAPTCHA.";
                 } else {
                     delete nuevosErrores.captcha;
                 }
-                break;
+                break; */
             default:
                 break;
         }
@@ -150,7 +150,7 @@ const Trabaja = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!captchaValido) {
+      /*   if (!captchaValido) {
             MySwal.fire({
                 title: "Error",
                 text: "Por favor, complete el reCAPTCHA.",
@@ -158,7 +158,7 @@ const Trabaja = () => {
                 confirmButtonText: "Aceptar",
             });
             return;
-        }
+        } */
 
         const nuevosErrores = {};
         Object.keys(formData).forEach((key) => validateField(key, formData[key]));
@@ -198,9 +198,9 @@ const Trabaja = () => {
                 });
 
                 // Verificar si recaptchaRef.current está disponible antes de llamar a reset
-                if (recaptchaRef.current) {
+               /*  if (recaptchaRef.current) {
                     recaptchaRef.current.reset();
-                } 
+                } */ 
 
                 setCaptchaValido(false);
                 setFormData({
