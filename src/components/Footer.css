@@ -1,24 +1,23 @@
-
-
 /* Asegúrate de que el body y html ocupen toda la altura disponible */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Contenedor principal que envuelve todo el contenido */
 .main-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;  /* Asegura que el contenido ocupe todo el espacio disponible */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Asegura que el contenido ocupe todo el espacio disponible */
 }
 
 /* Estilos del pie de página */
 .footer {
+
     width: 100%;
     padding: 20px;
     background-color: #89DC00; /* Verde brillante */
@@ -27,125 +26,130 @@ body, html {
     flex-direction: column;
     align-items: center;
     margin-top: auto; /* Empuja el footer hacia el fondo */
+
+  width: 100%;
+  padding: 20px;
+  background-color: #e619e6; /* Verde brillante */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto; /* Empuja el footer hacia el fondo */
+
 }
 
 .contact-info {
-    flex: 1;
-    min-width: 200px;
-    margin: 10px;
-    text-align: left;
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+  text-align: left;
 }
 
-.contact-info p{
-    align-items: center;
-    max-width: 200px;
+.contact-info p {
+  align-items: center;
+  max-width: 200px;
 }
-
-
-
 
 .footer-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .footer-content div {
-    flex: 1;
-    min-width: 200px;
-    margin: 10px;
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
 }
 
 .footer-content h3 {
-    margin-bottom: 10px;
-    color: #ffffff;
+  margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .footer-content p {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 .social-media img {
-    width: 40px;
-    margin: 0 5px;
+  width: 40px;
+  margin: 0 5px;
 }
 
 .quick-links ul {
-    padding: 0;
-    list-style: none;
+  padding: 0;
+  list-style: none;
 }
 
 .quick-links li {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .quick-links a {
-    color: #ffffff;
-    text-decoration: none;
-    transition: color 0.3s;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
 .quick-links a:hover {
-    color: black;
+  color: black;
 }
 
 .developer-info {
-    text-align: left;
+  text-align: left;
 }
 
 .developer-info p {
-    margin: 5px 0;
-    font-size: 16px;
-    font-weight: bold;
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .derechos {
-    color: #ffffff;
-    text-align: center;
-    margin-top: 20px;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 20px;
 }
 
 /* Media Queries para dispositivos móviles */
 @media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-    .footer-content div {
-        margin: 10px 0;
-    }
+  .footer-content div {
+    margin: 10px 0;
+  }
 }
 
 .social-media {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .social-media h3 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .social-media-icons {
-    display: flex; /* Alineación horizontal */
-    justify-content: center;
-    gap: 10px; /* Espaciado entre íconos */
+  display: flex; /* Alineación horizontal */
+  justify-content: center;
+  gap: 10px; /* Espaciado entre íconos */
 }
 
 .social-media img {
-    width: 37px;
-    margin: 0 5px;
+  width: 37px;
+  margin: 0 5px;
 }
 
 .social-media img:hover {
-    transform: scale(1.1); /* Pequeño zoom al pasar el cursor */
+  transform: scale(1.1); /* Pequeño zoom al pasar el cursor */
 }
-
-
