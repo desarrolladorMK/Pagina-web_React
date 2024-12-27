@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://construahorrosas.com/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -22,6 +23,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-google-recaptcha": "^3.1.0",
+    "react-player": "^2.16.0",
     "react-router-dom": "^7.0.2",
     "sweetalert2": "^11.15.2",
     "sweetalert2-react-content": "^5.0.7"
