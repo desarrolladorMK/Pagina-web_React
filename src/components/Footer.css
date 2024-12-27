@@ -20,7 +20,7 @@ html {
 
     width: 100%;
     padding: 20px;
-    background-color: hsl(290, 100%, 42%); /* Verde brillante */
+    background-color: hsl(290, 43%, 5%); /* Verde brillante */
     color: #ffffff;
     display: flex;
     flex-direction: column;
