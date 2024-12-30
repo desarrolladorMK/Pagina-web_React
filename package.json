@@ -6,9 +6,12 @@
   "homepage": "https://construahorrosas.com/",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audit:fix": "npm audit fix",
+    "audit:fix:force": "npm audit fix --force",
+    "deploy": "npm run build && cp -R dist/* /home/u971-avd1snjdtuxd/www/construahorrosas.com/public_html/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.9",
