@@ -6,12 +6,12 @@
   "homepage": "https://construahorrosas.com/",
   "scripts": {
     "dev": "vite",
-    "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "audit:fix": "npm audit fix",
     "audit:fix:force": "npm audit fix --force",
-    "deploy": "npm run build && cp -R dist/* /home/u971-avd1snjdtuxd/www/construahorrosas.com/public_html/"
+    "deploy": "npm run build && copyfiles dist/* /home/u971-avd1snjdtuxd/www/construahorrosas.com/public_html/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.9",
@@ -36,6 +36,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "cross-env": "^7.0.3",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
