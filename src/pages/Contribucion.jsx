@@ -7,8 +7,8 @@ const Contribucion = () => {
     {
       title: 'Obras Sociales',
       videos: [
-        'obras1.mp4',
-        'obras2.mp4',
+        'https://youtube.com/shorts/sz58ZOmlPD0',
+        'https://youtube.com/shorts/vkFFss9pUO8?feature=share',
         'obras3.mp4',
         'obras4.mp4',
       ],
@@ -48,24 +48,45 @@ const Contribucion = () => {
     },
   ];
 
+  const renderVideo = (video) => {
+    if (video.includes('youtube.com')) {
+      const videoId = video.split('/').pop(); // Extraer el ID del video
+      return (
+        <iframe
+          key={video}
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      );
+    } else {
+      return (
+        <video key={video} width="560" height="315" controls>
+          <source src={video} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+  };
+
   return (
-    
     <div className="contribucion-body">
-   
       <header className="contribucion-header">
         <div className="logo-container">
-          <a href="/"><img src="logoMK.png" alt="" /></a>
+          <a href="/">
+            <img src="logoMK.png" alt="" />
+          </a>
         </div>
         <h1>Contribución Merkahorro</h1>
-      </header> 
+      </header>
       <main>
         {sections.map((section, index) => (
           <section key={index} className="contribucion-section">
             <h2>{section.title}</h2>
             <div className="contribucion-video-container">
-              {section.videos.map((video, idx) => (
-                <video key={idx} src={video} controls></video>
-              ))}
+              {section.videos.map((video) => renderVideo(video))}
             </div>
           </section>
         ))}
