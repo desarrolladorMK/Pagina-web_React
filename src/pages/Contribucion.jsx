@@ -9,8 +9,8 @@ const Contribucion = () => {
       videos: [
         'https://youtube.com/shorts/sz58ZOmlPD0',
         'https://youtube.com/shorts/vkFFss9pUO8?feature=share',
-        'obras3.mp4',
-        'obras4.mp4',
+        'https://youtube.com/shorts/zdRT0aZXXDc?feature=share',
+        'https://youtube.com/shorts/MZiyMwtGJaY?feature=share',
       ],
     },
     {
@@ -54,6 +54,7 @@ const Contribucion = () => {
       return (
         <iframe
           key={video}
+          className="video-item youtube-video"
           src={`https://www.youtube.com/embed/${videoId}`}
           title="YouTube video player"
           frameBorder="0"
@@ -63,7 +64,7 @@ const Contribucion = () => {
       );
     } else {
       return (
-        <video key={video} width="560" height="315" controls>
+        <video key={video} className="video-item" controls>
           <source src={video} type="video/mp4" />
           Your browser does not support the video tag.
         </video>

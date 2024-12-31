@@ -16,7 +16,7 @@
 }
 
 /* Título principal */
-.contribucion-header  {
+.contribucion-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,16 +67,19 @@
   margin-bottom: 40px;
 }
 
-/* Estilos para los videos */
-.contribucion-video-container video {
+/* Estilos actualizados para videos locales */
+.contribucion-video-container video,
+.youtube-video {
   width: 100%;
-  max-width: 300px;
-  height: auto;
+  max-width: 300px; /* Máximo ancho para mantener consistencia */
+  height: 500px; /* Altura fija para mantener una proporción vertical */
   border-radius: 8px;
   transition: transform 0.3s ease;
+  object-fit: cover; /* Ajusta el contenido dentro del video */
 }
 
-.contribucion-video-container video:hover {
+.contribucion-video-container video:hover,
+.youtube-video:hover {
   transform: scale(1.05);
 }
 
@@ -98,16 +101,20 @@
     gap: 20px;
   }
 
-  .contribucion-video-container video {
-    width: 95%; /* Ocupará casi todo el ancho */
+  .contribucion-video-container video,
+  .youtube-video {
+    width: 100%; /* Ocupará casi todo el ancho */
+    height: 400px; /* Altura ajustada para pantallas más pequeñas */
     margin-bottom: 15px; /* Espaciado adicional */
   }
 }
 
 /* Pantallas medianas (tabletas) */
 @media (min-width: 600px) and (max-width: 1024px) {
-  .contribucion-video-container video {
+  .contribucion-video-container video,
+  .youtube-video {
     width: 45%;
+    height: 500px; /* Mantén la altura fija */
   }
 
   .contribucion-header h1 {
@@ -121,8 +128,10 @@
 
 /* Pantallas grandes (escritorio) */
 @media (min-width: 1025px) {
-  .contribucion-video-container video {
+  .contribucion-video-container video,
+  .youtube-video {
     width: 23%;
+    height: 500px; /* Altura fija para escritorio */
   }
 
   .contribucion-header h1 {
