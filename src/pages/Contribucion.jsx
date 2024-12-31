@@ -50,7 +50,7 @@ const Contribucion = () => {
 
   const renderVideo = (video) => {
     if (video.includes('youtube.com')) {
-      const videoId = video.split('/').pop(); // Extraer el ID del video
+      const videoId = video.split('/').pop().split('?')[0]; // Extraer el ID del video
       return (
         <iframe
           key={video}
@@ -77,7 +77,7 @@ const Contribucion = () => {
       <header className="contribucion-header">
         <div className="logo-container">
           <a href="/">
-            <img src="logoMK.png" alt="" />
+            <img src="logoMK.png" alt="Logo Merkahorro" />
           </a>
         </div>
         <h1>Contribución Merkahorro</h1>
