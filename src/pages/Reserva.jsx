@@ -100,6 +100,7 @@ function ReservaForm() {
         // Si el usuario confirma la reserva, la enviamos al servidor
         fetch("https://reservas-zer3.onrender.com/reservar", {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json",
           },
