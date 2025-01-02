@@ -3,25 +3,36 @@
 .Salones {
   padding: 40px 20px;
   text-align: center;
-  color: #fff;
+  color: #333; /* Texto gris oscuro */
   font-family: "Poppins", sans-serif;
   margin: 0;
-  background: linear-gradient(90deg, #210d65, #0077b6);
-  background-size: cover;
+  background: #d9dfe6; /* Fondo gris claro */
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .Salones h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 30px;
-  color: white;
+  color: #210d65; /* Azul pastel */
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
-
-.ingresar-login{
-    color: rgb(0, 0, 0);
+.ingresar-login {
+  color: #4a90e2; /* Azul pastel */
+  font-weight: bold;
+  text-decoration: underline;
 }
 
+.image-wrapper {
+  display: flex; /* Alinea las imágenes en fila */
+  flex-wrap: wrap; /* Permite que las imágenes se ajusten en varias filas si el espacio no es suficiente */
+  justify-content: center; /* Centra las imágenes horizontalmente */
+  gap: 15px; /* Espaciado entre las imágenes */
+}
 
 .image-container {
   display: inline-block;
@@ -29,103 +40,141 @@
   justify-content: center;
   width: 100%;
   max-width: 400px;
-  margin: 2px auto;
-  text-align: center;
-  transition: transform 0.3s ease;
   margin: 15px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #fff; /* Fondo blanco para resaltar imágenes */
+  border: 1px solid #ddd; /* Borde sutil */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
 }
 
 .image-container:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .Salones-image {
   width: 100%;
   height: 300px;
-  display: flex;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  display: block;
 }
 
 .image-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-top: 10px;
+  font-weight: 600;
+  color: #333; /* Texto en gris oscuro */
 }
 
 .reserve-link {
-    position: relative;
-    display: inline-block;
-    margin-top: 30px;
-    padding: 12px 24px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: black;
-    background-color: #fff;
-    border-radius: 8px;
-    text-decoration: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  display: inline-block;
+  margin-top: 30px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e0e0e0ea; /* Texto blanco */
+  background: #210d65; /* Verde acción */
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra más sutil */
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 }
 
 .reserve-link:hover {
-  background-color: #89dc00;
-  transform: translateY(-3px);
+  background: #89dc00; /* Verde más oscuro al pasar el mouse */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.floating-calendar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #1b3875e1; 
+  color: #fff; /* Texto blanco */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  z-index: 1000;
+}
+
+.floating-calendar:hover {
+  background: #210d65; /* Azul más oscuro al pasar el mouse */
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 1024px) {
   .Salones h1 {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
 
   .image-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 70%;
-    max-width: 450px;
+    width: 80%;
     margin: 20px auto;
     padding: 10px;
     text-align: center;
-    transition: transform 0.3s ease;
   }
 
   .Salones-image {
-    width: 100%;
     height: auto;
-    max-height: 322px;
+    max-height: 300px;
     object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
   }
 
   .reserve-link {
     font-size: 1.1rem;
-    margin-top: 15px;
+    padding: 12px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Salones h1 {
+    font-size: 2rem;
+  }
+
+  .image-container {
+    width: 90%;
+  }
+
+  .Salones-image {
+    max-height: 250px;
+  }
+
+  .reserve-link {
+    font-size: 1rem;
+    padding: 10px 20px;
   }
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 10px;
-  }
-
   .Salones h1 {
     font-size: 1.8rem;
   }
 
   .image-container {
-    width: 70%;
+    width: 100%;
     margin: 10px auto;
-    gap: 8px;
   }
 
   .Salones-image {
-    width: 134%;
     height: auto;
-    max-width: 300px;
-    object-fit: cover;
-    object-position: center;
+    max-width: 100%;
   }
 
   .reserve-link {
@@ -134,46 +183,31 @@
   }
 }
 
-@media (max-width: 768px) {
-  .calendar-container {
-    height: 60vh;
-    margin: 20px;
-  }
 
-  .rbc-event {
-    font-size: 12px;
-  }
-}
 
-@media (max-width: 480px) {
-  .calendar-container {
-    height: 50vh;
-    margin: 10px;
+.floating-calendar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #1b3875e1;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    z-index: 1000;
   }
-
-  .rbc-event {
-    font-size: 12px;
+  
+  .floating-calendar:hover {
+    background: #210d65;
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   }
-
-  .rbc-month-view {
-    padding: 0;
-  }
-
-  .rbc-day-slot {
-    font-size: 12px;
-  }
-
-  .rbc-toolbar button {
-    color: #373a3c;
-    display: inline-block;
-    margin: 0;
-    text-align: center;
-    vertical-align: middle;
-    background: none;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 3px;
-    line-height: normal;
-    white-space: nowrap;
-  }
-}
+  

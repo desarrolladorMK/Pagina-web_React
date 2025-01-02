@@ -3,9 +3,9 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import Swal from "sweetalert2";
-import "moment/locale/es"; // Importar idioma español
+import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "./Salones.css"; // Actualización del nombre del archivo CSS
+import "./Salones.css";
 import es from "date-fns/locale/es";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 
@@ -23,6 +23,21 @@ const localizer = dateFnsLocalizer({
 
 const Salones = () => {
   const [eventos, setEventos] = useState([]);
+  const [showCalendar, setShowCalendar] = useState(false); // Controla la visibilidad del calendario
+
+  const toggleCalendar = () => {
+    setShowCalendar(!showCalendar);
+
+    // Si se muestra el calendario, desplazarse a su posición
+    if (!showCalendar) {
+      setTimeout(() => {
+        const calendarElement = document.getElementById("calendario");
+        if (calendarElement) {
+          calendarElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 300);
+    }
+  };
 
   const consultarReservas = async (fecha) => {
     try {
@@ -87,69 +102,78 @@ const Salones = () => {
   return (
     <div className="Salones">
       <h1>Reserva tus espacios</h1>
-
-      <div className="image-container">
-        <img
-          src="/img2.jpeg"
-          alt="Imagen 2"
-          className="Salones-image"
-          loading="lazy"
-        />
-        <p className="image-title">Auditorio Principal</p>
+      <div className="image-wrapper">
+        <div className="image-container">
+          <img
+            src="/img2.jpeg"
+            alt="Imagen 2"
+            className="Salones-image"
+            loading="lazy"
+          />
+          <p className="image-title">Auditorio Principal</p>
+        </div>
+        <div className="image-container">
+          <img
+            src="/img1.jpeg"
+            alt="Imagen 1"
+            className="Salones-image"
+            loading="lazy"
+          />
+          <p className="image-title">Sala de Juntas</p>
+        </div>
       </div>
-      <div className="image-container">
-        <img
-          src="/img1.jpeg"
-          alt="Imagen 1"
-          className="Salones-image"
-          loading="lazy"
-        />
-        <p className="image-title">Sala de Juntas</p>
-      </div>
-
       <Link to="/reservas" className="reserve-link">
         Reserva aquí
       </Link>
 
-      <Calendar
-        localizer={localizer}
-        events={eventos}
-        startAccessor="start"
-        endAccessor="end"
-        culture="es"
-        className="calendar-container"
-        messages={{
-          next: "Siguiente",
-          previous: "Anterior",
-          today: "Hoy",
-          month: "Mes",
-          week: "Semana",
-          day: "Día",
-          agenda: "Agenda",
-          date: "Fecha",
-          time: "Hora",
-          event: "Evento",
-          noEventsInRange: "No hay eventos en este rango.",
-        }}
-        style={{
-          backgroundColor: "white",
-          color: "black",
-          height: 520,
-          margin: "50px",
-        }}
-        onSelectEvent={handleSelectEvent}
-        eventPropGetter={(event) => ({
-          style: {
-            backgroundColor:
-              event.salon === "Sala juntas reservas"
-                ? "blue"
-                : event.salon === "Auditorio Principal"
-                ? "red"
-                : "gray",
-            color: "white",
-          },
-        })}
-      />
+      {/* Botón flotante para mostrar/ocultar el calendario */}
+      <button className="floating-calendar" onClick={toggleCalendar}>
+        🗓️
+      </button>
+
+      {showCalendar && (
+        <div id="calendario">
+          <Calendar
+            localizer={localizer}
+            events={eventos}
+            startAccessor="start"
+            endAccessor="end"
+            culture="es"
+            className="calendar-container"
+            messages={{
+              next: "Siguiente",
+              previous: "Anterior",
+              today: "Hoy",
+              month: "Mes",
+              week: "Semana",
+              day: "Día",
+              agenda: "Agenda",
+              date: "Fecha",
+              time: "Hora",
+              event: "Evento",
+              noEventsInRange: "No hay eventos en este rango.",
+            }}
+            style={{
+              backgroundColor: "white",
+              color: "black",
+              height: 520,
+              margin: "50px",
+            }}
+            onSelectEvent={handleSelectEvent}
+            eventPropGetter={(event) => ({
+              style: {
+                backgroundColor:
+                  event.salon === "Sala juntas reservas"
+                    ? "blue"
+                    : event.salon === "Auditorio Principal"
+                    ? "#89dc00"
+                    : "#210d65",
+                color: "white",
+              },
+            })}
+          />
+        </div>
+      )}
     </div>
   );
 };
