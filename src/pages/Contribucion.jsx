@@ -4,57 +4,57 @@ import { Footer } from '../components/Footer';
 
 const Contribucion = () => {
   const sections = [
-    {
-      title: 'Obras Sociales',
-      videos: [
-        'https://www.youtube.com/embed/sz58ZOmlPD0',
-        'https://www.youtube.com/embed/vkFFss9pUO8',
-        'https://www.youtube.com/embed/zdRT0aZXXDc',
-        'https://www.youtube.com/embed/MZiyMwtGJaY',
-      ],
-    },
-    {
-      title: 'Merkarhorro Contribuye',
-      videos: [
-        'https://www.youtube.com/embed/tSOY8iG4uOk',
-        'https://www.youtube.com/embed/9qb61_Z1_CI',
-        'https://www.youtube.com/embed/xyOIH0lTjCw',
-        'https://www.youtube.com/embed/PAWmUlHRBEA',
-        'https://www.youtube.com/embed/QP6VO9lKKfo',
-        'https://www.youtube.com/embed/fAWbs2tGL7Q',
-        'https://www.youtube.com/embed/OMuKrC_HGBQ',
-        'https://www.youtube.com/embed/OoLIKaPO-FM',
-        'https://www.youtube.com/embed/LnSgVyBf9Zw',
-      ],
-    },
-    {
-      title: 'Bachilleres Merkahorro',
-      videos: [
-        'https://www.youtube.com/embed/7eJUrwJyIYo',
-        'https://www.youtube.com/embed/Qkw4bek6nZE',
-        'https://www.youtube.com/embed/B-MmXCCilGA',
-      ],
-    },
-    {
-      title: 'Escuela Aristotélica',
-      videos: [
-        'https://www.youtube.com/embed/ew554uDvcXI',
-        'https://www.youtube.com/embed/ZXpE-qY0tlY',
-      ],
-    },
-    {
-      title: 'Club Amas de Casa',
-      videos: [
-        'https://www.youtube.com/embed/nlbdeQaB1PE',
-        'https://www.youtube.com/embed/_PajpyFOwLo',
-        'https://www.youtube.com/embed/NEsLgp-5Udo',
-        'https://www.youtube.com/embed/sNQ8G34DIXE',
-        'https://www.youtube.com/embed/8M1WstwXi0s',
-        'https://www.youtube.com/embed/JPxmWdMQfiU',
-      ],
-    },
-  ];
-  
+  {
+    title: 'Obras Sociales',
+    videos: [
+      'https://www.youtube.com/embed/sz58ZOmlPD0',
+      'https://www.youtube.com/embed/vkFFss9pUO8',
+      'https://www.youtube.com/embed/zdRT0aZXXDc',
+      'https://www.youtube.com/embed/MZiyMwtGJaY',
+    ],
+  },
+  {
+    title: 'Merkarhorro Contribuye',
+    videos: [
+      'https://www.youtube.com/embed/tSOY8iG4uOk',
+      'https://www.youtube.com/embed/9qb61_Z1_CI',
+      'https://www.youtube.com/embed/xyOIH0lTjCw',
+      'https://www.youtube.com/embed/PAWmUlHRBEA',
+      'https://www.youtube.com/embed/QP6VO9lKKfo',
+      'https://www.youtube.com/embed/fAWbs2tGL7Q',
+      'https://www.youtube.com/embed/OMuKrC_HGBQ',
+      'https://www.youtube.com/embed/OoLIKaPO-FM',
+      'https://www.youtube.com/embed/LnSgVyBf9Zw',
+    ],
+  },
+  {
+    title: 'Bachilleres Merkahorro',
+    videos: [
+      'https://www.youtube.com/embed/7eJUrwJyIYo',
+      'https://www.youtube.com/embed/Qkw4bek6nZE',
+      'https://www.youtube.com/embed/B-MmXCCilGA',
+    ],
+  },
+  {
+    title: 'Escuela Aristotélica',
+    videos: [
+      'https://www.youtube.com/embed/ew554uDvcXI',
+      'https://www.youtube.com/embed/ZXpE-qY0tlY',
+    ],
+  },
+  {
+    title: 'Club Amas de Casa',
+    videos: [
+      'https://www.youtube.com/embed/nlbdeQaB1PE',
+      'https://www.youtube.com/embed/_PajpyFOwLo',
+      'https://www.youtube.com/embed/NEsLgp-5Udo',
+      'https://www.youtube.com/embed/sNQ8G34DIXE',
+      'https://www.youtube.com/embed/8M1WstwXi0s',
+      'https://www.youtube.com/embed/JPxmWdMQfiU',
+    ],
+  },
+];
+
   const renderVideo = (video) => {
     if (video.includes('youtube.com')) {
       const videoId = video.split('/').pop().split('?')[0]; // Extraer el ID del video
@@ -105,4 +105,3 @@ const Contribucion = () => {
 };
 
 export { Contribucion };
-
