@@ -1,12 +1,4 @@
-/* Asegúrate de que el body y html ocupen toda la altura disponible */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+
 
 /* Contenedor principal que envuelve todo el contenido */
 .main-container {
