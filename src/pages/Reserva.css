@@ -1,0 +1,198 @@
+/* Estilo general para la reserva */
+.reserva-container {
+  background-color: #89dc00;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.reserva-title {
+  color: #210d65;
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.reserva-form {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #e8f5e9;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.reserva-form-group {
+  margin-bottom: 20px;
+}
+
+.reserva-input,
+.reserva-textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fefefe;
+  color: #333;
+}
+
+.reserva-input:focus,
+.reserva-textarea:focus {
+  border-color: #89dc00;
+  box-shadow: 0 0 5px rgba(137, 220, 0, 0.5);
+  outline: none;
+}
+
+.reserva-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.reserva-error-text {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.reserva-btn-primary {
+  display: block;
+  margin: 50px auto 0;
+  padding: 12px 95px;
+  background-color: #210d65;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.reserva-btn-primary:hover {
+  background-color: #89dc00;
+  color: #210d65;
+  box-shadow: 0 4px 10px rgba(137, 220, 0, 0.3);
+}
+
+.reserva-btn-secondary {
+  display: block;
+  margin: 10px auto 0;
+  padding: 10px 85px;
+  background-color: #e8f5e9;
+  color: #210d65;
+  border: 2px solid #210d65;
+  border-radius: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.reserva-btn-secondary:hover {
+  background-color: #210d65;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(33, 13, 101, 0.3);
+}
+
+/* Estilo general para cancelar */
+.cancelar-container {
+  background-color: #f8d7da;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.cancelar-title {
+  color: #721c24;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.cancelar-form {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #f5c6cb;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cancelar-form-group {
+  margin-bottom: 20px;
+}
+
+.cancelar-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fefefe;
+  color: #333;
+}
+
+.cancelar-input:focus {
+  border-color: #721c24;
+  box-shadow: 0 0 5px rgba(114, 28, 36, 0.5);
+  outline: none;
+}
+
+.cancelar-btn-primary {
+  display: block;
+  margin: 50px auto 0;
+  padding: 12px 95px;
+  background-color: #721c24;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.cancelar-btn-primary:hover {
+  background-color: #f5c6cb;
+  color: #721c24;
+  box-shadow: 0 4px 10px rgba(114, 28, 36, 0.3);
+}
+
+/* Diseño responsivo */
+@media (max-width: 600px) {
+  .reserva-container,
+  .cancelar-container {
+    padding: 15px;
+  }
+
+  .reserva-form,
+  .cancelar-form {
+    padding: 15px;
+    width: 90%;
+  }
+
+  .reserva-title,
+  .cancelar-title {
+    font-size: 1.5rem;
+  }
+
+  .reserva-btn-primary,
+  .cancelar-btn-primary {
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+
+  .reserva-input,
+  .cancelar-input {
+    font-size: 0.9rem;
+  }
+}
