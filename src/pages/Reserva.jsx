@@ -513,7 +513,7 @@ function ReservaForm() {
             </div>
 
             <button className="cancelar-btn-primary" type="submit">
-              Cancelar Reserva
+              Cancelar 
             </button>
           </form>
         </div>
