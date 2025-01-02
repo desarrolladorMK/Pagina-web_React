@@ -1,63 +1,102 @@
-import { Header } from "../components/Header";
-import { useState, useEffect, } from "react";
+import React, { useRef, useState, useEffect } from 'react';
 import './Home.css';
-import { Footer } from "../components/Footer";
-import React, { useRef } from 'react';
+import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
 
-const Home = () => {
-  const [currentIndex, setCurrentIndex] = useState(0); // Índice de la imagen actual
-  const audioRef = useRef(null); // Referencia al reproductor de audio
-  const playButtonRef = useRef(null); // Referencia al botón de reproducción
+const PreloadVideos = ({ videos }) => {
+  useEffect(() => {
+    if (videos && videos.length > 0) {
+      videos.forEach(video => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'video';
+        link.href = video;
+        document.head.appendChild(link);
+      });
+    }
+  }, [videos]);
 
-  const images = [
-    "/mk1.jpg",
-    "/mk2.jpg",
-    "/mk3.jpg",
-    "/mk4.jpg"
-  ];
-
-  // Función para cambiar al siguiente slide
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Avanza al siguiente slide
-  };
-
-  // Función para cambiar al slide anterior
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length); // Retrocede al slide anterior
-  };
-
-  // Función para ir a un slide específico
-  const goToSlide = (index) => {
-    setCurrentIndex(index); // Ir a un slide específico
-  };
-
-
-
- // Reproducción del audio al hacer clic en el botón
- const handlePlay = () => {
-  if (audioRef.current.paused) {
-      audioRef.current.play();
-      playButtonRef.current.classList.add('playing'); // Cambiar icono o estilo
-  } else {
-      audioRef.current.pause();
-      playButtonRef.current.classList.remove('playing');
-  }
+  return null;
 };
 
+const Home = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const audioRef = useRef(null);
+  const playButtonRef = useRef(null);
 
+  const images = [
+    '/mk1.jpg',
+    '/mk2.jpg',
+    '/mk3.jpg',
+    '/mk4.jpg'
+  ];
 
-  // useEffect para cambiar las imágenes automáticamente
+  const videoUrls = [
+    'https://www.youtube.com/embed/sz58ZOmlPD0',
+    'https://www.youtube.com/embed/vkFFss9pUO8',
+    'https://www.youtube.com/embed/zdRT0aZXXDc',
+    'https://www.youtube.com/embed/MZiyMwtGJaY',
+    'https://www.youtube.com/embed/tSOY8iG4uOk',
+    'https://www.youtube.com/embed/9qb61_Z1_CI',
+    'https://www.youtube.com/embed/xyOIH0lTjCw',
+    'https://www.youtube.com/embed/PAWmUlHRBEA',
+    'https://www.youtube.com/embed/QP6VO9lKKfo',
+    'https://www.youtube.com/embed/fAWbs2tGL7Q',
+    'https://www.youtube.com/embed/OMuKrC_HGBQ',
+    'https://www.youtube.com/embed/OoLIKaPO-FM',
+    'https://www.youtube.com/embed/LnSgVyBf9Zw',
+    'https://www.youtube.com/embed/7eJUrwJyIYo',
+    'https://www.youtube.com/embed/Qkw4bek6nZE',
+    'https://www.youtube.com/embed/B-MmXCCilGA',
+    'https://www.youtube.com/embed/ew554uDvcXI',
+    'https://www.youtube.com/embed/ZXpE-qY0tlY',
+    'https://www.youtube.com/embed/nlbdeQaB1PE',
+    'https://www.youtube.com/embed/_PajpyFOwLo',
+    'https://www.youtube.com/embed/NEsLgp-5Udo',
+    'https://www.youtube.com/embed/sNQ8G34DIXE',
+    'https://www.youtube.com/embed/8M1WstwXi0s',
+    'https://www.youtube.com/embed/JPxmWdMQfiU',
+  ];
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+
+  const handlePlay = () => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+        if (playButtonRef.current) {
+          playButtonRef.current.classList.add('playing');
+        }
+      } else {
+        audioRef.current.pause();
+        if (playButtonRef.current) {
+          playButtonRef.current.classList.remove('playing');
+        }
+      }
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(nextSlide, 3000); // Cambia cada 3 segundos
-
-    // Limpiamos el intervalo cuando el componente se desmonte
+    const interval = setInterval(nextSlide, 3000);
     return () => clearInterval(interval);
-  }, []); // El segundo parámetro vacío asegura que el intervalo se establezca solo una vez al montar el componente
+  }, []);
 
   return (
   
     <div className="Home-body">
       <Header />
+      {/* Llama a PreloadVideos para precargar los videos */}
+      <PreloadVideos videos={videoUrls} />
       {/* Carrusel */}
       <div className="carousel">
         <div className="container-slides">
