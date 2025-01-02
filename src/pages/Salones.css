@@ -21,12 +21,6 @@
   text-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
 
-.ingresar-login {
-  color: #4a90e2; /* Azul pastel */
-  font-weight: bold;
-  text-decoration: underline;
-}
-
 .image-wrapper {
   display: flex; /* Alinea las imágenes en fila */
   flex-wrap: wrap; /* Permite que las imágenes se ajusten en varias filas si el espacio no es suficiente */
