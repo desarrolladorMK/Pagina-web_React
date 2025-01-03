@@ -4,6 +4,7 @@
     border-radius: 10px;
     margin: 0; /* Elimina márgenes extra */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
 }
 
 .logo-container {
@@ -22,7 +23,7 @@
 
 .logo-vacantes:hover {
     transform: scale(1.1);
-    box-shadow: 0 15px 20px #89dc00;
+    box-shadow: 0 15px 20px #8f77df;
 }
 
 .vacantes-container {
