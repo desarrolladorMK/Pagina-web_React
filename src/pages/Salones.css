@@ -1,5 +1,54 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
+
+.back-logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000; /* Asegura que el logo esté encima de otros elementos */
+  text-decoration: none;
+}
+
+.logo-image {
+  width: 70px;
+  height: auto;
+  cursor: pointer;
+  margin-top: 21%;
+  margin-right: -26%;
+}
+
+.back-logo:hover .logo-image {
+  transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
+  transition: transform 0.3s ease;
+}
+
+
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .logo-image {
+    width: 50px; /* Reduce el tamaño del logo */
+  }
+
+  .Salones h1 {
+    margin-top: 80px; /* Ajusta el margen superior para pantallas más pequeñas */
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-image {
+    width: 40px; /* Tamaño más pequeño del logo */
+  }
+
+  .Salones h1 {
+    margin-top: 70px; /* Ajusta el margen superior para dispositivos muy pequeños */
+    font-size: 1.8rem;
+  }
+}
+
+
+
 .Salones {
   padding: 40px 20px;
   text-align: center;
