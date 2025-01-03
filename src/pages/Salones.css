@@ -179,29 +179,43 @@
 
 
 
-.floating-calendar {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: #1b3875e1;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    z-index: 1000;
+
+#calendario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
+}
+
+.calendar-container {
+  width: 100%; /* Asegura que el calendario ocupe todo el ancho del contenedor */
+  max-width: 1200px; /* Limita el ancho máximo */
+  margin: 0 auto; /* Centra el calendario en pantallas grandes */
+  height: auto; /* Ajusta dinámicamente la altura */
+  overflow: hidden; /* Evita el desbordamiento */
+}
+
+@media (max-width: 1024px) {
+  .calendar-container {
+    max-width: 95%; /* Reduce el ancho en pantallas medianas */
   }
-  
-  .floating-calendar:hover {
-    background: #210d65;
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .calendar-container {
+    max-width: 90%; /* Reduce aún más el ancho en dispositivos pequeños */
   }
-  
+}
+
+@media (max-width: 480px) {
+  .calendar-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  #calendario {
+    padding: 5px;
+  }
+}
