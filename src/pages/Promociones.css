@@ -139,24 +139,14 @@
   }
 }
 
-
 .custom-body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
+  min-height: 100vh; /* Asegura que el contenedor ocupe toda la altura de la ventana */
   margin: 0;
   padding: 0;
 }
 
 .main-container {
-  flex: 1; /* Permite que el contenido principal ocupe el espacio restante */
-}
-
-.promotions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Diseño responsivo */
-  gap: 20px;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 1; /* Permite que el contenido principal ocupe el espacio disponible */
 }
