@@ -15,7 +15,8 @@ const Promociones = () => {
   };
 
   return (
-    <div>
+    <div className="custom-body">
+      <div className="main-container">
       <h1 className='titulo-ofertas'>Súper Ofertas Merkahorro</h1>
       <a href="/"><img className="img-logo" src="/logoMK.png" alt="" /></a>
       <div className="container-ofertas">
@@ -47,6 +48,7 @@ const Promociones = () => {
       </div>
    <Footer/>
    
+    </div>
     </div>
    
   );
