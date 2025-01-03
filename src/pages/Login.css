@@ -204,8 +204,8 @@
 }
 
 
-  .error-message {
-    color: red;
+  .error-login {
+    color: rgb(255, 255, 255);
     margin-top: 10px;
     text-align: center;
   }
