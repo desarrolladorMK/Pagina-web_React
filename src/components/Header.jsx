@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
-        setIsMenuOpen(prevState => !prevState); // Alterna el estado del menú
+        setIsMenuOpen((prevState) => !prevState);
     };
 
     const handleLinkClick = () => {
-        setIsMenuOpen(false); // Cierra el menú al hacer clic en un enlace
+        setIsMenuOpen(false);
     };
 
     return (
@@ -20,7 +21,6 @@ const Header = () => {
                     <a href="#" className="logo-header">
                         <img src="/logoMK.png" alt="Logo de Merkahorro" />
                     </a>
-                    {/* Botón de menú para dispositivos móviles */}
                     <button
                         className="menu-toggle"
                         onClick={toggleMenu}
@@ -28,14 +28,9 @@ const Header = () => {
                     >
                         ☰
                     </button>
-                    {/* Menú principal */}
                     <ul className={`nav-list ${isMenuOpen ? 'show' : ''}`}>
                         <li>
-                            <a 
-                                href="#" 
-                                className="nav-item" 
-                                onClick={handleLinkClick}
-                            >
+                            <a href="#" className="nav-item" onClick={handleLinkClick}>
                                 Nosotros
                             </a>
                             <ul className="sub-nav-list">
@@ -84,6 +79,17 @@ const Header = () => {
                         <li>
                             <Link to="/login" onClick={handleLinkClick}>
                                 Reservas
+                            </Link>
+                        </li>
+                        <li>
+                        <Link to="/" onClick={handleLinkClick}>
+                                Aula
+                            </Link>
+                        </li>
+                        <li className="login-icon">
+                            <Link to="/login" onClick={handleLinkClick}>
+                                <FaUserCircle className="default-icon" />
+                                <FaUserCircle className="hover-icon" />
                             </Link>
                         </li>
                     </ul>
