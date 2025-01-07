@@ -52,7 +52,7 @@ export let routes = [
     element: <ReservaForm />,
   },
   {
-    path: '/postulaciones', // 
+    path: '/postulacionesTable', 
     element: <PostulacionesTable />,
-  },
+  }  
 ];
