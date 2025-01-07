@@ -1,35 +1,105 @@
 .postulaciones-container {
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #d9dfe6;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 100vh; /* Altura mínima para cubrir la ventana completa */
+    overflow-x: hidden; /* Evitar desbordamiento horizontal del contenedor principal */
+    overflow-x: auto; /* Habilitar scroll horizontal */
+   
   }
+  
+  .postulaciones-container h2 {
+    color: #000000;
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: -20px;
+  }
+  
+ 
+  
+  .postulaciones-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
+  }
+  
   
   .postulaciones-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 800px; /* Asegurar que la tabla tenga un ancho mínimo */
+    overflow-x: auto; /* Habilitar scroll horizontal */
   }
   
   .postulaciones-table th,
   .postulaciones-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: center;
   }
   
   .postulaciones-table th {
-    background-color: #f4f4f4;
+    background-color: #210d65;
+    color: white;
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  
+  .postulaciones-table tr:nth-child(even) {
+    background-color: #f4f8fb;
+  }
+  
+  .postulaciones-table tr:hover {
+    background-color: #eaf3fb;
   }
   
   .download-button {
-    padding: 5px 10px;
-    background-color: #007bff;
+    padding: 8px 15px;
+    background-color: #89dc00;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease, transform 0.3s ease;
   }
   
   .download-button:hover {
-    background-color: #0056b3;
+    background-color: #210d65;
+    transform: translateY(-2px);
+  }
+  
+  .excel-button {
+    padding: 12px 25px;
+    margin-bottom: 20px;
+    background-color: #210d65;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .excel-button:hover {
+    background-color: #89dc00;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   }
   
