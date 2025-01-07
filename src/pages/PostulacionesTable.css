@@ -1,0 +1,35 @@
+.postulaciones-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .postulaciones-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .postulaciones-table th,
+  .postulaciones-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .postulaciones-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .download-button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .download-button:hover {
+    background-color: #0056b3;
+  }
+  
