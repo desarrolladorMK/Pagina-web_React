@@ -1,4 +1,4 @@
-body {
+.body-promociones {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -137,4 +137,16 @@ body {
   .container-ofertas {
     grid-template-columns: 1fr; /* Una sola columna */
   }
+}
+
+.custom-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Asegura que el contenedor ocupe toda la altura de la ventana */
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  flex: 1; /* Permite que el contenido principal ocupe el espacio disponible */
 }

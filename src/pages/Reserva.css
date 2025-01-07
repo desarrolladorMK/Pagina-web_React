@@ -1,0 +1,294 @@
+
+/* Estilo general para la reserva */
+
+.reserva-container {
+  background:  #89dc00;
+  padding: 50px;
+}
+
+
+
+.reserva-title {
+  color: #ffffff;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reserva-form {
+  max-width: 550px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #ffffff, #f7f7f7);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideIn 1s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.reserva-form-group {
+  margin-bottom: 20px;
+}
+
+.reserva-input,
+.reserva-textarea {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  margin-top: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  background: #88dc0036;
+  color: #747373;
+}
+
+.reserva-input:focus,
+.reserva-textarea:focus {
+  border-color: #89dc00;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(137, 220, 0, 0.6);
+  outline: none;
+}
+
+.reserva-textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+.reserva-btn-primary {
+  display: block;
+  margin: 20px auto 0;
+  padding: 15px 80px;
+  background: linear-gradient(135deg, #220d65, #5a24a0);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.4);
+}
+
+.reserva-btn-primary:hover {
+  background: linear-gradient(135deg, #5a24a0, #220d65);
+  box-shadow: 0 8px 25px rgba(33, 13, 101, 0.6);
+  transform: translateY(-3px);
+}
+
+.reserva-btn-secondary {
+  display: block;
+  margin: 20px auto 0;
+  padding: 15px 80px;
+  background: linear-gradient(135deg, #220d65, #5a24a0);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.4);
+}
+
+.reserva-btn-secondary:hover {
+  background: linear-gradient(135deg, #5a24a0, #220d65);
+  box-shadow: 0 8px 25px rgba(33, 13, 101, 0.6);
+  transform: translateY(-3px);
+}
+
+/* Diseño responsivo */
+@media (max-width: 600px) {
+  .reserva-container {
+    padding: 20px;
+  }
+
+  .reserva-form {
+    padding: 20px;
+    width: 100%;
+  }
+
+  .reserva-title {
+    font-size: 2rem;
+  }
+
+  .reserva-btn-primary,
+  .reserva-btn-secondary {
+    font-size: 1rem;
+  }
+
+  .reserva-input,
+  .reserva-textarea {
+    font-size: 1rem;
+  }
+}
+
+
+/* Estilo general para cancelar */
+
+.cancelar-container {
+  width: 100%;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #220d65, #5488dc);
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Animación fadeIn */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cancelar-title {
+  color: #ffffff;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cancelar-form {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, #f0f8ff, #dce8f4);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideIn 1s ease-in-out;
+}
+
+/* Separación adicional */
+.cancelar-title + .cancelar-form {
+  margin-left: 20px;
+}
+
+/* Animación slideIn */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cancelar-form-group {
+  margin-bottom: 20px;
+}
+
+.cancelar-input,
+.cancelar-select {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin-top: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  background: #f9faff;
+  color: #333;
+}
+
+.cancelar-input:focus,
+.cancelar-select:focus {
+  border-color: #5488dc;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(84, 136, 220, 0.5);
+  outline: none;
+}
+
+.cancelar-btn-primary {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #5488dc, #220d65);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(84, 136, 220, 0.4);
+}
+
+.cancelar-btn-primary:hover {
+  background: linear-gradient(135deg, #220d65, #5488dc);
+  box-shadow: 0 8px 25px rgba(84, 136, 220, 0.6);
+  transform: translateY(-3px);
+}
+
+/* Diseño responsivo */
+@media (max-width: 600px) {
+  .cancelar-title {
+    font-size: 2rem;
+  }
+
+  .cancelar-form {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .cancelar-input {
+    font-size: 1rem;
+  }
+
+  .cancelar-btn-primary {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cancelar-form {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cancelar-form {
+    max-width: 750px;
+  }
+}

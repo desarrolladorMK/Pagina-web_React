@@ -4,8 +4,10 @@ import {Promociones} from "../pages/Promociones"
 import { Politicas } from "../pages/Politicas"
 import { Condiciones } from "../pages/Condiciones"
 import { Trabaja} from "../pages/Trabaja"
-import {Reservas} from"../pages/Reservas"
+import {Login} from"../pages/Login"
 import { Vacantes } from "../pages/Vacantes"
+import {Salones} from "../pages/Salones"
+import {ReservaForm} from "../pages/Reserva"
 
 
 export let routes = [
@@ -38,8 +40,16 @@ export let routes = [
         element: <Trabaja/>
     },
     {
+        path: '/login',
+        element: <Login/>
+    },
+    {
+        path: '/salones',
+        element: <Salones/>
+    },
+    {
         path: '/reservas',
-        element: <Reservas/>
+        element: <ReservaForm/>
     }
    
 ]

@@ -7,65 +7,95 @@ const Contribucion = () => {
     {
       title: 'Obras Sociales',
       videos: [
-        'obras1.mp4',
-        'obras2.mp4',
-        'obras3.mp4',
-        'obras4.mp4',
+        'https://www.youtube.com/embed/sz58ZOmlPD0',
+        'https://www.youtube.com/embed/vkFFss9pUO8',
+        'https://www.youtube.com/embed/zdRT0aZXXDc',
+        'https://www.youtube.com/embed/MZiyMwtGJaY',
       ],
     },
     {
       title: 'Merkarhorro Contribuye',
       videos: [
-        'contribuye1.mp4',
-        'contribuye2.mp4',
-        'contribuye3.mp4',
-        'contribuye4.mp4',
-        'contribuye5.mp4',
-        'contribuye6.mp4',
-        'contribuye7.mp4',
-        'contribuye8.mp4',
-        'contribuye9.mp4',
+        'https://www.youtube.com/embed/tSOY8iG4uOk',
+        'https://www.youtube.com/embed/9qb61_Z1_CI',
+        'https://www.youtube.com/embed/xyOIH0lTjCw',
+        'https://www.youtube.com/embed/PAWmUlHRBEA',
+        'https://www.youtube.com/embed/QP6VO9lKKfo',
+        'https://www.youtube.com/embed/fAWbs2tGL7Q',
+        'https://www.youtube.com/embed/OMuKrC_HGBQ',
+        'https://www.youtube.com/embed/OoLIKaPO-FM',
+        'https://www.youtube.com/embed/LnSgVyBf9Zw',
       ],
     },
     {
       title: 'Bachilleres Merkahorro',
-      videos: ['bachiller1.mp4', 'bachiller2.mp4', 'bachiller3.mp4'],
+      videos: [
+        'https://www.youtube.com/embed/7eJUrwJyIYo',
+        'https://www.youtube.com/embed/Qkw4bek6nZE',
+        'https://www.youtube.com/embed/B-MmXCCilGA',
+      ],
     },
     {
       title: 'Escuela Aristotélica',
-      videos: ['Aristotelica1.mp4', 'Aristotelica2.mp4'],
+      videos: [
+        'https://www.youtube.com/embed/ew554uDvcXI',
+        'https://www.youtube.com/embed/ZXpE-qY0tlY',
+      ],
     },
     {
       title: 'Club Amas de Casa',
       videos: [
-        'club1.mp4',
-        'club2.mp4',
-        'club3.mp4',
-        'club4.mp4',
-        'club5.mp4',
-        'club6.mp4',
+        'https://www.youtube.com/embed/nlbdeQaB1PE',
+        'https://www.youtube.com/embed/_PajpyFOwLo',
+        'https://www.youtube.com/embed/NEsLgp-5Udo',
+        'https://www.youtube.com/embed/sNQ8G34DIXE',
+        'https://www.youtube.com/embed/8M1WstwXi0s',
+        'https://www.youtube.com/embed/JPxmWdMQfiU',
       ],
     },
   ];
+  
+  const renderVideo = (video) => {
+    if (video.includes('youtube.com')) {
+      const videoId = video.split('/').pop().split('?')[0]; // Extraer el ID del video
+      return (
+        <iframe
+          key={video}
+          className="video-item youtube-video"
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+        ></iframe>
+      );
+    } else {
+      return (
+        <video key={video} className="video-item" controls>
+          <source src={video} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+  };
 
   return (
-    
     <div className="contribucion-body">
-   
       <header className="contribucion-header">
         <div className="logo-container">
-          <a href="/"><img src="logoMK.png" alt="" /></a>
+          <a href="/">
+            <img src="logoMK.png" alt="Logo Merkahorro" />
+          </a>
         </div>
         <h1>Contribución Merkahorro</h1>
-      </header> 
+      </header>
       <main>
         {sections.map((section, index) => (
           <section key={index} className="contribucion-section">
             <h2>{section.title}</h2>
             <div className="contribucion-video-container">
-              {section.videos.map((video, idx) => (
-                <video key={idx} src={video} controls></video>
-              ))}
+              {section.videos.map((video) => renderVideo(video))}
             </div>
           </section>
         ))}

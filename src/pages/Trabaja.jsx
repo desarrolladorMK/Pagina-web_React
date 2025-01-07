@@ -182,7 +182,7 @@ const Trabaja = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:7777/enviar", {
+            const response = await fetch("https://backend-mk.vercel.app/enviar", {
                 method: "POST",
                 body: formDataToSend,
             });

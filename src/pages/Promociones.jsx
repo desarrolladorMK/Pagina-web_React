@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Promociones.css'; 
 import { Footer } from '../components/Footer';
+import { Link } from 'react-router-dom';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
@@ -15,9 +16,12 @@ const Promociones = () => {
   };
 
   return (
-    <div>
+    <div className="custom-body">
+      <div className="main-container">
       <h1 className='titulo-ofertas'>Súper Ofertas Merkahorro</h1>
-      <a href="/"><img className="img-logo" src="/logoMK.png" alt="" /></a>
+      <Link to="/" className="back-logo">
+    <img src="/mkicono.png" alt="Logo" className="logo-image" />
+  </Link>
       <div className="container-ofertas">
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
           <img src="/promo1.jpg" alt="Promo 1" />
@@ -28,7 +32,7 @@ const Promociones = () => {
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
           <img src="/promo1.jpg" alt="Promo 1" />
         </div>
-        <div className="ofertas" onClick={() => openModal('/promo41jpg')}>
+        {/* <div className="ofertas" onClick={() => openModal('/promo41jpg')}>
           <img src="/promo1.jpg" alt="Promo 1" />
         </div>
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
@@ -36,7 +40,7 @@ const Promociones = () => {
         </div>
         <div className="ofertas" onClick={() => openModal('/promo1.jpg')}>
           <img src="/promo.jpg" alt="Promo 1" />
-        </div>
+        </div> */}
       </div>
 
       <div id="myModal" className="modal" onClick={closeModal}>
@@ -47,6 +51,7 @@ const Promociones = () => {
       </div>
    <Footer/>
    
+    </div>
     </div>
    
   );
