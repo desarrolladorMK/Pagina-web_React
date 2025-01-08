@@ -7,6 +7,12 @@ const PostulacionesTable = () => {
   const [postulaciones, setPostulaciones] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Formatear las fechas
+  const formatFecha = (fecha) => {
+    if (!fecha) return '';
+    return fecha.split('T')[0]; // Devuelve solo la parte de la fecha
+  };
+
   useEffect(() => {
     const fetchPostulaciones = async () => {
       try {
@@ -34,7 +40,7 @@ const PostulacionesTable = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', filePath.split('/').pop()); // Extrae el nombre del archivo
+      link.setAttribute('download', filePath.split('/').pop());
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -71,41 +77,46 @@ const PostulacionesTable = () => {
       <table className="postulaciones-table">
         <thead>
           <tr>
-            {Object.keys(postulaciones[0] || {}).map((key) => (
-              key === "hojaVida" ? <th key={key}>Hojas de vida</th> : <th key={key}>{key}</th>
-            ))}
+            {Object.keys(postulaciones[0] || {})
+              .filter((key) => key !== "created_at") // Excluir la columna "created_at"
+              .map((key) => (
+                key === "hojaVida" ? <th key={key}>Hojas de vida</th> : <th key={key}>{key}</th>
+              ))}
           </tr>
         </thead>
         <tbody>
           {postulaciones.map((postulacion, index) => (
             <tr key={index}>
-              {Object.entries(postulacion).map(([key, value], idx) => (
-                key === "hojaVida" ? (
-                  <td key={idx}>
-                    {value && (
-                      <button
-                        onClick={() =>
-                          handleDownload(
-                            value.replace(
-                              "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/",
-                              ""
+              {Object.entries(postulacion)
+                .filter(([key]) => key !== "created_at") // Excluir la celda "created_at"
+                .map(([key, value], idx) => (
+                  key === "hojaVida" ? (
+                    <td key={idx}>
+                      {value && (
+                        <button
+                          onClick={() =>
+                            handleDownload(
+                              value.replace(
+                                "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/",
+                                ""
+                              )
                             )
-                          )
-                        }
-                        className="download-button"
-                      >
-                        Descargar PDF
-                      </button>
-                    )}
-                  </td>
-                ) : (
-                  <td key={idx}>{value}</td>
-                )
-              ))}
+                          }
+                          className="download-button"
+                        >
+                          Descargar PDF
+                        </button>
+                      )}
+                    </td>
+                  ) : (
+                    <td key={idx}>
+                      {key.includes('fecha') && value ? formatFecha(value) : value}
+                    </td>
+                  )
+                ))}
             </tr>
           ))}
         </tbody>
-
       </table>
       <button onClick={exportToExcel} className="excel-button">Exportar a Excel</button>
     </div>
