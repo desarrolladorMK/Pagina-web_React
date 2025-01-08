@@ -1,15 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
-import './Home.css';
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
+import React, { useRef, useState, useEffect } from "react";
+import "./Home.css";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
+import { ChatBot } from "../components/ChatBot";
 
 const PreloadVideos = ({ videos }) => {
   useEffect(() => {
     if (videos && videos.length > 0) {
-      videos.forEach(video => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'video';
+      videos.forEach((video) => {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "video";
         link.href = video;
         document.head.appendChild(link);
       });
@@ -24,38 +25,33 @@ const Home = () => {
   const audioRef = useRef(null);
   const playButtonRef = useRef(null);
 
-  const images = [
-    '/mk1.jpg',
-    '/mk2.jpg',
-    '/mk3.jpg',
-    '/mk4.jpg'
-  ];
+  const images = ["/mk1.jpg", "/mk2.jpg", "/mk3.jpg", "/mk4.jpg"];
 
   const videoUrls = [
-    'https://www.youtube.com/embed/sz58ZOmlPD0',
-    'https://www.youtube.com/embed/vkFFss9pUO8',
-    'https://www.youtube.com/embed/zdRT0aZXXDc',
-    'https://www.youtube.com/embed/MZiyMwtGJaY',
-    'https://www.youtube.com/embed/tSOY8iG4uOk',
-    'https://www.youtube.com/embed/9qb61_Z1_CI',
-    'https://www.youtube.com/embed/xyOIH0lTjCw',
-    'https://www.youtube.com/embed/PAWmUlHRBEA',
-    'https://www.youtube.com/embed/QP6VO9lKKfo',
-    'https://www.youtube.com/embed/fAWbs2tGL7Q',
-    'https://www.youtube.com/embed/OMuKrC_HGBQ',
-    'https://www.youtube.com/embed/OoLIKaPO-FM',
-    'https://www.youtube.com/embed/LnSgVyBf9Zw',
-    'https://www.youtube.com/embed/7eJUrwJyIYo',
-    'https://www.youtube.com/embed/Qkw4bek6nZE',
-    'https://www.youtube.com/embed/B-MmXCCilGA',
-    'https://www.youtube.com/embed/ew554uDvcXI',
-    'https://www.youtube.com/embed/ZXpE-qY0tlY',
-    'https://www.youtube.com/embed/nlbdeQaB1PE',
-    'https://www.youtube.com/embed/_PajpyFOwLo',
-    'https://www.youtube.com/embed/NEsLgp-5Udo',
-    'https://www.youtube.com/embed/sNQ8G34DIXE',
-    'https://www.youtube.com/embed/8M1WstwXi0s',
-    'https://www.youtube.com/embed/JPxmWdMQfiU',
+    "https://www.youtube.com/embed/sz58ZOmlPD0",
+    "https://www.youtube.com/embed/vkFFss9pUO8",
+    "https://www.youtube.com/embed/zdRT0aZXXDc",
+    "https://www.youtube.com/embed/MZiyMwtGJaY",
+    "https://www.youtube.com/embed/tSOY8iG4uOk",
+    "https://www.youtube.com/embed/9qb61_Z1_CI",
+    "https://www.youtube.com/embed/xyOIH0lTjCw",
+    "https://www.youtube.com/embed/PAWmUlHRBEA",
+    "https://www.youtube.com/embed/QP6VO9lKKfo",
+    "https://www.youtube.com/embed/fAWbs2tGL7Q",
+    "https://www.youtube.com/embed/OMuKrC_HGBQ",
+    "https://www.youtube.com/embed/OoLIKaPO-FM",
+    "https://www.youtube.com/embed/LnSgVyBf9Zw",
+    "https://www.youtube.com/embed/7eJUrwJyIYo",
+    "https://www.youtube.com/embed/Qkw4bek6nZE",
+    "https://www.youtube.com/embed/B-MmXCCilGA",
+    "https://www.youtube.com/embed/ew554uDvcXI",
+    "https://www.youtube.com/embed/ZXpE-qY0tlY",
+    "https://www.youtube.com/embed/nlbdeQaB1PE",
+    "https://www.youtube.com/embed/_PajpyFOwLo",
+    "https://www.youtube.com/embed/NEsLgp-5Udo",
+    "https://www.youtube.com/embed/sNQ8G34DIXE",
+    "https://www.youtube.com/embed/8M1WstwXi0s",
+    "https://www.youtube.com/embed/JPxmWdMQfiU",
   ];
 
   const nextSlide = () => {
@@ -75,12 +71,12 @@ const Home = () => {
       if (audioRef.current.paused) {
         audioRef.current.play();
         if (playButtonRef.current) {
-          playButtonRef.current.classList.add('playing');
+          playButtonRef.current.classList.add("playing");
         }
       } else {
         audioRef.current.pause();
         if (playButtonRef.current) {
-          playButtonRef.current.classList.remove('playing');
+          playButtonRef.current.classList.remove("playing");
         }
       }
     }
@@ -92,11 +88,11 @@ const Home = () => {
   }, []);
 
   return (
-  
     <div className="Home-body">
       <Header />
-      {/* Llama a PreloadVideos para precargar los videos */}
+      {/* Precarga de videos */}
       <PreloadVideos videos={videoUrls} />
+
       {/* Carrusel */}
       <div className="carousel">
         <div className="container-slides">
@@ -121,26 +117,28 @@ const Home = () => {
             ></span>
           ))}
         </div>
-
-
-        {/* Reproductor de audio */}
-        <div className="audio-player-container">
-          <button
-            id="playButton"
-            className="play-button draggable"
-            ref={playButtonRef}
-            onClick={handlePlay}
-          >
-            <span className="play-icon"></span>
-          </button>
-          <audio id="live-audio" preload="auto" ref={audioRef}>
-            <source src="https://radiolatina.info/8016/stream" type="audio/mpeg" />
-            Tu navegador no soporta la reproducción de audio.
-          </audio>
-        </div>
-
-
       </div>
+
+ {/* Botones flotantes */}
+<div className="floating-buttons">
+  {/* Botón de música */}
+  <button
+    id="playButton"
+    className="play-button"
+    ref={playButtonRef}
+    onClick={handlePlay}
+  >
+    <span className="play-icon"></span>
+  </button>
+  <audio id="live-audio" preload="auto" ref={audioRef}>
+    <source src="https://radiolatina.info/8016/stream" type="audio/mpeg" />
+    Tu navegador no soporta la reproducción de audio.
+  </audio>
+  {/* Botón del ChatBot */}
+  <ChatBot />
+</div>
+
+       
       {/* Código de las sedes */}
       <h1 className="title-sedes">Conoce nuestras sedes</h1>
       <div className="tarjeta-container">

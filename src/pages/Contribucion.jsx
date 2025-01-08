@@ -1,6 +1,7 @@
 import React from 'react';
 import './Contribucion.css';
 import { Footer } from '../components/Footer';
+import {ChatBot} from '../components/ChatBot';
 
 const Contribucion = () => {
   const sections = [
@@ -100,6 +101,7 @@ const Contribucion = () => {
           </section>
         ))}
       </main>
+      <ChatBot />
       <Footer />
     </div>
   );
