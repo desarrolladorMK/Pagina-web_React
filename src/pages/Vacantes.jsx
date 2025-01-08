@@ -1,5 +1,6 @@
 import React from 'react';
 import './Vacantes.css'; // Asegúrate de importar el archivo CSS
+import {ChatBot} from '../components/ChatBot';
 
 const Vacantes = () => {
   return (
@@ -29,9 +30,12 @@ const Vacantes = () => {
         </div>
         
       </div>
-      
+      <ChatBot />
     </div>
+    
   );
+  
 }
+
 
 export  {Vacantes};

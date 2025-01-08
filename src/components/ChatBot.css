@@ -1,95 +1,19 @@
-/* Contenedor principal */
-.audio-player-container {
-    position: fixed;
-    bottom: 2vw; /* Ajusta la posición general */
-    right: 2vw;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column; /* Organiza los elementos en columna */
-    align-items: center; /* Centra los elementos horizontalmente */
-    gap: 1vw; /* Espacio entre el chatbot y el botón de audio */
-  }
+
   
   /* Contenedor del chatbot */
   .chatbot-container {
     position: relative;
     z-index: 1010; /* Asegura que el chatbot esté sobre el botón */
   }
-  
-  /* Botón de música */
-  .play-button {
-    background-color: #210D65;
-    border: none;
-    border-radius: 50%;
-    width: 5vw;
-    height: 5vw;
-    min-width: 50px;
-    min-height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
-    z-index: 1000;
-  }
-  
-  .play-button:hover {
-    background-color: #89DC00;
-    transform: scale(1.1);
-  }
-  
-  .play-icon {
-    width: 0;
-    height: 0;
-    border-left: 0.8vw solid white;
-    border-top: 0.5vw solid transparent;
-    border-bottom: 0.5vw solid transparent;
-  }
-  
-  /* Botón cuando el audio está en reproducción */
-  .play-button.playing .play-icon {
-    border-left: 0;
-    border-top: 0;
-    border-bottom: 0;
-    border-right: 0.6vw solid white;
-    border-left: 0.6vw solid white;
-    height: 0.6vw;
-    width: 1vw;
-  }
-  
-  /* Botón flotante del chatbot */
-  .merkahorro-chatbot-icon {
+
+
+  .chat-body {
     position: fixed;
-    bottom: 4%;
-    right: 1%;
-    background-color: #210d65;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 90px;
-    height: 90px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    bottom: 20px; /* Distancia desde la parte inferior */
+    right: 20px; /* Distancia desde la parte derecha */
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .merkahorro-chatbot-icon img {
-    width: 70%;
-    height: 70%;
-    object-fit: contain; /* Mantiene la proporción de la imagen */
-  }
-  
-  /* Efectos de interacción */
-  .merkahorro-chatbot-icon:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .merkahorro-chatbot-icon:active {
-    transform: scale(0.95);
+    justify-content: flex-end; /* Alinea los elementos al final */
   }
   
   /* Contenedor del chatbot */

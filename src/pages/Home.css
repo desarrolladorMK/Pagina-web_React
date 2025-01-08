@@ -8,9 +8,6 @@ body {
   background-color: hsl(60, 47%, 97%); /* Fondo suave azul claro */
 }
 
-
-
-
 /* Estilos del carrusel */
 .carousel {
   position: relative;
@@ -18,7 +15,6 @@ body {
   max-width: 100%;
   margin: auto;
   overflow: hidden;
- 
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   height: auto; /* Se adapta automáticamente al contenido */
@@ -36,114 +32,99 @@ body {
 }
 
 .slide img {
-width: 100%;
-height: auto; /* Mantén la altura automática para adaptarse al ancho */
-object-fit: cover;
-transition: transform 0.5s ease;
+  width: 100%;
+  height: auto; /* Mantén la altura automática para adaptarse al ancho */
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
 /* Efecto de hover en imágenes */
 .slide img:hover {
-transform: scale(1.07);
+  transform: scale(1.07);
 }
 
 /* Botones del carrusel */
 .dots {
-text-align: center;
-position: relative;
-width: 100%;
-padding: 10px 0;
-top: 1rem;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  padding: 10px 0;
+  top: 1rem;
 }
 
 .dot {
-display: inline-block;
-width: 12px;
-height: 12px;
-margin: 5px;
-background-color: rgba(0, 0, 0, 0.3);
-border-radius: 50%;
-cursor: pointer;
-transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .dot.active {
-background-color: #210D65;
-transform: scale(1.2);
+  background-color: #210D65;
+  transform: scale(1.2);
 }
 
 /* Media Queries para Responsividad */
 @media (max-width: 768px) {
-.dot {
-  width: 10px;
-  height: 10px;
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
 }
 
-
-}
-
-/* Media Query para pantallas de 480px o menos */
 @media (max-width: 480px) {
-.dot {
-  position: relative;;
-  width: 10px;
-  height: 10px;
-  top: -1rem;
-  left: 1rem;
-  
-}
+  .dot {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    top: -1rem;
+    left: 1rem;
+  }
 
-.slide img {
+  .slide img {
     width: 100%;
     height: auto;
     object-fit: cover;
-    transition: transform 
-}
+    transition: transform;
+  }
 
-/* Asegura que el navbar ocupe todo el ancho de la pantalla */
-.navbar {
-  width: 110%;
-  margin: 0; /* Elimina cualquier margen que pueda estar reduciendo el ancho */
-  padding: 0; /* Elimina cualquier padding adicional */
-  box-sizing: border-box; /* Incluye el padding en el ancho total */
-}
+  /* Asegura que el navbar ocupe todo el ancho de la pantalla */
+  .navbar {
+    width: 110%;
+    margin: 0; /* Elimina cualquier margen que pueda estar reduciendo el ancho */
+    padding: 0; /* Elimina cualquier padding adicional */
+    box-sizing: border-box; /* Incluye el padding en el ancho total */
+  }
 
-/* Asegura que el contenedor del carrusel ocupe todo el ancho de la pantalla */
-
-/* Estilos del carrusel */
-.carousel {
-  position: relative;
-  width: 90%; /* Asegura que el carrusel ocupe el 100% del ancho disponible */
-  max-width: 90%; /* No debe superar el 100% del ancho de la página */
-  margin: auto; /* Centra el carrusel */
-  overflow: hidden;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  height: auto; /* Se adapta automáticamente al contenido */
-  transition: all 0.3s ease;
-}
-
-@media (max-width: 768px) {
+  /* Asegura que el contenedor del carrusel ocupe todo el ancho de la pantalla */
   .carousel {
-    width: 100%;
-    max-width: 100%; /* Asegura que en pantallas pequeñas tampoco sobrepase */
+    width: 90%; /* Asegura que el carrusel ocupe el 100% del ancho disponible */
+    max-width: 90%; /* No debe superar el 100% del ancho de la página */
+    margin: auto; /* Centra el carrusel */
+    overflow: hidden;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    height: auto; /* Se adapta automáticamente al contenido */
+    transition: all 0.3s ease;
   }
 }
-}
 
-
-
-
-/* Estilos botón de música */
-.audio-player-container {
+/* Contenedor para botones flotantes */
+.floating-buttons {
   position: fixed;
-  bottom: 2vw; /* Unidades relativas para mejor adaptabilidad */
-  right: 2vw;
-  z-index: 1000;
-  cursor: pointer;
+  bottom: 2vw; /* Ajuste relativo para posición inferior */
+  right: 2vw; /* Ajuste relativo para posición derecha */
+  display: flex;
+  flex-direction: column; /* Acomoda los botones en columna */
+  gap: 15px; /* Espacio entre botones */
+  z-index: 1000; /* Prioridad sobre otros elementos */
 }
 
-/* Estilos base para el botón */
+/* Estilos base para el botón de música */
 .play-button {
   background-color: #210D65; /* Color base */
   border: none;
@@ -157,8 +138,9 @@ transform: scale(1.2);
   align-items: center;
   box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s, transform 0.3s;
+  margin-bottom: 80px;
+  margin-right: -5px;
 }
-
 
 .play-button:hover {
   background-color: #89DC00; /* Color al pasar el cursor */
@@ -173,7 +155,6 @@ transform: scale(1.2);
   border-bottom: 0.5vw solid transparent;
 }
 
-/* Estilo para cuando el audio está reproduciendo */
 .play-button.playing .play-icon {
   border-left: 0;
   border-top: 0;
@@ -184,64 +165,68 @@ transform: scale(1.2);
   width: 1vw;
 }
 
+/* Botón del ChatBot */
+.merkahorro-chatbot-icon {
+  background-color: #210D65; /* Color base */
+  border: none;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.merkahorro-chatbot-icon img {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
+}
+
+.merkahorro-chatbot-icon:hover {
+  background-color: #89DC00;
+  transform: scale(1.1);
+}
+
 /* Responsividad: Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
-  .audio-player-container {
-    bottom: 4vw; /* Ajustes relativos */
+  .floating-buttons {
+    bottom: 4vw;
     right: 4vw;
   }
-  
-  .play-button {
-    width: 8vw; /* Tamaño relativo */
-    height: 8vw;
-    min-width: 50px;
-    min-height: 50px;
+
+  .play-button,
+  .merkahorro-chatbot-icon {
+    width: 60px;
+    height: 60px;
   }
 
-  .play-icon {
-    border-left: 1vw solid white;
-    border-top: 0.6vw solid transparent;
-    border-bottom: 0.6vw solid transparent;
-  }
-
-  .play-button.playing .play-icon {
-    height: 0.8vw;
-    width: 1.2vw;
-    border-right: 0.8vw solid white;
-    border-left: 0.8vw solid white;
+  .merkahorro-chatbot-icon img {
+    width: 40%;
+    height: 40%;
   }
 }
 
-/* Ajustes adicionales para pantallas aún más pequeñas */
 @media (max-width: 480px) {
-  .audio-player-container {
-    bottom: 6vw; /* Ajustes relativos */
+  .floating-buttons {
+    bottom: 6vw;
     right: 6vw;
   }
-  .play-button {
-    width: 12vw; /* Tamaño relativo */
-    height: 12vw;
-    min-width: 45px;
-    min-height: 45px;
+
+  .play-button,
+  .merkahorro-chatbot-icon {
+    width: 50px;
+    height: 0px;
   }
 
-  .play-icon {
-    border-left: 1.5vw solid white;
-    border-top: 1vw solid transparent;
-    border-bottom: 1vw solid transparent;
+  .merkahorro-chatbot-icon img {
+    width: 35%;
+    height: 35%;
   }
-
-  .play-button.playing .play-icon {
-    height: 0.8vw;
-    width: 1.6vw;
-    border-right: 1vw solid white;
-    border-left: 1vw solid white;
-  }
-  
 }
-
-
-
 
 
 

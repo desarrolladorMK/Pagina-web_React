@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Footer } from "../components/Footer";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import {ChatBot} from '../components/ChatBot';
 
 const MySwal = withReactContent(Swal);
 
@@ -574,6 +575,7 @@ const Trabaja = () => {
                     </form>
                 </div>
             </div>
+            <ChatBot />
             <Footer />
         </div>
     );
