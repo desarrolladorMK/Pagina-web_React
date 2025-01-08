@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Promociones.css'; 
 import { Footer } from '../components/Footer';
 import { Link } from 'react-router-dom';
+import {ChatBot} from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
@@ -49,6 +50,8 @@ const Promociones = () => {
           <img id="modal-img" src={modalImg} alt="Modal" />
         </div>
       </div>
+       <ChatBot />
+
    <Footer/>
    
     </div>
