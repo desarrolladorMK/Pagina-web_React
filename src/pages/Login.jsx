@@ -6,11 +6,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Hook para redirección
 
-  // Verificar que las variables de entorno se están cargando correctamente
-  console.log("Correo 1 esperado:", import.meta.env.VITE_LOGIN_EMAIL_1);
-  console.log("Contraseña 1 esperada:", import.meta.env.VITE_LOGIN_PASSWORD_1);
-  console.log("Correo 2 esperado:", import.meta.env.VITE_LOGIN_EMAIL_2);
-  console.log("Contraseña 2 esperada:", import.meta.env.VITE_LOGIN_PASSWORD_2);
+
 
   const handleLogin = (event) => {
     event.preventDefault();
