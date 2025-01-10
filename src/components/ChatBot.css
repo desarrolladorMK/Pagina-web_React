@@ -17,41 +17,33 @@
 }
 
 
-
-/* Botón flotante del chatbot */
+/* Botón del ChatBot */
 .merkahorro-chatbot-icon {
-  position: fixed;
-  bottom: 4%;
-  right: 1%;
-  background-color: #210d65;
-  color: white;
+  background-color: #210D65; /* Color base */
   border: none;
   border-radius: 50%;
-  width: 90px;
-  height: 90px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 70px;
+  height: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .merkahorro-chatbot-icon img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain; /* Mantiene la proporción de la imagen */
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
 }
 
-/* Efectos de interacción */
 .merkahorro-chatbot-icon:hover {
+  background-color: #89DC00;
   transform: scale(1.1);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.merkahorro-chatbot-icon:active {
-  transform: scale(0.95);
-}
+
 
 /* Contenedor del chatbot */
 .merkahorro-chatbot-container {
