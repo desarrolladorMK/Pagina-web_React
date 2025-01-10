@@ -192,3 +192,20 @@
 .chatbot-menu button:hover {
   background-color: #89DC00;
 }
+
+/* Botón de "Ver opciones" */
+.merkahorro-show-menu-btn {
+  background-color: #210d65;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.merkahorro-show-menu-btn:hover {
+  background-color: #89DC00;
+}
