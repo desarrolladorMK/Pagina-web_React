@@ -4,6 +4,7 @@ import DatePicker, { registerLocale } from "react-datepicker"; // Importa react-
 import "react-datepicker/dist/react-datepicker.css"; // Importa estilos de react-datepicker
 import "./Reserva.css";
 import { es } from "date-fns/locale"; // Importa el idioma español de date-fns
+import { ChatBot } from "../components/ChatBot";
 
 registerLocale("es", es); // Registra el idioma español
 
@@ -518,6 +519,7 @@ function ReservaForm() {
           </form>
         </div>
       )}
+      <ChatBot/>
     </div>
 
   );

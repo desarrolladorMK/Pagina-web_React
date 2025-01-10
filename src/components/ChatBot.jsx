@@ -78,6 +78,15 @@ function ChatBot() {
     return formattedResponse;
   };
 
+
+  // Función para manejar el evento de presionar "Enter" en el input
+const handleKeyDown = (e) => {
+  // Verificar si la tecla presionada es "Enter" (código de tecla 13)
+  if (e.key === 'Enter') {
+    sendMessage(message);  // Enviar el mensaje
+  }
+};
+
   return (
     <div className='floating-buttons'>
       {/* Botón flotante de chatbot */}
@@ -133,6 +142,7 @@ function ChatBot() {
                 type="text"
                 value={message}
                 onChange={handleMessageChange}
+                onKeyDown={handleKeyDown}  // Agregar evento de teclado para "Enter"
                 placeholder="Escribe tu pregunta..."
               />
               <button
