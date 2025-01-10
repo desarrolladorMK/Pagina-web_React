@@ -1,85 +1,132 @@
-import React, { useState } from "react";
-import axios from "axios";
-import "./ChatBot.css"; // Importa el archivo CSS
+import React, { useState } from 'react';
+import './ChatBot.css'; // Importa tu archivo de estilos CSS
 
-const ChatBot = () => {
-  const [query, setQuery] = useState("");
-  const [response, setResponse] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
+function ChatBot() {
+    const [message, setMessage] = useState('');
+    const [response, setResponse] = useState(''); 
+    const [loading, setLoading] = useState(false);
+    const [chatbotOpen, setChatbotOpen] = useState(false); // Para abrir y cerrar el chatbot
 
-  const handleChange = (event) => {
-    setQuery(event.target.value);
-  };
+    // Función para manejar el cambio del mensaje
+    const handleMessageChange = (e) => {
+        setMessage(e.target.value);
+    };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
+    // Función para enviar el mensaje al backend
+    const sendMessage = async (messageToSend) => {
+        if (!messageToSend.trim()) return;
 
-    try {
-      const result = await axios.post("http://127.0.0.1:8000/chatbot/", {
-        query: query,
-      });
+        setLoading(true);  // Mostrar que se está procesando la solicitud
 
-      if (Array.isArray(result.data.answer)) {
-        setResponse(result.data.answer);
-      } else {
-        setResponse([result.data.answer]);
-      }
-    } catch (error) {
-      console.error("Error al contactar el backend:", error);
-      setResponse(["Lo siento, ocurrió un error."]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        try {
+            const res = await fetch('http://127.0.0.1:8000/ask', {
+                method: 'POST',  // Cambiar de GET a POST
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: messageToSend })  // Enviar el mensaje como JSON
+            });
+            const data = await res.json();
+            const botResponse = data.response;
 
-  const toggleChat = () => {
-    setChatOpen(!chatOpen);
-  };
+            // Verificar si la respuesta contiene una URL
+            if (botResponse.includes('http://') || botResponse.includes('https://')) {
+                // Si la respuesta contiene una URL, no redirigir automáticamente
+                setResponse(` ${botResponse}`);
+            } else {
+                // Si no es una URL, mostrar la respuesta normalmente
+                setResponse(botResponse);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            setResponse("Lo siento, ocurrió un error.");
+        } finally {
+            setLoading(false);  // Ocultar el indicador de carga
+        }
+    };
 
-  return (
-    <div className="chat-body">
-      {/* Botón flotante del chatbot */}
-      <button className="merkahorro-chatbot-icon" onClick={toggleChat}>
-        <img src="/chatbot.png" alt="Chatbot Icon" />
-      </button>
+    // Función para abrir/cerrar el chatbot
+    const toggleChatbot = () => {
+        setChatbotOpen(!chatbotOpen);  // Cambiar estado para abrir o cerrar el chatbot
+    };
 
-      {/* Ventana del Chat */}
-      {chatOpen && (
-        <div className="merkahorro-chatbot-container">
-          <div className="merkahorro-chatbot-header">
-            <span>¡Hola! ¿En qué te puedo ayudar hoy?</span>
-            <button onClick={toggleChat} className="merkahorro-close-chat-btn">❌</button>
-          </div>
-          <div className="merkahorro-chat-messages">
-            {response.length === 0 && (
-              <div className="merkahorro-message merkahorro-bot-message">¡Hola! ¿En qué puedo ayudarte?</div>
-            )}
-            {response.map((msg, index) => (
-              <div key={index} className="merkahorro-message merkahorro-bot-message">
-                {msg}
-              </div>
-            ))}
-            {loading && <div className="merkahorro-message merkahorro-bot-message">Cargando...</div>}
-          </div>
-          <form onSubmit={handleSubmit} className="merkahorro-chat-input-container">
-            <input
-              type="text"
-              value={query}
-              onChange={handleChange}
-              placeholder="Escribe tu pregunta..."
-              required
-              className="merkahorro-input"
-            />
-            <button type="submit" disabled={loading} className="merkahorro-button">
-              {loading ? "Cargando..." : "Enviar"}
+    // Función para mostrar el menú con opciones predefinidas
+    const showMenu = () => {
+        return (
+            <div className="chatbot-menu">
+                <button onClick={() => sendMessage("¿Cuáles son los horarios?")}>Horarios</button>
+                <button onClick={() => sendMessage("¿Cuántas sedes hay?")}>Sedes</button>
+                <button onClick={() => sendMessage("¿Cómo puedo postularme?")}>Postulación</button>
+                <button onClick={() => sendMessage("¿Cuáles son las promociones?")}>Promociones</button>
+            </div>
+        );
+    };
+
+    // Función para renderizar la respuesta y manejar los enlaces
+    const renderResponse = () => {
+        const responseText = response || 'Selecciona o escribe algo...';
+
+        // Usamos expresiones regulares para convertir los enlaces en etiquetas <a>
+        const regex = /(https?:\/\/[^\s]+)/g; // Buscar URLs en la respuesta
+        const formattedResponse = responseText.split(regex).map((part, index) => {
+            if (index % 2 === 1) {
+                return <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a>;
+            }
+            return part;
+        });
+
+        return formattedResponse;
+    };
+
+    return (
+        <div >
+            {/* Botón flotante de chatbot */}
+            <button className="merkahorro-chatbot-icon" onClick={toggleChatbot}>
+                <img src="chatbot.png" alt="Chatbot Icon" />
             </button>
-          </form>
+
+            {/* Contenedor del chatbot */}
+            {chatbotOpen && (
+                <div className="merkahorro-chatbot-container">
+                    <div className="merkahorro-chatbot-header">
+                        <span>Pregunta a Merkahorro</span>
+                        <button className="merkahorro-close-chat-btn" onClick={toggleChatbot}>
+                            &times;
+                        </button>
+                    </div>
+
+                    <div className="merkahorro-chat-messages">
+                        {/* Mensaje de ejemplo */}
+                        <div className="merkahorro-bot-message merkahorro-message">
+                            {renderResponse()}
+                        </div>
+                    </div>
+
+                    {/* Mostrar el menú interactivo con opciones */}
+                    <div className="chatbot-options">
+                        {showMenu()}
+                    </div>
+
+                    <div className="merkahorro-chat-input-container">
+                        <input
+                            className="merkahorro-input"
+                            type="text"
+                            value={message}
+                            onChange={handleMessageChange}
+                            placeholder="Escribe tu pregunta..."
+                        />
+                        <button
+                            className="merkahorro-button"
+                            onClick={() => sendMessage(message)}
+                            disabled={loading}
+                        >
+                            Enviar
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
-};
+    );
+}
 
 export { ChatBot };
