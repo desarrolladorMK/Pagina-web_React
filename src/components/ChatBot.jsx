@@ -19,9 +19,12 @@ function ChatBot() {
 
     setLoading(true);  // Mostrar que se está procesando la solicitud
 
+    // Obtener la URL de la API desde la variable de entorno
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://backendpythonbot.vercel.app'; // Usa localhost si no está configurada la variable de entorno
+
     try {
-      const res = await fetch('http://127.0.0.1:8000/ask', {
-        method: 'POST',  // Cambiar de GET a POST
+      const res = await fetch(`${apiUrl}/ask`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -32,10 +35,8 @@ function ChatBot() {
 
       // Verificar si la respuesta contiene una URL
       if (botResponse.includes('http://') || botResponse.includes('https://')) {
-        // Si la respuesta contiene una URL, no redirigir automáticamente
-        setResponse(`Haz clic aquí para ver las promociones: ${botResponse}`);
+        setResponse(` ${botResponse}`);
       } else {
-        // Si no es una URL, mostrar la respuesta normalmente
         setResponse(botResponse);
       }
     } catch (error) {
@@ -78,14 +79,12 @@ function ChatBot() {
     return formattedResponse;
   };
 
-
   // Función para manejar el evento de presionar "Enter" en el input
-const handleKeyDown = (e) => {
-  // Verificar si la tecla presionada es "Enter" (código de tecla 13)
-  if (e.key === 'Enter') {
-    sendMessage(message);  // Enviar el mensaje
-  }
-};
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage(message);  // Enviar el mensaje cuando se presiona "Enter"
+    }
+  };
 
   return (
     <div className='floating-buttons'>
@@ -105,7 +104,7 @@ const handleKeyDown = (e) => {
           </div>
 
           <div className="merkahorro-chat-messages">
-            {/* Mensaje de ejemplo */}
+            {/* Mostrar la respuesta */}
             <div className="merkahorro-bot-message merkahorro-message">
               {renderResponse()}
             </div>
@@ -122,7 +121,6 @@ const handleKeyDown = (e) => {
             </div>
           )}
 
-
           {/* Botón para alternar el menú */}
           {showMenu ? (
             <button className="merkahorro-show-menu-btn" onClick={toggleMenu}>
@@ -134,7 +132,7 @@ const handleKeyDown = (e) => {
             </button>
           )}
 
-          {/* Botón para alternar el menú */}
+          {/* Campo de entrada para escribir el mensaje */}
           {!showMenu && (
             <div className="merkahorro-chat-input-container">
               <input
@@ -154,8 +152,6 @@ const handleKeyDown = (e) => {
               </button>
             </div>
           )}
-
-
         </div>
       )}
     </div>
