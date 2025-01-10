@@ -79,7 +79,7 @@ function ChatBot() {
   };
 
   return (
-    <div>
+    <div className='floating-buttons'>
       {/* Botón flotante de chatbot */}
       <button className="merkahorro-chatbot-icon" onClick={toggleChatbot}>
         <img src="chatbot.png" alt="Chatbot Icon" />
