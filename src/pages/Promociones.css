@@ -71,6 +71,9 @@
 
 /* ======== MODAL ======== */
 .modal {
+  overflow-y: auto; /* Scroll si la imagen es muy grande */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #210D65 #f4f4f4; /* Color del scroll y fondo */
   display: none;
   position: fixed;
   z-index: 1000;
@@ -87,6 +90,8 @@
   max-width: 90%;
   max-height: 90%;
 }
+
+
 
 .modal-content img {
   width: 100%;
