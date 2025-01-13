@@ -1,9 +1,4 @@
 /* ======== RESETEO GENERAL PARA EVITAR DESBORDES ======== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 .body-promociones {
   font-family: 'Arial', sans-serif;
@@ -11,6 +6,7 @@
   padding: 0;
   background-color: #f4f4f4;
   overflow-x: hidden; /* Eliminar scroll horizontal */
+  height: 100vh;
 }
 
 /* ======== CONTENEDOR DE OFERTAS ======== */
