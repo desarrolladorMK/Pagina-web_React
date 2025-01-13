@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ChatBot.css'; // Importa tu archivo de estilos CSS
 
 function ChatBot() {
@@ -7,6 +7,17 @@ function ChatBot() {
   const [loading, setLoading] = useState(false);
   const [chatbotOpen, setChatbotOpen] = useState(false); // Para abrir y cerrar el chatbot
   const [showMenu, setShowMenu] = useState(false); // Para alternar la visibilidad del menú de opciones
+  const [error, setError] = useState('');
+
+  // Validar si la URL de la API está configurada correctamente
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://backendpythonbot.vercel.app';
+
+  useEffect(() => {
+    if (!apiUrl) {
+      console.error('⚠️ La URL de la API no está definida.');
+      setError('Error de configuración. Contacta al administrador.');
+    }
+  }, [apiUrl]);
 
   // Función para manejar el cambio del mensaje
   const handleMessageChange = (e) => {
@@ -15,13 +26,13 @@ function ChatBot() {
 
   // Función para enviar el mensaje al backend
   const sendMessage = async (messageToSend) => {
-    if (!messageToSend.trim()) return;
+    if (!messageToSend.trim()) {
+      setError('⚠️ El mensaje no puede estar vacío.');
+      return;
+    }
 
-    setLoading(true);  // Mostrar que se está procesando la solicitud
-
-    // Obtener la URL de la API desde la variable de entorno
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://backendpythonbot.vercel.app';
- 
+    setLoading(true);
+    setError('');
 
     try {
       const res = await fetch(`${apiUrl}/ask`, {
@@ -29,28 +40,34 @@ function ChatBot() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: messageToSend })  // Enviar el mensaje como JSON
+        body: JSON.stringify({ message: messageToSend })
       });
+
+      if (!res.ok) {
+        throw new Error(`Error del servidor: ${res.status}`);
+      }
+
       const data = await res.json();
       const botResponse = data.response;
 
-      // Verificar si la respuesta contiene una URL
+      // Validar la respuesta del bot
       if (botResponse.includes('http://') || botResponse.includes('https://')) {
-        setResponse(` ${botResponse}`);
+        setResponse(`🔗 ${botResponse}`);
       } else {
         setResponse(botResponse);
       }
+
     } catch (error) {
-      console.error("Error:", error);
-      setResponse("Lo siento, ocurrió un error.");
+      console.error("❌ Error:", error);
+      setError("Lo siento, ocurrió un error. Inténtalo de nuevo.");
     } finally {
-      setLoading(false);  // Ocultar el indicador de carga
+      setLoading(false);
     }
   };
 
   // Función para abrir/cerrar el chatbot
   const toggleChatbot = () => {
-    setChatbotOpen(!chatbotOpen);  // Cambiar estado para abrir o cerrar el chatbot
+    setChatbotOpen(!chatbotOpen);
   };
 
   // Función para alternar la visibilidad del menú de opciones
@@ -58,38 +75,38 @@ function ChatBot() {
     setShowMenu(!showMenu);
   };
 
-  // Función para manejar la selección de una opción y cerrar el menú
+  // Función para manejar la selección de una opción
   const handleOptionSelect = (messageToSend) => {
-    sendMessage(messageToSend);  // Enviar el mensaje
-    setShowMenu(false);  // Cerrar el menú automáticamente después de la selección
+    sendMessage(messageToSend);
+    setShowMenu(false);
   };
 
-  // Función para renderizar la respuesta y manejar los enlaces
+  // Función para renderizar la respuesta y manejar enlaces
   const renderResponse = () => {
     const responseText = response || 'Selecciona o escribe algo...';
+    const regex = /(https?:\/\/[^\s]+)/g;
 
-    // Usamos expresiones regulares para convertir los enlaces en etiquetas <a>
-    const regex = /(https?:\/\/[^\s]+)/g; // Buscar URLs en la respuesta
-    const formattedResponse = responseText.split(regex).map((part, index) => {
-      if (index % 2 === 1) {
-        return <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a>;
-      }
-      return part;
-    });
-
-    return formattedResponse;
+    return responseText.split(regex).map((part, index) =>
+      regex.test(part) ? (
+        <a key={index} href={part} target="_blank" rel="noopener noreferrer">
+          {part}
+        </a>
+      ) : (
+        part
+      )
+    );
   };
 
-  // Función para manejar el evento de presionar "Enter" en el input
+  // Enviar el mensaje cuando se presiona "Enter"
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      sendMessage(message);  // Enviar el mensaje cuando se presiona "Enter"
+    if (e.key === 'Enter' && !loading) {
+      sendMessage(message);
     }
   };
 
   return (
     <div className='floating-buttons'>
-      {/* Botón flotante de chatbot */}
+      {/* Botón flotante del chatbot */}
       <button className="merkahorro-chatbot-icon" onClick={toggleChatbot}>
         <img src="chatbot.png" alt="Chatbot Icon" />
       </button>
@@ -98,42 +115,36 @@ function ChatBot() {
       {chatbotOpen && (
         <div className="merkahorro-chatbot-container">
           <div className="merkahorro-chatbot-header">
-            <span>Pregunta a Merkahorro</span>
+            <span>🤖 Pregunta a Merkahorro</span>
             <button className="merkahorro-close-chat-btn" onClick={toggleChatbot}>
               &times;
             </button>
           </div>
 
           <div className="merkahorro-chat-messages">
-            {/* Mostrar la respuesta */}
+            {error && <div className="merkahorro-error-message">{error}</div>}
             <div className="merkahorro-bot-message merkahorro-message">
-              {renderResponse()}
+              {loading ? '⏳ Procesando tu solicitud...' : renderResponse()}
             </div>
           </div>
 
-          {/* Mostrar el menú interactivo con opciones */}
+          {/* Mostrar menú interactivo */}
           {showMenu && (
             <div className="chatbot-menu">
-              <button onClick={() => handleOptionSelect("¿Cuáles son los horarios?")}>Horarios</button>
-              <button onClick={() => handleOptionSelect("¿Cuántas sedes hay?")}>Sedes</button>
-              <button onClick={() => handleOptionSelect("¿Cómo puedo postularme?")}>Postulación</button>
-              <button onClick={() => handleOptionSelect("¿Cuáles son las promociones?")}>Promociones</button>
-              <button onClick={() => handleOptionSelect("¿Cómo reservo un salón?")}>Reservas</button>
+              <button onClick={() => handleOptionSelect("¿Cuáles son los horarios?")}>🕒 Horarios</button>
+              <button onClick={() => handleOptionSelect("¿Cuántas sedes hay?")}>📍 Sedes</button>
+              <button onClick={() => handleOptionSelect("¿Cómo puedo postularme?")}>💼 Postulación</button>
+              <button onClick={() => handleOptionSelect("¿Cuáles son las promociones?")}>🎉 Promociones</button>
+              <button onClick={() => handleOptionSelect("¿Cómo reservo un salón?")}>📅 Reservas</button>
             </div>
           )}
 
           {/* Botón para alternar el menú */}
-          {showMenu ? (
-            <button className="merkahorro-show-menu-btn" onClick={toggleMenu}>
-              Ocultar opciones
-            </button>
-          ) : (
-            <button className="merkahorro-show-menu-btn" onClick={toggleMenu}>
-              Ver opciones
-            </button>
-          )}
+          <button className="merkahorro-show-menu-btn" onClick={toggleMenu}>
+            {showMenu ? '⬆️ Ocultar opciones' : '⬇️ Ver opciones'}
+          </button>
 
-          {/* Campo de entrada para escribir el mensaje */}
+          {/* Campo de entrada */}
           {!showMenu && (
             <div className="merkahorro-chat-input-container">
               <input
@@ -141,7 +152,7 @@ function ChatBot() {
                 type="text"
                 value={message}
                 onChange={handleMessageChange}
-                onKeyDown={handleKeyDown}  // Agregar evento de teclado para "Enter"
+                onKeyDown={handleKeyDown}
                 placeholder="Escribe tu pregunta..."
               />
               <button
@@ -149,7 +160,7 @@ function ChatBot() {
                 onClick={() => sendMessage(message)}
                 disabled={loading}
               >
-                Enviar
+                {loading ? 'Enviando...' : 'Enviar'}
               </button>
             </div>
           )}
