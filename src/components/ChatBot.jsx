@@ -20,7 +20,8 @@ function ChatBot() {
     setLoading(true);  // Mostrar que se está procesando la solicitud
 
     // Obtener la URL de la API desde la variable de entorno
-    const apiUrl = process.env.REACT_APP_API_URL || 'https://backendpythonbot.vercel.app'; // Usa localhost si no está configurada la variable de entorno
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://backendpythonbot.vercel.app';
+ 
 
     try {
       const res = await fetch(`${apiUrl}/ask`, {
