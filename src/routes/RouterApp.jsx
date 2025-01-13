@@ -54,5 +54,8 @@ export let routes = [
   {
     path: '/postulacionesTable', 
     element: <PostulacionesTable />,
-  }  
+  } , 
+  {
+    path: '/https://merkahorro.com/Aula/', 
+  }
 ];
