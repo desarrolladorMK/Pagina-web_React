@@ -81,19 +81,24 @@ function ChatBot() {
     setShowMenu(false);
   };
 
-  // Función para renderizar la respuesta y manejar enlaces
+  // Función para renderizar la respuesta y manejar enlaces y HTML
   const renderResponse = () => {
     const responseText = response || 'Selecciona o escribe algo...';
     const regex = /(https?:\/\/[^\s]+)/g;
 
-    return responseText.split(regex).map((part, index) =>
-      regex.test(part) ? (
-        <a key={index} href={part} target="_blank" rel="noopener noreferrer">
-          {part}
-        </a>
-      ) : (
-        part
-      )
+    // Renderizar enlaces como links clicables
+    return (
+      <div>
+        {responseText.split(regex).map((part, index) => 
+          regex.test(part) ? (
+            <a key={index} href={part} target="_blank" rel="noopener noreferrer">
+              {part}
+            </a>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </div>
     );
   };
 
@@ -124,7 +129,7 @@ function ChatBot() {
           <div className="merkahorro-chat-messages">
             {error && <div className="merkahorro-error-message">{error}</div>}
             <div className="merkahorro-bot-message merkahorro-message">
-              {loading ? '⏳ Procesando tu solicitud...' : renderResponse()}
+              {loading ? '⏳ Procesando tu solicitud...' : <div dangerouslySetInnerHTML={{ __html: response }} />}
             </div>
           </div>
 
