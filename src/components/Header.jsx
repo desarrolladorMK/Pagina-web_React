@@ -82,9 +82,7 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                        <Link to="/" onClick={handleLinkClick}>
-                                Aula
-                            </Link>
+                        <a href="https://merkahorro.com/Aula/"  onClick={handleLinkClick} > Aula</a>
                         </li>
                         <li className="login-icon">
                             <Link to="/login" onClick={handleLinkClick}>
