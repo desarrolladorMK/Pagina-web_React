@@ -410,7 +410,7 @@ const Home = () => {
             <h2>Fundadores</h2>
             <p>
               Supermercados Merkahorro surgió como la materialización de la
-              visión compartida por los hermanos Diego y William Ramírez en 2015.
+              visión compartida por los dos hermanos en 2015.
               A pesar de la carencia inicial de recursos, estos emprendedores se
               dedicaron a hacer realidad su ambicioso proyecto, concentrándose en
               el municipio de Copacabana.
