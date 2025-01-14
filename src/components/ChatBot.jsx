@@ -140,7 +140,7 @@ function ChatBot() {
       {chatbotOpen && (
         <div className="merkahorro-chatbot-container">
           <div className="merkahorro-chatbot-header">
-            <span>🤖 Pregunta a Merkahorro</span>
+            <span>🤖 Pregunta a Merkahorro AI</span>
             <button className="merkahorro-close-chat-btn" onClick={toggleChatbot}>
               &times;
             </button>
