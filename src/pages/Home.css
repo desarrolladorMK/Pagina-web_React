@@ -91,6 +91,7 @@ body {
     object-fit: cover;
     transition: transform;
   }
+  
 
   /* Asegura que el navbar ocupe todo el ancho de la pantalla */
   .navbar {
@@ -102,8 +103,8 @@ body {
 
   /* Asegura que el contenedor del carrusel ocupe todo el ancho de la pantalla */
   .carousel {
-    width: 90%; /* Asegura que el carrusel ocupe el 100% del ancho disponible */
-    max-width: 90%; /* No debe superar el 100% del ancho de la página */
+    width: 100%; /* Asegura que el carrusel ocupe el 100% del ancho disponible */
+    max-width: 100%; /* No debe superar el 100% del ancho de la página */
     margin: auto; /* Centra el carrusel */
     overflow: hidden;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
