@@ -168,6 +168,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px;
+  max-height: 300px; /* Establecer un límite de altura para que se vea completo */
 }
 
 .chatbot-menu button {
@@ -179,6 +180,7 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  
 }
 
 .chatbot-menu button:hover {
@@ -200,4 +202,13 @@
 
 .merkahorro-show-menu-btn:hover {
   background-color: #89DC00;
+}
+
+
+/* Asegúrate de que el chatbot no se recorte en pantallas pequeñas */
+@media (max-width: 600px) {
+  .merkahorro-chatbot-container {
+    width: 100%;
+    max-height: 90%; /* Aumenta el máximo alto en pantallas pequeñas */
+  }
 }
