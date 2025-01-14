@@ -128,7 +128,7 @@ function ReservaForm() {
                 "success"
               ).then(() => {
                 // Redirigir a otra página después de la confirmación
-                window.location.href = "https://www.construahorrosas.com/";
+                window.location.href = "https://www.merkahorro.com/";
               });
             } else {
               // Si no se recibe el mensaje esperado, mostrar un mensaje de error
