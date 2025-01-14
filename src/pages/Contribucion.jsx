@@ -4,7 +4,6 @@ import { Footer } from '../components/Footer';
 import { ChatBot } from '../components/ChatBot';
 
 const Contribucion = () => {
-
   // Datos de las secciones con las especificaciones proporcionadas
   const sections = [
     // Obras Sociales
@@ -155,12 +154,13 @@ const Contribucion = () => {
             <h2 className="section-title">{section.title}</h2>
             <div className="contribucion-video-container">
               {section.videos.map((video, videoIndex) => (
-                <a href={video.instagramLink} key={videoIndex} target="_blank" rel="noopener noreferrer">
+                <a href={video.instagramLink} key={videoIndex} target="_blank" rel="noopener noreferrer" className="contribucion-thumbnail-container">
                   <img
                     src={video.thumbnail}
                     alt={`Thumbnail de ${section.title}`}
                     className="contribucion-thumbnail"
                   />
+                  <div className="play-button-videos">▶</div>
                 </a>
               ))}
             </div>

@@ -1,3 +1,4 @@
+/* ======== ANIMACIÓN DE FONDO ======== */
 @keyframes contribucionGradientAnimation {
   0% {
     background-color: #210d65;
@@ -10,6 +11,7 @@
   }
 }
 
+/* ======== ESTILO GENERAL ======== */
 .contribucion-body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -19,9 +21,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.5s ease-in-out;
 }
 
-/* Título principal */
+/* ======== HEADER ======== */
 .contribucion-header {
   display: flex;
   flex-direction: column;
@@ -31,38 +36,39 @@
   color: #ffffff;
   width: 100%;
   box-sizing: border-box;
+  transition: all 0.5s ease-in-out;
 }
 
 .contribucion-header h1 {
   color: #ffffff;
+  margin: 10px 0;
 }
 
 .logo-container {
-  position: relative;
-  width: 100%;
   display: flex;
   justify-content: center;
+  width: 100%;
+  transition: all 0.5s ease-in-out;
 }
 
 .logo-container img {
-  position: relative;
-  top: -20px;
-  border-radius: 8px;
   width: 20%;
   max-width: 250px;
   height: auto;
-  z-index: 100;
+  border-radius: 8px;
+  transition: all 0.5s ease-in-out;
 }
 
-/* Títulos de secciones */
+/* ======== TÍTULOS DE SECCIONES ======== */
 .contribucion-section h2 {
   text-align: center;
-  margin: 20px 10px;
-  color: rgb(255, 244, 244);
+  margin: 20px 0;
+  color: #ffffff;
   font-size: 1.8em;
+  transition: all 0.5s ease-in-out;
 }
 
-/* Contenedor de videos */
+/* ======== CONTENEDOR DE IMÁGENES ======== */
 .contribucion-video-container {
   display: flex;
   flex-wrap: wrap;
@@ -70,58 +76,105 @@
   gap: 15px;
   padding: 20px;
   margin-bottom: 40px;
+  transition: all 0.5s ease-in-out;
 }
 
-/* Ajustes para videos locales y YouTube */
-.contribucion-video-container video,
-.youtube-video {
-  width: 100%;
-  max-width: 300px; /* Tamaño máximo */
-  height: 500px; /* Altura fija */
-  border-radius: 8px;
-  object-fit: cover; /* Ajusta el contenido dentro del contenedor */
-  background-color: #000; /* Evita bordes claros */
+/* ======== ESTILO DE IMÁGENES ======== */
+.contribucion-thumbnail-container {
+  position: relative;
+  width: 250px;
+  height: 350px;
   overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, width 0.5s ease, height 0.5s ease;
+}
+
+.contribucion-thumbnail-container:hover {
+  transform: scale(1.1);
+}
+
+.contribucion-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.contribucion-video-container video:hover,
-.youtube-video:hover {
-  transform: scale(1.05);
+/* ======== BOTÓN DE PLAY CENTRADO ======== */
+.play-button-videos {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Media Queries para diferentes tamaños de pantalla */
-@media (max-width: 600px) {
-  .contribucion-header h1 {
-    font-size: 1.5em;
-    padding: 15px;
-  }
+.play-button-videos:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translate(-50%, -50%) scale(1.1);
+}
 
-  .logo-container img {
+/* ======== RESPONSIVE DESIGN ======== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .contribucion-thumbnail-container {
+    width: 200px;
+    height: 300px;
+  }
+  .contribucion-video-container {
+    transition: all 0.8s ease-in-out;
+  }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+  .contribucion-thumbnail-container {
+    width: 160px;
+    height: 240px;
+  }
+  .play-button-videos {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+  .contribucion-video-container {
+    transition: all 0.8s ease-in-out;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .contribucion-thumbnail-container {
+    width: 120px;
+    height: 180px;
+  }
+  .play-button-videos {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  .contribucion-video-container {
+    transition: all 0.8s ease-in-out;
+  }
+}
+
+/* Ajuste para pantallas grandes */
+@media (min-width: 1440px) {
+  .contribucion-body {
     width: 100%;
-    max-width: 200px;
-  }
-
-  .contribucion-video-container video,
-  .youtube-video {
-    width: 100%;
-    height: 400px;
+    max-width: 1920px;
+    margin: 0 auto;
   }
 }
-
-@media (min-width: 600px) and (max-width: 1024px) {
-  .contribucion-video-container video,
-  .youtube-video {
-    width: 45%;
-    height: 500px;
-  }
-}
-
-@media (min-width: 1025px) {
-  .contribucion-video-container video,
-  .youtube-video {
-    width: 21.1%;
-    height: 490px;
-  }
-}
-
