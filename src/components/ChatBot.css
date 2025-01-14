@@ -204,11 +204,53 @@
   background-color: #89DC00;
 }
 
-
-/* Asegúrate de que el chatbot no se recorte en pantallas pequeñas */
-@media (max-width: 600px) {
+/* Estilos para pantallas muy pequeñas (móviles pequeños) */
+@media (max-width: 320px) {
   .merkahorro-chatbot-container {
     width: 100%;
-    max-height: 90%; /* Aumenta el máximo alto en pantallas pequeñas */
+    max-height: 85%;
+    font-size: 12px;
+    padding: 5px;
   }
 }
+
+/* Estilos para móviles estándar */
+@media (min-width: 321px) and (max-width: 480px) {
+  .merkahorro-chatbot-container {
+    width: 90%;
+    max-height: 90%;
+  }
+}
+
+/* Estilos para móviles grandes y tablets pequeñas */
+@media (min-width: 481px) and (max-width: 768px) {
+  .merkahorro-chatbot-container {
+    width: 90%;
+    max-height: 90%;
+  }
+}
+
+/* Estilos para tablets y pantallas medianas */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .merkahorro-chatbot-container {
+    width: 80%;
+    max-height: 85%;
+  }
+}
+
+/* Estilos para pantallas grandes (escritorio) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .merkahorro-chatbot-container {
+    width: 60%;
+    max-height: 80%;
+  }
+}
+
+/* Estilos para pantallas muy grandes (monitores 4K o más) */
+@media (min-width: 1441px) {
+  .merkahorro-chatbot-container {
+    width: 50%;
+    max-height: 75%;
+  }
+}
+
