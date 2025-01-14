@@ -251,7 +251,7 @@ function ReservaForm() {
               text: data.mensaje,
             }).then(() => {
               // Redirigir a una nueva URL después de mostrar el mensaje
-              window.location.href = "https://www.construahorrosas.com/"; // Reemplaza con la URL deseada
+              window.location.href = "https://www.merkahorro.com/"; // Reemplaza con la URL deseada
             });
 
             // Limpiar campos tras cancelar
