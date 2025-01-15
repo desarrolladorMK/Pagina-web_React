@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import './Gastos.css';
 
 const Gastos = () => {
-  const [formData, setFormData] = useState({
-    empleado_id: "", // Asegúrate de agregar este campo, probablemente deberías obtenerlo desde el usuario autenticado.
-    nombre_completo: "",
+  const [formData, setFormData] = useState({ 
+    nombre_completo: "", // Campo para el nombre completo
+    area: "", // Campo para el área
     descripcion: "",
     monto_estimado: "", // Cambié "precio" por "monto_estimado"
     archivo_factura: "", // Cambié "factura" por "archivo_factura"
@@ -80,6 +80,40 @@ const Gastos = () => {
         <div className="gastos-form-container">
           <h2 className="gastos-form-title">Formulario de Solicitud de Gasto</h2>
           <form onSubmit={handleSubmit} className="gastos-form">
+            {/* Campo para nombre completo */}
+            <div className="gastos-form-field">
+              <label className="gastos-label">Nombre Completo:</label>
+              <input
+                type="text"
+                name="nombre_completo" // Campo para nombre completo
+                value={formData.nombre_completo}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
+            </div>
+
+            {/* Campo para seleccionar el área */}
+            <div className="gastos-form-field">
+              <label className="gastos-label">Área:</label>
+              <select
+                name="area" // Campo para seleccionar el área
+                value={formData.area}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              >
+                <option value="">Seleccione un área</option>
+                <option value="Gerencia">Gerencia</option>
+                <option value="Gestión humana">Dirección Gestión humana</option>
+                <option value="Operaciones">Dirección Operaciones</option>
+                <option value="Contabilidad">Dirección Administrativa y Financiera</option>
+                <option value="Comercial">Dirección Comercial</option>
+                <option value="Bachilleres">Escuela de Bachilleres</option>
+              </select>
+            </div>
+
+            {/* Campo de descripción */}
             <div className="gastos-form-field">
               <label className="gastos-label">Descripción:</label>
               <input
@@ -91,6 +125,8 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
+
+            {/* Campo de monto estimado */}
             <div className="gastos-form-field">
               <label className="gastos-label">Monto Estimado:</label>
               <input
@@ -102,6 +138,8 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
+
+            {/* Campo de archivo factura */}
             <div className="gastos-form-field">
               <label className="gastos-label">Factura (URL o archivo):</label>
               <input
@@ -113,6 +151,8 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
+
+            {/* Campo de archivo cotización */}
             <div className="gastos-form-field">
               <label className="gastos-label">Cotización (URL o archivo):</label>
               <input
@@ -124,17 +164,20 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
+
+            {/* Campo para correo electrónico del solicitante */}
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del Solicitante:</label>
               <input
                 type="email"
-                name="correo_empleado" // Cambié el nombre del campo aquí
-                value={formData.correo_empleado} // Cambié el valor aquí
+                name="correo_empleado"
+                value={formData.correo_empleado}
                 onChange={handleChange}
                 required
                 className="gastos-input"
               />
             </div>
+
             <button type="submit" className="gastos-submit-button">Enviar</button>
           </form>
         </div>
