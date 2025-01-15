@@ -9,6 +9,7 @@ import { Vacantes } from "../pages/Vacantes";
 import { Salones } from "../pages/Salones";
 import { ReservaForm } from "../pages/Reserva";
 import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
+import {Gastos} from "../pages/Gastos";
 
 export let routes = [
   {
@@ -48,8 +49,8 @@ export let routes = [
     element: <Salones />,
   },
   {
-    path: '/reservas',
-    element: <ReservaForm />,
+    path: '/gastos',
+    element: <Gastos />,
   },
   {
     path: '/postulacionesTable', 
