@@ -1,0 +1,66 @@
+.gastos-container {
+    padding: 20px;
+  }
+  
+  .gastos-header {
+    font-size: 2em;
+    text-align: center;
+  }
+  
+  .gastos-form-container {
+    margin-top: 20px;
+  }
+  
+  .gastos-form-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .gastos-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .gastos-form-field {
+    margin-bottom: 15px;
+  }
+  
+  .gastos-label {
+    font-weight: bold;
+  }
+  
+  .gastos-input {
+    padding: 8px;
+    font-size: 1em;
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .gastos-submit-button {
+    padding: 10px;
+    background-color: #89DC00;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  
+  .gastos-submit-button:hover {
+    background-color: #89DC00;
+  }
+  
+  .gastos-submitted-message {
+    text-align: center;
+  }
+  
+  .gastos-decision-message {
+    margin-top: 20px;
+    text-align: center;
+    color: green;
+  }
+  
+  .gastos-error-message {
+    color: red;
+    text-align: center;
+  }
+  
