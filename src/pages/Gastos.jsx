@@ -3,13 +3,13 @@ import './Gastos.css';
 
 const Gastos = () => {
   const [formData, setFormData] = useState({ 
-    nombre_completo: "", // Campo para el nombre completo
-    area: "", // Campo para el área
+    nombre_completo: "",
+    area: "",
     descripcion: "",
-    monto_estimado: "", // Cambié "precio" por "monto_estimado"
-    archivo_factura: "", // Cambié "factura" por "archivo_factura"
-    archivo_cotizacion: "", // Cambié "cotizacion" por "archivo_cotizacion"
-    correo_empleado: "",  // Cambié el nombre del campo aquí
+    monto_estimado: "",
+    archivo_factura: "",
+    archivo_cotizacion: "",
+    correo_empleado: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
@@ -80,12 +80,11 @@ const Gastos = () => {
         <div className="gastos-form-container">
           <h2 className="gastos-form-title">Formulario de Solicitud de Gasto</h2>
           <form onSubmit={handleSubmit} className="gastos-form">
-            {/* Campo para nombre completo */}
             <div className="gastos-form-field">
               <label className="gastos-label">Nombre Completo:</label>
               <input
                 type="text"
-                name="nombre_completo" // Campo para nombre completo
+                name="nombre_completo"
                 value={formData.nombre_completo}
                 onChange={handleChange}
                 required
@@ -93,11 +92,10 @@ const Gastos = () => {
               />
             </div>
 
-            {/* Campo para seleccionar el área */}
             <div className="gastos-form-field">
               <label className="gastos-label">Área:</label>
               <select
-                name="area" // Campo para seleccionar el área
+                name="area"
                 value={formData.area}
                 onChange={handleChange}
                 required
@@ -109,11 +107,10 @@ const Gastos = () => {
                 <option value="Operaciones">Dirección Operaciones</option>
                 <option value="Contabilidad">Dirección Administrativa y Financiera</option>
                 <option value="Comercial">Dirección Comercial</option>
-                <option value="Bachilleres">Escuela de Bachilleres</option>
+                
               </select>
             </div>
 
-            {/* Campo de descripción */}
             <div className="gastos-form-field">
               <label className="gastos-label">Descripción:</label>
               <input
@@ -126,7 +123,6 @@ const Gastos = () => {
               />
             </div>
 
-            {/* Campo de monto estimado */}
             <div className="gastos-form-field">
               <label className="gastos-label">Monto Estimado:</label>
               <input
@@ -139,7 +135,6 @@ const Gastos = () => {
               />
             </div>
 
-            {/* Campo de archivo factura */}
             <div className="gastos-form-field">
               <label className="gastos-label">Factura (URL o archivo):</label>
               <input
@@ -152,7 +147,6 @@ const Gastos = () => {
               />
             </div>
 
-            {/* Campo de archivo cotización */}
             <div className="gastos-form-field">
               <label className="gastos-label">Cotización (URL o archivo):</label>
               <input
@@ -165,7 +159,6 @@ const Gastos = () => {
               />
             </div>
 
-            {/* Campo para correo electrónico del solicitante */}
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del Solicitante:</label>
               <input
@@ -183,8 +176,18 @@ const Gastos = () => {
         </div>
       ) : (
         <div className="gastos-submitted-message">
-          <h2>Solicitud enviada exitosamente</h2>
-          <p>Tu solicitud de gasto ha sido enviada. El token de la solicitud es: <strong>{token}</strong></p>
+          <h2>¡Solicitud Enviada Exitosamente!</h2>
+          <p>Tu solicitud de gasto ha sido recibida y está siendo procesada por nuestro equipo.</p>
+          <p><strong>Detalles de tu solicitud:</strong></p>
+          <ul>
+            <li><strong>Nombre Completo:</strong> {formData.nombre_completo}</li>
+            <li><strong>Área:</strong> {formData.area}</li>
+            <li><strong>Descripción:</strong> {formData.descripcion}</li>
+            <li><strong>Monto Estimado:</strong> ${formData.monto_estimado}</li>
+            <li><strong>Factura:</strong> <a href={formData.archivo_factura} target="_blank">Ver Factura</a></li>
+            <li><strong>Cotización:</strong> <a href={formData.archivo_cotizacion} target="_blank">Ver Cotización</a></li>
+          </ul>
+          <p>Nuestro equipo revisará tu solicitud y te notificará sobre la decisión tomada a la brevedad.</p>
         </div>
       )}
 
