@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import './Gastos.css';
+import "./Gastos.css";
 
 const Gastos = () => {
-  const [formData, setFormData] = useState({ 
+  const [formData, setFormData] = useState({
     nombre_completo: "",
     area: "",
     descripcion: "",
@@ -18,7 +18,7 @@ const Gastos = () => {
   const [historial, setHistorial] = useState([]);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
-  const API_URL = 'https://backend-gastos.vercel.app/api';
+  const API_URL = "https://backend-gastos.vercel.app/api";
 
   const checkDecision = async () => {
     try {
@@ -46,9 +46,13 @@ const Gastos = () => {
         // Scroll automático al historial
         if (!mostrarHistorial) {
           setTimeout(() => {
-            const historialElement = document.getElementById("gastos-historial");
+            const historialElement =
+              document.getElementById("gastos-historial");
             if (historialElement) {
-              historialElement.scrollIntoView({ behavior: "smooth", block: "start" });
+              historialElement.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
             }
           }, 300);
         }
@@ -61,63 +65,64 @@ const Gastos = () => {
     }
   };
   // Formateador de moneda colombiana
-const formatoCOP = new Intl.NumberFormat('es-CO', {
-  style: 'currency',
-  currency: 'COP',
-  minimumFractionDigits: 0,  // Sin decimales
-  maximumFractionDigits: 0,
-});
+  const formatoCOP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0, // Sin decimales
+    maximumFractionDigits: 0,
+  });
 
-const handleChange = (e) => {
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  if (name === "monto_estimado") {
-    // Eliminar caracteres que no sean dígitos
-    const valorNumerico = value.replace(/\D/g, '');
+    if (name === "monto_estimado") {
+      // Eliminar caracteres que no sean dígitos
+      const valorNumerico = value.replace(/\D/g, "");
 
-    // Convertir a número y formatear en COP
-    const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
+      // Convertir a número y formatear en COP
+      const valorFormateado = valorNumerico
+        ? formatoCOP.format(valorNumerico)
+        : "";
 
-    setFormData({ ...formData, [name]: valorFormateado });
-  } else {
-    setFormData({ ...formData, [name]: value });
-  }
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Limpiar el formato antes de enviar (eliminar símbolos y puntos)
-  const montoLimpio = formData.monto_estimado.replace(/[$.,\s]/g, '');
-
-  const datosFormateados = {
-    ...formData,
-    monto_estimado: parseFloat(montoLimpio)  // Convertir a número
+      setFormData({ ...formData, [name]: valorFormateado });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  try {
-    const response = await fetch(`${API_URL}/requerimientos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(datosFormateados),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (response.ok) {
-      const data = await response.json();
-      setToken(data.token);
-      setIsSubmitted(true);
-      alert("Requerimiento enviado con éxito.");
-    } else {
-      alert("Error al enviar el requerimiento.");
+    // Limpiar el formato antes de enviar (eliminar símbolos y puntos)
+    const montoLimpio = formData.monto_estimado.replace(/[$.,\s]/g, "");
+
+    const datosFormateados = {
+      ...formData,
+      monto_estimado: parseFloat(montoLimpio), // Convertir a número
+    };
+
+    try {
+      const response = await fetch(`${API_URL}/requerimientos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(datosFormateados),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setToken(data.token);
+        setIsSubmitted(true);
+        alert("Requerimiento enviado con éxito.");
+      } else {
+        alert("Error al enviar el requerimiento.");
+      }
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
+      alert("Hubo un error al enviar la solicitud.");
     }
-  } catch (error) {
-    console.error("Error al enviar la solicitud:", error);
-    alert("Hubo un error al enviar la solicitud.");
-  }
-};
-  
+  };
 
   useEffect(() => {
     if (token) {
@@ -131,63 +136,123 @@ const handleSubmit = async (e) => {
   return (
     <div className="gastos-container">
       <div className="logo-container">
-          <a href="/">
-            <img src="logoMK.png" alt="Logo Merkahorro" />
-          </a>
-        </div>
+        <a href="/">
+          <img src="logoMK.png" alt="Logo Merkahorro" />
+        </a>
+      </div>
       <h1 className="gastos-header">Automatización de Gasto</h1>
 
       {!isSubmitted ? (
         <div className="gastos-form-container">
-          <h2 className="gastos-form-title">Formulario de Solicitud de Gasto</h2>
+          <h2 className="gastos-form-title">
+            Formulario de Solicitud de Gasto
+          </h2>
           <form onSubmit={handleSubmit} className="gastos-form">
-            
             <div className="gastos-form-field">
               <label className="gastos-label">Nombre Completo:</label>
-              <input type="text" name="nombre_completo" value={formData.nombre_completo} onChange={handleChange} required className="gastos-input" />
+              <input
+                type="text"
+                name="nombre_completo"
+                value={formData.nombre_completo}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
             <div className="gastos-form-field">
               <label className="gastos-label">Área:</label>
-              <select name="area" value={formData.area} onChange={handleChange} required className="gastos-input">
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              >
                 <option value="">Seleccione un área</option>
                 <option value="Gerencia">Gerencia</option>
                 <option value="Gestión humana">Dirección Gestión humana</option>
                 <option value="Operaciones">Dirección Operaciones</option>
-                <option value="Contabilidad">Dirección Administrativa y Financiera</option>
+                <option value="Contabilidad">
+                  Dirección Administrativa y Financiera
+                </option>
                 <option value="Comercial">Dirección Comercial</option>
               </select>
             </div>
 
             <div className="gastos-form-field">
               <label className="gastos-label">Descripción:</label>
-              <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} required className="gastos-input" />
+              <input
+                type="text"
+                name="descripcion"
+                value={formData.descripcion}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
             <div className="gastos-form-field">
               <label className="gastos-label">Monto Estimado:</label>
-              <input type="number" name="monto_estimado" value={formData.monto_estimado} onChange={handleChange} required className="gastos-input" />
+              <input
+                type="text"
+                name="monto_estimado"
+                value={formData.monto_estimado}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
             <div className="gastos-form-field">
               <label className="gastos-label">Factura (URL o archivo):</label>
-              <input type="text" name="archivo_factura" value={formData.archivo_factura} onChange={handleChange} required className="gastos-input" />
+              <input
+                type="text"
+                name="archivo_factura"
+                value={formData.archivo_factura}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Cotización (URL o archivo):</label>
-              <input type="text" name="archivo_cotizacion" value={formData.archivo_cotizacion} onChange={handleChange} required className="gastos-input" />
+              <label className="gastos-label">
+                Cotización (URL o archivo):
+              </label>
+              <input
+                type="text"
+                name="archivo_cotizacion"
+                value={formData.archivo_cotizacion}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del Empleado:</label>
-              <input type="email" name="correo_empleado" value={formData.correo_empleado} onChange={handleChange} required className="gastos-input" />
+              <input
+                type="email"
+                name="correo_empleado"
+                value={formData.correo_empleado}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
             </div>
 
-            <button type="submit" className="gastos-submit-button">Enviar</button>
+            <button type="submit" className="gastos-submit-button">
+              Enviar
+            </button>
           </form>
 
-          <button onClick={obtenerHistorial} className="gastos-historial-button">📜</button>
+          <button
+            onClick={obtenerHistorial}
+            className="gastos-historial-button"
+          >
+            📜
+          </button>
         </div>
       ) : (
         <div className="gastos-submitted-message">
@@ -217,8 +282,12 @@ const handleSubmit = async (e) => {
                   <td>{gasto.area}</td>
                   <td>{gasto.descripcion}</td>
                   <td>${gasto.monto_estimado}</td>
-                  <td><a href={gasto.archivo_factura}>Ver</a></td>
-                  <td><a href={gasto.archivo_cotizacion}>Ver</a></td>
+                  <td>
+                    <a href={gasto.archivo_factura}>Ver</a>
+                  </td>
+                  <td>
+                    <a href={gasto.archivo_cotizacion}>Ver</a>
+                  </td>
                   <td>{gasto.estado}</td>
                 </tr>
               ))}
