@@ -45,6 +45,26 @@
 
 
 
+.merkahorro-chatbot-welcome-message {
+  background-color: #F0F8FF; /* Fondo de color claro */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  font-size: 1rem;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 1s ease-out; /* Agrega una animación de entrada */
+}
+
+
+
+
+
 /* Contenedor del chatbot */
 .merkahorro-chatbot-container {
   position: fixed;

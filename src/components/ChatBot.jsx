@@ -8,8 +8,8 @@ function ChatBot() {
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState('');
-  const [isPQR, setIsPQR] = useState(false);  // Para manejar el estado de PQR
-
+  const [isPQR, setIsPQR] = useState(false);
+  const [hasStartedChat, setHasStartedChat] = useState(false); // Control si el chat comenzó
   const apiUrl = import.meta.env.VITE_API_URL || 'https://backendpythonbot.vercel.app';
 
   useEffect(() => {
@@ -48,13 +48,9 @@ function ChatBot() {
       const data = await res.json();
       const botResponse = data.response;
 
-      // Si la respuesta contiene enlaces, los mostramos correctamente
-      // Verificamos si el contenido es HTML
       if (botResponse.includes('<') && botResponse.includes('>')) {
-        // Si contiene HTML, lo renderizamos con dangerouslySetInnerHTML
         setResponse(<span dangerouslySetInnerHTML={{ __html: botResponse }} />);
       } else {
-        // Si la respuesta es solo texto, procesamos los enlaces dentro de ella
         setResponse(processLinks(botResponse));
       }
     } catch (error) {
@@ -66,12 +62,10 @@ function ChatBot() {
   };
 
   const processLinks = (text) => {
-    // Aquí detectamos cualquier enlace en el texto y lo hacemos clickeable
     const regex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(regex);
 
     return parts.map((part, index) => {
-      // Si es un enlace, lo convertimos en un enlace clickeable
       if (regex.test(part)) {
         return (
           <a key={index} href={part} target="_blank" rel="noopener noreferrer">
@@ -86,6 +80,20 @@ function ChatBot() {
 
   const toggleChatbot = () => {
     setChatbotOpen(!chatbotOpen);
+    if (!chatbotOpen) {
+      // Mostrar el mensaje de bienvenida con estilo llamativo
+      setResponse(
+        <div className="merkahorro-chatbot-welcome-message">
+          <span>👋 ¡Bienvenido!</span>
+          <p>
+            Soy el asistente de Merkahorro. Estoy aquí para brindarte información
+            útil sobre nuestras sedes, horarios, promociones y mucho más. ¿En qué
+            puedo ayudarte hoy?
+          </p>
+        </div>
+      );
+      setHasStartedChat(true);  // Iniciar el chat
+    }
   };
 
   const toggleMenu = () => {
@@ -105,20 +113,17 @@ function ChatBot() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !loading) {
       if (isPQR) {
-        // Enlace de WhatsApp
         const whatsappLink = `https://wa.me/573103926576?text=${encodeURIComponent(message)}`;
-
-        // Aquí seguimos renderizando el enlace de WhatsApp como React
         setResponse(
           <span>
             Dejanos tu PQR en el siguiente enlace:{' '}
-            <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+           {/*  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
               WhatsApp
-            </a>.
+            </a>. */}
           </span>
         );
-        setMessage('');  // Limpiar el campo de mensaje
-        setIsPQR(false);  // Resetear el estado de PQR
+        setMessage('');
+        setIsPQR(false);
       } else {
         sendMessage(message);
       }
@@ -153,7 +158,7 @@ function ChatBot() {
             </div>
           </div>
 
-          {showMenu && (
+          {showMenu && hasStartedChat && (
             <div className="chatbot-menu">
               <button onClick={() => handleOptionSelect("¿Cuáles son los horarios?")}>🕒 Horarios</button>
               <button onClick={() => handleOptionSelect("¿Cuántas sedes hay?")}>📍 Sedes</button>
@@ -168,39 +173,42 @@ function ChatBot() {
             {showMenu ? '⬆️ Ocultar opciones' : '⬇️ Ver opciones'}
           </button>
 
-          <div className="merkahorro-chat-input-container">
-            <input
-              className="merkahorro-input"
-              type="text"
-              value={message}
-              onChange={handleMessageChange}
-              onKeyDown={handleKeyDown}
-              placeholder={isPQR ? "Escribe tu PQR..." : "Escribe tu pregunta..."}
-            />
-            <button
-              className="merkahorro-button"
-              onClick={() => {
-                if (isPQR) {
-                  const whatsappLink = `https://wa.me/573103926576?text=${encodeURIComponent(message)}`;
-                  setResponse(
-                    <span>
-                      Dejanos tu PQR en el siguiente enlace:{' '}
-                      <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                        WhatsApp
-                      </a>.
-                    </span>
-                  );
-                  setMessage('');
-                  setIsPQR(false);
-                } else {
-                  sendMessage(message);
-                }
-              }}
-              disabled={loading}
-            >
-              {loading ? 'Enviando...' : 'Enviar'}
-            </button>
-          </div>
+          {/* Aquí mostramos el campo de entrada de texto y el botón de envío */}
+          {hasStartedChat && (
+            <div className="merkahorro-chat-input-container">
+              <input
+                className="merkahorro-input"
+                type="text"
+                value={message}
+                onChange={handleMessageChange}
+                onKeyDown={handleKeyDown}
+                placeholder={isPQR ? "Escribe tu PQR..." : "Escribe tu pregunta..."}
+              />
+              <button
+                className="merkahorro-button"
+                onClick={() => {
+                  if (isPQR) {
+                   /*  const whatsappLink = `https://wa.me/573103926576?text=${encodeURIComponent(message)}`; */
+                    setResponse(
+                      <span>
+                        Dejanos tu PQR en el siguiente enlace:{' '}
+                        <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                          WhatsApp
+                        </a>.
+                      </span>
+                    );
+                    setMessage('');
+                    setIsPQR(false);
+                  } else {
+                    sendMessage(message);
+                  }
+                }}
+                disabled={loading}
+              >
+                {loading ? 'Enviando...' : 'Enviar'}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
