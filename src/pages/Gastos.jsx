@@ -60,23 +60,43 @@ const Gastos = () => {
       alert("Hubo un error al cargar el historial.");
     }
   };
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    if (name === "monto_estimado") {
+      // Permite solo números y un punto decimal
+      const valorNumerico = value.replace(/[^\d.]/g, '');
+  
+      // Formatea con separador de miles
+      const partes = valorNumerico.split('.');
+      partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  
+      setFormData({ ...formData, [name]: partes.join('.') });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Limpia el monto antes de enviarlo (quita los puntos de miles)
+    const montoLimpio = formData.monto_estimado.replace(/\./g, '').replace(',', '.');
+  
+    const datosFormateados = {
+      ...formData,
+      monto_estimado: parseFloat(montoLimpio)
+    };
+  
     try {
       const response = await fetch(`${API_URL}/requerimientos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(datosFormateados),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setToken(data.token);
@@ -90,6 +110,7 @@ const Gastos = () => {
       alert("Hubo un error al enviar la solicitud.");
     }
   };
+  
 
   useEffect(() => {
     if (token) {
