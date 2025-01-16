@@ -1,12 +1,13 @@
 .body-login {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: #ffffff;
-    overflow: hidden;
-    padding: 10px; /* Espacio en dispositivos pequeños */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('/fondoLogin.png') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+  padding: 10px;
   }
   
   .logo-containermk {
