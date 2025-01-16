@@ -77,8 +77,8 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/gastos" onClick={handleLinkClick}>
-                                Gastos
+                            <Link to="/login" onClick={handleLinkClick}>
+                               Reservas
                             </Link>
                         </li>
                         <li>

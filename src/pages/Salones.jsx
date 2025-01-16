@@ -126,7 +126,7 @@ const Salones = () => {
           <p className="image-title">Sala de Juntas</p>
         </div>
       </div>
-      <Link to="/reservas" className="reserve-link">
+      <Link to="/reserva" className="reserve-link">
         Reserva aquí
       </Link>
 
