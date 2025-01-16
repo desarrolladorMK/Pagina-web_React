@@ -25,6 +25,12 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
         redirect: import.meta.env.VITE_LOGIN_REDIRECT_2 || "/",
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_3 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_3 || "",
+        redirect: import.meta.env.VITE_LOGIN_REDIRECT_3 || "/",
+      },
+
     ];
 
     // Buscar las credenciales correctas

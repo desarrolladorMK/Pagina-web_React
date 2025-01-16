@@ -53,6 +53,10 @@ export let routes = [
     element: <Gastos />,
   },
   {
+    path: '/reserva',
+    element: <ReservaForm />,
+  },
+  {
     path: '/postulacionesTable', 
     element: <PostulacionesTable />,
   } , 
