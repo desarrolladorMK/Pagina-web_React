@@ -60,56 +60,63 @@ const Gastos = () => {
       alert("Hubo un error al cargar el historial.");
     }
   };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-  
-    if (name === "monto_estimado") {
-      // Permite solo números y un punto decimal
-      const valorNumerico = value.replace(/[^\d.]/g, '');
-  
-      // Formatea con separador de miles
-      const partes = valorNumerico.split('.');
-      partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  
-      setFormData({ ...formData, [name]: partes.join('.') });
+  // Formateador de moneda colombiana
+const formatoCOP = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+  minimumFractionDigits: 0,  // Sin decimales
+  maximumFractionDigits: 0,
+});
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "monto_estimado") {
+    // Eliminar caracteres que no sean dígitos
+    const valorNumerico = value.replace(/\D/g, '');
+
+    // Convertir a número y formatear en COP
+    const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
+
+    setFormData({ ...formData, [name]: valorFormateado });
+  } else {
+    setFormData({ ...formData, [name]: value });
+  }
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Limpiar el formato antes de enviar (eliminar símbolos y puntos)
+  const montoLimpio = formData.monto_estimado.replace(/[$.,\s]/g, '');
+
+  const datosFormateados = {
+    ...formData,
+    monto_estimado: parseFloat(montoLimpio)  // Convertir a número
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/requerimientos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(datosFormateados),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setToken(data.token);
+      setIsSubmitted(true);
+      alert("Requerimiento enviado con éxito.");
     } else {
-      setFormData({ ...formData, [name]: value });
+      alert("Error al enviar el requerimiento.");
     }
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    // Limpia el monto antes de enviarlo (quita los puntos de miles)
-    const montoLimpio = formData.monto_estimado.replace(/\./g, '').replace(',', '.');
-  
-    const datosFormateados = {
-      ...formData,
-      monto_estimado: parseFloat(montoLimpio)
-    };
-  
-    try {
-      const response = await fetch(`${API_URL}/requerimientos`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosFormateados),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setToken(data.token);
-        setIsSubmitted(true);
-        alert("Requerimiento enviado con éxito.");
-      } else {
-        alert("Error al enviar el requerimiento.");
-      }
-    } catch (error) {
-      console.error("Error al enviar la solicitud:", error);
-      alert("Hubo un error al enviar la solicitud.");
-    }
-  };
+  } catch (error) {
+    console.error("Error al enviar la solicitud:", error);
+    alert("Hubo un error al enviar la solicitud.");
+  }
+};
   
 
   useEffect(() => {
