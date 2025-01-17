@@ -260,6 +260,31 @@
   transform: translateY(-3px);
 }
 
+.cancelar-btn,
+.cancelar-btn-secondary {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 15px;
+  background: linear-gradient(135deg, #5488dc, #220d65);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(84, 136, 220, 0.4);
+}
+
+.cancelar-btn:hover,
+.cancelar-btn-secondary:hover {
+  background: linear-gradient(135deg, #220d65, #5488dc);
+  box-shadow: 0 8px 25px rgba(84, 136, 220, 0.6);
+  transform: translateY(-3px);
+}
+
+
 /* Diseño responsivo */
 @media (max-width: 600px) {
   .cancelar-title {
