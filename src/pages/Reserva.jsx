@@ -27,6 +27,7 @@ function ReservaForm() {
   // Estados de errores para cada campo
   const [errorNombre, setErrorNombre] = useState("");
   const [errorMotivo, setErrorMotivo] = useState("");
+  
   const mostrarHoras = () => {
     // Generar las horas de 6:00 AM a 5:00 PM
     const horas = [];
@@ -36,8 +37,8 @@ function ReservaForm() {
     }
     setHorasDisponibles(horas);
   };
-  // Validar el formulario antes del envío
 
+  // Validar el formulario antes del envío
   const validarFormulario = () => {
     if (
       !nombre ||
@@ -99,7 +100,7 @@ function ReservaForm() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Si el usuario confirma la reserva, la enviamos al servidor
-        fetch("https://reservas-zer3.onrender.com/reservar", {
+        fetch("https://reservas-backend-ten.vercel.app/reservar", {
           method: "POST",
 
           headers: {
@@ -168,7 +169,7 @@ function ReservaForm() {
       return;
     }
     fetch(
-      `https://reservas-zer3.onrender.com/reservas?fecha=${fechaSeleccionada}&salon=${salon}&horaInicio=${horaInicio}&horaFinal=${horaFinal}`,
+      `https://reservas-backend-ten.vercel.app/reservas?fecha=${fechaSeleccionada}&salon=${salon}&horaInicio=${horaInicio}&horaFinal=${horaFinal}`,
       {
         method: "GET",
       }
@@ -228,7 +229,7 @@ function ReservaForm() {
     }).then((result) => {
       if (result.isConfirmed) {
         // Construir la URL
-        const url = `https://reservas-zer3.onrender.com/cancelarReserva?nombre=${encodeURIComponent(
+        const url = `https://reservas-backend-ten.vercel.app/cancelarReserva?nombre=${encodeURIComponent(
           nombreCancelar
         )}&area=${encodeURIComponent(areaCancelar)}&salon=${encodeURIComponent(
           salonCancelar
@@ -320,7 +321,6 @@ function ReservaForm() {
       setNombre(value);
     }
   };
-
 
   // Función para manejar la validación del motivo
   const validarMotivo = (e) => {
@@ -512,17 +512,21 @@ function ReservaForm() {
                 <option value="Sala de Juntas">Sala de Juntas</option>
               </select>
             </div>
-
-            <button className="cancelar-btn-primary" type="submit">
-              Cancelar 
+            <button type="submit" className="cancelar-btn">
+              Cancelar Reserva
+            </button>
+            <button
+              className="cancelar-btn-secondary"
+              onClick={() => setMostrarCancelar(!mostrarCancelar)}
+            >
+              {mostrarCancelar ? "Volver a Reservar" : "Cancelar Reserva"}
             </button>
           </form>
         </div>
       )}
-      <ChatBot/>
+       <ChatBot/>
     </div>
-
   );
 }
 
-export { ReservaForm };
+export {ReservaForm};
