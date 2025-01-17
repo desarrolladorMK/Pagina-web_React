@@ -10,13 +10,14 @@ const PostulacionesTable = () => {
   // Formatear las fechas
   const formatFecha = (fecha) => {
     if (!fecha) return '';
-    return fecha.split('T')[0]; // Devuelve solo la parte de la fecha
+    const date = new Date(fecha);
+    return date.toISOString().split('T')[0]; // Asegura el formato 'YYYY-MM-DD'
   };
 
   useEffect(() => {
     const fetchPostulaciones = async () => {
       try {
-        const response = await fetch("https://backend-mk.vercel.app/api/postulaciones");
+        const response = await fetch("https://backend-mk.vercel.ap/api/postulaciones");
         const data = await response.json();
         setPostulaciones(data.data); // Asumiendo que los datos están en `data.data`
       } catch (error) {
@@ -67,6 +68,10 @@ const PostulacionesTable = () => {
 
   if (loading) return <p>Cargando datos...</p>;
 
+  if (!postulaciones || postulaciones.length === 0) {
+    return <p>No hay postulaciones disponibles.</p>;
+  }
+
   return (
     <div className="postulaciones-container">
       <Link to="/" className="back-logo">
@@ -77,7 +82,7 @@ const PostulacionesTable = () => {
       <table className="postulaciones-table">
         <thead>
           <tr>
-            {Object.keys(postulaciones[0] || {})
+            {Object.keys(postulaciones[0])
               .filter((key) => key !== "created_at") // Excluir la columna "created_at"
               .map((key) => (
                 key === "hojaVida" ? <th key={key}>Hojas de vida</th> : <th key={key}>{key}</th>
