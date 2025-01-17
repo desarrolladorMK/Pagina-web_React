@@ -41,7 +41,8 @@ const Salones = () => {
 
   const consultarReservas = async (fecha) => {
     try {
-      let url = `https://reservas-zer3.onrender.com/consulta?fecha=${fecha}`;
+      // Cambié la URL para que apunte a Vercel
+      let url = `https://reservas-backend-ten.vercel.app/consulta?fecha=${fecha}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -56,9 +57,7 @@ const Salones = () => {
           const fin = new Date(`${reserva.fecha}T${reserva.hora_fin}:00`);
 
           return {
-            title: `Salón: ${reserva.salon} | Reservado por: ${
-              reserva.nombre || "Desconocido"
-            }`,
+            title: `Salón: ${reserva.salon} | Reservado por: ${reserva.nombre || "Desconocido"}`,
             start: inicio,
             end: fin,
             salon: reserva.salon,
@@ -72,11 +71,7 @@ const Salones = () => {
         setEventos([]);
       }
     } catch (error) {
-      Swal.fire(
-        "Error",
-        "No se pudieron cargar las reservas. Intente más tarde.",
-        "error"
-      );
+      Swal.fire("Error", "No se pudieron cargar las reservas. Intente más tarde.", "error");
     }
   };
 
@@ -101,10 +96,10 @@ const Salones = () => {
 
   return (
     <div className="Salones">
-       {/* Logo en la esquina superior izquierda */}
-  <Link to="/" className="back-logo">
-    <img src="/mkicono.png" alt="Logo" className="logo-image" />
-  </Link>
+      {/* Logo en la esquina superior izquierda */}
+      <Link to="/" className="back-logo">
+        <img src="/mkicono.png" alt="Logo" className="logo-image" />
+      </Link>
       <h1>Reserva tus espacios</h1>
       <div className="image-wrapper">
         <div className="image-container">
