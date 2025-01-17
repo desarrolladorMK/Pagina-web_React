@@ -17,7 +17,7 @@ const PostulacionesTable = () => {
   useEffect(() => {
     const fetchPostulaciones = async () => {
       try {
-        const response = await fetch("https://backend-mk.vercel.ap/api/postulaciones");
+        const response = await fetch("https://backend-mk.vercel.app/api/postulaciones");
         const data = await response.json();
         setPostulaciones(data.data); // Asumiendo que los datos están en `data.data`
       } catch (error) {
