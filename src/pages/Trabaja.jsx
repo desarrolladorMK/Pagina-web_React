@@ -115,40 +115,40 @@ const Trabaja = () => {
 
   const verificarDocumentoExistente = async (numeroDocumento) => {
     try {
-      const response = await fetch(
-        `https://backend-mk.vercel.app/api/postulaciones?numeroDocumento=${numeroDocumento}`
-      );
-      const result = await response.json();
-      return result.data?.length > 0; // Verifica si ya existe
+        const response = await fetch(
+            `https://backend-mk.vercel.app/api/postulaciones?numeroDocumento=${numeroDocumento}`
+        );
+        const result = await response.json();
+        return result.data && result.data.length > 0;
     } catch (error) {
-      console.error("Error al verificar el documento:", error);
-      return false;
+        console.error("Error al verificar el documento:", error);
+        return false;
     }
-  };
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!captchaValido) {
+  if (!captchaValido) {
       MySwal.fire({
-        title: "Error",
-        text: "Por favor, complete el reCAPTCHA.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
+          title: "Error",
+          text: "Por favor, complete el reCAPTCHA.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
       });
       return;
-    }
+  }
 
-    const existe = await verificarDocumentoExistente(formData.numeroDocumento);
-    if (existe) {
+  const existe = await verificarDocumentoExistente(formData.numeroDocumento);
+  if (existe) {
       MySwal.fire({
-        title: "Documento Duplicado",
-        text: "El número de documento ya está registrado.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
+          title: "Documento Duplicado",
+          text: "El número de documento ya está registrado.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
       });
       return;
-    }
+  }
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
@@ -499,6 +499,32 @@ const Trabaja = () => {
               <p className="error-message">{errors.fechaNacimiento}</p>
             )}
           </div>
+           {/* Tipo de Documento */}
+           <div className="form-group">
+              <label className="label-trabaja" htmlFor="tipoDocumento">
+                Tipo de Documento de Identidad:
+              </label>
+              <select
+                id="tipoDocumento"
+                name="tipoDocumento"
+                onChange={handleChange}
+                value={formData.tipoDocumento}
+                required
+              >
+                <option value="" disabled>
+                  Seleccione su tipo de documento
+                </option>
+                <option value="cedula">Cédula de Ciudadanía</option>
+                <option value="cedula_extranjeria">
+                  Cédula de Extranjería
+                </option>
+                <option value="pasaporte">Pasaporte</option>
+                <option value="permiso">Permiso Especial de Permanencia</option>
+              </select>
+              {errors.tipoDocumento && (
+                <p className="error-message">{errors.tipoDocumento}</p>
+              )}
+            </div>
             <div className="form-group">
               <label className="label-trabaja" htmlFor="numeroDocumento">
                 Número de Documento:
