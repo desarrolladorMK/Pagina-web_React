@@ -17,6 +17,8 @@ const Gastos = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [historial, setHistorial] = useState([]);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Nueva protección contra clics múltiples
+  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
 
   const API_URL = "https://backend-gastos.vercel.app/api";
 
@@ -36,6 +38,9 @@ const Gastos = () => {
   };
 
   const obtenerHistorial = async () => {
+    if (isLoadingHistorial) return; // Evitar múltiples solicitudes mientras se carga el historial
+    setIsLoadingHistorial(true);
+
     try {
       const response = await fetch(`${API_URL}/requerimientos`);
       if (response.ok) {
@@ -43,11 +48,9 @@ const Gastos = () => {
         setHistorial(data);
         setMostrarHistorial(!mostrarHistorial);
 
-        // Scroll automático al historial
         if (!mostrarHistorial) {
           setTimeout(() => {
-            const historialElement =
-              document.getElementById("gastos-historial");
+            const historialElement = document.getElementById("gastos-historial");
             if (historialElement) {
               historialElement.scrollIntoView({
                 behavior: "smooth",
@@ -62,13 +65,16 @@ const Gastos = () => {
     } catch (error) {
       console.error("Error al obtener el historial:", error);
       alert("Hubo un error al cargar el historial.");
+    } finally {
+      setIsLoadingHistorial(false);
     }
   };
+
   // Formateador de moneda colombiana
   const formatoCOP = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
-    minimumFractionDigits: 0, // Sin decimales
+    minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
 
@@ -76,10 +82,7 @@ const Gastos = () => {
     const { name, value } = e.target;
 
     if (name === "monto_estimado") {
-      // Eliminar caracteres que no sean dígitos
       const valorNumerico = value.replace(/\D/g, "");
-
-      // Convertir a número y formatear en COP
       const valorFormateado = valorNumerico
         ? formatoCOP.format(valorNumerico)
         : "";
@@ -92,13 +95,13 @@ const Gastos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Protección contra múltiples envíos
+    setIsSubmitting(true);
 
-    // Limpiar el formato antes de enviar (eliminar símbolos y puntos)
     const montoLimpio = formData.monto_estimado.replace(/[$.,\s]/g, "");
-
     const datosFormateados = {
       ...formData,
-      monto_estimado: parseFloat(montoLimpio), // Convertir a número
+      monto_estimado: parseFloat(montoLimpio),
     };
 
     try {
@@ -121,6 +124,8 @@ const Gastos = () => {
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       alert("Hubo un error al enviar la solicitud.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -242,16 +247,21 @@ const Gastos = () => {
               />
             </div>
 
-            <button type="submit" className="gastos-submit-button">
-              Enviar
+            <button
+              type="submit"
+              className="gastos-submit-button"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
           </form>
 
           <button
             onClick={obtenerHistorial}
             className="gastos-historial-button"
+            disabled={isLoadingHistorial}
           >
-            📜
+            {isLoadingHistorial ? "↻" : "📜"}
           </button>
         </div>
       ) : (
@@ -283,10 +293,14 @@ const Gastos = () => {
                   <td>{gasto.descripcion}</td>
                   <td>${gasto.monto_estimado}</td>
                   <td>
-                    <a href={gasto.archivo_factura}>Ver</a>
+                    <a href={gasto.archivo_factura} target="_blank" rel="noopener noreferrer">
+                      Ver
+                    </a>
                   </td>
                   <td>
-                    <a href={gasto.archivo_cotizacion}>Ver</a>
+                    <a href={gasto.archivo_cotizacion} target="_blank" rel="noopener noreferrer">
+                      Ver
+                    </a>
                   </td>
                   <td>{gasto.estado}</td>
                 </tr>
