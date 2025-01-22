@@ -34,11 +34,16 @@ function Automatizacion() {
         formData.append('correo_asignado', correo);
 
         try {
-            // Obtén la URL del backend desde la variable de entorno
-            const backendUrl = import.meta.env.VITE_AUTOMATIZACION_BACKEND_URL;
+            // Imprimir los datos de FormData para depurar
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+
+        
 
             // Enviar los datos al backend
-            const response = await axios.post(`${backendUrl}/api/enviar-email`, formData, {
+            const response = await axios.post('https://backend-cristian.vercel.app/api/enviar-email', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -133,3 +138,4 @@ function Automatizacion() {
 }
 
 export { Automatizacion };
+
