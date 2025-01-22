@@ -12,6 +12,18 @@ function Automatizacion() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validar que todos los campos estén completos
+        if (!descripcion || !pdf || !sede || !fechaInicial || !fechaFinal || !correo) {
+            alert('Por favor, complete todos los campos antes de enviar.');
+            return;
+        }
+
+        // Validar el formato del archivo
+        if (pdf.type !== 'application/pdf') {
+            alert('El archivo debe ser un PDF.');
+            return;
+        }
+
         // Crea un FormData para manejar el archivo PDF
         const formData = new FormData();
         formData.append('descripcion', descripcion);
@@ -34,58 +46,89 @@ function Automatizacion() {
                 },
             });
 
-            console.log(response.data); // Aquí podrías manejar los datos que regresa el backend
+            console.log(response.data); // Manejar los datos de respuesta
 
-            // Alerta de éxito
-            alert('Correo enviado exitosamente');
+            // Mostrar alerta de éxito
+            alert('Correo enviado exitosamente y datos guardados en la base de datos.');
 
-
+            // Limpiar los campos del formulario
+            setDescripcion('');
+            setPdf(null);
+            setSede('');
+            setFechaInicial('');
+            setFechaFinal('');
+            setCorreo('');
         } catch (error) {
-            console.error('Error al enviar el correo:', error);
+            console.error('Error al enviar el formulario:', error);
             if (error.response) {
-                alert('Hubo un error al enviar el correo: ' + error.response.data.error);
+                alert('Hubo un error al enviar el formulario: ' + error.response.data.error);
             } else if (error.request) {
-                alert('No se recibió respuesta del servidor');
+                alert('No se recibió respuesta del servidor.');
             } else {
-                alert('Hubo un error desconocido');
+                alert('Ocurrió un error desconocido.');
             }
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Descripción"
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-            />
-            <input
-                type="file"
-                onChange={(e) => setPdf(e.target.files[0])}
-            />
-            <input
-                type="text"
-                placeholder="Sede"  // Cambié 'Sedes' a 'Sede'
-                value={sede}
-                onChange={(e) => setSede(e.target.value)}  // Cambié 'setSedes' a 'setSede'
-            />
-            <input
-                type="date"
-                value={fechaInicial}
-                onChange={(e) => setFechaInicial(e.target.value)}
-            />
-            <input
-                type="date"
-                value={fechaFinal}
-                onChange={(e) => setFechaFinal(e.target.value)}
-            />
-            <input
-                type="email"
-                placeholder="Correo Asignado"  // Cambié 'Correo' a 'Correo Asignado'
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}  // Cambié 'setCorreo' a 'setCorreo'
-            />
+            <div>
+                <label>Descripción:</label>
+                <input
+                    type="text"
+                    placeholder="Descripción"
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                />
+            </div>
+
+            <div>
+                <label>Archivo PDF:</label>
+                <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => setPdf(e.target.files[0])}
+                />
+            </div>
+
+            <div>
+                <label>Sede:</label>
+                <input
+                    type="text"
+                    placeholder="Sede"
+                    value={sede}
+                    onChange={(e) => setSede(e.target.value)}
+                />
+            </div>
+
+            <div>
+                <label>Fecha Inicial:</label>
+                <input
+                    type="date"
+                    value={fechaInicial}
+                    onChange={(e) => setFechaInicial(e.target.value)}
+                />
+            </div>
+
+            <div>
+                <label>Fecha Final:</label>
+                <input
+                    type="date"
+                    value={fechaFinal}
+                    onChange={(e) => setFechaFinal(e.target.value)}
+                />
+            </div>
+
+            <div>
+                <label>Correo Asignado:</label>
+                <input
+                    type="email"
+                    placeholder="Correo Asignado"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                />
+            </div>
+
             <button type="submit">Enviar</button>
         </form>
     );
