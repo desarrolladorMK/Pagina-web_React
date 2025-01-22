@@ -10,6 +10,7 @@ import { Salones } from "../pages/Salones";
 import { ReservaForm } from "../pages/Reserva";
 import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
 import {Gastos} from "../pages/Gastos";
+import { Automatizacion } from "../pages/Automatizacion";
 
 export let routes = [
   {
@@ -60,6 +61,11 @@ export let routes = [
     path: '/postulacionesTable', 
     element: <PostulacionesTable />,
   } , 
+  {
+    path: '/automatizacion',
+    element: <Automatizacion />,
+  },
+
   {
     path: '/https://merkahorro.com/Aula/', 
   }
