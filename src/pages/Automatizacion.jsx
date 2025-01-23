@@ -246,4 +246,4 @@ const Automatizacion = () => {
     );
 };
 
-export default Automatizacion;
+export { Automatizacion};
