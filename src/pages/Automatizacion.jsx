@@ -16,6 +16,7 @@ const Automatizacion = () => {
     const [mostrarHistorial, setMostrarHistorial] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
+    const [editIndex, setEditIndex] = useState(null);
 
     const API_URL = 'https://backend-cristian.vercel.app';
 
@@ -25,36 +26,27 @@ const Automatizacion = () => {
 
         try {
             const response = await axios.get(`${API_URL}/historial/${formData.correo_asignado}`);
-            setHistorial(response.data);
-            setMostrarHistorial(!mostrarHistorial);
-
-            if (!mostrarHistorial) {
-                setTimeout(() => {
-                    const historialElement = document.getElementById('automatizacion-historial');
-                    if (historialElement) {
-                        historialElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start',
-                        });
-                    }
-                }, 0);
+            if (Array.isArray(response.data)) {
+                setHistorial(response.data);
+            } else {
+                setHistorial([]);
             }
+            setMostrarHistorial(true);
+
+            setTimeout(() => {
+                const historialElement = document.getElementById('automatizacion-historial');
+                if (historialElement) {
+                    historialElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+                }
+            }, 0);
         } catch (error) {
             console.error('Error al obtener el historial:', error);
             alert('Hubo un error al cargar el historial.');
         } finally {
             setIsLoadingHistorial(false);
-        }
-    };
-
-    const actualizarEstado = async (id, nuevoEstado) => {
-        try {
-            const response = await axios.put(`${API_URL}/historial`, { id, estado: nuevoEstado });
-            alert('Estado actualizado exitosamente');
-            obtenerHistorial();
-        } catch (error) {
-            console.error('Error al actualizar el estado:', error);
-            alert('Hubo un error al actualizar el estado.');
         }
     };
 
@@ -105,6 +97,33 @@ const Automatizacion = () => {
         }
     };
 
+    const cambiarEstado = (index, nuevoEstado) => {
+        const nuevoHistorial = [...historial];
+        nuevoHistorial[index].estado = nuevoEstado;
+        setHistorial(nuevoHistorial);
+    };
+
+    const actualizarObservacion = (index, nuevaObservacion) => {
+        const nuevoHistorial = [...historial];
+        nuevoHistorial[index].observacion = nuevaObservacion;
+        setHistorial(nuevoHistorial);
+    };
+
+    const guardarCambios = async (index) => {
+        const item = historial[index];
+        try {
+            await axios.put(`${API_URL}/historial/${item.id}`, {
+                estado: item.estado,
+                observacion: item.observacion
+            });
+            alert('Cambios guardados exitosamente.');
+            setEditIndex(null);
+        } catch (error) {
+            console.error('Error al guardar los cambios:', error);
+            alert('Hubo un error al guardar los cambios.');
+        }
+    };
+
     return (
         <div>
             <div className="logo-container">
@@ -113,7 +132,7 @@ const Automatizacion = () => {
                 </a>
             </div>
             <div className="automatizacion-container">
-                <h1 className="automatizacion-header">Automatización de Cristian</h1>
+                <h1 className="automatizacion-header">Automatización</h1>
 
                 {!isSubmitted ? (
                     <div className="automatizacion-form-container">
@@ -234,18 +253,44 @@ const Automatizacion = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {historial.map((item) => (
+                                {historial.map((item, index) => (
                                     <tr key={item.id}>
                                         <td>{item.descripcion}</td>
                                         <td>{item.sede}</td>
                                         <td>{item.fecha_inicial}</td>
                                         <td>{item.fecha_final}</td>
                                         <td>{item.correo_asignado}</td>
-                                        <td>{item.estado}</td>
-                                        <td>{item.observacion}</td>
                                         <td>
-                                            <button onClick={() => actualizarEstado(item.id, 'Completado')}>Completado</button>
-                                            <button onClick={() => actualizarEstado(item.id, 'No Completado')}>No Completado</button>
+                                            {editIndex === index ? (
+                                                <select
+                                                    value={item.estado}
+                                                    onChange={(e) => cambiarEstado(index, e.target.value)}
+                                                >
+                                                    <option value="Pendiente">Pendiente</option>
+                                                    <option value="Completado">Completado</option>
+                                                    <option value="Cancelado">Cancelado</option>
+                                                </select>
+                                            ) : (
+                                                item.estado
+                                            )}
+                                        </td>
+                                        <td>
+                                            {editIndex === index ? (
+                                                <input
+                                                    type="text"
+                                                    value={item.observacion}
+                                                    onChange={(e) => actualizarObservacion(index, e.target.value)}
+                                                />
+                                            ) : (
+                                                item.observacion
+                                            )}
+                                        </td>
+                                        <td>
+                                            {editIndex === index ? (
+                                                <button onClick={() => guardarCambios(index)}>Guardar</button>
+                                            ) : (
+                                                <button onClick={() => setEditIndex(index)}>Editar</button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
