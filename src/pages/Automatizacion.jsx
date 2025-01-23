@@ -50,6 +50,14 @@ const Automatizacion = () => {
         }
     };
 
+    const toggleHistorial = () => {
+        if (mostrarHistorial) {
+            setMostrarHistorial(false);
+        } else {
+            obtenerHistorial();
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (name === 'pdf') {
@@ -301,7 +309,7 @@ const Automatizacion = () => {
                 )}
             </div>
 
-            <button className="floating-button" onClick={obtenerHistorial}>
+            <button className="floating-button" onClick={toggleHistorial}>
                 📜
             </button>
         </div>
