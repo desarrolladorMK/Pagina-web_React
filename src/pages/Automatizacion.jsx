@@ -112,7 +112,8 @@ const Automatizacion = () => {
     const guardarCambios = async (index) => {
         const item = historial[index];
         try {
-            await axios.put(`${API_URL}/historial/${item.id}`, {
+            await axios.put(`${API_URL}/historial`, {
+                id: item.id,
                 estado: item.estado,
                 observacion: item.observacion
             });
@@ -268,7 +269,7 @@ const Automatizacion = () => {
                                                 >
                                                     <option value="Pendiente">Pendiente</option>
                                                     <option value="Completado">Completado</option>
-                                                    <option value="Cancelado">No completado</option>
+                                                    <option value="No Completado">No Completado</option>
                                                 </select>
                                             ) : (
                                                 item.estado
