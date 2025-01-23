@@ -268,7 +268,7 @@ const Automatizacion = () => {
                                                 >
                                                     <option value="Pendiente">Pendiente</option>
                                                     <option value="Completado">Completado</option>
-                                                    <option value="Cancelado">Cancelado</option>
+                                                    <option value="Cancelado">No completado</option>
                                                 </select>
                                             ) : (
                                                 item.estado
