@@ -47,6 +47,17 @@ const Automatizacion = () => {
         }
     };
 
+    const actualizarEstado = async (id, nuevoEstado) => {
+        try {
+            const response = await axios.put(`${API_URL}/historial`, { id, estado: nuevoEstado });
+            alert('Estado actualizado exitosamente');
+            obtenerHistorial();
+        } catch (error) {
+            console.error('Error al actualizar el estado:', error);
+            alert('Hubo un error al actualizar el estado.');
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (name === 'pdf') {
@@ -219,6 +230,7 @@ const Automatizacion = () => {
                                     <th>Correo</th>
                                     <th>Estado</th>
                                     <th>Observación</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -231,6 +243,10 @@ const Automatizacion = () => {
                                         <td>{item.correo_asignado}</td>
                                         <td>{item.estado}</td>
                                         <td>{item.observacion}</td>
+                                        <td>
+                                            <button onClick={() => actualizarEstado(item.id, 'Completado')}>Completado</button>
+                                            <button onClick={() => actualizarEstado(item.id, 'No Completado')}>No Completado</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -246,4 +262,4 @@ const Automatizacion = () => {
     );
 };
 
-export { Automatizacion};
+export { Automatizacion };
