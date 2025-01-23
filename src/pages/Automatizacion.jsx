@@ -17,14 +17,14 @@ const Automatizacion = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
 
-    const API_URL = 'https://backend-cristian.vercel.app/api';
+    const API_URL = 'https://backend-cristian.vercel.app';
 
     const obtenerHistorial = async () => {
         if (isLoadingHistorial) return;
         setIsLoadingHistorial(true);
 
         try {
-            const response = await axios.get(`${API_URL}/historial`);
+            const response = await axios.get(`${API_URL}/historial/${formData.correo_asignado}`);
             setHistorial(response.data);
             setMostrarHistorial(!mostrarHistorial);
 
@@ -67,7 +67,7 @@ const Automatizacion = () => {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/enviar-email`, formDataToSend, {
+            const response = await axios.post(`${API_URL}/registro`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -246,4 +246,4 @@ const Automatizacion = () => {
     );
 };
 
-export { Automatizacion };
+export default Automatizacion;
