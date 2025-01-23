@@ -1,0 +1,148 @@
+/* Estilo general para la automatización */
+
+.automatizacion-container {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 30px;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(38, 101, 138, 0.733);
+}
+
+.automatizacion-header {
+    text-align: center;
+    font-size: 28px;
+    color: #210d65;
+    margin-bottom: 25px;
+    font-family: 'Arial', sans-serif;
+}
+
+.automatizacion-form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.automatizacion-form-field {
+    margin-bottom: 20px;
+}
+
+.automatizacion-submit-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.automatizacion-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #210d65;
+}
+
+.automatizacion-input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.automatizacion-input:focus {
+    border-color: #89DC00;
+    box-shadow: 0 0 5px rgba(137, 220, 0, 0.5);
+    outline: none;
+}
+
+input[type="file"] {
+    padding: 5px;
+}
+
+.automatizacion-submit-button {
+    padding: 12px;
+    background-color: #89DC00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.automatizacion-submit-button:hover {
+    background-color: #77c800;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .automatizacion-container {
+        padding: 20px;
+    }
+
+    .automatizacion-header {
+        font-size: 24px;
+    }
+
+    .automatizacion-submit-button {
+        font-size: 14px;
+    }
+}
+
+/* Estilos adicionales para el botón flotante y el historial */
+
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #5488dc;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(84, 136, 220, 0.4);
+    transition: background 0.3s ease;
+}
+
+.floating-button:hover {
+    background: #220d65;
+}
+
+.automatizacion-historial {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.automatizacion-historial table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.automatizacion-historial th,
+.automatizacion-historial td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.automatizacion-historial th {
+    background: #f4f4f4;
+}
+
+.automatizacion-historial td {
+    background: #fff;
+}
+
+.automatizacion-historial tr:nth-child(even) td {
+    background: #f9f9f9;
+}
+
+.automatizacion-historial tr:hover td {
+    background: #f1f1f1;
+}

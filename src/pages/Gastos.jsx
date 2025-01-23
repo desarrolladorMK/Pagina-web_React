@@ -57,7 +57,7 @@ const Gastos = () => {
                 block: "start",
               });
             }
-          }, 300);
+          }, 0); // Cambiado a 0 para hacer el scroll inmediato
         }
       } else {
         alert("Error al obtener el historial de gastos.");
