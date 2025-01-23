@@ -59,12 +59,8 @@ const Automatizacion = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === 'pdf') {
-            setFormData({ ...formData, [name]: files[0] });
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
@@ -72,29 +68,8 @@ const Automatizacion = () => {
         if (isSubmitting) return;
         setIsSubmitting(true);
 
-        const formDataToSend = new FormData();
-        for (const key in formData) {
-            formDataToSend.append(key, formData[key]);
-        }
-
         try {
-            const response = await axios.post(`${API_URL}/registro`, formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            console.log(response.data);
-            alert('Correo enviado exitosamente y datos guardados en la base de datos.');
-
-            setFormData({
-                descripcion: '',
-                pdf: null,
-                sede: '',
-                fecha_inicial: '',
-                fecha_final: '',
-                correo_asignado: '',
-            });
+            await axios.post(`${API_URL}/automatizacion`, formData);
             setIsSubmitted(true);
             obtenerHistorial();
         } catch (error) {
@@ -184,11 +159,6 @@ const Automatizacion = () => {
                                     <option value="Villa Hermosa">Villa Hermosa</option>
                                     <option value="Girardota parque">Girardota parque</option>
                                     <option value="Girardota llano">Girardota llano</option>
-                                    <option value="Carnes barbosa">Carnes barbosa</option>
-                                    <option value="Copacabana Vegas">Copacabana Vegas</option>
-                                    <option value="Barbosa">Barbosa</option>
-                                    <option value="Copacabana San Juan">Copacabana San Juan</option>
-                                    <option value="Centro Administrativo">Centro Administrativo</option>
                                 </select>
                             </div>
 
@@ -244,74 +214,78 @@ const Automatizacion = () => {
                         <h2>¡Solicitud Enviada Exitosamente!</h2>
                     </div>
                 )}
-
-                {mostrarHistorial && (
-                    <div id="automatizacion-historial" className="automatizacion-historial desplegado">
-                        <h2>Historial de Automatización</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Descripción</th>
-                                    <th>Sede</th>
-                                    <th>Fecha Inicial</th>
-                                    <th>Fecha Final</th>
-                                    <th>Correo</th>
-                                    <th>Estado</th>
-                                    <th>Observación</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {historial.map((item, index) => (
-                                    <tr key={item.id}>
-                                        <td>{item.descripcion}</td>
-                                        <td>{item.sede}</td>
-                                        <td>{item.fecha_inicial}</td>
-                                        <td>{item.fecha_final}</td>
-                                        <td>{item.correo_asignado}</td>
-                                        <td>
-                                            {editIndex === index ? (
-                                                <select
-                                                    value={item.estado}
-                                                    onChange={(e) => cambiarEstado(index, e.target.value)}
-                                                >
-                                                    <option value="Pendiente">Pendiente</option>
-                                                    <option value="Completado">Completado</option>
-                                                    <option value="No Completado">No Completado</option>
-                                                </select>
-                                            ) : (
-                                                item.estado
-                                            )}
-                                        </td>
-                                        <td>
-                                            {editIndex === index ? (
-                                                <input
-                                                    type="text"
-                                                    value={item.observacion}
-                                                    onChange={(e) => actualizarObservacion(index, e.target.value)}
-                                                />
-                                            ) : (
-                                                item.observacion
-                                            )}
-                                        </td>
-                                        <td>
-                                            {editIndex === index ? (
-                                                <button onClick={() => guardarCambios(index)}>Guardar</button>
-                                            ) : (
-                                                <button onClick={() => setEditIndex(index)}>Editar</button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
             </div>
 
             <button className="floating-button" onClick={toggleHistorial}>
                 📜
             </button>
+
+            {mostrarHistorial && (
+                <div id="automatizacion-historial" className="automatizacion-historial desplegado">
+                    <h2>Historial de Automatización</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Sede</th>
+                                <th>Fecha Inicial</th>
+                                <th>Fecha Final</th>
+                                <th>Correo</th>
+                                <th>Estado</th>
+                                <th>Observación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {historial.map((item, index) => (
+                                <tr key={item.id}>
+                                    <td>{item.descripcion}</td>
+                                    <td>{item.sede}</td>
+                                    <td>{item.fecha_inicial}</td>
+                                    <td>{item.fecha_final}</td>
+                                    <td>{item.correo_asignado}</td>
+                                    <td className={
+                                        item.estado === 'Completado' ? 'estado-completado' :
+                                        item.estado === 'Pendiente' ? 'estado-pendiente' :
+                                        'estado-no-completado'
+                                    }>
+                                        {editIndex === index ? (
+                                            <select
+                                                value={item.estado}
+                                                onChange={(e) => cambiarEstado(index, e.target.value)}
+                                            >
+                                                <option value="Pendiente">Pendiente</option>
+                                                <option value="Completado">Completado</option>
+                                                <option value="No Completado">No Completado</option>
+                                            </select>
+                                        ) : (
+                                            item.estado
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <input
+                                                type="text"
+                                                value={item.observacion}
+                                                onChange={(e) => actualizarObservacion(index, e.target.value)}
+                                            />
+                                        ) : (
+                                            item.observacion
+                                        )}
+                                    </td>
+                                    <td>
+                                        {editIndex === index ? (
+                                            <button className="accion-button guardar" onClick={() => guardarCambios(index)}>Guardar</button>
+                                        ) : (
+                                            <button className="accion-button editar" onClick={() => setEditIndex(index)}>Editar</button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };
