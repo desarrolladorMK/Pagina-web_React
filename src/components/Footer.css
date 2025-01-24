@@ -8,15 +8,14 @@
 
 /* Estilos del pie de página */
 .footer {
-    width: 100%;
-    padding: 20px;
-
-    background-color: #89DC00; /* Verde brillante */
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: auto; /* Empuja el footer hacia el fondo */
+  width: 100%;
+  padding: 20px;
+  background-color: #89DC00; /* Verde brillante */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto; /* Empuja el footer hacia el fondo */
 }
 
 .contact-info {
@@ -58,7 +57,9 @@
 }
 
 .social-media img {
-  width: 40px;
+  width: 40px;        /* Ancho fijo */
+  height: 40px;       /* Altura fija */
+  object-fit: cover;  /* Ajusta la imagen sin distorsionar */
   margin: 0 5px;
 }
 
@@ -221,10 +222,14 @@
 }
 
 .social-media img {
-  width: 37px;
+  width: 40px;        /* Ancho fijo */
+  height: 40px;       /* Altura fija */
+  object-fit: cover;  /* Ajusta la imagen sin distorsionar */
   margin: 0 5px;
+  border-radius: 11px;
 }
 
 .social-media img:hover {
   transform: scale(1.1); /* Pequeño zoom al pasar el cursor */
 }
+
