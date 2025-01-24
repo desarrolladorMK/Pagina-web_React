@@ -42,6 +42,15 @@ const Footer = () => {
                         >
                             <img src="/instagram.png" alt="Instagram" />
                         </a>
+
+                        <a
+                            href="https://www.youtube.com/@Merkahorro"
+                            aria-label="Youtube"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img src="/youtube.png" alt="Youtube" />
+                        </a>
                     </div>
                 </div>
 
