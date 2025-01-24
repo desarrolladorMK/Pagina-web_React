@@ -87,7 +87,6 @@ const Automatizacion = () => {
                 },
             });
             setIsSubmitted(true);
-            obtenerHistorial();
         } catch (error) {
             console.error('Error al enviar el formulario:', error);
             alert('Hubo un error al enviar la solicitud.');
@@ -236,75 +235,79 @@ const Automatizacion = () => {
                 )}
             </div>
 
-            <button className="floating-button" onClick={toggleHistorial}>
-                📜
-            </button>
+            {!isSubmitted && (
+                <>
+                    <button className="floating-button" onClick={toggleHistorial}>
+                        📜
+                    </button>
 
-            {mostrarHistorial && (
-                <div id="automatizacion-historial" className="automatizacion-historial desplegado">
-                    <h2>Historial de Automatización</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Sede</th>
-                                <th>Fecha Inicial</th>
-                                <th>Fecha Final</th>
-                                <th>Correo</th>
-                                <th>Estado</th>
-                                <th>Observación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {historial.map((item, index) => (
-                                <tr key={item.id}>
-                                    <td>{item.descripcion}</td>
-                                    <td>{item.sede}</td>
-                                    <td>{item.fecha_inicial}</td>
-                                    <td>{item.fecha_final}</td>
-                                    <td>{item.correo_asignado}</td>
-                                    <td className={
-                                        item.estado === 'Completado' ? 'estado-completado' :
-                                        item.estado === 'Pendiente' ? 'estado-pendiente' :
-                                        'estado-no-completado'
-                                    }>
-                                        {editIndex === index ? (
-                                            <select
-                                                value={item.estado}
-                                                onChange={(e) => cambiarEstado(index, e.target.value)}
-                                            >
-                                                <option value="Pendiente">Pendiente</option>
-                                                <option value="Completado">Completado</option>
-                                                <option value="No Completado">No Completado</option>
-                                            </select>
-                                        ) : (
-                                            item.estado
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={item.observacion}
-                                                onChange={(e) => actualizarObservacion(index, e.target.value)}
-                                            />
-                                        ) : (
-                                            item.observacion
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <button className="accion-button guardar" onClick={() => guardarCambios(index)}>Guardar</button>
-                                        ) : (
-                                            <button className="accion-button editar" onClick={() => setEditIndex(index)}>Editar</button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                    {mostrarHistorial && (
+                        <div id="automatizacion-historial" className="automatizacion-historial desplegado">
+                            <h2>Historial de Automatización</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Sede</th>
+                                        <th>Fecha Inicial</th>
+                                        <th>Fecha Final</th>
+                                        <th>Correo</th>
+                                        <th>Estado</th>
+                                        <th>Observación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {historial.map((item, index) => (
+                                        <tr key={item.id}>
+                                            <td>{item.descripcion}</td>
+                                            <td>{item.sede}</td>
+                                            <td>{item.fecha_inicial}</td>
+                                            <td>{item.fecha_final}</td>
+                                            <td>{item.correo_asignado}</td>
+                                            <td className={
+                                                item.estado === 'Completado' ? 'estado-completado' :
+                                                item.estado === 'Pendiente' ? 'estado-pendiente' :
+                                                'estado-no-completado'
+                                            }>
+                                                {editIndex === index ? (
+                                                    <select
+                                                        value={item.estado}
+                                                        onChange={(e) => cambiarEstado(index, e.target.value)}
+                                                    >
+                                                        <option value="Pendiente">Pendiente</option>
+                                                        <option value="Completado">Completado</option>
+                                                        <option value="No Completado">No Completado</option>
+                                                    </select>
+                                                ) : (
+                                                    item.estado
+                                                )}
+                                            </td>
+                                            <td>
+                                                {editIndex === index ? (
+                                                    <input
+                                                        type="text"
+                                                        value={item.observacion}
+                                                        onChange={(e) => actualizarObservacion(index, e.target.value)}
+                                                    />
+                                                ) : (
+                                                    item.observacion
+                                                )}
+                                            </td>
+                                            <td>
+                                                {editIndex === index ? (
+                                                    <button className="accion-button guardar" onClick={() => guardarCambios(index)}>Guardar</button>
+                                                ) : (
+                                                    <button className="accion-button editar" onClick={() => setEditIndex(index)}>Editar</button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
