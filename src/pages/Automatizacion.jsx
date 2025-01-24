@@ -5,12 +5,12 @@ import './Automatizacion.css';
 const Automatizacion = () => {
     const [formData, setFormData] = useState({
         descripcion: '',
-        pdf: null,
         sede: '',
         fecha_inicial: '',
         fecha_final: '',
         correo_asignado: '',
     });
+    const [pdf, setPdf] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [historial, setHistorial] = useState([]);
     const [mostrarHistorial, setMostrarHistorial] = useState(false);
@@ -59,8 +59,12 @@ const Automatizacion = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value, files } = e.target;
+        if (name === 'pdf') {
+            setPdf(files[0]);
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -68,8 +72,20 @@ const Automatizacion = () => {
         if (isSubmitting) return;
         setIsSubmitting(true);
 
+        const data = new FormData();
+        data.append('descripcion', formData.descripcion);
+        data.append('pdf', pdf);
+        data.append('sede', formData.sede);
+        data.append('fecha_inicial', formData.fecha_inicial);
+        data.append('fecha_final', formData.fecha_final);
+        data.append('correo_asignado', formData.correo_asignado);
+
         try {
-            await axios.post(`${API_URL}/automatizacion`, formData);
+            await axios.post(`${API_URL}/registro`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             setIsSubmitted(true);
             obtenerHistorial();
         } catch (error) {
@@ -154,11 +170,15 @@ const Automatizacion = () => {
                                     required
                                     className="automatizacion-input"
                                 >
-                                    <option value="">Selecciona una sede</option>
+                                    <option value="" disabled>Selecciona una sede</option>
                                     <option value="Copacabana Plaza">Copacabana Plaza</option>
                                     <option value="Villa Hermosa">Villa Hermosa</option>
                                     <option value="Girardota parque">Girardota parque</option>
                                     <option value="Girardota llano">Girardota llano</option>
+                                    <option value="Carnes barbosa">Carnes barbosa</option>
+                                    <option value="Copacabana Vegas">Copacabana Vegas</option>
+                                    <option value="Barbosa">Barbosa</option>
+                                    <option value="Copacabana San Juan">Copacabana San Juan</option>
                                 </select>
                             </div>
 
