@@ -10,6 +10,12 @@
     box-shadow: 0 6px 20px rgba(38, 101, 138, 0.733);
 }
 
+.automatizacion-submitted-message h2{
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
 .automatizacion-header {
     text-align: center;
     font-size: 28px;
