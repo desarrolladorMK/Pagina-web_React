@@ -131,7 +131,7 @@ const Automatizacion = () => {
                 </a>
             </div>
             <div className="automatizacion-container">
-                <h1 className="automatizacion-header">Automatización</h1>
+                <h1 className="automatizacion-header">Automatización Fruver</h1>
 
                 {!isSubmitted ? (
                     <div className="automatizacion-form-container">
@@ -243,7 +243,7 @@ const Automatizacion = () => {
 
                     {mostrarHistorial && (
                         <div id="automatizacion-historial" className="automatizacion-historial desplegado">
-                            <h2>Historial de Automatización</h2>
+                            <h2>Historial reposición Fruver</h2>
                             <table>
                                 <thead>
                                     <tr>
