@@ -66,9 +66,9 @@ const Footer = () => {
                 {/* Desarrollado por */}
                 <div className="developer-info">
                     <h3>Equipo de Desarrollo</h3>
+                    <p>Johan Sánchez</p>
                     <p>Kevin Pineda</p>
                     <p>Juan Isaza</p>
-                    <p>Johan Sánchez</p>
                 </div>
             </div>
         </footer>
