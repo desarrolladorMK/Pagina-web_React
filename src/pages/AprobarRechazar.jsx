@@ -6,6 +6,8 @@ const AprobarRechazar = () => {
     const [estado, setEstado] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [token, setToken] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [decisionTomada, setDecisionTomada] = useState(false);
 
     useEffect(() => {
         // Obtener el token de la URL
@@ -14,44 +16,59 @@ const AprobarRechazar = () => {
         setToken(tokenFromUrl);
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (decision) => {
+        setLoading(true);
         try {
             const response = await axios.post('https://backend-gastos.vercel.app/api/requerimientos/decidir', {
                 token,
-                decision: estado,
+                decision: decision,
             });
             setMensaje(response.data.message);
+            setDecisionTomada(true);
+            alert(`Decisión de ${decision} enviada exitosamente.`);
         } catch (error) {
             console.error('Error al enviar la decisión:', error);
             setMensaje('Hubo un error al enviar tu decisión. Por favor, intenta nuevamente.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="aprobar-rechazar-container">
             <div className="logo-container">
-                <img src="https://www.merkahorro.com/logoMK.png" alt="Logo de la Empresa" className="logo" />
+                <a href="/">
+                    <img src="logoMK.png" alt="Logo Merkahorro" />
+                </a>
             </div>
-            <h1 className="header">Decidir Requerimiento de Gasto</h1>
-            <form onSubmit={handleSubmit} className="form">
-                <div className="form-group">
-                    <label htmlFor="estado">Decisión:</label>
-                    <select
-                        id="estado"
-                        value={estado}
-                        onChange={(e) => setEstado(e.target.value)}
-                        required
-                        className="input"
-                    >
-                        <option value="">Selecciona una opción</option>
-                        <option value="Aprobado">Aprobar</option>
-                        <option value="Rechazado">Rechazar</option>
-                    </select>
-                </div>
-                <button type="submit" className="submit-button">Enviar</button>
-            </form>
-            {mensaje && <p className="mensaje">{mensaje}</p>}
+            <h1 className="header-gastos">Decidir Requerimiento de Gasto</h1>
+            <div className="form">
+                {!decisionTomada ? (
+                    <div className="form-group">
+                        <div className="decision-buttons">
+                            <button
+                                type="button"
+                                className="btn-approve"
+                                onClick={() => handleSubmit('Aprobado')}
+                                disabled={loading}
+                            >
+                                Aprobar
+                            </button>
+                            <button
+                                type="button"
+                                className="btn-reject"
+                                onClick={() => handleSubmit('Rechazado')}
+                                disabled={loading}
+                            >
+                                Rechazar
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="mensaje">{mensaje}</p>
+                )}
+                {loading && <div className="loading-spinner"></div>}
+            </div>
         </div>
     );
 };
