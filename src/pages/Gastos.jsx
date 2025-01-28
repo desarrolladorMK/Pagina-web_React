@@ -5,9 +5,11 @@ const Gastos = () => {
   const [formData, setFormData] = useState({
     nombre_completo: "",
     area: "",
+    procesos: "",
+    sede: "",
+    unidad: [],
     descripcion: "",
     monto_estimado: "",
-    archivo_factura: "",
     archivo_cotizacion: "",
     correo_empleado: "",
   });
@@ -50,7 +52,8 @@ const Gastos = () => {
 
         if (!mostrarHistorial) {
           setTimeout(() => {
-            const historialElement = document.getElementById("gastos-historial");
+            const historialElement =
+              document.getElementById("gastos-historial");
             if (historialElement) {
               historialElement.scrollIntoView({
                 behavior: "smooth",
@@ -186,6 +189,65 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
+              <label className="gastos-label">Procesos:</label>
+              <select
+                name="procesos"
+                value={formData.procesos}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              >
+                <option value="">Seleccione un Proceso</option>
+                <option value="Logística">Logística</option>
+                <option value="Inventarios">Inventarios</option>
+                <option value="Sistemas">Sistemas</option>
+                <option value="Desarrollo">Desarrollo</option>
+                <option value="Almacén">Almacén</option>
+                <option value="Procesos">Procesos</option>
+                <option value="Fruver">Fruver</option>
+                <option value="Cárnicos">Cárnicos</option>
+                <option value="Proyectos">Proyectos</option>
+              </select>
+            </div>
+
+            <div className="gastos-form-field">
+              <label className="gastos-label"> Sedes:</label>
+              <select
+                name="sede"
+                value={formData.sede}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              >
+                <option value="">Seleccione la Sede</option>
+                <option value="Copacabana Plaza">Copacabana Plaza</option>
+                <option value="Copacabana Vegas">Copacabana Vegas</option>
+                <option value="Copacabana San Juan">Copacabana San Juan</option>
+                <option value="Girardota Parque">Girardota Parque</option>
+                <option value="Girardota Llano">Girardota Llano</option>
+                <option value="Barbosa">Barbosa</option>
+                <option value="Carnes Barbosa">Carnes Barbosa</option>
+                <option value="Villa Hermosa">Villa Hermosa</option>
+              </select>
+            </div>
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Unidad de Negocio:</label>
+              <select
+                name="unidad"
+                value={formData.unidad} // Debería ser un array
+                onChange={handleChange}
+                className="gastos-input"
+                required
+              >
+                <option value="Carnes">Carnes</option>
+                <option value="Fruver">Fruver</option>
+                <option value="Abarrotes">Abarrotes</option>
+                <option value="Administrativo">Administrativo</option>
+              </select>
+            </div>
+
+            <div className="gastos-form-field">
               <label className="gastos-label">Descripción:</label>
               <input
                 type="text"
@@ -203,18 +265,6 @@ const Gastos = () => {
                 type="text"
                 name="monto_estimado"
                 value={formData.monto_estimado}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              />
-            </div>
-
-            <div className="gastos-form-field">
-              <label className="gastos-label">Factura (URL o archivo):</label>
-              <input
-                type="text"
-                name="archivo_factura"
-                value={formData.archivo_factura}
                 onChange={handleChange}
                 required
                 className="gastos-input"
@@ -278,9 +328,11 @@ const Gastos = () => {
               <tr>
                 <th>Nombre</th>
                 <th>Área</th>
+                <th>Procesos</th>
+                <th>Centro de Operaciones</th>
+                <th>Unidad de Negocio</th>
                 <th>Descripción</th>
                 <th>Monto</th>
-                <th>Factura</th>
                 <th>Cotización</th>
                 <th>Estado</th>
               </tr>
@@ -290,15 +342,18 @@ const Gastos = () => {
                 <tr key={gasto.id}>
                   <td>{gasto.nombre_completo}</td>
                   <td>{gasto.area}</td>
+                  <td>{gasto.procesos}</td>
+                  <td>{gasto.sede}</td>
+                  <td>{gasto.unidad}</td>
                   <td>{gasto.descripcion}</td>
                   <td>${gasto.monto_estimado}</td>
+
                   <td>
-                    <a href={gasto.archivo_factura} target="_blank" rel="noopener noreferrer">
-                      Ver
-                    </a>
-                  </td>
-                  <td>
-                    <a href={gasto.archivo_cotizacion} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={gasto.archivo_cotizacion}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Ver
                     </a>
                   </td>
