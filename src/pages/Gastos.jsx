@@ -7,7 +7,7 @@ const Gastos = () => {
     area: "",
     procesos: "",
     sede: "",
-    unidad: [],
+    unidad: "",
     descripcion: "",
     monto_estimado: "",
     archivo_cotizacion: "",
@@ -237,8 +237,9 @@ const Gastos = () => {
                 name="unidad"
                 value={formData.unidad} // Debería ser un array
                 onChange={handleChange}
-                className="gastos-input"
                 required
+                className="gastos-input"
+                
               >
                 <option value="Carnes">Carnes</option>
                 <option value="Fruver">Fruver</option>
