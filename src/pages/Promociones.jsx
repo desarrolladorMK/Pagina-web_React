@@ -6,7 +6,7 @@ import { ChatBot } from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
-  const promocionesActivas = false; // Cambiar a true si hay promociones activas
+  const promocionesActivas = true; // Cambiar a true si hay promociones activas
 
   const openModal = (imgSrc) => {
     setModalImg(imgSrc);
@@ -41,6 +41,18 @@ const Promociones = () => {
             </div>
             <div className="ofertas" onClick={() => openModal('/im5.jpeg')}>
               <img src="/im5.jpeg" alt="Promo 5" />
+            </div>
+            <div className="ofertas" onClick={() => openModal('/im6.jpeg')}>
+              <img src="/im6.jpeg" alt="Promo 6" />
+            </div>
+            <div className="ofertas" onClick={() => openModal('/im7.jpeg')}>
+              <img src="/im7.jpeg" alt="Promo 7" />
+            </div>
+            <div className="ofertas" onClick={() => openModal('/im8.jpeg')}>
+              <img src="/im8.jpeg" alt="Promo 8" />
+            </div>
+            <div className="ofertas" onClick={() => openModal('/im9.jpeg')}>
+              <img src="/im9.jpeg" alt="Promo 9" />
             </div>
           </div>
         ) : (
