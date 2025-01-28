@@ -11,6 +11,7 @@ import { ReservaForm } from "../pages/Reserva";
 import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
 import {Gastos} from "../pages/Gastos";
 import { Automatizacion } from "../pages/Automatizacion";
+import {AprobarRechazar} from "../pages/AprobarRechazar";
 
 export let routes = [
   {
@@ -64,6 +65,10 @@ export let routes = [
   {
     path: '/automatizacion',
     element: <Automatizacion />,
+  },
+  {
+    path: '/aprobarrechazar',
+    element: <AprobarRechazar />,
   },
 
   {
