@@ -19,7 +19,7 @@ const AprobarRechazar = () => {
     const handleSubmit = async (decision) => {
         setLoading(true);
         try {
-            const response = await axios.post('https://backend-gastos.vercel.app/api/requerimientos/decidir', {
+            const response = await axios.post('https://backend-gastos.vercel.app/api/requerimientos/decidirRequerimiento', {
                 token,
                 decision: decision,
             });
