@@ -109,7 +109,7 @@ const PostulacionesTable = () => {
                           }
                           className="download-button"
                         >
-                          Descargar PDF
+                          Descargar PDF 
                         </button>
                       )}
                     </td>
