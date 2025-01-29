@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Gastos.css";
+import Select from "react-select";
 
 const Gastos = () => {
   const [formData, setFormData] = useState({
@@ -7,10 +9,11 @@ const Gastos = () => {
     area: "",
     procesos: "",
     sede: "",
-    unidad: "",
+    unidad: [],
+    centro_costos: [],
     descripcion: "",
     monto_estimado: "",
-    archivo_cotizacion: "",
+    archivo_cotizacion: null,
     correo_empleado: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,9 +29,11 @@ const Gastos = () => {
 
   const checkDecision = async () => {
     try {
-      const response = await fetch(`${API_URL}/requerimientos/estado/${token}`);
-      if (response.ok) {
-        const data = await response.json();
+      const response = await axios.get(
+        `${API_URL}/requerimientos/estado/${token}`
+      );
+      if (response.status === 200) {
+        const data = response.data;
         setDecision(data.decision);
       } else {
         setErrorMessage("No se pudo obtener el estado de la solicitud.");
@@ -44,9 +49,11 @@ const Gastos = () => {
     setIsLoadingHistorial(true);
 
     try {
-      const response = await fetch(`${API_URL}/requerimientos`);
-      if (response.ok) {
-        const { data } = await response.json();
+      const response = await axios.get(
+        `${API_URL}/requerimientos/obtenerRequerimientos`
+      );
+      if (response.status === 200) {
+        const { data } = response.data;
         setHistorial(data);
         setMostrarHistorial(!mostrarHistorial);
 
@@ -72,7 +79,6 @@ const Gastos = () => {
       setIsLoadingHistorial(false);
     }
   };
-
   // Formateador de moneda colombiana
   const formatoCOP = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -82,7 +88,7 @@ const Gastos = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
     if (name === "monto_estimado") {
       const valorNumerico = value.replace(/\D/g, "");
@@ -91,47 +97,96 @@ const Gastos = () => {
         : "";
 
       setFormData({ ...formData, [name]: valorFormateado });
+    } else if (name === "unidad" || name === "centro_costos") {
+      const selectedOptions = Array.from(e.target.selectedOptions).map(
+        (option) => option.value
+      );
+      setFormData({
+        ...formData,
+        [name]: selectedOptions,
+      });
+    } else if (name === "archivo_cotizacion") {
+      setFormData({ ...formData, archivo_cotizacion: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return; // Protección contra múltiples envíos
-    setIsSubmitting(true);
-
-    const montoLimpio = formData.monto_estimado.replace(/[$.,\s]/g, "");
-    const datosFormateados = {
+  const handleSelectChange = (name, selectedOptions) => {
+    setFormData({
       ...formData,
-      monto_estimado: parseFloat(montoLimpio),
-    };
+      [name]: selectedOptions
+        ? selectedOptions.map((option) => option.value)
+        : [],
+    });
+  };
 
+  const unidadOptions = [
+    { value: "Carnes", label: "Carnes" },
+    { value: "Fruver", label: "Fruver" },
+    { value: "Abarrotes", label: "Abarrotes" },
+    { value: "Administrativo", label: "Administrativo" },
+  ];
+
+  const centroCostosOptions = [
+    { value: "Gerencia", label: "Gerencia" },
+    { value: "Contabilidad", label: "Contabilidad" },
+    { value: "Tesoreria", label: "Tesoreria" },
+    { value: "Gestion humana", label: "Gestion humana" },
+    { value: "Generales administrativos", label: "Generales administrativos" },
+    { value: "Puntos de venta", label: "Puntos de venta" },
+    { value: "Domicilios", label: "Domicilios" },
+    { value: "Carnicos", label: "Carnicos" },
+    { value: "Fruver", label: "Fruver" },
+    { value: "Panaderia", label: "Panaderia" },
+    { value: "Bodega", label: "Bodega" },
+    { value: "Generales operaciones", label: "Generales operaciones" },
+    { value: "Compras", label: "Compras" },
+    { value: "Tienda virtual", label: "Tienda virtual" },
+    { value: "Callcenter", label: "Callcenter" },
+    { value: "Generales comerciales", label: "Generales comerciales" },
+    { value: "Generico", label: "Generico" },
+  ];
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+  
+    const formDataToSend = new FormData();
+    formDataToSend.append("nombre_completo", formData.nombre_completo);
+    formDataToSend.append("area", formData.area);
+    formDataToSend.append("procesos", formData.procesos);
+    formDataToSend.append("sede", formData.sede);
+    formData.unidad.forEach((item) => {
+      formDataToSend.append("unidad[]", item);
+    });
+    formData.centro_costos.forEach((item) => {
+      formDataToSend.append("centro_costos[]", item);
+    });
+    formDataToSend.append("descripcion", formData.descripcion);
+    formDataToSend.append("monto_estimado", formData.monto_estimado);
+    formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
+    formDataToSend.append("correo_empleado", formData.correo_empleado);
+  
     try {
-      const response = await fetch(`${API_URL}/requerimientos`, {
-        method: "POST",
+      const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
-        body: JSON.stringify(datosFormateados),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setToken(data.token);
-        setIsSubmitted(true);
-        alert("Requerimiento enviado con éxito.");
-      } else {
-        alert("Error al enviar el requerimiento.");
-      }
+      setIsSubmitted(true);
+      setDecision(response.data.decision);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-      alert("Hubo un error al enviar la solicitud.");
+      console.error("Datos del error:", error.response.data);
+      console.error("Estado del error:", error.response.status);
+      console.error("Encabezados del error:", error.response.headers);
+      setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -177,7 +232,9 @@ const Gastos = () => {
                 required
                 className="gastos-input"
               >
-                <option value="">Seleccione un área</option>
+                <option value="" disabled>
+                  Seleccione un área
+                </option>
                 <option value="Gerencia">Gerencia</option>
                 <option value="Gestión humana">Dirección Gestión humana</option>
                 <option value="Operaciones">Dirección Operaciones</option>
@@ -197,7 +254,9 @@ const Gastos = () => {
                 required
                 className="gastos-input"
               >
-                <option value="">Seleccione un Proceso</option>
+                <option value="" disabled>
+                  Seleccione un Proceso
+                </option>
                 <option value="Logística">Logística</option>
                 <option value="Inventarios">Inventarios</option>
                 <option value="Sistemas">Sistemas</option>
@@ -219,7 +278,9 @@ const Gastos = () => {
                 required
                 className="gastos-input"
               >
-                <option value="">Seleccione la Sede</option>
+                <option value="" disabled>
+                  Seleccione la Sede
+                </option>
                 <option value="Copacabana Plaza">Copacabana Plaza</option>
                 <option value="Copacabana Vegas">Copacabana Vegas</option>
                 <option value="Copacabana San Juan">Copacabana San Juan</option>
@@ -230,22 +291,38 @@ const Gastos = () => {
                 <option value="Villa Hermosa">Villa Hermosa</option>
               </select>
             </div>
-
             <div className="gastos-form-field">
               <label className="gastos-label">Unidad de Negocio:</label>
-              <select
+              <Select
                 name="unidad"
-                value={formData.unidad} // Debería ser un array
-                onChange={handleChange}
-                required
+                value={unidadOptions.filter((option) =>
+                  formData.unidad.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("unidad", selectedOptions)
+                }
+                options={unidadOptions}
+                isMulti
                 className="gastos-input"
-                
-              >
-                <option value="Carnes">Carnes</option>
-                <option value="Fruver">Fruver</option>
-                <option value="Abarrotes">Abarrotes</option>
-                <option value="Administrativo">Administrativo</option>
-              </select>
+                placeholder="Seleccione las unidades"
+              />
+            </div>
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Centro de Costos:</label>
+              <Select
+                name="centro_costos"
+                value={centroCostosOptions.filter((option) =>
+                  formData.centro_costos.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("centro_costos", selectedOptions)
+                }
+                options={centroCostosOptions}
+                isMulti
+                className="gastos-input"
+                placeholder="Seleccione los centros de costos"
+              />
             </div>
 
             <div className="gastos-form-field">
@@ -273,13 +350,10 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">
-                Cotización (URL o archivo):
-              </label>
+              <label className="gastos-label">Cotización:</label>
               <input
-                type="text"
+                type="file"
                 name="archivo_cotizacion"
-                value={formData.archivo_cotizacion}
                 onChange={handleChange}
                 required
                 className="gastos-input"
@@ -330,8 +404,8 @@ const Gastos = () => {
                 <th>Nombre</th>
                 <th>Área</th>
                 <th>Procesos</th>
-                <th>Centro de Operaciones</th>
                 <th>Unidad de Negocio</th>
+                <th>Centro de Costos</th>
                 <th>Descripción</th>
                 <th>Monto</th>
                 <th>Cotización</th>
