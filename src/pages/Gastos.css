@@ -130,9 +130,9 @@
 
 /* Tabla del historial */
 .gastos-historial {
-  max-width: 950px;
+  max-width: 1400px;
   margin: 50px auto;
-  padding: 25px;
+  padding: 20px;
   border-radius: 12px;
   background-color: #fff;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
