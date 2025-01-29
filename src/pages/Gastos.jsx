@@ -26,6 +26,7 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
 
   const API_URL = "https://backend-gastos.vercel.app/api";
+  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/";
 
   const checkDecision = async () => {
     try {
@@ -79,6 +80,7 @@ const Gastos = () => {
       setIsLoadingHistorial(false);
     }
   };
+
   // Formateador de moneda colombiana
   const formatoCOP = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -151,7 +153,7 @@ const Gastos = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("nombre_completo", formData.nombre_completo);
     formDataToSend.append("area", formData.area);
@@ -167,7 +169,7 @@ const Gastos = () => {
     formDataToSend.append("monto_estimado", formData.monto_estimado);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     formDataToSend.append("correo_empleado", formData.correo_empleado);
-  
+
     try {
       const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
         headers: {
@@ -178,15 +180,12 @@ const Gastos = () => {
       setDecision(response.data.decision);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-      console.error("Datos del error:", error.response.data);
-      console.error("Estado del error:", error.response.status);
-      console.error("Encabezados del error:", error.response.headers);
       setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -207,10 +206,9 @@ const Gastos = () => {
 
       {!isSubmitted ? (
         <div className="gastos-form-container">
-          <h2 className="gastos-form-title">
-            Formulario de Solicitud de Gasto
-          </h2>
+          <h2 className="gastos-form-title">Formulario de Solicitud de Gasto</h2>
           <form onSubmit={handleSubmit} className="gastos-form">
+            {/* Campos del formulario */}
             <div className="gastos-form-field">
               <label className="gastos-label">Nombre Completo:</label>
               <input
@@ -222,7 +220,6 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
-
             <div className="gastos-form-field">
               <label className="gastos-label">Área:</label>
               <select
@@ -404,6 +401,7 @@ const Gastos = () => {
                 <th>Nombre</th>
                 <th>Área</th>
                 <th>Procesos</th>
+                <th>Sede</th>
                 <th>Unidad de Negocio</th>
                 <th>Centro de Costos</th>
                 <th>Descripción</th>
@@ -420,18 +418,20 @@ const Gastos = () => {
                   <td>{gasto.procesos}</td>
                   <td>{gasto.sede}</td>
                   <td>{gasto.unidad}</td>
+                  <td>{gasto.centro_costos}</td>
                   <td>{gasto.descripcion}</td>
                   <td>${gasto.monto_estimado}</td>
 
                   <td>
                     <a
-                      href={gasto.archivo_cotizacion}
+                      href={`${SUPABASE_URL}${gasto.archivo_cotizacion}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Ver
                     </a>
                   </td>
+
                   <td>{gasto.estado}</td>
                 </tr>
               ))}
