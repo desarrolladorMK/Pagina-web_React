@@ -12,6 +12,7 @@ import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Pos
 import {Gastos} from "../pages/Gastos";
 import { Automatizacion } from "../pages/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
+import {HistorialRegistros} from "../pages/HistorialRegistros";
 
 export let routes = [
   {
@@ -69,6 +70,10 @@ export let routes = [
   {
     path: '/aprobarrechazar',
     element: <AprobarRechazar />,
+  },
+  {
+    path: '/historial/:correo',
+    element: <HistorialRegistros />,
   },
 
   {

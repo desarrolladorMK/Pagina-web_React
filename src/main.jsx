@@ -4,6 +4,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { routes } from './routes/RouterApp';
 
+
 // Creación del router con las rutas definidas
 const router = createBrowserRouter(routes);
 

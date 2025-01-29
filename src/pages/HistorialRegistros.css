@@ -1,0 +1,90 @@
+.historial-body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  
+  .historial-container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .historial-header {
+    text-align: center;
+    color: #3b2a45;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .historial-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .historial-table,
+  .historial-th,
+  .historial-td {
+    border: 1px solid #ddd;
+  }
+  
+  .historial-th,
+  .historial-td {
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .historial-th {
+    background-color: #5c6bc0;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .historial-tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .historial-tr:hover {
+    background-color: #e3e3e3;
+  }
+  
+  .historial-td {
+    font-size: 14px;
+  }
+  
+  .loading-container,
+  .error-message {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .loading-container span {
+    font-size: 20px;
+    color: #3b2a45;
+    animation: fadeIn 1s ease-in-out infinite;
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
