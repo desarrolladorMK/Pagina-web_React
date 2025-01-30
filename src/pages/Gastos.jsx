@@ -27,8 +27,8 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
   const [archivos, setArchivos] = useState([
-    { nombre: "Archivo 1.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/comprobante%20de%20gastos.xlsx" },
-    { nombre: "Archivo 2.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION.xlsx" },
+    { nombre: "Documento interno", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/comprobante%20de%20gastos.xlsx" },
+    { nombre: "Documento proveedor", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION.xlsx" },
   ]);
 
   const API_URL = "https://backend-gastos.vercel.app/api";
@@ -267,6 +267,7 @@ const Gastos = () => {
       {!isSubmitted ? (
         <div className="gastos-form-container">
           <h2 className="gastos-form-title">Formulario cuidado del gasto</h2>
+          <h4 className="fraseMotivacional">"Cuando cuidamos, nos protegemos todos."</h4>
           <form onSubmit={handleSubmit} className="gastos-form">
             {/* Campos del formulario */}
             <div className="gastos-form-field">
@@ -290,7 +291,7 @@ const Gastos = () => {
                 className="gastos-input"
               >
                 <option value="" disabled>
-                  Seleccione un área
+                  Seleccione un área:
                 </option>
                 <option value="Gerencia">Gerencia</option>
                 <option value="Gestión humana">Dirección Gestión humana</option>
@@ -312,7 +313,7 @@ const Gastos = () => {
                 className="gastos-input"
               >
                 <option value="" disabled>
-                  Seleccione un Proceso
+                  Seleccione un Proceso:
                 </option>
                 <option value="Logística">Logística</option>
                 <option value="Inventarios">Inventarios</option>
@@ -349,7 +350,7 @@ const Gastos = () => {
               </select>
             </div>
             <div className="gastos-form-field">
-              <label className="gastos-label">Unidad de Negocio:</label>
+              <label className="gastos-label">Unidad de negocio:</label>
               <Select
                 name="unidad"
                 value={unidadOptions.filter((option) =>
@@ -366,7 +367,7 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Centro de Costos:</label>
+              <label className="gastos-label">Centro de costos:</label>
               <Select
                 name="centro_costos"
                 value={centroCostosOptions.filter((option) =>
@@ -383,7 +384,7 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Cual es tu necesidad y la razon:</label>
+              <label className="gastos-label">Describe tu necesidad y la razón:</label>
               <input
                 type="text"
                 name="descripcion"
@@ -395,7 +396,7 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Monto Estimado:</label>
+              <label className="gastos-label">Monto estimado:</label>
               <input
                 type="text"
                 name="monto_estimado"
@@ -418,7 +419,7 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Documentos nuevos Proveedores:</label>
+              <label className="gastos-label">Documentos nuevos proveedores:</label>
               <input
                 type="file"
                 name="archivo_proveedor"
@@ -429,7 +430,7 @@ const Gastos = () => {
            
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Correo del Empleado:</label>
+              <label className="gastos-label">Correo del empleado:</label>
               <input
                 type="email"
                 name="correo_empleado"
@@ -473,8 +474,8 @@ const Gastos = () => {
                 <th>Área</th>
                 <th>Procesos</th>
                 <th>Sede</th>
-                <th>Unidad de Negocio</th>
-                <th>Centro de Costos</th>
+                <th>Unidad de negocio</th>
+                <th>Centro de costos</th>
                 <th>Descripción</th>
                 <th>Monto</th>
                 <th>Cotización</th>
@@ -506,7 +507,7 @@ const Gastos = () => {
                         rel="noopener noreferrer"
                         className="view-pdf-button"
                       >
-                        Ver Cotización
+                        Ver
                       </a>
                     </td>
                     <td>{gasto.estado}</td>

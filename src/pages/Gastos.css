@@ -13,7 +13,29 @@
   --hover-color: #76c400;
 }
 
+/* Estilo para la frase motivacional */
+.fraseMotivacional {
+  color: rgb(77, 74, 74);
+  margin-bottom: 40px;
+  margin-top: -15px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-family: "Georgia", serif;
+  opacity: 0;
+  animation: fadeInMotivational 2s ease-in-out forwards;
+}
 
+/* Definición de la animación */
+@keyframes fadeInMotivational {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* Contenedor principal */
 .gastos-container {
@@ -66,7 +88,6 @@
   font-weight: 600;
   color: var(--secondary-color);
   font-size: 1.1rem;
-  text-transform: capitalize;
 }
 
 /* Inputs */
@@ -128,6 +149,64 @@
   transform: scale(1.15);
 }
 
+/* Estilo para el botón flotante */
+.gastos-flotante-button {
+  position: fixed;
+  bottom: 105px;
+  right: 20px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.gastos-flotante-button:hover {
+  background-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+/* Estilo para la lista desplegable de archivos PDF */
+.gastos-archivos-desplegados {
+  position: fixed;
+  bottom: 150px;
+  right: 20px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.gastos-archivos-desplegados ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gastos-archivos-desplegados li {
+  margin-bottom: 10px;
+}
+
+.gastos-archivos-desplegados a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.gastos-archivos-desplegados a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
 /* Tabla del historial */
 .gastos-historial {
   max-width: 1400px;
