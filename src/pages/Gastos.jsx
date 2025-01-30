@@ -24,13 +24,16 @@ const Gastos = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Nueva protección contra clics múltiples
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
+  const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
+  const [archivos, setArchivos] = useState([  
+    { nombre: "Archivo 1.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/comprobante%20de%20gastos.xlsx" },
+    { nombre: "Archivo 2.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION.xlsx" },
+  ]);
 
   const API_URL = "https://backend-gastos.vercel.app/api";
   const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
 
-  
-
-
+  // Lógica para verificar la decisión de la solicitud (no cambia).
   const checkDecision = async () => {
     try {
       const response = await axios.get(
@@ -48,6 +51,7 @@ const Gastos = () => {
     }
   };
 
+  // Función para obtener el historial de gastos.
   const obtenerHistorial = async () => {
     if (isLoadingHistorial) return; // Evitar múltiples solicitudes mientras se carga el historial
     setIsLoadingHistorial(true);
@@ -84,12 +88,13 @@ const Gastos = () => {
     }
   };
 
-  const formatoCOP = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
+  const formatoCOP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
     minimumFractionDigits: 0,
   });
 
+  // Lógica para manejar los cambios en los campos del formulario.
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -128,6 +133,7 @@ const Gastos = () => {
     });
   };
 
+  // Opciones de Unidad de Negocio y Centro de Costos (no cambia).
   const unidadOptions = [
     { value: "Carnes", label: "Carnes" },
     { value: "Fruver", label: "Fruver" },
@@ -194,6 +200,11 @@ const Gastos = () => {
     }
   };
 
+  // Función para alternar la visibilidad de los archivos PDF
+  const toggleArchivos = () => {
+    setMostrarArchivos(!mostrarArchivos);
+  };
+
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -203,9 +214,6 @@ const Gastos = () => {
     }
   }, [token]);
 
-
-
-
   return (
     <div className="gastos-container">
       <div className="logo-container">
@@ -213,15 +221,38 @@ const Gastos = () => {
           <img src="logoMK.png" alt="Logo Merkahorro" />
         </a>
       </div>
-      <h1 className="gastos-header">Automatización de Gasto</h1>
+      <h1 className="gastos-header">Conciencia del gasto</h1>
+
+      {/* Botón flotante para mostrar los archivos PDF */}
+      <button
+        onClick={toggleArchivos}
+        className="gastos-flotante-button"
+      >
+        📂
+      </button>
+
+      {/* Lista desplegable de archivos PDF */}
+      {mostrarArchivos && (
+        <div className="gastos-archivos-desplegados">
+          <ul>
+            {archivos.map((archivo, index) => (
+              <li key={index}>
+                <a href={archivo.url} target="_blank" rel="noopener noreferrer">
+                  {archivo.nombre}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {!isSubmitted ? (
         <div className="gastos-form-container">
-          <h2 className="gastos-form-title">Formulario de Solicitud de Gasto</h2>
+          <h2 className="gastos-form-title">Formulario cuidado del gasto</h2>
           <form onSubmit={handleSubmit} className="gastos-form">
             {/* Campos del formulario */}
             <div className="gastos-form-field">
-              <label className="gastos-label">Nombre Completo:</label>
+              <label className="gastos-label">Responsable de la gestión del cuidado gasto:</label>
               <input
                 type="text"
                 name="nombre_completo"
@@ -334,7 +365,7 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Descripción:</label>
+              <label className="gastos-label">Cual es tu necesidad y la razon:</label>
               <input
                 type="text"
                 name="descripcion"
@@ -423,36 +454,36 @@ const Gastos = () => {
             </thead>
             <tbody>
 
-            {historial.map((gasto) => {
-  // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
-  const nombreArchivo = gasto.archivo_cotizacion.split('/').pop();  // Extraemos el nombre del archivo
-  const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
+              {historial.map((gasto) => {
+                // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
+                const nombreArchivo = gasto.archivo_cotizacion.split('/').pop();  // Extraemos el nombre del archivo
+                const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
 
-  return (
-    <tr key={gasto.id}>
-      <td>{gasto.nombre_completo}</td>
-      <td>{gasto.area}</td>
-      <td>{gasto.procesos}</td>
-      <td>{gasto.sede}</td>
-      <td>{gasto.unidad.join(", ")}</td>
-      <td>{gasto.centro_costos.join(", ")}</td>
-      <td>{gasto.descripcion}</td>
-      <td>{formatoCOP.format(gasto.monto_estimado)}</td>
-      <td>
-        {/* Botón para ver el archivo de cotización como PDF */}
-        <a
-          href={archivoCotizacionUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="view-pdf-button"
-        >
-          Ver Cotización
-        </a>
-      </td>
-      <td>{gasto.estado}</td>
-    </tr>
-  );
-})}
+                return (
+                  <tr key={gasto.id}>
+                    <td>{gasto.nombre_completo}</td>
+                    <td>{gasto.area}</td>
+                    <td>{gasto.procesos}</td>
+                    <td>{gasto.sede}</td>
+                    <td>{gasto.unidad.join(", ")}</td>
+                    <td>{gasto.centro_costos.join(", ")}</td>
+                    <td>{gasto.descripcion}</td>
+                    <td>{formatoCOP.format(gasto.monto_estimado)}</td>
+                    <td>
+                      {/* Botón para ver el archivo de cotización como PDF */}
+                      <a
+                        href={archivoCotizacionUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="view-pdf-button"
+                      >
+                        Ver Cotización
+                      </a>
+                    </td>
+                    <td>{gasto.estado}</td>
+                  </tr>
+                );
+              })}
 
             </tbody>
           </table>
@@ -462,4 +493,8 @@ const Gastos = () => {
   );
 };
 
+
+
 export { Gastos };
+
+
