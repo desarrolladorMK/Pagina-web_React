@@ -188,7 +188,7 @@ function ChatBot() {
                 className="merkahorro-button"
                 onClick={() => {
                   if (isPQR) {
-                    const whatsappLink = `https://wa.me/573128424674?text=${encodeURIComponent(message)}`;
+                    const whatsappLink = `https://wa.me/573136819546?text=${encodeURIComponent(message)}`;
                     setResponse(
                       <span>
                         Dejanos tu PQR en el siguiente enlace:{' '}
