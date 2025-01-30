@@ -14,7 +14,7 @@ const Gastos = () => {
     descripcion: "",
     monto_estimado: "",
     archivo_cotizacion: null,
-    archivos_proveedor: null,  
+    /* archivos_proveedor: null,   */
     correo_empleado: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -27,8 +27,8 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
   const [archivos, setArchivos] = useState([
-    { nombre: "Documento interno", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/comprobante%20de%20gastos.xlsx" },
-    { nombre: "Documento proveedor", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION.xlsx" },
+    { nombre: "Documento interno", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273687525_comprobante%20de%20gastos%20(3).xlsx" },
+    { nombre: "Documento proveedor", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx" },
   ]);
 
   const API_URL = "https://backend-gastos.vercel.app/api";
@@ -122,7 +122,7 @@ const Gastos = () => {
   };
 
 
-  const handleInputChange = (e) => {
+/*   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "archivos_proveedor") {
       // Asignamos solo el primer archivo seleccionado
@@ -130,7 +130,7 @@ const Gastos = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
-  };
+  }; */
   
 
 
@@ -197,7 +197,7 @@ const Gastos = () => {
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     // Agregar los archivos del proveedor
-    formDataToSend.append("archivos_proveedor", formData.archivos_proveedor);
+   /*  formDataToSend.append("archivos_proveedor", formData.archivos_proveedor); */
     formDataToSend.append("correo_empleado", formData.correo_empleado);
 
 
@@ -418,7 +418,7 @@ const Gastos = () => {
               />
             </div>
 
-            <div className="gastos-form-field">
+           {/*  <div className="gastos-form-field">
               <label className="gastos-label">Documentos nuevos proveedores:</label>
               <input
                 type="file"
@@ -426,7 +426,7 @@ const Gastos = () => {
                 onChange={handleInputChange}
                 className="gastos-input"
               />
-            </div>
+            </div> */}
            
 
             <div className="gastos-form-field">
