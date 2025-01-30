@@ -26,7 +26,10 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
 
   const API_URL = "https://backend-gastos.vercel.app/api";
-  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/";
+  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+
+  
+
 
   const checkDecision = async () => {
     try {
@@ -86,16 +89,16 @@ const Gastos = () => {
     currency: 'COP',
     minimumFractionDigits: 0,
   });
-  
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-  
+
     if (name === "monto_estimado") {
       const valorNumerico = value.replace(/\D/g, "");
       const valorFormateado = valorNumerico
         ? formatoCOP.format(valorNumerico)
         : "";
-  
+
       setFormData({ ...formData, [name]: valorFormateado });
     } else if (name === "unidad" || name === "centro_costos") {
       const selectedOptions = Array.from(e.target.selectedOptions).map(
@@ -111,12 +114,12 @@ const Gastos = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
-  
+
   const handleSelectChange = (name, selectedOptions) => {
     const selectedValues = selectedOptions
       ? selectedOptions.map((option) => option.value)
       : [];
-  
+
     setFormData({
       ...formData,
       [name]: name === "centroCostos"
@@ -124,14 +127,14 @@ const Gastos = () => {
         : selectedValues,
     });
   };
-  
+
   const unidadOptions = [
     { value: "Carnes", label: "Carnes" },
     { value: "Fruver", label: "Fruver" },
     { value: "Abarrotes", label: "Abarrotes" },
     { value: "Administrativo", label: "Administrativo" },
   ];
-  
+
   const centroCostosOptions = [
     { value: "Gerencia", label: "Gerencia" },
     { value: "Contabilidad", label: "Contabilidad" },
@@ -151,14 +154,14 @@ const Gastos = () => {
     { value: "Generales comerciales", label: "Generales comerciales" },
     { value: "Generico", label: "Generico" },
   ];
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-  
+
     // Convertir el valor a un formato numérico válido antes de enviarlo
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("nombre_completo", formData.nombre_completo);
     formDataToSend.append("area", formData.area);
@@ -174,7 +177,7 @@ const Gastos = () => {
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     formDataToSend.append("correo_empleado", formData.correo_empleado);
-  
+
     try {
       const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
         headers: {
@@ -190,7 +193,7 @@ const Gastos = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -199,6 +202,9 @@ const Gastos = () => {
       return () => clearInterval(interval);
     }
   }, [token]);
+
+
+
 
   return (
     <div className="gastos-container">
@@ -384,68 +390,76 @@ const Gastos = () => {
           </form>
 
           <button
-  onClick={obtenerHistorial}
-  className="gastos-historial-button"
-  disabled={isLoadingHistorial}
->
-  {isLoadingHistorial ? "↻" : "📜"}
-</button>
-</div>
-) : (
-<div className="gastos-submitted-message">
-  <h2>¡Solicitud Enviada Exitosamente!</h2>
-</div>
-)}
+            onClick={obtenerHistorial}
+            className="gastos-historial-button"
+            disabled={isLoadingHistorial}
+          >
+            {isLoadingHistorial ? "↻" : "📜"}
+          </button>
+        </div>
+      ) : (
+        <div className="gastos-submitted-message">
+          <h2>¡Solicitud Enviada Exitosamente!</h2>
+        </div>
+      )}
 
-{!isSubmitted && mostrarHistorial && (
-<div id="gastos-historial" className="gastos-historial desplegado">
-  <h2>Historial de Gastos</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Área</th>
-        <th>Procesos</th>
-        <th>Sede</th>
-        <th>Unidad de Negocio</th>
-        <th>Centro de Costos</th>
-        <th>Descripción</th>
-        <th>Monto</th>
-        <th>Cotización</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      {historial.map((gasto) => (
-        <tr key={gasto.id}>
-          <td>{gasto.nombre_completo}</td>
-          <td>{gasto.area}</td>
-          <td>{gasto.procesos}</td>
-          <td>{gasto.sede}</td>
-          <td>{gasto.unidad.join(", ")}</td>
-          <td>{gasto.centro_costos.join(", ")}</td>
-          <td>{gasto.descripcion}</td>
-          <td>${gasto.monto_estimado}</td>
+      {!isSubmitted && mostrarHistorial && (
+        <div id="gastos-historial" className="gastos-historial desplegado">
+          <h2>Historial de Gastos</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Área</th>
+                <th>Procesos</th>
+                <th>Sede</th>
+                <th>Unidad de Negocio</th>
+                <th>Centro de Costos</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Cotización</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
 
-          <td>
-            <a
-              href={`${SUPABASE_URL}${gasto.archivo_cotizacion}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ver
-            </a>
-          </td>
+            {historial.map((gasto) => {
+  // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
+  const nombreArchivo = gasto.archivo_cotizacion.split('/').pop();  // Extraemos el nombre del archivo
+  const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
 
-          <td>{gasto.estado}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-)}
-</div>
-);
+  return (
+    <tr key={gasto.id}>
+      <td>{gasto.nombre_completo}</td>
+      <td>{gasto.area}</td>
+      <td>{gasto.procesos}</td>
+      <td>{gasto.sede}</td>
+      <td>{gasto.unidad.join(", ")}</td>
+      <td>{gasto.centro_costos.join(", ")}</td>
+      <td>{gasto.descripcion}</td>
+      <td>{formatoCOP.format(gasto.monto_estimado)}</td>
+      <td>
+        {/* Botón para ver el archivo de cotización como PDF */}
+        <a
+          href={archivoCotizacionUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="view-pdf-button"
+        >
+          Ver Cotización
+        </a>
+      </td>
+      <td>{gasto.estado}</td>
+    </tr>
+  );
+})}
+
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export { Gastos };
