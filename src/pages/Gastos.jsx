@@ -14,6 +14,7 @@ const Gastos = () => {
     descripcion: "",
     monto_estimado: "",
     archivo_cotizacion: null,
+    archivos_proveedor: null,  
     correo_empleado: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -25,7 +26,7 @@ const Gastos = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // Nueva protección contra clics múltiples
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
-  const [archivos, setArchivos] = useState([  
+  const [archivos, setArchivos] = useState([
     { nombre: "Archivo 1.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/comprobante%20de%20gastos.xlsx" },
     { nombre: "Archivo 2.excel", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION.xlsx" },
   ]);
@@ -120,6 +121,19 @@ const Gastos = () => {
     }
   };
 
+
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "archivos_proveedor") {
+      // Asignamos solo el primer archivo seleccionado
+      setFormData({ ...formData, archivos_proveedor: files ? [files[0]] : [] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+  
+
+
   const handleSelectChange = (name, selectedOptions) => {
     const selectedValues = selectedOptions
       ? selectedOptions.map((option) => option.value)
@@ -182,7 +196,11 @@ const Gastos = () => {
     formDataToSend.append("descripcion", formData.descripcion);
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
+    // Agregar los archivos del proveedor
+    formDataToSend.append("archivos_proveedor", formData.archivos_proveedor);
     formDataToSend.append("correo_empleado", formData.correo_empleado);
+
+
 
     try {
       const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
@@ -398,6 +416,17 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Documentos nuevos Proveedores:</label>
+              <input
+                type="file"
+                name="archivo_proveedor"
+                onChange={handleInputChange}
+                className="gastos-input"
+              />
+            </div>
+           
 
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del Empleado:</label>
