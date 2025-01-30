@@ -9,17 +9,17 @@
 }
 
 /* Estilo para el contenedor del logo */
-.logo-container {
+.logo-container-aprobar {
   margin-bottom: 20px;
 }
 
-.logo-container img {
+.logo-container-aprobar img {
   max-width: 150px;
-  animation: bounceIn 1s ease-in-out forwards;
+  animation: bounceInAprobarRechazar 1s ease-in-out forwards;
 }
 
 /* Animación de rebote */
-@keyframes bounceIn {
+@keyframes bounceInAprobarRechazar {
   0% {
     transform: scale(0.5);
     opacity: 0;
@@ -39,11 +39,11 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
-  animation: slideInDown 1s ease-in-out forwards;
+  animation: slideInDownAprobarRechazar 1s ease-in-out forwards;
 }
 
 /* Animación de deslizamiento */
-@keyframes slideInDown {
+@keyframes slideInDownAprobarRechazar {
   from {
     transform: translateY(-100%);
   }
@@ -58,8 +58,8 @@
   max-width: 500px;
   padding: 20px;
   border-radius: 8px;
-  animation: bounceIn 1s ease-in-out forwards,
-    slideInDown 1s ease-in-out forwards;
+  animation: bounceInAprobarRechazar 1s ease-in-out forwards,
+    slideInDownAprobarRechazar 1s ease-in-out forwards;
 }
 
 /* Estilo para los grupos de formulario */
@@ -155,11 +155,11 @@
   border-radius: 50%;
   width: 24px;
   height: 24px;
-  animation: spin 1s linear infinite;
+  animation: spinAprobarRechazar 1s linear infinite;
   margin-top: 20px;
 }
 
-@keyframes spin {
+@keyframes spinAprobarRechazar {
   0% {
     transform: rotate(0deg);
   }

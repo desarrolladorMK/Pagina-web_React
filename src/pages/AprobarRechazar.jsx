@@ -36,7 +36,7 @@ const AprobarRechazar = () => {
 
     return (
         <div className="aprobar-rechazar-container">
-            <div className="logo-container">
+            <div className="logo-container-aprobar">
                 <a href="/">
                     <img src="logoMK.png" alt="Logo Merkahorro" />
                 </a>
