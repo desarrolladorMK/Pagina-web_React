@@ -27,12 +27,19 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
   const [archivos, setArchivos] = useState([
-    { nombre: "Documento interno", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273687525_comprobante%20de%20gastos%20(3).xlsx" },
-    { nombre: "Documento proveedor", url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx" },
+    {
+      nombre: "Documento interno",
+      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273687525_comprobante%20de%20gastos%20(3).xlsx",
+    },
+    {
+      nombre: "Documento proveedor",
+      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx",
+    },
   ]);
 
   const API_URL = "https://backend-gastos.vercel.app/api";
-  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+  const SUPABASE_URL =
+    "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
 
   // Lógica para verificar la decisión de la solicitud (no cambia).
   const checkDecision = async () => {
@@ -121,18 +128,18 @@ const Gastos = () => {
     }
   };
 
-
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "archivos_proveedor") {
       // Asignamos todos los archivos seleccionados
-      setFormData({ ...formData, archivos_proveedor: files ? Array.from(files) : [] });
+      setFormData({
+        ...formData,
+        archivos_proveedor: files ? Array.from(files) : [],
+      });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
-
-
 
   const handleSelectChange = (name, selectedOptions) => {
     const selectedValues = selectedOptions
@@ -141,9 +148,8 @@ const Gastos = () => {
 
     setFormData({
       ...formData,
-      [name]: name === "centroCostos"
-        ? selectedValues.join(" - ")
-        : selectedValues,
+      [name]:
+        name === "centroCostos" ? selectedValues.join(" - ") : selectedValues,
     });
   };
 
@@ -202,19 +208,23 @@ const Gastos = () => {
     });
     formDataToSend.append("correo_empleado", formData.correo_empleado);
 
-
-
     try {
-      const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${API_URL}/requerimientos/crear`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setIsSubmitted(true);
       setDecision(response.data.decision);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-      setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+      setErrorMessage(
+        "Error al enviar la solicitud. Por favor, inténtalo de nuevo."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -244,10 +254,7 @@ const Gastos = () => {
       <h1 className="gastos-header">Conciencia del gasto</h1>
 
       {/* Botón flotante para mostrar los archivos PDF */}
-      <button
-        onClick={toggleArchivos}
-        className="gastos-flotante-button"
-      >
+      <button onClick={toggleArchivos} className="gastos-flotante-button">
         📂
       </button>
 
@@ -269,11 +276,15 @@ const Gastos = () => {
       {!isSubmitted ? (
         <div className="gastos-form-container">
           <h2 className="gastos-form-title">Formulario cuidado del gasto</h2>
-          <h4 className="fraseMotivacional">"Cuando cuidamos, nos protegemos todos."</h4>
+          <h4 className="fraseMotivacional">
+            "Cuando cuidamos, nos protegemos todos."
+          </h4>
           <form onSubmit={handleSubmit} className="gastos-form">
             {/* Campos del formulario */}
             <div className="gastos-form-field">
-              <label className="gastos-label">Responsable de la gestión del cuidado gasto:</label>
+              <label className="gastos-label">
+                Responsable de la gestión del cuidado gasto:
+              </label>
               <input
                 type="text"
                 name="nombre_completo"
@@ -386,7 +397,9 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Describe tu necesidad y la razón:</label>
+              <label className="gastos-label">
+                Describe tu necesidad y la razón:
+              </label>
               <input
                 type="text"
                 name="descripcion"
@@ -421,7 +434,9 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Documentos nuevos proveedores:</label>
+              <label className="gastos-label">
+                Documentos nuevos proveedores:
+              </label>
               <input
                 type="file"
                 name="archivos_proveedor"
@@ -430,7 +445,6 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div>
-
 
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del empleado:</label>
@@ -487,17 +501,20 @@ const Gastos = () => {
               </tr>
             </thead>
             <tbody>
-
               {historial.map((gasto) => {
                 // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
-                const nombreArchivo = gasto.archivo_cotizacion.split('/').pop();  // Extraemos el nombre del archivo
+                const nombreArchivo = gasto.archivo_cotizacion.split("/").pop(); // Extraemos el nombre del archivo
                 const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
 
                 // Verificamos si 'gasto.archivos_proveedor' es un array antes de usar 'map'
-                const archivosProveedorUrls = Array.isArray(gasto.archivos_proveedor) ? gasto.archivos_proveedor.map((archivo) => {
-                  const nombreArchivoProveedor = archivo.split('/').pop();  // Extraemos el nombre del archivo
-                  return `${SUPABASE_URL}/proveedores/${nombreArchivoProveedor}`;
-                }) : [];
+                const archivosProveedor =
+                  typeof gasto.archivos_proveedor === "string"
+                    ? JSON.parse(gasto.archivos_proveedor) // Convertimos el string en un array
+                    : gasto.archivos_proveedor;
+
+                const archivosProveedorUrls = Array.isArray(archivosProveedor)
+                  ? archivosProveedor // Como ya es una URL completa, la usamos directamente
+                  : [];
 
                 return (
                   <tr key={gasto.id}>
@@ -521,7 +538,6 @@ const Gastos = () => {
                       </a>
                     </td>
                     <td>
-                      {/* Botones para ver los archivos del proveedor como PDF */}
                       {archivosProveedorUrls.length > 0 ? (
                         archivosProveedorUrls.map((url, index) => (
                           <div key={index}>
@@ -531,7 +547,7 @@ const Gastos = () => {
                               rel="noopener noreferrer"
                               className="view-pdf-button"
                             >
-                              Ver Archivo Proveedor {index + 1}
+                              Ver 
                             </a>
                           </div>
                         ))
@@ -539,11 +555,12 @@ const Gastos = () => {
                         <span>No hay archivos de proveedor</span>
                       )}
                     </td>
-                    <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
+                    <td className={getEstadoClass(gasto.estado)}>
+                      {gasto.estado}
+                    </td>
                   </tr>
                 );
               })}
-
             </tbody>
           </table>
         </div>
@@ -554,14 +571,14 @@ const Gastos = () => {
 
 const getEstadoClass = (estado) => {
   switch (estado) {
-    case 'Pendiente':
-      return 'estado-pendiente';
-    case 'Necesario':
-      return 'estado-aprobado';
-    case 'No necesario':
-      return 'estado-rechazado';
+    case "Pendiente":
+      return "estado-pendiente";
+    case "Necesario":
+      return "estado-aprobado";
+    case "No necesario":
+      return "estado-rechazado";
     default:
-      return '';
+      return "";
   }
 };
 
