@@ -81,17 +81,17 @@
 .loading-container span {
   font-size: 20px;
   color: #3b2a45;
-  animation: fadeIn 1s ease-in-out infinite;
+  animation: fadeInh 1s ease-in-out infinite;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInh {
   0% {
     opacity: 0;
   }
   50% {
-    opacity: 1;
+    opacity: 1.5;
   }
   100% {
-    opacity: 0;
+    opacity: 1;
   }
 }   
