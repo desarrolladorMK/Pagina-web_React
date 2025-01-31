@@ -60,7 +60,7 @@ const AprobarRechazar = () => {
                                 onClick={() => handleSubmit('No necesario')}
                                 disabled={loading}
                             >
-                                No necesario'
+                                No necesario
                             </button>
                         </div>
                     </div>

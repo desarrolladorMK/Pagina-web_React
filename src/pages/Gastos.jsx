@@ -122,16 +122,16 @@ const Gastos = () => {
   };
 
 
-/*   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "archivos_proveedor") {
-      // Asignamos solo el primer archivo seleccionado
-      setFormData({ ...formData, archivos_proveedor: files ? [files[0]] : [] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  }; */
-  
+  /*   const handleInputChange = (e) => {
+      const { name, value, files } = e.target;
+      if (name === "archivos_proveedor") {
+        // Asignamos solo el primer archivo seleccionado
+        setFormData({ ...formData, archivos_proveedor: files ? [files[0]] : [] });
+      } else {
+        setFormData({ ...formData, [name]: value });
+      }
+    }; */
+
 
 
   const handleSelectChange = (name, selectedOptions) => {
@@ -197,7 +197,7 @@ const Gastos = () => {
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     // Agregar los archivos del proveedor
-   /*  formDataToSend.append("archivos_proveedor", formData.archivos_proveedor); */
+    /*  formDataToSend.append("archivos_proveedor", formData.archivos_proveedor); */
     formDataToSend.append("correo_empleado", formData.correo_empleado);
 
 
@@ -418,7 +418,7 @@ const Gastos = () => {
               />
             </div>
 
-           {/*  <div className="gastos-form-field">
+            {/*  <div className="gastos-form-field">
               <label className="gastos-label">Documentos nuevos proveedores:</label>
               <input
                 type="file"
@@ -427,7 +427,7 @@ const Gastos = () => {
                 className="gastos-input"
               />
             </div> */}
-           
+
 
             <div className="gastos-form-field">
               <label className="gastos-label">Correo del empleado:</label>
@@ -510,7 +510,7 @@ const Gastos = () => {
                         Ver
                       </a>
                     </td>
-                    <td>{gasto.estado}</td>
+                    <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
                   </tr>
                 );
               })}
@@ -521,6 +521,19 @@ const Gastos = () => {
       )}
     </div>
   );
+};
+
+const getEstadoClass = (estado) => {
+  switch (estado) {
+    case 'Pendiente':
+      return 'estado-pendiente';
+    case 'Necesario':
+      return 'estado-aprobado';
+    case 'No necesario':
+      return 'estado-rechazado';
+    default:
+      return '';
+  }
 };
 
 

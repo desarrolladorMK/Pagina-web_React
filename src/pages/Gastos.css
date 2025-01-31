@@ -306,3 +306,19 @@
     font-size: 0.85rem;
   }
 }
+
+
+.estado-pendiente {
+  background-color: #ffbf00;
+  color: #000000;
+}
+
+.estado-aprobado {
+  background-color: #2ce056;
+  color: #000000;
+}
+
+.estado-rechazado {
+  background-color: #d33845;
+    color: #000000;
+}
