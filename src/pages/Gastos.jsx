@@ -14,7 +14,7 @@ const Gastos = () => {
     descripcion: "",
     monto_estimado: "",
     archivo_cotizacion: null,
-    /* archivos_proveedor: null,   */
+    archivos_proveedor: [],
     correo_empleado: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -122,15 +122,15 @@ const Gastos = () => {
   };
 
 
-  /*   const handleInputChange = (e) => {
-      const { name, value, files } = e.target;
-      if (name === "archivos_proveedor") {
-        // Asignamos solo el primer archivo seleccionado
-        setFormData({ ...formData, archivos_proveedor: files ? [files[0]] : [] });
-      } else {
-        setFormData({ ...formData, [name]: value });
-      }
-    }; */
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "archivos_proveedor") {
+      // Asignamos todos los archivos seleccionados
+      setFormData({ ...formData, archivos_proveedor: files ? Array.from(files) : [] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
 
 
 
@@ -197,7 +197,9 @@ const Gastos = () => {
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     // Agregar los archivos del proveedor
-    /*  formDataToSend.append("archivos_proveedor", formData.archivos_proveedor); */
+    formData.archivos_proveedor.forEach((file) => {
+      formDataToSend.append("archivos_proveedor", file);
+    });
     formDataToSend.append("correo_empleado", formData.correo_empleado);
 
 
@@ -418,15 +420,16 @@ const Gastos = () => {
               />
             </div>
 
-            {/*  <div className="gastos-form-field">
+            <div className="gastos-form-field">
               <label className="gastos-label">Documentos nuevos proveedores:</label>
               <input
                 type="file"
-                name="archivo_proveedor"
+                name="archivos_proveedor"
                 onChange={handleInputChange}
+                multiple // Permitir múltiples archivos
                 className="gastos-input"
               />
-            </div> */}
+            </div>
 
 
             <div className="gastos-form-field">
@@ -479,6 +482,7 @@ const Gastos = () => {
                 <th>Descripción</th>
                 <th>Monto</th>
                 <th>Cotización</th>
+                <th>Proveedor</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -488,6 +492,12 @@ const Gastos = () => {
                 // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
                 const nombreArchivo = gasto.archivo_cotizacion.split('/').pop();  // Extraemos el nombre del archivo
                 const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
+
+                // Verificamos si 'gasto.archivos_proveedor' es un array antes de usar 'map'
+                const archivosProveedorUrls = Array.isArray(gasto.archivos_proveedor) ? gasto.archivos_proveedor.map((archivo) => {
+                  const nombreArchivoProveedor = archivo.split('/').pop();  // Extraemos el nombre del archivo
+                  return `${SUPABASE_URL}/proveedores/${nombreArchivoProveedor}`;
+                }) : [];
 
                 return (
                   <tr key={gasto.id}>
@@ -509,6 +519,25 @@ const Gastos = () => {
                       >
                         Ver
                       </a>
+                    </td>
+                    <td>
+                      {/* Botones para ver los archivos del proveedor como PDF */}
+                      {archivosProveedorUrls.length > 0 ? (
+                        archivosProveedorUrls.map((url, index) => (
+                          <div key={index}>
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="view-pdf-button"
+                            >
+                              Ver Archivo Proveedor {index + 1}
+                            </a>
+                          </div>
+                        ))
+                      ) : (
+                        <span>No hay archivos de proveedor</span>
+                      )}
                     </td>
                     <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
                   </tr>
@@ -536,8 +565,4 @@ const getEstadoClass = (estado) => {
   }
 };
 
-
-
 export { Gastos };
-
-
