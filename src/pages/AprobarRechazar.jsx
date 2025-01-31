@@ -49,7 +49,7 @@ const AprobarRechazar = () => {
                             <button
                                 type="button"
                                 className="btn-approve"
-                                onClick={() => handleSubmit('Aprobado')}
+                                onClick={() => handleSubmit('Necesario')}
                                 disabled={loading}
                             >
                                 Aprobar
@@ -57,7 +57,7 @@ const AprobarRechazar = () => {
                             <button
                                 type="button"
                                 className="btn-reject"
-                                onClick={() => handleSubmit('Rechazado')}
+                                onClick={() => handleSubmit('No necesario')}
                                 disabled={loading}
                             >
                                 Rechazar
