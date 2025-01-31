@@ -23,7 +23,8 @@
 
 .logo-vacantes:hover {
     transform: scale(1.1);
-    box-shadow: 0 15px 20px #8f77df;
+    /* box-shadow: 0 15px 20px #8f77df; */
+    filter: drop-shadow( 5px 5px 5px #8f77df);
 }
 
 .vacantes-container {
