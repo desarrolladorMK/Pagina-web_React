@@ -583,3 +583,5 @@ const getEstadoClass = (estado) => {
 };
 
 export { Gastos };
+
+
