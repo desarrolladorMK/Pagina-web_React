@@ -29,11 +29,11 @@ const Gastos = () => {
   const [archivos, setArchivos] = useState([
     {
       nombre: "Documento interno",
-      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273687525_comprobante%20de%20gastos%20(3).xlsx",
+      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx",
     },
     {
       nombre: "Documento proveedor",
-      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx",
+      url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/FORMATO%20DE%20COTIZACION%20(1).xlsx",
     },
   ]);
 
