@@ -10,6 +10,7 @@ import { Salones } from "../pages/Salones";
 import { ReservaForm } from "../pages/Reserva";
 import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
 import {Gastos} from "../pages/Gastos";
+import {HistorialGastos} from "../pages/HistorialGastos";
 import { Automatizacion } from "../pages/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
 import {HistorialRegistros} from "../pages/HistorialRegistros";
@@ -54,6 +55,10 @@ export let routes = [
   {
     path: '/gastos',
     element: <Gastos />,
+  },
+  {
+    path: '/historialgastos',
+    element: <HistorialGastos />,
   },
   {
     path: '/reserva',
