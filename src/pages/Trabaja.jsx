@@ -625,7 +625,7 @@ const Trabaja = () => {
               </div>
             )}
 
-            <button type="submit" className="submit-button">
+            <button type="submit" className="submit-button-trabaja">
               Enviar Solicitud
             </button>
           </form>
