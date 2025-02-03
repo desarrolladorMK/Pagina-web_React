@@ -21,8 +21,6 @@ const Gastos = () => {
   const [token, setToken] = useState("");
   const [decision, setDecision] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [historial, setHistorial] = useState([]);
-  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Nueva protección contra clics múltiples
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
@@ -41,7 +39,6 @@ const Gastos = () => {
   const SUPABASE_URL =
     "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
 
-  // Lógica para verificar la decisión de la solicitud (no cambia).
   const checkDecision = async () => {
     try {
       const response = await axios.get(
@@ -59,50 +56,12 @@ const Gastos = () => {
     }
   };
 
-  // Función para obtener el historial de gastos.
-  const obtenerHistorial = async () => {
-    if (isLoadingHistorial) return; // Evitar múltiples solicitudes mientras se carga el historial
-    setIsLoadingHistorial(true);
-
-    try {
-      const response = await axios.get(
-        `${API_URL}/requerimientos/obtenerRequerimientos`
-      );
-      if (response.status === 200) {
-        const { data } = response.data;
-        setHistorial(data);
-        setMostrarHistorial(!mostrarHistorial);
-
-        if (!mostrarHistorial) {
-          setTimeout(() => {
-            const historialElement =
-              document.getElementById("gastos-historial");
-            if (historialElement) {
-              historialElement.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-            }
-          }, 0); // Cambiado a 0 para hacer el scroll inmediato
-        }
-      } else {
-        alert("Error al obtener el historial de gastos.");
-      }
-    } catch (error) {
-      console.error("Error al obtener el historial:", error);
-      alert("Hubo un error al cargar el historial.");
-    } finally {
-      setIsLoadingHistorial(false);
-    }
-  };
-
   const formatoCOP = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
     minimumFractionDigits: 0,
   });
 
-  // Lógica para manejar los cambios en los campos del formulario.
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -131,7 +90,6 @@ const Gastos = () => {
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "archivos_proveedor") {
-      // Asignamos todos los archivos seleccionados
       setFormData({
         ...formData,
         archivos_proveedor: files ? Array.from(files) : [],
@@ -153,7 +111,6 @@ const Gastos = () => {
     });
   };
 
-  // Opciones de Unidad de Negocio y Centro de Costos (no cambia).
   const unidadOptions = [
     { value: "Carnes", label: "Carnes" },
     { value: "Fruver", label: "Fruver" },
@@ -185,7 +142,6 @@ const Gastos = () => {
     event.preventDefault();
     setIsSubmitting(true);
 
-    // Convertir el valor a un formato numérico válido antes de enviarlo
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
 
     const formDataToSend = new FormData();
@@ -202,7 +158,6 @@ const Gastos = () => {
     formDataToSend.append("descripcion", formData.descripcion);
     formDataToSend.append("monto_estimado", valorNumerico);
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
-    // Agregar los archivos del proveedor
     formData.archivos_proveedor.forEach((file) => {
       formDataToSend.append("archivos_proveedor", file);
     });
@@ -230,7 +185,6 @@ const Gastos = () => {
     }
   };
 
-  // Función para alternar la visibilidad de los archivos PDF
   const toggleArchivos = () => {
     setMostrarArchivos(!mostrarArchivos);
   };
@@ -466,122 +420,14 @@ const Gastos = () => {
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
           </form>
-
-          <button
-            onClick={obtenerHistorial}
-            className="gastos-historial-button"
-            disabled={isLoadingHistorial}
-          >
-            {isLoadingHistorial ? "↻" : "📜"}
-          </button>
         </div>
       ) : (
         <div className="gastos-submitted-message">
           <h2>¡Solicitud Enviada Exitosamente!</h2>
         </div>
       )}
-
-      {!isSubmitted && mostrarHistorial && (
-        <div id="gastos-historial" className="gastos-historial desplegado">
-          <h2>Historial de Gastos</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Área</th>
-                <th>Procesos</th>
-                <th>Sede</th>
-                <th>Unidad de negocio</th>
-                <th>Centro de costos</th>
-                <th>Descripción</th>
-                <th>Monto</th>
-                <th>Cotización</th>
-                <th>Proveedor</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {historial.map((gasto) => {
-                // Si 'gasto.archivo_cotizacion' contiene una URL completa, extraemos solo el nombre del archivo
-                const nombreArchivo = gasto.archivo_cotizacion.split("/").pop(); // Extraemos el nombre del archivo
-                const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
-
-                // Verificamos si 'gasto.archivos_proveedor' es un array antes de usar 'map'
-                const archivosProveedor =
-                  typeof gasto.archivos_proveedor === "string"
-                    ? JSON.parse(gasto.archivos_proveedor) // Convertimos el string en un array
-                    : gasto.archivos_proveedor;
-
-                const archivosProveedorUrls = Array.isArray(archivosProveedor)
-                  ? archivosProveedor // Como ya es una URL completa, la usamos directamente
-                  : [];
-
-                return (
-                  <tr key={gasto.id}>
-                    <td>{gasto.nombre_completo}</td>
-                    <td>{gasto.area}</td>
-                    <td>{gasto.procesos}</td>
-                    <td>{gasto.sede}</td>
-                    <td>{gasto.unidad.join(", ")}</td>
-                    <td>{gasto.centro_costos.join(", ")}</td>
-                    <td>{gasto.descripcion}</td>
-                    <td>{formatoCOP.format(gasto.monto_estimado)}</td>
-                    <td>
-                      {/* Botón para ver el archivo de cotización como PDF */}
-                      <a
-                        href={archivoCotizacionUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="view-pdf-button"
-                      >
-                        Ver
-                      </a>
-                    </td>
-                    <td>
-                      {archivosProveedorUrls.length > 0 ? (
-                        archivosProveedorUrls.map((url, index) => (
-                          <div key={index}>
-                            <a
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="view-pdf-button"
-                            >
-                              Ver 
-                            </a>
-                          </div>
-                        ))
-                      ) : (
-                        <span>No hay archivos de proveedor</span>
-                      )}
-                    </td>
-                    <td className={getEstadoClass(gasto.estado)}>
-                      {gasto.estado}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };
 
-const getEstadoClass = (estado) => {
-  switch (estado) {
-    case "Pendiente":
-      return "estado-pendiente";
-    case "Necesario":
-      return "estado-aprobado";
-    case "No necesario":
-      return "estado-rechazado";
-    default:
-      return "";
-  }
-};
-
 export { Gastos };
-
-
