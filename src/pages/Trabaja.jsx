@@ -48,6 +48,7 @@ const Trabaja = () => {
     const file = e.target.files[0];
 
     if (file) {
+      
       const maxSize = 600 * 1024;
       if (file.size > maxSize) {
         setErrors((prevErrors) => ({
