@@ -455,6 +455,7 @@ display: flex;
 justify-content: center;
 align-items: center;
 height: 100vh; /* Ajusta la altura según tus necesidades */
+filter: drop-shadow(3px 3px 3px rgb(129, 170, 75)); /* Sombra suave */
 }
 .icono-tarjetas, .icono-tarjetatel {
 width: 24px; /* Ancho de los iconos */

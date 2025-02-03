@@ -42,7 +42,7 @@ const Promociones = () => {
             <div className="ofertas" onClick={() => openModal('/im5.jpeg')}>
               <img src="/im5.jpeg" alt="Promo 5" />
             </div>
-            <div className="ofertas" onClick={() => openModal('/im6.jpeg')}>
+            {/* <div className="ofertas" onClick={() => openModal('/im6.jpeg')}>
               <img src="/im6.jpeg" alt="Promo 6" />
             </div>
             <div className="ofertas" onClick={() => openModal('/im7.jpeg')}>
@@ -53,7 +53,7 @@ const Promociones = () => {
             </div>
             <div className="ofertas" onClick={() => openModal('/im9.jpeg')}>
               <img src="/im9.jpeg" alt="Promo 9" />
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className="no-promociones">
