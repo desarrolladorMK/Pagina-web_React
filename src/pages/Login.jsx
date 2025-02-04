@@ -21,7 +21,11 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_2 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
-        redirect: "/postulacionesTable", // Ruta de acceso general
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
+          { path: "/salones", label: "Reserva de salones" },
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_3 || "",
@@ -31,7 +35,11 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_4 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_4 || "",
-        redirect: "/automatizacion", // Ruta de acceso general
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/automatizacion", label: "Automatizacion Fruver" },
+          { path: "/salones", label: "Reserva de salones" },
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_5 || "",
@@ -41,16 +49,16 @@ const Login = () => {
           { path: "/gastos", label: "Gastos" },
           { path: "/historialgastos", label: "Historial de Gastos" },
           { path: "/automatizacion", label: "Automatizacion Fruver" },
-          
+          { path: "/salones", label: "Reserva de salones" }
         ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_6 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
-        redirect: "/gastos", // Ruta de acceso general
+        redirect: "/acceso", // Ruta de acceso general
         routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/gastos", label: "Gastos" }
+          { path: "/gastos", label: "Gastos" },
+          { path: "/salones", label: "Reserva de salones" }
         ]
       },
       {
@@ -69,7 +77,11 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_8 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_8 || "",
-        redirect: "/gastos", // Ruta de acceso general
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/gastos", label: "Gastos" },
+          { path: "/salones", label: "Reserva de salones" }
+        ]
       },
     ];
     

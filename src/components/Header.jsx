@@ -77,11 +77,6 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/login" onClick={handleLinkClick}>
-                               Reservas
-                            </Link>
-                        </li>
-                        <li>
                         <a href="https://merkahorro.com/Aula/"  onClick={handleLinkClick} > Aula</a>
                         </li>
                         <li className="login-icon">
