@@ -1,22 +1,124 @@
-.admin-dashboard {
-    text-align: center;
-    margin-top: 50px;
+/* Variables globales de la paleta de colores */
+:root {
+  --primary-color: #89DC00;           /* Verde brillante */
+  --secondary-color: #210d65;         /* Púrpura oscuro */
+  --bg-gradient-start: #e6f7d0;         /* Versión suave y clara del verde */
+  --bg-gradient-end: #d0d1ea;           /* Versión suave y clara del púrpura */
+  --text-primary: #210d65;            /* Usamos el púrpura oscuro para textos destacados */
+  --text-secondary: #555;             /* Color secundario para textos */
+  --text-muted: #888;                 /* Para mensajes o textos de menor énfasis */
+}
+
+/* Contenedor principal con animación de entrada y fondo elegante */
+.emp-dashboard {
+  text-align: center;
+  margin: 20px auto;
+  padding: 40px;
+  max-width: 600px;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.397);
+  animation: fadeInDown 0.8s ease-out;
+}
+
+/* Título y correo con estilos sobrios */
+.emp-dashboard-title {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.emp-dashboard-user {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: var(--text-secondary);
+}
+
+/* Contenedor de botones con separación */
+.emp-dashboard-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Botón principal con transiciones, efecto "ripple" y feedback visual */
+.emp-dashboard-button {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: var(--secondary-color); /* Fondo púrpura oscuro */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto de "ripple" utilizando un pseudo-elemento */
+.emp-dashboard-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+}
+
+/* Efectos al pasar el mouse sobre el botón */
+.emp-dashboard-button:hover {
+  background-color: var(--primary-color);  /* Cambia a verde brillante */
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.emp-dashboard-button:hover::before {
+  width: 250%;
+  height: 250%;
+}
+
+/* Efecto al hacer clic */
+.emp-dashboard-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Enfoque para accesibilidad */
+.emp-dashboard-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-color);
+}
+
+/* Estilo para el mensaje de rutas no disponibles */
+.emp-dashboard-no-routes {
+  font-size: 1rem;
+  color: var(--text-muted);
+  animation: fadeIn 1s ease-in;
+}
+
+/* Keyframes para animaciones */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .dashboard-links button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    width: 200px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .dashboard-links button:hover {
-    background-color: #45a049;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
+  to {
+    opacity: 1;
+  }
+}
