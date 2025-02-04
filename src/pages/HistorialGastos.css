@@ -1,0 +1,60 @@
+/* Tabla del historial */
+.gastos-historial {
+    max-width: 1400px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+  
+  .gastos-historial h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+  }
+  
+  .gastos-historial table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .gastos-historial th,
+  .gastos-historial td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    font-size: 0.95rem;
+  }
+  
+  .gastos-historial th {
+    background-color: var(--secondary-color);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .gastos-historial tr:nth-child(even) {
+    background-color: var(--light-color);
+  }
+  
+  .gastos-historial a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .gastos-historial a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive Design para el botón relacionado con el historial */
+  @media (max-width: 600px) {
+    .gastos-historial-button {
+      width: 55px;
+      height: 55px;
+      font-size: 1.4rem;
+    }
+  }
+  
