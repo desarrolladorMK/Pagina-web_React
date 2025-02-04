@@ -45,6 +45,16 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
         redirect: import.meta.env.VITE_LOGIN_REDIRECT_6 || "/",
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_7|| "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_7 || "",
+        redirect: import.meta.env.VITE_LOGIN_REDIRECT_7|| "/",
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_8|| "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_8 || "",
+        redirect: import.meta.env.VITE_LOGIN_REDIRECT_8 || "/",
+      },
 
     ];
 
