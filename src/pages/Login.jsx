@@ -16,54 +16,38 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_1 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_1 || "",
-        redirect: "/acceso", // Ruta de acceso general
-        routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/gastos", label: "Gastos" }
-        ]
+        redirect: "/salones", // Ruta de acceso general
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_2 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
-        redirect: "/acceso", // Ruta de acceso general
-        routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/gastos", label: "Gastos" },
-          { path: "/historialgastos", label: "Historial de Gastos" }
-        ]
+        redirect: "/postulacionesTable", // Ruta de acceso general
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_3 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_3 || "",
-        redirect: "/acceso", // Ruta de acceso general
-        routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/reserva", label: "Reserva" },
-          { path: "/postulacionesTable", label: "Base de datos de Postulaciones" }
-        ]
+        redirect: "/gastos", // Ruta de acceso general
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_4 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_4 || "",
-        redirect: "/acceso", // Ruta de acceso general
-        routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/gastos", label: "Gastos" }
-        ]
+        redirect: "/automatizacion", // Ruta de acceso general
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_5 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_5 || "",
         redirect: "/acceso", // Ruta de acceso general
         routes: [
-          { path: "/salones", label: "Salones" },
-          { path: "/gastos", label: "Gastos" }
+          { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/automatizacion", label: "Automatizacion Fruver" },
+          
         ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_6 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/gastos", // Ruta de acceso general
         routes: [
           { path: "/salones", label: "Salones" },
           { path: "/gastos", label: "Gastos" }
@@ -82,7 +66,13 @@ const Login = () => {
           { path: "/reserva", label: "Reservas" }
         ]
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_8 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_8 || "",
+        redirect: "/gastos", // Ruta de acceso general
+      },
     ];
+    
 
     // Buscar las credenciales correctas
     const usuarioValido = credenciales.find(
