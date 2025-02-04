@@ -64,7 +64,7 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_6 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
-        redirect: "/acceso", // Sistemas@merkahorrosas.com
+        redirect: "/acceso", // sistemas@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
@@ -88,6 +88,20 @@ const Login = () => {
           { path: "/salones", label: "Reserva de salones" }
         ]
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_9 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_9 || "",
+        redirect: "/acceso", // Analista@merkahorrosas.com
+        routes: [
+          { path: "/gastos", label: "Gastos" },
+          { path: "/salones", label: "Reserva de salones" }
+        ]
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_10 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_10 || "",
+        redirect: "/historialgastos", // contabilidad@merkahorrosas.com
+      }
     ];
     
 
