@@ -3,6 +3,9 @@ import axios from "axios";
 import "./Gastos.css";
 import Select from "react-select";
 
+const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
+const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
+
 const Gastos = () => {
   const [formData, setFormData] = useState({
     nombre_completo: "",
@@ -15,7 +18,7 @@ const Gastos = () => {
     monto_estimado: "",
     archivo_cotizacion: null,
     archivos_proveedor: [],
-    correo_empleado: "",
+    correo_empleado: sessionStorage.getItem("correo_empleado"), // Recuperamos el correo del sessionStorage
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
@@ -25,6 +28,7 @@ const Gastos = () => {
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
   const [archivos, setArchivos] = useState([
+    
     {
       nombre: "Documento interno",
       url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx",
@@ -198,6 +202,25 @@ const Gastos = () => {
     }
   }, [token]);
 
+
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      const nombreResponsable = obtenerNombrePorCorreo(formData.correo_empleado);
+      setFormData((prevData) => ({
+        ...prevData,
+        nombre_completo: nombreResponsable,
+      }));
+    }
+  }, [formData.correo_empleado]);
+
+  const obtenerNombrePorCorreo = (correo) => {
+    const index = correosAutorizados.indexOf(correo);
+    if (index !== -1) {
+      return nombresAutorizados[index];
+    }
+    return "Empleado no autorizado";
+  };
+
   return (
     <div className="gastos-container">
       <div className="logo-container">
@@ -242,12 +265,14 @@ const Gastos = () => {
               <input
                 type="text"
                 name="nombre_completo"
-                value={formData.nombre_completo}
+                value={formData.nombre_completo || ""} // Asegúrate de que el valor no sea undefined o null
                 onChange={handleChange}
                 required
+                disabled
                 className="gastos-input"
               />
             </div>
+
             <div className="gastos-form-field">
               <label className="gastos-label">Área:</label>
               <select
@@ -408,6 +433,7 @@ const Gastos = () => {
                 value={formData.correo_empleado}
                 onChange={handleChange}
                 required
+                disabled
                 className="gastos-input"
               />
             </div>

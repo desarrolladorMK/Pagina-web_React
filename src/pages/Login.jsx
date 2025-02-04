@@ -16,12 +16,20 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_1 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_1 || "",
-        redirect: "/salones", // Ruta de acceso general
+        redirect: "/acceso", // developersmk@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/automatizacion", label: "Automatizacion Fruver" },
+          { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
+          { path: "/reserva", label: "Reservas" }
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_2 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/acceso", // basededatos@gmail.com
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
           { path: "/salones", label: "Reserva de salones" },
@@ -35,16 +43,17 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_4 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_4 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/acceso", // Auditoriafruver@merkahorrosas.com
         routes: [
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/salones", label: "Reserva de salones" },
+          { path: "/gastos", label: "Gastos" },
         ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_5 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_5 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/acceso", // operaciones@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/historialgastos", label: "Historial de Gastos" },
@@ -55,7 +64,7 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_6 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/acceso", // Sistemas@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
@@ -68,16 +77,12 @@ const Login = () => {
         routes: [
           { path: "/salones", label: "Salones" },
           { path: "/gastos", label: "Gastos" },
-          { path: "/historialgastos", label: "Historial de Gastos" },
-          { path: "/automatizacion", label: "Automatizacion Fruver" },
-          { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
-          { path: "/reserva", label: "Reservas" }
         ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_8 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_8 || "",
-        redirect: "/acceso", // Ruta de acceso general
+        redirect: "/acceso", // almacen@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
@@ -94,6 +99,8 @@ const Login = () => {
     if (usuarioValido) {
       console.log("Inicio de sesión exitoso");
       setError("");
+      // Guardamos el correo del usuario en sessionStorage
+      sessionStorage.setItem("correo_empleado", correo); // Guarda el correo
       // Redirigir a la ruta de acceso
       navigate(usuarioValido.redirect, { state: { correoUsuario: correo, opciones: usuarioValido.routes } });
     } else {
