@@ -6,8 +6,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Hook para redirección
 
-
-
   const handleLogin = (event) => {
     event.preventDefault();
     const correo = event.target.correo.value;
@@ -18,44 +16,72 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_1 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_1 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_1 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" }
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_2 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_2 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" }
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_3 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_3 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_3 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/reserva", label: "Reserva" },
+          { path: "/postulacionesTable", label: "Base de datos de Postulaciones" }
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_4 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_4 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_4 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" }
+        ]
       },
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_5 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_5 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_5 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" }
+        ]
       },
-        {
-        correo: import.meta.env.VITE_LOGIN_EMAIL_6|| "",
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_6 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_6 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_6 || "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" }
+        ]
       },
       {
-        correo: import.meta.env.VITE_LOGIN_EMAIL_7|| "",
+        correo: import.meta.env.VITE_LOGIN_EMAIL_7 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_7 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_7|| "/",
+        redirect: "/acceso", // Ruta de acceso general
+        routes: [
+          { path: "/salones", label: "Salones" },
+          { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/automatizacion", label: "Automatizacion Fruver" },
+          { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
+          { path: "/reserva", label: "Reservas" }
+        ]
       },
-      {
-        correo: import.meta.env.VITE_LOGIN_EMAIL_8|| "",
-        password: import.meta.env.VITE_LOGIN_PASSWORD_8 || "",
-        redirect: import.meta.env.VITE_LOGIN_REDIRECT_8 || "/",
-      },
-
     ];
 
     // Buscar las credenciales correctas
@@ -66,7 +92,8 @@ const Login = () => {
     if (usuarioValido) {
       console.log("Inicio de sesión exitoso");
       setError("");
-      navigate(usuarioValido.redirect); // Redirigir a la ruta especificada
+      // Redirigir a la ruta de acceso
+      navigate(usuarioValido.redirect, { state: { correoUsuario: correo, opciones: usuarioValido.routes } });
     } else {
       console.log("Inicio de sesión fallido");
       setError("Correo o contraseña incorrectos");
