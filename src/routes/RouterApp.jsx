@@ -14,6 +14,7 @@ import {HistorialGastos} from "../pages/HistorialGastos";
 import { Automatizacion } from "../pages/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
 import {HistorialRegistros} from "../pages/HistorialRegistros";
+import {Acceso} from "../pages/Acceso";
 
 export let routes = [
   {
@@ -47,6 +48,10 @@ export let routes = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/acceso',
+    element: <Acceso />,
   },
   {
     path: '/salones',
