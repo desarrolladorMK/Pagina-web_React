@@ -430,4 +430,5 @@ const Gastos = () => {
   );
 };
 
+
 export { Gastos };
