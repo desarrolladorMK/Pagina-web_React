@@ -15,6 +15,7 @@ import { Automatizacion } from "../pages/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
 import {HistorialRegistros} from "../pages/HistorialRegistros";
 import {Acceso} from "../pages/Acceso";
+import {SolicitudAprobacion} from "../pages/SolicitudAprobacion";
 
 export let routes = [
   {
@@ -84,6 +85,10 @@ export let routes = [
   {
     path: '/historial/:correo',
     element: <HistorialRegistros />,
+  },
+  {
+    path: '/solicitudaprobacion',
+    element: <SolicitudAprobacion />,
   },
 
   {

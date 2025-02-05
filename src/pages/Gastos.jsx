@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./Gastos.css";
 import Select from "react-select";
@@ -11,24 +11,27 @@ const Gastos = () => {
     nombre_completo: "",
     area: "",
     procesos: "",
-    sede: "",
+    sede: [],
     unidad: [],
     centro_costos: [],
     descripcion: "",
     monto_estimado: "",
+    monto_sede: "",
     archivo_cotizacion: null,
     archivos_proveedor: [],
-    correo_empleado: sessionStorage.getItem("correo_empleado"), // Recuperamos el correo del sessionStorage
+    correo_empleado: sessionStorage.getItem("correo_empleado"),
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
   const [decision, setDecision] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // Nueva protección contra clics múltiples
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false); // Indicador de carga para el historial
+  const [historial, setHistorial] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
+  const [historialGastos, setHistorialGastos] = useState([]);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [mostrarArchivos, setMostrarArchivos] = useState(false); // Estado para mostrar/ocultar archivos PDF
   const [archivos, setArchivos] = useState([
-    
     {
       nombre: "Documento interno",
       url: "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones/cotizaciones/1738273714697_comprobante%20de%20gastos%20(1).xlsx",
@@ -39,9 +42,10 @@ const Gastos = () => {
     },
   ]);
 
+  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
   const API_URL = "https://backend-gastos.vercel.app/api";
-  const SUPABASE_URL =
-    "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+
+  const historialRef = useRef(null);
 
   const checkDecision = async () => {
     try {
@@ -71,19 +75,13 @@ const Gastos = () => {
 
     if (name === "monto_estimado") {
       const valorNumerico = value.replace(/\D/g, "");
-      const valorFormateado = valorNumerico
-        ? formatoCOP.format(valorNumerico)
-        : "";
-
+      const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
       setFormData({ ...formData, [name]: valorFormateado });
-    } else if (name === "unidad" || name === "centro_costos") {
-      const selectedOptions = Array.from(e.target.selectedOptions).map(
-        (option) => option.value
-      );
-      setFormData({
-        ...formData,
-        [name]: selectedOptions,
-      });
+    } else if (name === "monto_sede") {
+      setFormData({ ...formData, [name]: value });
+    } else if (["unidad", "centro_costos", "sede"].includes(name)) {
+      const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
+      setFormData({ ...formData, [name]: selectedOptions });
     } else if (name === "archivo_cotizacion") {
       setFormData({ ...formData, archivo_cotizacion: files[0] });
     } else {
@@ -104,15 +102,8 @@ const Gastos = () => {
   };
 
   const handleSelectChange = (name, selectedOptions) => {
-    const selectedValues = selectedOptions
-      ? selectedOptions.map((option) => option.value)
-      : [];
-
-    setFormData({
-      ...formData,
-      [name]:
-        name === "centroCostos" ? selectedValues.join(" - ") : selectedValues,
-    });
+    const selectedValues = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+    setFormData({ ...formData, [name]: selectedValues });
   };
 
   const unidadOptions = [
@@ -120,6 +111,18 @@ const Gastos = () => {
     { value: "Fruver", label: "Fruver" },
     { value: "Abarrotes", label: "Abarrotes" },
     { value: "Administrativo", label: "Administrativo" },
+  ];
+
+  const sedeOptions = [
+    { value: "Copacabana Plaza", label: "Copacabana Plaza" },
+    { value: "Copacabana Vegas", label: "Copacabana Vegas" },
+    { value: "Copacabana San Juan", label: "Copacabana San Juan" },
+    { value: "Girardota Parque", label: "Girardota Parque" },
+    { value: "Girardota Llano", label: "Girardota Llano" },
+    { value: "Barbosa", label: "Barbosa" },
+    { value: "Carnes Barbosa", label: "Carnes Barbosa" },
+    { value: "Villa Hermosa", label: "Villa Hermosa" },
+    { value: "Todas las sedes", label: "Todas las sedes" },
   ];
 
   const centroCostosOptions = [
@@ -152,7 +155,12 @@ const Gastos = () => {
     formDataToSend.append("nombre_completo", formData.nombre_completo);
     formDataToSend.append("area", formData.area);
     formDataToSend.append("procesos", formData.procesos);
-    formDataToSend.append("sede", formData.sede);
+
+    // Agregar el campo sede (como array)
+    formData.sede.forEach((item) => {
+      formDataToSend.append("sede[]", item);
+    });
+
     formData.unidad.forEach((item) => {
       formDataToSend.append("unidad[]", item);
     });
@@ -161,6 +169,10 @@ const Gastos = () => {
     });
     formDataToSend.append("descripcion", formData.descripcion);
     formDataToSend.append("monto_estimado", valorNumerico);
+    // Incluir el campo monto_sede solo si tiene algún valor (opcional)
+    if (formData.monto_sede.trim() !== "") {
+      formDataToSend.append("monto_sede", formData.monto_sede);
+    }
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     formData.archivos_proveedor.forEach((file) => {
       formDataToSend.append("archivos_proveedor", file);
@@ -189,10 +201,22 @@ const Gastos = () => {
     }
   };
 
-  const toggleArchivos = () => {
-    setMostrarArchivos(!mostrarArchivos);
+  const toggleHistorial = () => {
+    setMostrarHistorial((prevMostrarHistorial) => {
+      const nuevoEstado = !prevMostrarHistorial;
+      if (nuevoEstado) {
+        setTimeout(() => {
+          historialRef.current.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+      return nuevoEstado;
+    });
   };
-
+  
+  const toggleArchivos = () => {
+    setMostrarArchivos((prevMostrarArchivos) => !prevMostrarArchivos);
+  };
+  
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -202,7 +226,6 @@ const Gastos = () => {
     }
   }, [token]);
 
-
   useEffect(() => {
     if (formData.correo_empleado) {
       const nombreResponsable = obtenerNombrePorCorreo(formData.correo_empleado);
@@ -210,6 +233,27 @@ const Gastos = () => {
         ...prevData,
         nombre_completo: nombreResponsable,
       }));
+    }
+  }, [formData.correo_empleado]);
+
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      setIsLoadingHistorial(true);
+      axios
+        .get(`${API_URL}/requerimientos/historial`, {
+          params: { correo_empleado: formData.correo_empleado },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setHistorialGastos(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener el historial de gastos:", error);
+        })
+        .finally(() => {
+          setIsLoadingHistorial(false);
+        });
     }
   }, [formData.correo_empleado]);
 
@@ -234,7 +278,6 @@ const Gastos = () => {
       <button onClick={toggleArchivos} className="gastos-flotante-button">
         📂
       </button>
-
       {/* Lista desplegable de archivos PDF */}
       {mostrarArchivos && (
         <div className="gastos-archivos-desplegados">
@@ -320,27 +363,22 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label"> Sedes:</label>
-              <select
+              <label className="gastos-label">Sedes:</label>
+              <Select
                 name="sede"
-                value={formData.sede}
-                onChange={handleChange}
-                required
+                value={sedeOptions.filter(
+                  (option) => formData.sede.includes(option.value) // Aseguramos que "sede" sea el estado correcto
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("sede", selectedOptions)
+                }
+                options={sedeOptions}
+                isMulti
                 className="gastos-input"
-              >
-                <option value="" disabled>
-                  Seleccione la Sede
-                </option>
-                <option value="Copacabana Plaza">Copacabana Plaza</option>
-                <option value="Copacabana Vegas">Copacabana Vegas</option>
-                <option value="Copacabana San Juan">Copacabana San Juan</option>
-                <option value="Girardota Parque">Girardota Parque</option>
-                <option value="Girardota Llano">Girardota Llano</option>
-                <option value="Barbosa">Barbosa</option>
-                <option value="Carnes Barbosa">Carnes Barbosa</option>
-                <option value="Villa Hermosa">Villa Hermosa</option>
-              </select>
+                placeholder="Seleccione las sedes"
+              />
             </div>
+
             <div className="gastos-form-field">
               <label className="gastos-label">Unidad de negocio:</label>
               <Select
@@ -402,6 +440,17 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
+              <label className="gastos-label">Monto por sede (opcional):</label>
+              <textarea
+                name="monto_sede"
+                value={formData.monto_sede}
+                onChange={handleChange}
+                placeholder="Ejemplo: Girardota: 300.000, Barbosa: 400.000"
+                className="gastos-input"
+              />
+            </div>
+
+            <div className="gastos-form-field">
               <label className="gastos-label">Cotización:</label>
               <input
                 type="file"
@@ -446,15 +495,121 @@ const Gastos = () => {
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
           </form>
+
         </div>
       ) : (
         <div className="gastos-submitted-message">
           <h2>¡Solicitud Enviada Exitosamente!</h2>
         </div>
       )}
+
+      <button onClick={toggleHistorial} className="historial-flotante-button">📜</button>
+      {isLoadingHistorial ? (
+        <p>Cargando historial...</p>
+      ) : (
+        mostrarHistorial && (
+          <div id="gastos-historial" className="gastos-historial desplegado" ref={historialRef}>
+            <table className="historial-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Área</th>
+                  <th>Procesos</th>
+                  <th>Sede</th>
+                  <th>Unidad de negocio</th>
+                  <th>Centro de costos</th>
+                  <th>Descripción</th>
+                  <th>Monto</th>
+                  <th>Monto por sede</th>
+                  <th>Cotización</th>
+                  <th>Proveedor</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historialGastos.map((gasto) => {
+
+                  let sedesArray = [];
+                  if (typeof gasto.sede === "string") {
+                    try {
+                      sedesArray = JSON.parse(gasto.sede);
+                      if (!Array.isArray(sedesArray)) throw new Error("No es un array");
+                    } catch (error) {
+                      sedesArray = gasto.sede.includes(",")
+                        ? gasto.sede.split(",").map((s) => s.trim())
+                        : [gasto.sede];
+                    }
+                  } else if (Array.isArray(gasto.sede)) {
+                    sedesArray = gasto.sede;
+                  }
+
+                  let montoSede = gasto.monto_sede || "No especificado";
+                  if (montoSede && typeof montoSede === "string") {
+                    montoSede = montoSede
+                      .split(",")
+                      .map((entry) => {
+                        const [sede, monto] = entry.split(":");
+                        if (monto) {
+                          return `${sede.trim()}: ${formatoCOP.format(parseFloat(monto.replace(/\D/g, "")))}`;
+                        } else {
+                          return `${sede.trim()}: No especificado`;
+                        }
+                      })
+                      .join(", ");
+                  }
+
+                  const nombreArchivo = gasto.archivo_cotizacion?.split("/").pop();
+                  const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
+                  const archivosProveedor = typeof gasto.archivos_proveedor === "string" ? JSON.parse(gasto.archivos_proveedor) : gasto.archivos_proveedor;
+                  return (
+                    <tr key={gasto.id}>
+                      <td>{gasto.nombre_completo}</td>
+                      <td>{gasto.area}</td>
+                      <td>{gasto.procesos}</td>
+                      <td>{sedesArray.length > 0 ? sedesArray.join(", ") : "Sin sede"}</td>
+                      <td>{gasto.unidad?.join(", ")}</td>
+                      <td>{gasto.centro_costos?.join(", ")}</td>
+                      <td>{gasto.descripcion}</td>
+                      <td>{formatoCOP.format(gasto.monto_estimado)}</td>
+                      <td>{montoSede}</td>
+                      <td>
+                        <a href={archivoCotizacionUrl} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>
+                      </td>
+                      <td>
+                        {Array.isArray(archivosProveedor) && archivosProveedor.length > 0 ? (
+                          archivosProveedor.map((url, index) => (
+                            <div key={index}>
+                              <a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>
+                            </div>
+                          ))
+                        ) : (
+                          <span>No hay archivos de proveedor</span>
+                        )}
+                      </td>
+                      <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
+      )}
     </div>
   );
 };
 
+const getEstadoClass = (estado) => {
+  switch (estado) {
+    case "Pendiente":
+      return "estado-pendiente";
+    case "Necesario":
+      return "estado-aprobado";
+    case "No necesario":
+      return "estado-rechazado";
+    default:
+      return "";
+  }
+};
 
 export { Gastos };
