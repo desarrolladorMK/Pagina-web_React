@@ -73,6 +73,7 @@ const HistorialGastos = () => {
                 <th>Centro de costos</th>
                 <th>Descripción</th>
                 <th>Monto</th>
+                <th>Monto por sede</th>
                 <th>Cotización</th>
                 <th>Proveedor</th>
                 <th>Estado</th>
@@ -104,6 +105,7 @@ const HistorialGastos = () => {
                     <td>{Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : gasto.centro_costos}</td>
                     <td>{gasto.descripcion}</td>
                     <td>{formatoCOP.format(gasto.monto_estimado)}</td>
+                    <td>{gasto.monto_sede}</td>
                     <td>
                       {/* Botón para ver el archivo de cotización como PDF */}
                       {archivoCotizacionUrl && (
