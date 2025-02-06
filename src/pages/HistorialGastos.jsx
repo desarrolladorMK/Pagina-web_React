@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Gastos.css';
+import './HistorialGastos.css';
 
 const HistorialGastos = () => {
   const [historial, setHistorial] = useState([]);

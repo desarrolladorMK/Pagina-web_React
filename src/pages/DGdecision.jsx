@@ -1,4 +1,3 @@
-// AprobarRechazar.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ const DGdecision = () => {
   const { workflow_id, role } = useParams();
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
+  const [messageClass, setMessageClass] = useState("");
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -26,16 +26,17 @@ const DGdecision = () => {
 
   const handleDecision = async (decision) => {
     try {
-      // La ruta usa el "role" (director o gerencia) extraído de la URL
       const endpoint = role;
       const response = await axios.post(`${BACKEND_URL}/yuli/${workflow_id}/${endpoint}`, {
         decision,
         observacion: decision === "rechazado" ? "Decisión rechazada automáticamente." : "",
       });
       setMessage(response.data.message);
+      setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
     } catch (error) {
       console.error("Error al enviar la decisión:", error);
       setMessage("Error al procesar la decisión. Inténtalo de nuevo.");
+      setMessageClass("mensaje-rechazado");
     }
   };
 
@@ -44,24 +45,31 @@ const DGdecision = () => {
   }
 
   return (
-    <div className="aprobacion-container">
-      <h2>Revisión de Solicitud</h2>
-      <p><strong>Fecha:</strong> {formDetails.fecha}</p>
-      <p>
-        <strong>Documento:</strong>{" "}
-        <a href={formDetails.documento} target="_blank" rel="noopener noreferrer">
-          Ver Documento
+    <div className="aprobar-rechazar-container">
+      <div className="logo-container-aprobar">
+        <a href="/">
+          <img src="/logoMK.png" alt="Logo Merkahorro" />
         </a>
-      </p>
-      <div className="decision-buttons">
-        <button className="approve-button" onClick={() => handleDecision("aprobado")}>
-          Aprobar
-        </button>
-        <button className="reject-button" onClick={() => handleDecision("rechazado")}>
-          Rechazar
-        </button>
       </div>
-      {message && <p className="decision-message">{message}</p>}
+      <h1 className="header-gastos">Revisión de Solicitud</h1>
+      <div className="form">
+        <p className="fecha"><strong>Fecha:</strong> {formDetails.fecha}</p>
+        <p>
+          <strong>Documento:</strong>{" "}
+          <a className="documento" href={formDetails.documento} target="_blank" rel="noopener noreferrer">
+            Ver Documento
+          </a>
+        </p>
+        <div className="decision-buttons">
+          <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
+            Aprobar
+          </button>
+          <button className="btn-reject" onClick={() => handleDecision("rechazado")}>
+            Rechazar
+          </button>
+        </div>
+        {message && <p className={messageClass}>{message}</p>}
+      </div>
     </div>
   );
 };

@@ -57,7 +57,7 @@ const SolicitudAprobacion = () => {
           <img src="logoMK.png" alt="Logo Merkahorro" />
         </a>
       </div>
-      <h1 className="solicitud-header">Solicitud de Aprobación</h1>
+      <h1 className="solicitud-header">Descripción de perfil</h1>
       <form onSubmit={handleSubmit} className="solicitud-form">
         <div className="solicitud-form-field">
           <label className="solicitud-label">Fecha:</label>
