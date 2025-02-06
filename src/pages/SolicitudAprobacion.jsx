@@ -1,10 +1,9 @@
+// SolicitudAprobacion.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import "./SolicitudAprobacion.css";
 
-
-const BACKEND_URL = "https://backend-yuli.vercel.app/api"; 
-const SUPABASE_BUCKET = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/pdfs-yuli/";
+const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 
 const SolicitudAprobacion = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +16,6 @@ const SolicitudAprobacion = () => {
   const [workflowId, setWorkflowId] = useState("");
   const [message, setMessage] = useState("");
 
-  // Maneja los cambios en los inputs
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -27,54 +25,20 @@ const SolicitudAprobacion = () => {
     }
   };
 
-  // Función para subir el archivo a Supabase Storage y obtener la URL pública
-  const uploadFile = async (file) => {
-    if (!file) return "";
-    const fileName = `${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage
-      .from(SUPABASE_BUCKET)
-      .upload(fileName, file);
-    if (error) {
-      console.error("Error al subir el archivo:", error);
-      return "";
-    }
-    // Obtener la URL pública del archivo
-    const { publicURL, error: publicUrlError } = supabase.storage
-      .from(SUPABASE_BUCKET)
-      .getPublicUrl(fileName);
-    if (publicUrlError) {
-      console.error("Error al obtener la URL pública:", publicUrlError);
-      return "";
-    }
-    return publicURL;
-  };
-
-  // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
 
     try {
-      // Subir el archivo y obtener la URL pública
-      const documentoUrl = await uploadFile(formData.documento);
-      if (!documentoUrl) {
-        setMessage("Error al subir el documento.");
-        setIsSubmitting(false);
-        return;
-      }
+      const formPayload = new FormData();
+      formPayload.append("fecha", formData.fecha);
+      formPayload.append("documento", formData.documento);
+      formPayload.append("director", formData.director);
+      formPayload.append("gerencia", formData.gerencia);
 
-      // Armar el payload para enviar al backend
-      const payload = {
-        fecha: formData.fecha,
-        documento: documentoUrl,
-        director: formData.director,
-        gerencia: formData.gerencia,
-      };
-
-      // Enviar los datos al backend
-      const response = await axios.post(`${BACKEND_URL}/yuli`, payload, {
-        headers: { "Content-Type": "application/json" },
+      const response = await axios.post(`${BACKEND_URL}/yuli`, formPayload, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       setWorkflowId(response.data.workflow_id);
@@ -143,7 +107,9 @@ const SolicitudAprobacion = () => {
           {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
         </button>
       </form>
+
       {message && <p className="solicitud-message">{message}</p>}
+
       {workflowId && (
         <div className="solicitud-info">
           <p>
@@ -158,4 +124,4 @@ const SolicitudAprobacion = () => {
   );
 };
 
-export {SolicitudAprobacion};
+export { SolicitudAprobacion };

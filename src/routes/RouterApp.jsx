@@ -16,6 +16,7 @@ import {AprobarRechazar} from "../pages/AprobarRechazar";
 import {HistorialRegistros} from "../pages/HistorialRegistros";
 import {Acceso} from "../pages/Acceso";
 import {SolicitudAprobacion} from "../pages/SolicitudAprobacion";
+import {DGdecision} from "../pages/DGdecision";
 
 export let routes = [
   {
@@ -89,6 +90,10 @@ export let routes = [
   {
     path: '/solicitudaprobacion',
     element: <SolicitudAprobacion />,
+  },
+  {
+    path: '/dgdecision/:workflow_id/:role',
+    element: <DGdecision />,
   },
 
   {
