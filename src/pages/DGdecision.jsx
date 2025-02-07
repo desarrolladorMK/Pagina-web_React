@@ -10,12 +10,13 @@ const DGdecision = () => {
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
   const [messageClass, setMessageClass] = useState("");
+  const [observacion, setObservacion] = useState(""); // Campo para la observación
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/yuli/${workflow_id}`);
-        setFormDetails(response.data.historial[0]); // Tomar el primer registro
+        setFormDetails(response.data.historial[0]); 
       } catch (error) {
         console.error("Error al obtener detalles del formulario:", error);
       }
@@ -29,7 +30,7 @@ const DGdecision = () => {
       const endpoint = role;
       const response = await axios.post(`${BACKEND_URL}/yuli/${workflow_id}/${endpoint}`, {
         decision,
-        observacion: decision === "rechazado" ? "Decisión rechazada automáticamente." : "",
+        observacion,  // Enviamos la observación escrita por el usuario (si hay)
       });
       setMessage(response.data.message);
       setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
@@ -60,6 +61,19 @@ const DGdecision = () => {
             Ver Documento
           </a>
         </p>
+
+        {/* Campo para escribir la observación */}
+        <div className="observacion-field">
+          <label><strong>Observación:</strong></label>
+          <textarea 
+            value={observacion}
+            onChange={(e) => setObservacion(e.target.value)}
+            placeholder="Escribe una observación si es necesario..."
+            rows="3"
+            className="observacion-textarea"
+          />
+        </div>
+
         <div className="decision-buttons">
           <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
             Aprobar
@@ -68,6 +82,7 @@ const DGdecision = () => {
             Rechazar
           </button>
         </div>
+
         {message && <p className={messageClass}>{message}</p>}
       </div>
     </div>

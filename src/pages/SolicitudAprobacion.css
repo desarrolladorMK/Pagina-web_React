@@ -11,7 +11,7 @@
   --hover-color: #76c400;
 }
 
-.solicitud-container {
+.solicitud-aprobacion-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,7 +33,7 @@
   }
 }
 
-.solicitud-form {
+.solicitud-aprobacion-form {
   width: 100%;
   max-width: 500px;
   background-color: white;
@@ -46,7 +46,7 @@
   animation: fadeInForm 1s ease-in-out;
 }
 
-.solicitud-header{
+.solicitud-aprobacion-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,7 +64,7 @@
   }
 }
 
-.solicitud-input {
+.solicitud-aprobacion-input {
   width: 100%;
   padding: 15px;
   margin-bottom: 20px;
@@ -74,13 +74,13 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.solicitud-input:focus {
+.solicitud-aprobacion-input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(137, 220, 0, 0.5);
   outline: none;
 }
 
-.solicitud-submit-button {
+.solicitud-aprobacion-submit-button {
   padding: 15px 20px;
   background-color: var(--primary-color);
   color: white;
@@ -91,30 +91,56 @@
   transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.solicitud-submit-button:hover {
+.solicitud-aprobacion-submit-button:hover {
   background-color: var(--hover-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.solicitud-submit-button:disabled {
+.solicitud-aprobacion-submit-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
 
-.solicitud-message {
+.solicitud-aprobacion-message {
   margin-top: 20px;
   font-size: 16px;
   color: var(--success-color);
 }
 
-.solicitud-info {
+.solicitud-aprobacion-info {
   margin-top: 20px;
   font-size: 16px;
   color: var(--text-color);
 }
 
-.solicitud-info strong {
+.solicitud-aprobacion-info strong {
   font-weight: bold;
 }
 
+.solicitud-aprobacion-historial-container {
+  margin-top: 20px;
+}
+
+.solicitud-aprobacion-historial-header {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.solicitud-aprobacion-historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.solicitud-aprobacion-historial-table th, .solicitud-aprobacion-historial-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.solicitud-aprobacion-historial-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
