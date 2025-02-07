@@ -8,6 +8,7 @@ const AprobarRechazar = () => {
     const [token, setToken] = useState('');
     const [loading, setLoading] = useState(false);
     const [decisionTomada, setDecisionTomada] = useState(false);
+    const [observacion, setObservacion] = useState(''); // Nuevo estado para observación
 
     useEffect(() => {
         // Obtener el token de la URL
@@ -22,6 +23,7 @@ const AprobarRechazar = () => {
             const response = await axios.post('https://backend-gastos.vercel.app/api/requerimientos/decidirRequerimiento', {
                 token,
                 decision: decision,
+                observacion: observacion  // Se envía la observación junto a la decisión
             });
             setMensaje(response.data.message);
             setDecisionTomada(true);
@@ -44,26 +46,40 @@ const AprobarRechazar = () => {
             <h1 className="header-gastos">Decidir Requerimiento de Gasto</h1>
             <div className="form">
                 {!decisionTomada ? (
-                    <div className="form-group">
-                        <div className="decision-buttons">
-                            <button
-                                type="button"
-                                className="btn-approve"
-                                onClick={() => handleSubmit('Necesario')}
-                                disabled={loading}
-                            >
-                                Necesario
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-reject"
-                                onClick={() => handleSubmit('No necesario')}
-                                disabled={loading}
-                            >
-                                No necesario
-                            </button>
+                    <>
+                        {/* Campo para ingresar la observación */}
+                        <div className="form-group">
+                            <label htmlFor="observacion" className="form-label">Observación:</label>
+                            <textarea
+                                id="observacion"
+                                name="observacion"
+                                value={observacion}
+                                onChange={(e) => setObservacion(e.target.value)}
+                                className="observacion-input"
+                                placeholder="Importante: decir quien esta realizando la observación."
+                            />
                         </div>
-                    </div>
+                        <div className="form-group">
+                            <div className="decision-buttons">
+                                <button
+                                    type="button"
+                                    className="btn-approve"
+                                    onClick={() => handleSubmit('Necesario')}
+                                    disabled={loading}
+                                >
+                                    Necesario
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn-reject"
+                                    onClick={() => handleSubmit('No necesario')}
+                                    disabled={loading}
+                                >
+                                    No necesario
+                                </button>
+                            </div>
+                        </div>
+                    </>
                 ) : (
                     <p className="mensaje">{mensaje}</p>
                 )}

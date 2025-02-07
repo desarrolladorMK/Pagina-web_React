@@ -197,6 +197,19 @@
   margin-top: 20px;
 }
 
+
+/* Estilo para el campo de observación */
+.observacion-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 15px;
+}
+
 @keyframes spinAprobarRechazar {
   0% {
     transform: rotate(0deg);
