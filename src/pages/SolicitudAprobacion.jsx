@@ -15,8 +15,6 @@ const SolicitudAprobacion = () => {
   const [workflowId, setWorkflowId] = useState("");
   const [message, setMessage] = useState("");
   const [historial, setHistorial] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
-  const [editedObservacion, setEditedObservacion] = useState("");
 
   // Cargar historial al iniciar el componente
   useEffect(() => {
@@ -69,30 +67,6 @@ const SolicitudAprobacion = () => {
       setHistorial(response.data.historial);
     } catch (error) {
       console.error("Error al obtener el historial:", error);
-    }
-  };
-
-  // Funciones para editar la observación en el historial
-  const handleEdit = (index, observacion) => {
-    setEditIndex(index);
-    setEditedObservacion(observacion);
-  };
-
-  const handleSave = async (index) => {
-    const updatedHistorial = [...historial];
-    updatedHistorial[index].observacion = editedObservacion;
-
-    try {
-      // Se asume que cada registro tiene un identificador workflow_id único
-      await axios.put(`${BACKEND_URL}/yuli/${updatedHistorial[index].workflow_id}`, {
-        observacion: editedObservacion,
-      });
-
-      setHistorial(updatedHistorial);
-      setEditIndex(null);
-      setEditedObservacion("");
-    } catch (error) {
-      console.error("Error al actualizar la observación:", error);
     }
   };
 
@@ -187,7 +161,6 @@ const SolicitudAprobacion = () => {
                 <th>Estado</th>
                 <th>Observación</th>
                 <th>PDF</th>
-                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -205,18 +178,7 @@ const SolicitudAprobacion = () => {
                       <span>{item.estado}</span>
                     )}
                   </td>
-                  <td>
-                    {editIndex === index ? (
-                      <input
-                        type="text"
-                        value={editedObservacion}
-                        onChange={(e) => setEditedObservacion(e.target.value)}
-                        className="observacion-input"
-                      />
-                    ) : (
-                      item.observacion || "Sin observación"
-                    )}
-                  </td>
+                  <td>{item.observacion || "Sin observación"}</td>
                   <td>
                     {item.documento ? (
                       <a href={item.documento} target="_blank" rel="noopener noreferrer">
@@ -224,23 +186,6 @@ const SolicitudAprobacion = () => {
                       </a>
                     ) : (
                       "Sin PDF"
-                    )}
-                  </td>
-                  <td>
-                    {editIndex === index ? (
-                      <button
-                        onClick={() => handleSave(index)}
-                        className="accion-button guardar"
-                      >
-                        Guardar
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleEdit(index, item.observacion)}
-                        className="accion-button editar"
-                      >
-                        Editar
-                      </button>
                     )}
                   </td>
                 </tr>
@@ -252,6 +197,5 @@ const SolicitudAprobacion = () => {
     </div>
   );
 };
-
 
 export { SolicitudAprobacion };
