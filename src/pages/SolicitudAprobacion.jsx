@@ -1,5 +1,4 @@
-// SolicitudAprobacion.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./SolicitudAprobacion.css";
 
@@ -15,6 +14,7 @@ const SolicitudAprobacion = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowId, setWorkflowId] = useState("");
   const [message, setMessage] = useState("");
+  const [historial, setHistorial] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -41,8 +41,10 @@ const SolicitudAprobacion = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setWorkflowId(response.data.workflow_id);
+      const workflowId = response.data.workflow_id;
+      setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
+      fetchHistorial(workflowId);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
@@ -50,74 +52,109 @@ const SolicitudAprobacion = () => {
     setIsSubmitting(false);
   };
 
+  const fetchHistorial = async (workflowId) => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/yuli/${workflowId}`);
+      setHistorial(response.data.historial);
+    } catch (error) {
+      console.error("Error al obtener el historial:", error);
+    }
+  };
+
   return (
-    <div className="solicitud-container">
-      <div className="logo-container">
+    <div className="solicitud-aprobacion-container">
+      <div className="solicitud-aprobacion-logo-container">
         <a href="/">
           <img src="logoMK.png" alt="Logo Merkahorro" />
         </a>
       </div>
-      <h1 className="solicitud-header">Descripción de perfil</h1>
-      <form onSubmit={handleSubmit} className="solicitud-form">
-        <div className="solicitud-form-field">
-          <label className="solicitud-label">Fecha:</label>
+      <h1 className="solicitud-aprobacion-header">Solicitud de Aprobación</h1>
+      <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
+        <div className="solicitud-aprobacion-form-field">
+          <label className="solicitud-aprobacion-label">Fecha:</label>
           <input
             type="date"
             name="fecha"
             value={formData.fecha}
             onChange={handleChange}
             required
-            className="solicitud-input"
+            className="solicitud-aprobacion-input"
           />
         </div>
-        <div className="solicitud-form-field">
-          <label className="solicitud-label">Documento (PDF):</label>
+        <div className="solicitud-aprobacion-form-field">
+          <label className="solicitud-aprobacion-label">Documento (PDF):</label>
           <input
             type="file"
             name="documento"
             accept="application/pdf"
             onChange={handleChange}
             required
-            className="solicitud-input"
+            className="solicitud-aprobacion-input"
           />
         </div>
-        <div className="solicitud-form-field">
-          <label className="solicitud-label">Director (correo):</label>
+        <div className="solicitud-aprobacion-form-field">
+          <label className="solicitud-aprobacion-label">Director (correo):</label>
           <input
             type="email"
             name="director"
             value={formData.director}
             onChange={handleChange}
             required
-            className="solicitud-input"
+            className="solicitud-aprobacion-input"
           />
         </div>
-        <div className="solicitud-form-field">
-          <label className="solicitud-label">Gerencia (correo):</label>
+        <div className="solicitud-aprobacion-form-field">
+          <label className="solicitud-aprobacion-label">Gerencia (correo):</label>
           <input
             type="email"
             name="gerencia"
             value={formData.gerencia}
             onChange={handleChange}
             required
-            className="solicitud-input"
+            className="solicitud-aprobacion-input"
           />
         </div>
-        <button type="submit" className="solicitud-submit-button" disabled={isSubmitting}>
+        <button type="submit" className="solicitud-aprobacion-submit-button" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
         </button>
       </form>
 
-      {message && <p className="solicitud-message">{message}</p>}
+      {message && <p className="solicitud-aprobacion-message">{message}</p>}
 
       {workflowId && (
-        <div className="solicitud-info">
+        <div className="solicitud-aprobacion-info">
           <p>
             Workflow ID: <strong>{workflowId}</strong>
           </p>
           <p>
             Consulta el historial en: {BACKEND_URL}/yuli/{workflowId}
           </p>
+        </div>
+      )}
+
+      {historial.length > 0 && (
+        <div className="solicitud-aprobacion-historial-container">
+          <h2 className="solicitud-aprobacion-historial-header">Historial de Solicitud</h2>
+          <table className="solicitud-aprobacion-historial-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Observación</th>
+                <th>Rol</th>
+              </tr>
+            </thead>
+            <tbody>
+              {historial.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.fecha}</td>
+                  <td>{item.estado}</td>
+                  <td>{item.observacion || 'Sin observación'}</td>
+                  <td>{item.role}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
