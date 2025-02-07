@@ -18,13 +18,12 @@ const SolicitudAprobacion = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [editedObservacion, setEditedObservacion] = useState("");
 
-
   // Cargar historial al iniciar el componente
   useEffect(() => {
     fetchHistorial();
   }, []);
 
-  // Manejar cambios en los inputs
+  // Manejar cambios en los inputs del formulario
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -54,7 +53,7 @@ const SolicitudAprobacion = () => {
       const workflowId = response.data.workflow_id;
       setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
-      fetchHistorial();  // Recargar historial después de enviar
+      fetchHistorial(); // Recargar historial después de enviar
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
@@ -65,15 +64,15 @@ const SolicitudAprobacion = () => {
   // Obtener historial completo desde el backend
   const fetchHistorial = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/yuli`);  // Obtener todos los registros
-      console.log("Historial completo:", response.data);  // Verificar la estructura de la respuesta
-      setHistorial(response.data.historial);  // Asegúrate que la respuesta del backend tiene esta estructura
+      const response = await axios.get(`${BACKEND_URL}/yuli`);
+      console.log("Historial completo:", response.data);
+      setHistorial(response.data.historial);
     } catch (error) {
       console.error("Error al obtener el historial:", error);
     }
   };
 
-
+  // Funciones para editar la observación en el historial
   const handleEdit = (index, observacion) => {
     setEditIndex(index);
     setEditedObservacion(observacion);
@@ -84,6 +83,7 @@ const SolicitudAprobacion = () => {
     updatedHistorial[index].observacion = editedObservacion;
 
     try {
+      // Se asume que cada registro tiene un identificador workflow_id único
       await axios.put(`${BACKEND_URL}/yuli/${updatedHistorial[index].workflow_id}`, {
         observacion: editedObservacion,
       });
@@ -96,15 +96,14 @@ const SolicitudAprobacion = () => {
     }
   };
 
-
   return (
     <div className="solicitud-aprobacion-container">
-      <div className="solicitud-aprobacion-logo-container">
+      <div className="logo-container-solicitud">
         <a href="/">
           <img src="logoMK.png" alt="Logo Merkahorro" />
         </a>
       </div>
-      <h1 className="solicitud-aprobacion-header">Solicitud de Aprobación</h1>
+      <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>
 
       {/* Formulario */}
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
@@ -152,7 +151,11 @@ const SolicitudAprobacion = () => {
             className="solicitud-aprobacion-input"
           />
         </div>
-        <button type="submit" className="solicitud-aprobacion-submit-button" disabled={isSubmitting}>
+        <button
+          type="submit"
+          className="solicitud-aprobacion-submit-button"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
         </button>
       </form>
@@ -174,14 +177,16 @@ const SolicitudAprobacion = () => {
       {/* Historial */}
       {historial.length > 0 && (
         <div className="solicitud-aprobacion-historial-container">
-          <h2 className="solicitud-aprobacion-historial-header">Historial de Solicitudes</h2>
+          <h2 className="solicitud-aprobacion-historial-header">
+            Historial de Solicitudes
+          </h2>
           <table className="solicitud-aprobacion-historial-table">
             <thead>
               <tr>
                 <th>Fecha</th>
                 <th>Estado</th>
                 <th>Observación</th>
-                <th>Rol</th>
+                <th>PDF</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -189,24 +194,53 @@ const SolicitudAprobacion = () => {
               {historial.map((item, index) => (
                 <tr key={index}>
                   <td>{item.fecha}</td>
-                  <td>{item.estado}</td>
+                  <td>
+                    {item.estado === "Aprobado" ? (
+                      <span className="estado-aprobado">{item.estado}</span>
+                    ) : item.estado === "Rechazado" ? (
+                      <span className="estado-rechazado">
+                        {item.estado} {item.rechazadoPor && `(por ${item.rechazadoPor})`}
+                      </span>
+                    ) : (
+                      <span>{item.estado}</span>
+                    )}
+                  </td>
                   <td>
                     {editIndex === index ? (
                       <input
                         type="text"
                         value={editedObservacion}
                         onChange={(e) => setEditedObservacion(e.target.value)}
+                        className="observacion-input"
                       />
                     ) : (
-                      item.observacion || 'Sin observación'
+                      item.observacion || "Sin observación"
                     )}
                   </td>
-                  <td>{item.role}</td>
+                  <td>
+                    {item.documento ? (
+                      <a href={item.documento} target="_blank" rel="noopener noreferrer">
+                        Ver PDF
+                      </a>
+                    ) : (
+                      "Sin PDF"
+                    )}
+                  </td>
                   <td>
                     {editIndex === index ? (
-                      <button onClick={() => handleSave(index)}>Guardar</button>
+                      <button
+                        onClick={() => handleSave(index)}
+                        className="accion-button guardar"
+                      >
+                        Guardar
+                      </button>
                     ) : (
-                      <button onClick={() => handleEdit(index, item.observacion)}>Editar</button>
+                      <button
+                        onClick={() => handleEdit(index, item.observacion)}
+                        className="accion-button editar"
+                      >
+                        Editar
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -218,5 +252,6 @@ const SolicitudAprobacion = () => {
     </div>
   );
 };
+
 
 export { SolicitudAprobacion };
