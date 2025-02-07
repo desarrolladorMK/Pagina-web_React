@@ -10,7 +10,6 @@ const DGdecision = () => {
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
   const [messageClass, setMessageClass] = useState("");
-  const [observacion, setObservacion] = useState(""); // Campo para la observación
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -30,7 +29,7 @@ const DGdecision = () => {
       const endpoint = role;
       const response = await axios.post(`${BACKEND_URL}/yuli/${workflow_id}/${endpoint}`, {
         decision,
-        observacion,  // Enviamos la observación escrita por el usuario (si hay)
+        
       });
       setMessage(response.data.message);
       setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
@@ -62,17 +61,7 @@ const DGdecision = () => {
           </a>
         </p>
 
-        {/* Campo para escribir la observación */}
-        <div className="observacion-field">
-          <label><strong>Observación:</strong></label>
-          <textarea 
-            value={observacion}
-            onChange={(e) => setObservacion(e.target.value)}
-            placeholder="Escribe una observación si es necesario..."
-            rows="3"
-            className="observacion-textarea"
-          />
-        </div>
+    
 
         <div className="decision-buttons">
           <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
