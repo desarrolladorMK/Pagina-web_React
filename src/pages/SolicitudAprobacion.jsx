@@ -15,13 +15,13 @@ const SolicitudAprobacion = () => {
   const [workflowId, setWorkflowId] = useState("");
   const [message, setMessage] = useState("");
   const [historial, setHistorial] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
-  const [editedObservacion, setEditedObservacion] = useState("");
 
+  // Cargar historial al iniciar el componente
   useEffect(() => {
     fetchHistorial();
   }, []);
 
+  // Manejar cambios en los inputs del formulario
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -31,6 +31,7 @@ const SolicitudAprobacion = () => {
     }
   };
 
+  // Enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -50,7 +51,7 @@ const SolicitudAprobacion = () => {
       const workflowId = response.data.workflow_id;
       setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
-      fetchHistorial();
+      fetchHistorial(); // Recargar historial después de enviar
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
@@ -58,6 +59,7 @@ const SolicitudAprobacion = () => {
     setIsSubmitting(false);
   };
 
+  // Obtener historial completo desde el backend
   const fetchHistorial = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/yuli`);
@@ -65,43 +67,6 @@ const SolicitudAprobacion = () => {
       setHistorial(response.data.historial);
     } catch (error) {
       console.error("Error al obtener el historial:", error);
-    }
-  };
-
-  const handleEdit = (index, observacion) => {
-    setEditIndex(index);
-    setEditedObservacion(observacion);
-  };
-
-  const handleSave = async (index) => {
-    const updatedHistorial = [...historial];
-    updatedHistorial[index].observacion = editedObservacion;
-
-    try {
-      await axios.put(`${BACKEND_URL}/yuli/${updatedHistorial[index].workflow_id}`, {
-        observacion: editedObservacion,
-      });
-
-      setHistorial(updatedHistorial);
-      setEditIndex(null);
-      setEditedObservacion("");
-    } catch (error) {
-      console.error("Error al actualizar la observación:", error);
-    }
-  };
-
-  const getEstadoClass = (estado) => {
-    switch (estado.toLowerCase()) {
-      case "aprobado por director":
-        return "estado-aprobado-director";
-      case "aprobado por ambos":
-        return "estado-aprobado-ambos";
-      case "rechazado":
-        return "solicitud-rechazado";
-      case "pendiente":
-        return "solicitud-pendiente";
-      default:
-        return "";
     }
   };
 
@@ -114,6 +79,7 @@ const SolicitudAprobacion = () => {
       </div>
       <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>
 
+      {/* Formulario */}
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
         <div className="solicitud-aprobacion-form-field">
           <label className="solicitud-aprobacion-label">Fecha:</label>
@@ -170,6 +136,7 @@ const SolicitudAprobacion = () => {
 
       {message && <p className="solicitud-aprobacion-message">{message}</p>}
 
+      {/* Información del Workflow */}
       {workflowId && (
         <div className="solicitud-aprobacion-info">
           <p>
@@ -181,6 +148,7 @@ const SolicitudAprobacion = () => {
         </div>
       )}
 
+      {/* Historial */}
       {historial.length > 0 && (
         <div className="solicitud-aprobacion-historial-container">
           <h2 className="solicitud-aprobacion-historial-header">
@@ -193,7 +161,6 @@ const SolicitudAprobacion = () => {
                 <th>Estado</th>
                 <th>Observación</th>
                 <th>PDF</th>
-                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -201,22 +168,17 @@ const SolicitudAprobacion = () => {
                 <tr key={index}>
                   <td>{item.fecha}</td>
                   <td>
-                    <span className={getEstadoClass(item.estado)}>
-                      {item.estado.charAt(0).toUpperCase() + item.estado.slice(1)}
-                    </span>
-                  </td>
-                  <td>
-                    {editIndex === index ? (
-                      <input
-                        type="text"
-                        value={editedObservacion}
-                        onChange={(e) => setEditedObservacion(e.target.value)}
-                        className="observacion-input"
-                      />
+                    {item.estado === "Aprobado" ? (
+                      <span className="estado-aprobado">{item.estado}</span>
+                    ) : item.estado === "Rechazado" ? (
+                      <span className="estado-rechazado">
+                        {item.estado} {item.rechazadoPor && `(por ${item.rechazadoPor})`}
+                      </span>
                     ) : (
-                      item.observacion || "Sin observación"
+                      <span>{item.estado}</span>
                     )}
                   </td>
+                  <td>{item.observacion || "Sin observación"}</td>
                   <td>
                     {item.documento ? (
                       <a href={item.documento} target="_blank" rel="noopener noreferrer">
@@ -224,23 +186,6 @@ const SolicitudAprobacion = () => {
                       </a>
                     ) : (
                       "Sin PDF"
-                    )}
-                  </td>
-                  <td>
-                    {editIndex === index ? (
-                      <button
-                        onClick={() => handleSave(index)}
-                        className="accion-button guardar"
-                      >
-                        Guardar
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleEdit(index, item.observacion)}
-                        className="accion-button editar"
-                      >
-                        Editar
-                      </button>
                     )}
                   </td>
                 </tr>

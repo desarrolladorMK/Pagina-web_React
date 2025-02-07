@@ -10,6 +10,7 @@ const DGdecision = () => {
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
   const [messageClass, setMessageClass] = useState("");
+  const [observacion, setObservacion] = useState(""); // Nuevo estado para la observación
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -29,7 +30,7 @@ const DGdecision = () => {
       const endpoint = role;
       const response = await axios.post(`${BACKEND_URL}/yuli/${workflow_id}/${endpoint}`, {
         decision,
-        
+        observacion // Se envía la observación junto con la decisión
       });
       setMessage(response.data.message);
       setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
@@ -61,7 +62,18 @@ const DGdecision = () => {
           </a>
         </p>
 
-    
+        {/* Campo para ingresar la observación */}
+        <div className="form-group">
+          <label htmlFor="observacion" className="form-label">Observación:</label>
+          <textarea
+            id="observacion"
+            name="observacion"
+            value={observacion}
+            onChange={(e) => setObservacion(e.target.value)}
+            className="observacion-input"
+            placeholder="Ingrese la observación, indicando quien la realiza..."
+          ></textarea>
+        </div>
 
         <div className="decision-buttons">
           <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
