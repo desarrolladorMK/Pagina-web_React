@@ -20,10 +20,11 @@ const AprobarRechazar = () => {
     const handleSubmit = async (decision) => {
         setLoading(true);
         try {
+            console.log("Enviando datos:", { token, decision, observacion }); // Verifica qué se está enviando
             const response = await axios.post('https://backend-gastos.vercel.app/api/requerimientos/decidirRequerimiento', {
                 token,
                 decision: decision,
-                observacion: observacion  // Se envía la observación junto a la decisión
+                observacion: observacion
             });
             setMensaje(response.data.message);
             setDecisionTomada(true);
@@ -35,6 +36,7 @@ const AprobarRechazar = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="aprobar-rechazar-container">

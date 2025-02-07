@@ -557,7 +557,9 @@ const Gastos = () => {
                   <th>Monto por sede</th>
                   <th>Cotización</th>
                   <th>Proveedor</th>
+                  <th>Observación</th>
                   <th>Estado</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -646,6 +648,7 @@ const Gastos = () => {
                           <span>No hay archivos de proveedor</span>
                         )}
                       </td>
+                      <td>{gasto.observacion || "Sin observación"}</td> {/* Mostrar la observación */}
                       <td className={getEstadoClass(gasto.estado)}>
                         {gasto.estado}
                       </td>
