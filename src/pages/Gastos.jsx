@@ -6,21 +6,24 @@ import Select from "react-select";
 const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
 const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
 
+// Se definen los valores iniciales del formulario para facilitar el reset
+const initialFormData = {
+  nombre_completo: "",
+  area: "",
+  procesos: "",
+  sede: [],
+  unidad: [],
+  centro_costos: [],
+  descripcion: "",
+  monto_estimado: "",
+  monto_sede: "",
+  archivo_cotizacion: null,
+  archivos_proveedor: [],
+  correo_empleado: sessionStorage.getItem("correo_empleado"),
+};
+
 const Gastos = () => {
-  const [formData, setFormData] = useState({
-    nombre_completo: "",
-    area: "",
-    procesos: "",
-    sede: [],
-    unidad: [],
-    centro_costos: [],
-    descripcion: "",
-    monto_estimado: "",
-    monto_sede: "",
-    archivo_cotizacion: null,
-    archivos_proveedor: [],
-    correo_empleado: sessionStorage.getItem("correo_empleado"),
-  });
+  const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
   const [decision, setDecision] = useState("");
@@ -42,7 +45,8 @@ const Gastos = () => {
     },
   ]);
 
-  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+  const SUPABASE_URL =
+    "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
   const API_URL = "https://backend-gastos.vercel.app/api";
 
   const historialRef = useRef(null);
@@ -75,12 +79,16 @@ const Gastos = () => {
 
     if (name === "monto_estimado") {
       const valorNumerico = value.replace(/\D/g, "");
-      const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
+      const valorFormateado = valorNumerico
+        ? formatoCOP.format(valorNumerico)
+        : "";
       setFormData({ ...formData, [name]: valorFormateado });
     } else if (name === "monto_sede") {
       setFormData({ ...formData, [name]: value });
     } else if (["unidad", "centro_costos", "sede"].includes(name)) {
-      const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
+      const selectedOptions = Array.from(e.target.selectedOptions).map(
+        (option) => option.value
+      );
       setFormData({ ...formData, [name]: selectedOptions });
     } else if (name === "archivo_cotizacion") {
       setFormData({ ...formData, archivo_cotizacion: files[0] });
@@ -90,19 +98,21 @@ const Gastos = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, files } = e.target;
     if (name === "archivos_proveedor") {
       setFormData({
         ...formData,
         archivos_proveedor: files ? Array.from(files) : [],
       });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({ ...formData, [name]: e.target.value });
     }
   };
 
   const handleSelectChange = (name, selectedOptions) => {
-    const selectedValues = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+    const selectedValues = selectedOptions
+      ? selectedOptions.map((option) => option.value)
+      : [];
     setFormData({ ...formData, [name]: selectedValues });
   };
 
@@ -189,8 +199,25 @@ const Gastos = () => {
           },
         }
       );
+      // Muestra la alerta de solicitud enviada
       setIsSubmitted(true);
       setDecision(response.data.decision);
+      // Después de 3 segundos se oculta la alerta y se reinicia el formulario
+      // Dentro de handleSubmit, reemplaza este bloque:
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData(initialFormData);
+      }, 3000);
+
+      // Por el siguiente:
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          ...initialFormData,
+          correo_empleado: formData.correo_empleado,
+          nombre_completo: formData.nombre_completo,
+        });
+      }, 3000);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setErrorMessage(
@@ -212,11 +239,11 @@ const Gastos = () => {
       return nuevoEstado;
     });
   };
-  
+
   const toggleArchivos = () => {
     setMostrarArchivos((prevMostrarArchivos) => !prevMostrarArchivos);
   };
-  
+
   useEffect(() => {
     if (token) {
       const interval = setInterval(() => {
@@ -228,7 +255,9 @@ const Gastos = () => {
 
   useEffect(() => {
     if (formData.correo_empleado) {
-      const nombreResponsable = obtenerNombrePorCorreo(formData.correo_empleado);
+      const nombreResponsable = obtenerNombrePorCorreo(
+        formData.correo_empleado
+      );
       setFormData((prevData) => ({
         ...prevData,
         nombre_completo: nombreResponsable,
@@ -495,7 +524,6 @@ const Gastos = () => {
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
           </form>
-
         </div>
       ) : (
         <div className="gastos-submitted-message">
@@ -503,12 +531,18 @@ const Gastos = () => {
         </div>
       )}
 
-      <button onClick={toggleHistorial} className="historial-flotante-button">📜</button>
+      <button onClick={toggleHistorial} className="historial-flotante-button">
+        📜
+      </button>
       {isLoadingHistorial ? (
         <p>Cargando historial...</p>
       ) : (
         mostrarHistorial && (
-          <div id="gastos-historial" className="gastos-historial desplegado" ref={historialRef}>
+          <div
+            id="gastos-historial"
+            className="gastos-historial desplegado"
+            ref={historialRef}
+          >
             <table className="historial-table">
               <thead>
                 <tr>
@@ -528,12 +562,12 @@ const Gastos = () => {
               </thead>
               <tbody>
                 {historialGastos.map((gasto) => {
-
                   let sedesArray = [];
                   if (typeof gasto.sede === "string") {
                     try {
                       sedesArray = JSON.parse(gasto.sede);
-                      if (!Array.isArray(sedesArray)) throw new Error("No es un array");
+                      if (!Array.isArray(sedesArray))
+                        throw new Error("No es un array");
                     } catch (error) {
                       sedesArray = gasto.sede.includes(",")
                         ? gasto.sede.split(",").map((s) => s.trim())
@@ -550,7 +584,9 @@ const Gastos = () => {
                       .map((entry) => {
                         const [sede, monto] = entry.split(":");
                         if (monto) {
-                          return `${sede.trim()}: ${formatoCOP.format(parseFloat(monto.replace(/\D/g, "")))}`;
+                          return `${sede.trim()}: ${formatoCOP.format(
+                            parseFloat(monto.replace(/\D/g, ""))
+                          )}`;
                         } else {
                           return `${sede.trim()}: No especificado`;
                         }
@@ -558,35 +594,61 @@ const Gastos = () => {
                       .join(", ");
                   }
 
-                  const nombreArchivo = gasto.archivo_cotizacion?.split("/").pop();
+                  const nombreArchivo = gasto.archivo_cotizacion
+                    ?.split("/")
+                    .pop();
                   const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
-                  const archivosProveedor = typeof gasto.archivos_proveedor === "string" ? JSON.parse(gasto.archivos_proveedor) : gasto.archivos_proveedor;
+                  const archivosProveedor =
+                    typeof gasto.archivos_proveedor === "string"
+                      ? JSON.parse(gasto.archivos_proveedor)
+                      : gasto.archivos_proveedor;
                   return (
                     <tr key={gasto.id}>
                       <td>{gasto.nombre_completo}</td>
                       <td>{gasto.area}</td>
                       <td>{gasto.procesos}</td>
-                      <td>{sedesArray.length > 0 ? sedesArray.join(", ") : "Sin sede"}</td>
+                      <td>
+                        {sedesArray.length > 0
+                          ? sedesArray.join(", ")
+                          : "Sin sede"}
+                      </td>
                       <td>{gasto.unidad?.join(", ")}</td>
                       <td>{gasto.centro_costos?.join(", ")}</td>
                       <td>{gasto.descripcion}</td>
                       <td>{formatoCOP.format(gasto.monto_estimado)}</td>
                       <td>{montoSede}</td>
                       <td>
-                        <a href={archivoCotizacionUrl} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>
+                        <a
+                          href={archivoCotizacionUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-pdf-button"
+                        >
+                          Ver
+                        </a>
                       </td>
                       <td>
-                        {Array.isArray(archivosProveedor) && archivosProveedor.length > 0 ? (
+                        {Array.isArray(archivosProveedor) &&
+                        archivosProveedor.length > 0 ? (
                           archivosProveedor.map((url, index) => (
                             <div key={index}>
-                              <a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-pdf-button"
+                              >
+                                Ver
+                              </a>
                             </div>
                           ))
                         ) : (
                           <span>No hay archivos de proveedor</span>
                         )}
                       </td>
-                      <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
+                      <td className={getEstadoClass(gasto.estado)}>
+                        {gasto.estado}
+                      </td>
                     </tr>
                   );
                 })}
