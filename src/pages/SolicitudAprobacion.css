@@ -275,3 +275,33 @@ input[type="file"] {
 }
 
 
+.estado-aprobado-director,
+.estado-aprobado-ambos,
+.solicitud-rechazado,
+.solicitud-pendiente {
+  display: block;         /* Hace que el elemento ocupe toda la celda */
+  width: 100%;            /* Asegura que ocupe todo el ancho */
+  padding: 8px;           /* Añade espacio interno para mejorar la visualización */
+  text-align: center;     /* Centra el texto */
+  border-radius: 4px;     /* Opcional: para bordes redondeados */
+  box-sizing: border-box; /* Asegura que padding no afecte el ancho */
+  color: #000000;         /* Color del texto */
+}
+
+
+.estado-aprobado-director {
+  background-color: #3bee65;
+}
+
+.estado-aprobado-ambos {
+  background-color: #2ce056;
+}
+
+.solicitud-rechazado {
+  background-color: #ff0015c7;
+}
+
+.solicitud-pendiente {
+  background-color: #ffbf00;
+}
+
