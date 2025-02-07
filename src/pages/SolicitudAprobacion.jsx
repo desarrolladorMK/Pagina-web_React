@@ -16,6 +16,12 @@ const SolicitudAprobacion = () => {
   const [message, setMessage] = useState("");
   const [historial, setHistorial] = useState([]);
 
+  // Cargar historial al iniciar el componente
+  useEffect(() => {
+    fetchHistorial();  
+  }, []);
+
+  // Manejar cambios en los inputs
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -25,6 +31,7 @@ const SolicitudAprobacion = () => {
     }
   };
 
+  // Enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -44,7 +51,7 @@ const SolicitudAprobacion = () => {
       const workflowId = response.data.workflow_id;
       setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
-      fetchHistorial(workflowId);
+      fetchHistorial();  // Recargar historial después de enviar
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
@@ -52,10 +59,12 @@ const SolicitudAprobacion = () => {
     setIsSubmitting(false);
   };
 
-  const fetchHistorial = async (workflowId) => {
+  // Obtener historial completo desde el backend
+  const fetchHistorial = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/yuli/${workflowId}`);
-      setHistorial(response.data.historial);
+      const response = await axios.get(`${BACKEND_URL}/yuli`);  // Obtener todos los registros
+      console.log("Historial completo:", response.data);  // Verificar la estructura de la respuesta
+      setHistorial(response.data.historial);  // Asegúrate que la respuesta del backend tiene esta estructura
     } catch (error) {
       console.error("Error al obtener el historial:", error);
     }
@@ -69,6 +78,8 @@ const SolicitudAprobacion = () => {
         </a>
       </div>
       <h1 className="solicitud-aprobacion-header">Solicitud de Aprobación</h1>
+
+      {/* Formulario */}
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
         <div className="solicitud-aprobacion-form-field">
           <label className="solicitud-aprobacion-label">Fecha:</label>
@@ -121,20 +132,19 @@ const SolicitudAprobacion = () => {
 
       {message && <p className="solicitud-aprobacion-message">{message}</p>}
 
+      {/* Información del Workflow */}
       {workflowId && (
         <div className="solicitud-aprobacion-info">
           <p>
             Workflow ID: <strong>{workflowId}</strong>
           </p>
-          <p>
-            Consulta el historial en: {BACKEND_URL}/yuli/{workflowId}
-          </p>
         </div>
       )}
 
+      {/* Historial */}
       {historial.length > 0 && (
         <div className="solicitud-aprobacion-historial-container">
-          <h2 className="solicitud-aprobacion-historial-header">Historial de Solicitud</h2>
+          <h2 className="solicitud-aprobacion-historial-header">Historial de Solicitudes</h2>
           <table className="solicitud-aprobacion-historial-table">
             <thead>
               <tr>
