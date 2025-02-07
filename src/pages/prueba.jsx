@@ -18,6 +18,10 @@ const SolicitudAprobacion = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [editedObservacion, setEditedObservacion] = useState("");
 
+  useEffect(() => {
+    fetchHistorial();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -46,7 +50,7 @@ const SolicitudAprobacion = () => {
       const workflowId = response.data.workflow_id;
       setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
-      fetchHistorial(workflowId);
+      fetchHistorial();
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
@@ -54,9 +58,10 @@ const SolicitudAprobacion = () => {
     setIsSubmitting(false);
   };
 
-  const fetchHistorial = async (workflowId) => {
+  const fetchHistorial = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/yuli/${workflowId}`);
+      const response = await axios.get(`${BACKEND_URL}/yuli`);
+      console.log("Historial completo:", response.data);
       setHistorial(response.data.historial);
     } catch (error) {
       console.error("Error al obtener el historial:", error);
@@ -85,14 +90,30 @@ const SolicitudAprobacion = () => {
     }
   };
 
+  const getEstadoClass = (estado) => {
+    switch (estado.toLowerCase()) {
+      case "aprobado por director":
+        return "estado-aprobado-director";
+      case "aprobado por ambos":
+        return "estado-aprobado-ambos";
+      case "rechazado":
+        return "estado-rechazado";
+      case "pendiente":
+        return "estado-pendiente";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="solicitud-aprobacion-container">
-      <div className="solicitud-aprobacion-logo-container">
+      <div className="logo-container-solicitud">
         <a href="/">
           <img src="logoMK.png" alt="Logo Merkahorro" />
         </a>
       </div>
-      <h1 className="solicitud-aprobacion-header">Solicitud de Aprobación</h1>
+      <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>
+
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
         <div className="solicitud-aprobacion-form-field">
           <label className="solicitud-aprobacion-label">Fecha:</label>
@@ -138,7 +159,11 @@ const SolicitudAprobacion = () => {
             className="solicitud-aprobacion-input"
           />
         </div>
-        <button type="submit" className="solicitud-aprobacion-submit-button" disabled={isSubmitting}>
+        <button
+          type="submit"
+          className="solicitud-aprobacion-submit-button"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Enviando..." : "Enviar Solicitud"}
         </button>
       </form>
@@ -158,14 +183,16 @@ const SolicitudAprobacion = () => {
 
       {historial.length > 0 && (
         <div className="solicitud-aprobacion-historial-container">
-          <h2 className="solicitud-aprobacion-historial-header">Historial de Solicitud</h2>
+          <h2 className="solicitud-aprobacion-historial-header">
+            Historial de Solicitudes
+          </h2>
           <table className="solicitud-aprobacion-historial-table">
             <thead>
               <tr>
                 <th>Fecha</th>
                 <th>Estado</th>
                 <th>Observación</th>
-                <th>Rol</th>
+                <th>PDF</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -173,24 +200,47 @@ const SolicitudAprobacion = () => {
               {historial.map((item, index) => (
                 <tr key={index}>
                   <td>{item.fecha}</td>
-                  <td>{item.estado}</td>
+                  <td>
+                    <span className={getEstadoClass(item.estado)}>
+                      {item.estado.charAt(0).toUpperCase() + item.estado.slice(1)}
+                    </span>
+                  </td>
                   <td>
                     {editIndex === index ? (
                       <input
                         type="text"
                         value={editedObservacion}
                         onChange={(e) => setEditedObservacion(e.target.value)}
+                        className="observacion-input"
                       />
                     ) : (
-                      item.observacion || 'Sin observación'
+                      item.observacion || "Sin observación"
                     )}
                   </td>
-                  <td>{item.role}</td>
+                  <td>
+                    {item.documento ? (
+                      <a href={item.documento} target="_blank" rel="noopener noreferrer">
+                        Ver PDF
+                      </a>
+                    ) : (
+                      "Sin PDF"
+                    )}
+                  </td>
                   <td>
                     {editIndex === index ? (
-                      <button onClick={() => handleSave(index)}>Guardar</button>
+                      <button
+                        onClick={() => handleSave(index)}
+                        className="accion-button guardar"
+                      >
+                        Guardar
+                      </button>
                     ) : (
-                      <button onClick={() => handleEdit(index, item.observacion)}>Editar</button>
+                      <button
+                        onClick={() => handleEdit(index, item.observacion)}
+                        className="accion-button editar"
+                      >
+                        Editar
+                      </button>
                     )}
                   </td>
                 </tr>
