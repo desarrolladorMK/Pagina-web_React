@@ -11,7 +11,8 @@ const DGdecision = () => {
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
   const [messageClass, setMessageClass] = useState("");
-  const [observacion, setObservacion] = useState(""); // Nuevo estado para la observación
+  const [observacion, setObservacion] = useState(""); // Estado para la observación
+  const [isRedirecting, setIsRedirecting] = useState(false); // Estado para controlar la redirección
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -36,7 +37,10 @@ const DGdecision = () => {
       setMessage(response.data.message);
       setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
       
-      // Redirige a la vista "solicitudaprobacion" después de 2 segundos
+      // Activa el estado de redireccionamiento y muestra un mensaje
+      setIsRedirecting(true);
+      
+      // Redirige a la vista "solicitudaprobacion" después de 3 segundos
       setTimeout(() => {
         navigate("/solicitudaprobacion");
       }, 3000);
@@ -74,6 +78,10 @@ const DGdecision = () => {
             Ver Documento
           </a>
         </p>
+        <p>
+          <strong>Descripción:</strong>{" "}
+          {formDetails.descripcion || "Sin descripción"}
+        </p>
 
         {/* Campo para ingresar la observación */}
         <div className="form-group">
@@ -106,6 +114,7 @@ const DGdecision = () => {
         </div>
 
         {message && <p className={messageClass}>{message}</p>}
+        {isRedirecting && <p>Redireccionando, por favor espere...</p>}
       </div>
     </div>
   );
