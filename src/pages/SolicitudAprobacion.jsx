@@ -5,11 +5,13 @@ import "./SolicitudAprobacion.css";
 const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 
 const SolicitudAprobacion = () => {
+  // Estados del formulario y de la aplicación
   const [formData, setFormData] = useState({
     fecha: "",
     director: "",
     gerencia: "",
     documento: null,
+    descripcion: "" // nuevo campo de descripción
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowId, setWorkflowId] = useState("");
@@ -21,7 +23,7 @@ const SolicitudAprobacion = () => {
     fetchHistorial();
   }, []);
 
-  // Manejar cambios en los inputs del formulario
+  // Manejo de cambios en los inputs del formulario
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "documento") {
@@ -31,7 +33,7 @@ const SolicitudAprobacion = () => {
     }
   };
 
-  // Enviar el formulario
+  // Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -43,6 +45,7 @@ const SolicitudAprobacion = () => {
       formPayload.append("documento", formData.documento);
       formPayload.append("director", formData.director);
       formPayload.append("gerencia", formData.gerencia);
+      formPayload.append("descripcion", formData.descripcion); // incluir descripción
 
       const response = await axios.post(`${BACKEND_URL}/yuli`, formPayload, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -70,6 +73,21 @@ const SolicitudAprobacion = () => {
     }
   };
 
+  // Función que asigna la clase CSS según el estado
+  const getEstadoClass = (estado) => {
+    const estadoLower = estado.toLowerCase();
+    if (estadoLower.includes("aprobado por director")) {
+      return "estado-aprobado-director";
+    } else if (estadoLower.includes("aprobado por ambos") || estadoLower === "aprobado") {
+      return "estado-aprobado-ambos";
+    } else if (estadoLower.includes("rechazado")) {
+      return "solicitud-rechazado";
+    } else if (estadoLower.includes("pendiente")) {
+      return "solicitud-pendiente";
+    }
+    return "";
+  };
+
   return (
     <div className="solicitud-aprobacion-container">
       <div className="logo-container-solicitud">
@@ -79,7 +97,7 @@ const SolicitudAprobacion = () => {
       </div>
       <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>
 
-      {/* Formulario */}
+      {/* Formulario de Solicitud */}
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
         <div className="solicitud-aprobacion-form-field">
           <label className="solicitud-aprobacion-label">Fecha:</label>
@@ -98,6 +116,16 @@ const SolicitudAprobacion = () => {
             type="file"
             name="documento"
             accept="application/pdf"
+            onChange={handleChange}
+            required
+            className="solicitud-aprobacion-input"
+          />
+        </div>
+        <div className="solicitud-aprobacion-form-field">
+          <label className="solicitud-aprobacion-label">Descripción:</label>
+          <textarea
+            name="descripcion"
+            value={formData.descripcion}
             onChange={handleChange}
             required
             className="solicitud-aprobacion-input"
@@ -136,19 +164,7 @@ const SolicitudAprobacion = () => {
 
       {message && <p className="solicitud-aprobacion-message">{message}</p>}
 
-      {/* Información del Workflow */}
-      {workflowId && (
-        <div className="solicitud-aprobacion-info">
-          <p>
-            Workflow ID: <strong>{workflowId}</strong>
-          </p>
-          <p>
-            Consulta el historial en: {BACKEND_URL}/yuli/{workflowId}
-          </p>
-        </div>
-      )}
-
-      {/* Historial */}
+      {/* Historial de Solicitudes */}
       {historial.length > 0 && (
         <div className="solicitud-aprobacion-historial-container">
           <h2 className="solicitud-aprobacion-historial-header">
@@ -158,6 +174,7 @@ const SolicitudAprobacion = () => {
             <thead>
               <tr>
                 <th>Fecha</th>
+                <th>Descripcion</th>
                 <th>Estado</th>
                 <th>Observación</th>
                 <th>PDF</th>
@@ -167,25 +184,28 @@ const SolicitudAprobacion = () => {
               {historial.map((item, index) => (
                 <tr key={index}>
                   <td>{item.fecha}</td>
+                  <td>{item.descripcion || "Sin descripcion"}</td>
                   <td>
-                    {item.estado === "Aprobado" ? (
-                      <span className="estado-aprobado">{item.estado}</span>
-                    ) : item.estado === "Rechazado" ? (
-                      <span className="estado-rechazado">
-                        {item.estado} {item.rechazadoPor && `(por ${item.rechazadoPor})`}
-                      </span>
-                    ) : (
-                      <span>{item.estado}</span>
-                    )}
+                    <span className={getEstadoClass(item.estado)}>
+                      {item.estado}
+                      {item.estado.toLowerCase().includes("rechazado") &&
+                      item.rechazadoPor
+                        ? ` (por ${item.rechazadoPor})`
+                        : ""}
+                    </span>
                   </td>
                   <td>{item.observacion || "Sin observación"}</td>
                   <td>
                     {item.documento ? (
-                      <a href={item.documento} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={item.documento}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Ver PDF
                       </a>
                     ) : (
-                      "Sin PDF"
+                      "Sin PDF" 
                     )}
                   </td>
                 </tr>

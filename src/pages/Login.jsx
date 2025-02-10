@@ -23,7 +23,8 @@ const Login = () => {
           { path: "/historialgastos", label: "Historial de Gastos" },
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
-          { path: "/reserva", label: "Reservas" }
+          { path: "/reserva", label: "Reservas" },
+          { path: "/solicitudaprobacion", label: "Perfil gestion humana" }
         ]
       },
       {
@@ -106,6 +107,15 @@ const Login = () => {
         correo: import.meta.env.VITE_LOGIN_EMAIL_11 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_11 || "",
         redirect: "/acceso", // auxoperaciones@merkahorrosas.com
+        routes: [
+          { path: "/gastos", label: "Gastos" },
+          { path: "/salones", label: "Reserva de salones" }
+        ]
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_12 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_12 || "",
+        redirect: "/acceso", // operacionescomerciales@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
