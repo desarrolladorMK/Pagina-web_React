@@ -205,7 +205,7 @@ const SolicitudAprobacion = () => {
                         Ver PDF
                       </a>
                     ) : (
-                      "Sin PDF"
+                      "Sin PDF" 
                     )}
                   </td>
                 </tr>
