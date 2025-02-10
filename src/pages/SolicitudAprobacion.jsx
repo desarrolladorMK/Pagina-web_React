@@ -88,6 +88,21 @@ const SolicitudAprobacion = () => {
     return "";
   };
 
+  const getEstadoLabel = (estado) => {
+    const estadoLower = estado.toLowerCase();
+    if (estadoLower.includes("aprobado por director")) {
+      return "necesario por director";
+    } else if (estadoLower.includes("aprobado por ambos") || estadoLower === "aprobado") {
+      return "necesario por ambos";
+    } else if (estadoLower.includes("rechazado")) {
+      return "no necesario";
+    } else if (estadoLower.includes("pendiente")) {
+      return "pendiente";
+    }
+    return estado;
+  };
+  
+
   return (
     <div className="solicitud-aprobacion-container">
       <div className="logo-container-solicitud">
@@ -174,7 +189,7 @@ const SolicitudAprobacion = () => {
             <thead>
               <tr>
                 <th>Fecha</th>
-                <th>Descripcion</th>
+                <th>Descripción</th>
                 <th>Estado</th>
                 <th>Observación</th>
                 <th>PDF</th>
@@ -184,12 +199,12 @@ const SolicitudAprobacion = () => {
               {historial.map((item, index) => (
                 <tr key={index}>
                   <td>{item.fecha}</td>
-                  <td>{item.descripcion || "Sin descripcion"}</td>
+                  <td>{item.descripcion || "Sin descripción"}</td>
                   <td>
                     <span className={getEstadoClass(item.estado)}>
-                      {item.estado}
+                      {getEstadoLabel(item.estado)}
                       {item.estado.toLowerCase().includes("rechazado") &&
-                      item.rechazadoPor
+                        item.rechazadoPor
                         ? ` (por ${item.rechazadoPor})`
                         : ""}
                     </span>
@@ -205,7 +220,7 @@ const SolicitudAprobacion = () => {
                         Ver PDF
                       </a>
                     ) : (
-                      "Sin PDF" 
+                      "Sin PDF"
                     )}
                   </td>
                 </tr>
@@ -214,6 +229,7 @@ const SolicitudAprobacion = () => {
           </table>
         </div>
       )}
+
     </div>
   );
 };

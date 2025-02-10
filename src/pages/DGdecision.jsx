@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./AprobarRechazar.css";
 
 const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 
 const DGdecision = () => {
   const { workflow_id, role } = useParams();
+  const navigate = useNavigate(); // Hook para redirección
   const [formDetails, setFormDetails] = useState(null);
   const [message, setMessage] = useState("");
   const [messageClass, setMessageClass] = useState("");
@@ -34,6 +35,11 @@ const DGdecision = () => {
       });
       setMessage(response.data.message);
       setMessageClass(decision === "aprobado" ? "mensaje-aprobado" : "mensaje-rechazado");
+      
+      // Redirige a la vista "solicitudaprobacion" después de 2 segundos
+      setTimeout(() => {
+        navigate("/solicitudaprobacion");
+      }, 3000);
     } catch (error) {
       console.error("Error al enviar la decisión:", error);
       setMessage("Error al procesar la decisión. Inténtalo de nuevo.");
@@ -54,17 +60,26 @@ const DGdecision = () => {
       </div>
       <h1 className="header-gastos">Revisión de Solicitud</h1>
       <div className="form">
-        <p className="fecha"><strong>Fecha:</strong> {formDetails.fecha}</p>
+        <p className="fecha">
+          <strong>Fecha:</strong> {formDetails.fecha}
+        </p>
         <p>
           <strong>Documento:</strong>{" "}
-          <a className="documento" href={formDetails.documento} target="_blank" rel="noopener noreferrer">
+          <a
+            className="documento"
+            href={formDetails.documento}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Ver Documento
           </a>
         </p>
 
         {/* Campo para ingresar la observación */}
         <div className="form-group">
-          <label htmlFor="observacion" className="form-label">Observación:</label>
+          <label htmlFor="observacion" className="form-label">
+            Observación:
+          </label>
           <textarea
             id="observacion"
             name="observacion"
@@ -76,10 +91,16 @@ const DGdecision = () => {
         </div>
 
         <div className="decision-buttons">
-          <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
+          <button
+            className="btn-approve"
+            onClick={() => handleDecision("aprobado")}
+          >
             Necesario
           </button>
-          <button className="btn-reject" onClick={() => handleDecision("rechazado")}>
+          <button
+            className="btn-reject"
+            onClick={() => handleDecision("rechazado")}
+          >
             No necesario
           </button>
         </div>
@@ -89,6 +110,5 @@ const DGdecision = () => {
     </div>
   );
 };
-
 
 export { DGdecision };
