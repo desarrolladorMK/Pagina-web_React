@@ -77,10 +77,10 @@ const DGdecision = () => {
 
         <div className="decision-buttons">
           <button className="btn-approve" onClick={() => handleDecision("aprobado")}>
-            Aprobar
+            Necesario
           </button>
           <button className="btn-reject" onClick={() => handleDecision("rechazado")}>
-            Rechazar
+            No necesario
           </button>
         </div>
 
