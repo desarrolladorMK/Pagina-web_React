@@ -51,6 +51,42 @@ const Gastos = () => {
 
   const historialRef = useRef(null);
 
+  // Función para obtener el nombre basado en el correo
+  const obtenerNombrePorCorreo = (correo) => {
+    const index = correosAutorizados.indexOf(correo);
+    if (index !== -1) {
+      return nombresAutorizados[index];
+    }
+    return "Empleado no autorizado";
+  };
+
+  // Efecto para actualizar inmediatamente el correo y nombre al montar el componente
+  useEffect(() => {
+    const correo = sessionStorage.getItem("correo_empleado");
+    if (correo) {
+      setFormData((prevData) => ({
+        ...prevData,
+        correo_empleado: correo,
+        nombre_completo: obtenerNombrePorCorreo(correo),
+      }));
+    }
+  }, []);
+
+  // NUEVO useEffect: Verifica cada 1 segundo si el correo en sessionStorage cambió y actualiza el estado
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const correoStorage = sessionStorage.getItem("correo_empleado");
+      if (correoStorage && correoStorage !== formData.correo_empleado) {
+        setFormData((prevData) => ({
+          ...prevData,
+          correo_empleado: correoStorage,
+          nombre_completo: obtenerNombrePorCorreo(correoStorage),
+        }));
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [formData.correo_empleado]);
+
   const checkDecision = async () => {
     try {
       const response = await axios.get(
@@ -286,14 +322,7 @@ const Gastos = () => {
     }
   }, [formData.correo_empleado]);
 
-  const obtenerNombrePorCorreo = (correo) => {
-    const index = correosAutorizados.indexOf(correo);
-    if (index !== -1) {
-      return nombresAutorizados[index];
-    }
-    return "Empleado no autorizado";
-  };
-
+  
   return (
     <div className="gastos-container">
       <div className="logo-container">
@@ -337,7 +366,7 @@ const Gastos = () => {
               <input
                 type="text"
                 name="nombre_completo"
-                value={formData.nombre_completo || ""} // Asegúrate de que el valor no sea undefined o null
+                value={formData.nombre_completo || ""}
                 onChange={handleChange}
                 required
                 disabled
@@ -396,7 +425,7 @@ const Gastos = () => {
               <Select
                 name="sede"
                 value={sedeOptions.filter(
-                  (option) => formData.sede.includes(option.value) // Aseguramos que "sede" sea el estado correcto
+                  (option) => formData.sede.includes(option.value)
                 )}
                 onChange={(selectedOptions) =>
                   handleSelectChange("sede", selectedOptions)
@@ -498,7 +527,7 @@ const Gastos = () => {
                 type="file"
                 name="archivos_proveedor"
                 onChange={handleInputChange}
-                multiple // Permitir múltiples archivos
+                multiple
                 className="gastos-input"
               />
             </div>
@@ -559,7 +588,6 @@ const Gastos = () => {
                   <th>Proveedor</th>
                   <th>Observación</th>
                   <th>Estado</th>
-                  
                 </tr>
               </thead>
               <tbody>
@@ -648,7 +676,7 @@ const Gastos = () => {
                           <span>No hay archivos de proveedor</span>
                         )}
                       </td>
-                      <td>{gasto.observacion || "Sin observación"}</td> {/* Mostrar la observación */}
+                      <td>{gasto.observacion || "Sin observación"}</td>
                       <td className={getEstadoClass(gasto.estado)}>
                         {gasto.estado}
                       </td>
