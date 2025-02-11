@@ -20,6 +20,9 @@ const Automatizacion = () => {
 
   const API_URL = "https://backend-cristian.vercel.app";
 
+  // URL base para los PDFs en Supabase (bucket: pdf-cristian, carpeta: pdfs)
+  const SUPABASE_PDF_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/pdf-cristian/pdfs";
+
   const obtenerHistorial = async () => {
     if (isLoadingHistorial) return;
     setIsLoadingHistorial(true);
@@ -36,9 +39,7 @@ const Automatizacion = () => {
       setMostrarHistorial(true);
 
       setTimeout(() => {
-        const historialElement = document.getElementById(
-          "automatizacion-historial"
-        );
+        const historialElement = document.getElementById("automatizacion-historial");
         if (historialElement) {
           historialElement.scrollIntoView({
             behavior: "smooth",
@@ -213,8 +214,6 @@ const Automatizacion = () => {
                 />
               </div>
 
-           
-
               <div className="automatizacion-form-field">
                 <label className="automatizacion-label">Correo Asignado:</label>
                 <select
@@ -227,10 +226,10 @@ const Automatizacion = () => {
                 >
                   <option value="">Seleccione un correo</option>
                   <option value="fruver@merkahorrosas.com">
-                  fruver@merkahorrosas.com
+                    fruver@merkahorrosas.com
                   </option>
                   <option value="gerencia1@merkahorrosas.com">
-                  gerencia1@merkahorrosas.com
+                    gerencia1@merkahorrosas.com
                   </option>
                 </select>
               </div>
@@ -273,6 +272,7 @@ const Automatizacion = () => {
                     <th>Fecha Inicial</th>
                     <th>Fecha Final</th>
                     <th>Correo</th>
+                    <th>PDF</th>
                     <th>Estado</th>
                     <th>Observación</th>
                     <th>Acciones</th>
@@ -286,6 +286,19 @@ const Automatizacion = () => {
                       <td>{item.fecha_inicial}</td>
                       <td>{item.fecha_final}</td>
                       <td>{item.correo_asignado}</td>
+                      <td>
+                        {item.pdf ? (
+                          <a
+                            href={item.pdf.startsWith("http") ? item.pdf : `${SUPABASE_PDF_URL}/${item.pdf}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Ver PDF
+                          </a>
+                        ) : (
+                          "Sin PDF"
+                        )}
+                      </td>
                       <td
                         className={
                           item.estado === "Completado"
