@@ -120,6 +120,15 @@ const Login = () => {
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
         ]
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_13 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_13 || "",
+        redirect: "/acceso", // operacionescomerciales@merkahorrosas.com
+        routes: [
+          { path: "/gastos", label: "Gastos" },
+          { path: "/salones", label: "Reserva de salones" }
+        ]
       }
     ];
     

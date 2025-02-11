@@ -87,6 +87,37 @@ const Gastos = () => {
     return () => clearInterval(interval);
   }, [formData.correo_empleado]);
 
+
+  // Nuevo useEffect para actualizar el historial de forma periódica
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      const fetchHistorialGastos = async () => {
+        setIsLoadingHistorial(true);
+        try {
+          const response = await axios.get(`${API_URL}/requerimientos/historial`, {
+            params: { correo_empleado: formData.correo_empleado },
+            headers: { "Cache-Control": "no-cache" },
+          });
+          if (response.status === 200) {
+            setHistorialGastos(response.data);
+          }
+        } catch (error) {
+          console.error("Error al obtener el historial de gastos:", error);
+        } finally {
+          setIsLoadingHistorial(false);
+        }
+      };
+
+      // Llamada inicial
+      fetchHistorialGastos();
+      // Establece el intervalo para polling
+      const interval = setInterval(() => {
+        fetchHistorialGastos();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [formData.correo_empleado]);
+
   const checkDecision = async () => {
     try {
       const response = await axios.get(
