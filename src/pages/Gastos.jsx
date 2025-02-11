@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./Gastos.css";
 import Select from "react-select";
+import * as XLSX from "xlsx";
+
 
 const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
 const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
@@ -353,7 +355,56 @@ const Gastos = () => {
     }
   }, [formData.correo_empleado]);
 
-  
+  const exportToExcel = () => {
+    if (!historialGastos || historialGastos.length === 0) return;
+
+    // Mapear cada objeto a una estructura que se vea ordenada en Excel
+    const dataForSheet = historialGastos.map((gasto) => {
+      // Procesar el campo sede para obtener un string
+      let sedeString = "";
+      if (typeof gasto.sede === "string") {
+        try {
+          const sedesArray = JSON.parse(gasto.sede);
+          sedeString = Array.isArray(sedesArray) ? sedesArray.join(", ") : gasto.sede;
+        } catch (error) {
+          sedeString = gasto.sede.includes(",")
+            ? gasto.sede.split(",").map((s) => s.trim()).join(", ")
+            : gasto.sede;
+        }
+      } else if (Array.isArray(gasto.sede)) {
+        sedeString = gasto.sede.join(", ");
+      }
+
+      return {
+        Nombre: gasto.nombre_completo || "",
+        Área: gasto.area || "",
+        Procesos: gasto.procesos || "",
+        Sede: sedeString,
+        "Unidad de negocio": Array.isArray(gasto.unidad) ? gasto.unidad.join(", ") : "",
+        "Centro de costos": Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : "",
+        Descripción: gasto.descripcion || "",
+        Monto: gasto.monto_estimado || "",
+        "Monto por sede": gasto.monto_sede || "",
+        Cotización: gasto.archivo_cotizacion || "",
+        Proveedor:
+          Array.isArray(gasto.archivos_proveedor) ? gasto.archivos_proveedor.join(", ") : "",
+        Observación: gasto.observacion || "",
+        Estado: gasto.estado || "",
+      };
+    });
+
+    // Crear una hoja de cálculo a partir del JSON
+    const worksheet = XLSX.utils.json_to_sheet(dataForSheet);
+    // Crear un libro de Excel
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
+
+    // Generar y descargar el archivo Excel
+    XLSX.writeFile(workbook, "historial_gastos.xlsx");
+  };
+
+
+
   return (
     <div className="gastos-container">
       <div className="logo-container">
@@ -603,6 +654,9 @@ const Gastos = () => {
             className="gastos-historial desplegado"
             ref={historialRef}
           >
+            <button onClick={exportToExcel} className="excel-button">
+              Exportar a Excel
+            </button>
             <table className="historial-table">
               <thead>
                 <tr>
@@ -690,7 +744,7 @@ const Gastos = () => {
                       </td>
                       <td>
                         {Array.isArray(archivosProveedor) &&
-                        archivosProveedor.length > 0 ? (
+                          archivosProveedor.length > 0 ? (
                           archivosProveedor.map((url, index) => (
                             <div key={index}>
                               <a
