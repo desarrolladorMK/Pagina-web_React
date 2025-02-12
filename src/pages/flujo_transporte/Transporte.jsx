@@ -20,11 +20,10 @@ const conductorPlacas = {
   conductor2: 'XYZ-789',
 };
 
-// URL del backend desde variable de entorno (fallback en caso de error)
-const API_URL = process.env.REACT_APP_API_URL || 'https://backend-transporte.vercel.app/api/registro';
+// URL del backend en Vercel
+const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
-  // Fecha actual (formato YYYY-MM-DD)
   const today = new Date().toISOString().split('T')[0];
 
   // Estados generales del formulario
@@ -35,8 +34,12 @@ const Transporte = () => {
   const [placa, setPlaca] = useState('');
   const [fechaViaje, setFechaViaje] = useState('');
   const [observacion, setObservacion] = useState('');
+
+  // Para "canastas": selección de sedes para el campo ORIGEN.
+  // Para "transporte": selección de sedes para el campo SEDES.
   const [selectedOrigen, setSelectedOrigen] = useState([]);
   const [selectedSedes, setSelectedSedes] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
@@ -56,6 +59,7 @@ const Transporte = () => {
     setSelectedSedes([]);
   };
 
+  // Handler genérico para las checkboxes
   const handleCheckboxChange = (e, setter, selectedItems) => {
     const { value, checked } = e.target;
     if (checked) {
@@ -65,6 +69,7 @@ const Transporte = () => {
     }
   };
 
+  // Calcula el total sumando los valores de las sedes seleccionadas según el tipo de servicio
   const totalValor =
     tipoServicio === 'canastas'
       ? selectedOrigen.reduce((acc, sedeId) => {
@@ -81,15 +86,16 @@ const Transporte = () => {
     setLoading(true);
     setMessage(null);
 
+    // Se envían los arrays directamente, ya que en la BD los campos "origen" y "sedes" son arrays.
     const data = {
       fecha,
-      tipo_servicio: tipoServicio,
+      tipo_formulario: tipoServicio, // Mapeo del tipo de servicio
       conductor: conductor === 'otro' ? otroConductor : conductor,
-      placa,
+      placa_vehiculo: placa,
       fecha_viaje: fechaViaje || null,
-      origen: tipoServicio === 'canastas' ? selectedOrigen : 'Cedi',
-      sedes: tipoServicio === 'canastas' ? 'Cedi' : selectedSedes,
-      total_valor: totalValor,
+      origen: tipoServicio === 'canastas' ? selectedOrigen : ["Cedi"],
+      sedes: tipoServicio === 'canastas' ? ["Cedi"] : selectedSedes,
+      valor_total: totalValor,
       observacion,
     };
 
@@ -99,17 +105,22 @@ const Transporte = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (err) {
+        console.error('Error al parsear JSON:', err);
+      }
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Registro guardado correctamente' });
       } else {
-        setMessage({ type: 'error', text: `Error: ${result.error}` });
+        setMessage({ type: 'error', text: `Error: ${result.error || 'Error en la solicitud'}` });
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Error al enviar el formulario' });
     }
-
     setLoading(false);
   };
 
@@ -140,13 +151,23 @@ const Transporte = () => {
           ))}
         </select>
         {conductor === 'otro' && (
-          <input type="text" placeholder="Escriba el nombre" value={otroConductor} onChange={(e) => setOtroConductor(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Escriba el nombre"
+            value={otroConductor}
+            onChange={(e) => setOtroConductor(e.target.value)}
+          />
         )}
       </div>
 
       <div>
         <label>Placa:</label>
-        <input type="text" value={placa} onChange={(e) => setPlaca(e.target.value)} readOnly={conductor !== 'otro' && conductor !== ''} />
+        <input
+          type="text"
+          value={placa}
+          onChange={(e) => setPlaca(e.target.value)}
+          readOnly={conductor !== 'otro' && conductor !== ''}
+        />
       </div>
 
       <div>
@@ -160,12 +181,47 @@ const Transporte = () => {
             <label>Origen:</label>
             {sedesOptions.map((sede) => (
               <div key={sede.id}>
-                <input type="checkbox" value={sede.id} checked={selectedOrigen.includes(sede.id)} onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)} />
-                <label>{sede.name} (Valor: {sede.value})</label>
+                <input
+                  type="checkbox"
+                  value={sede.id}
+                  checked={selectedOrigen.includes(sede.id)}
+                  onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)}
+                />
+                <label>
+                  {sede.name} (Valor: {sede.value})
+                </label>
               </div>
             ))}
           </div>
-          <div><label>Sedes:</label> <input type="text" value="Cedi" readOnly /></div>
+          <div>
+            <label>Sedes:</label>
+            <input type="text" value="Cedi" readOnly />
+          </div>
+        </>
+      )}
+
+      {tipoServicio === 'transporte' && (
+        <>
+          <div>
+            <label>Origen:</label>
+            <input type="text" value="Cedi" readOnly />
+          </div>
+          <div>
+            <label>Sedes:</label>
+            {sedesOptions.map((sede) => (
+              <div key={sede.id}>
+                <input
+                  type="checkbox"
+                  value={sede.id}
+                  checked={selectedSedes.includes(sede.id)}
+                  onChange={(e) => handleCheckboxChange(e, setSelectedSedes, selectedSedes)}
+                />
+                <label>
+                  {sede.name} (Valor: {sede.value})
+                </label>
+              </div>
+            ))}
+          </div>
         </>
       )}
 
@@ -179,7 +235,10 @@ const Transporte = () => {
         <textarea value={observacion} onChange={(e) => setObservacion(e.target.value)} />
       </div>
 
-      <button type="submit" disabled={loading}>{loading ? 'Enviando...' : 'Enviar'}</button>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Enviando...' : 'Enviar'}
+      </button>
+
       {message && <p className={message.type}>{message.text}</p>}
     </form>
   );
