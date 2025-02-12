@@ -20,31 +20,31 @@ const conductorPlacas = {
   conductor2: 'XYZ-789',
 };
 
+// URL del backend desde variable de entorno (fallback en caso de error)
+const API_URL = process.env.REACT_APP_API_URL || 'https://backend-transporte.vercel.app/api/registro';
+
 const Transporte = () => {
   // Fecha actual (formato YYYY-MM-DD)
   const today = new Date().toISOString().split('T')[0];
 
   // Estados generales del formulario
   const [fecha, setFecha] = useState(today);
-  const [tipoServicio, setTipoServicio] = useState(''); // Valores: "canastas" o "transporte"
+  const [tipoServicio, setTipoServicio] = useState('');
   const [conductor, setConductor] = useState('');
   const [otroConductor, setOtroConductor] = useState('');
   const [placa, setPlaca] = useState('');
   const [fechaViaje, setFechaViaje] = useState('');
   const [observacion, setObservacion] = useState('');
-
-  // Estados para la selección de sedes u origen, según el tipo de servicio
-  // Para "canastas": en el campo ORIGEN se seleccionan las sedes disponibles.
   const [selectedOrigen, setSelectedOrigen] = useState([]);
-  // Para "transporte": en el campo SEDES se seleccionan las sedes disponibles.
   const [selectedSedes, setSelectedSedes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
 
   // Actualiza la placa automáticamente si se selecciona un conductor predefinido
   useEffect(() => {
     if (conductor && conductor !== 'otro' && conductorPlacas[conductor]) {
       setPlaca(conductorPlacas[conductor]);
     } else {
-      // Si es "otro" o se limpia el campo, se permite editar la placa
       setPlaca('');
     }
   }, [conductor]);
@@ -56,27 +56,15 @@ const Transporte = () => {
     setSelectedSedes([]);
   };
 
-  // Handler para las checkboxes del campo ORIGEN (modo canastas)
-  const handleOrigenChange = (e) => {
+  const handleCheckboxChange = (e, setter, selectedItems) => {
     const { value, checked } = e.target;
     if (checked) {
-      setSelectedOrigen([...selectedOrigen, value]);
+      setter([...selectedItems, value]);
     } else {
-      setSelectedOrigen(selectedOrigen.filter((id) => id !== value));
+      setter(selectedItems.filter((id) => id !== value));
     }
   };
 
-  // Handler para las checkboxes del campo SEDES (modo transporte)
-  const handleSedesChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setSelectedSedes([...selectedSedes, value]);
-    } else {
-      setSelectedSedes(selectedSedes.filter((id) => id !== value));
-    }
-  };
-
-  // Se calcula el total sumando los valores de las sedes seleccionadas según el modo
   const totalValor =
     tipoServicio === 'canastas'
       ? selectedOrigen.reduce((acc, sedeId) => {
@@ -88,20 +76,17 @@ const Transporte = () => {
           return sede ? acc + sede.value : acc;
         }, 0);
 
-  // Función para enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage(null);
 
-    // Armar el objeto a enviar, usando los nombres de campo de la base de datos
     const data = {
-      fecha, // Fecha de registro
+      fecha,
       tipo_servicio: tipoServicio,
       conductor: conductor === 'otro' ? otroConductor : conductor,
       placa,
       fecha_viaje: fechaViaje || null,
-      // Según el modo:
-      // - Canastas: ORIGEN es la selección de sedes y SEDES se fija en "Cedi".
-      // - Transporte: ORIGEN se fija en "Cedi" y SEDES es la selección de sedes.
       origen: tipoServicio === 'canastas' ? selectedOrigen : 'Cedi',
       sedes: tipoServicio === 'canastas' ? 'Cedi' : selectedSedes,
       total_valor: totalValor,
@@ -109,28 +94,32 @@ const Transporte = () => {
     };
 
     try {
-      const response = await fetch('/api/registro', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log('Respuesta del servidor:', result);
-      // Aquí puedes agregar lógica para notificar al usuario (por ejemplo, mensajes de éxito o error)
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Registro guardado correctamente' });
+      } else {
+        setMessage({ type: 'error', text: `Error: ${result.error}` });
+      }
     } catch (error) {
-      console.error('Error al enviar el formulario:', error);
+      setMessage({ type: 'error', text: 'Error al enviar el formulario' });
     }
+
+    setLoading(false);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Campo de fecha predeterminada */}
       <div>
-        <label>Fecha (predeterminada hoy):</label>
+        <label>Fecha:</label>
         <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
       </div>
 
-      {/* Selector de Tipo de Servicio */}
       <div>
         <label>Tipo de Servicio:</label>
         <select value={tipoServicio} onChange={handleTipoServicioChange}>
@@ -140,7 +129,6 @@ const Transporte = () => {
         </select>
       </div>
 
-      {/* Campo de selección de Conductor */}
       <div>
         <label>Conductor:</label>
         <select value={conductor} onChange={(e) => setConductor(e.target.value)}>
@@ -152,109 +140,47 @@ const Transporte = () => {
           ))}
         </select>
         {conductor === 'otro' && (
-          <input
-            type="text"
-            placeholder="Escriba el nombre del conductor"
-            value={otroConductor}
-            onChange={(e) => setOtroConductor(e.target.value)}
-          />
+          <input type="text" placeholder="Escriba el nombre" value={otroConductor} onChange={(e) => setOtroConductor(e.target.value)} />
         )}
       </div>
 
-      {/* Campo de Placa */}
       <div>
         <label>Placa:</label>
-        <input
-          type="text"
-          value={placa}
-          onChange={(e) => setPlaca(e.target.value)}
-          readOnly={conductor !== 'otro' && conductor !== ''}
-          placeholder="Placa del vehículo"
-        />
+        <input type="text" value={placa} onChange={(e) => setPlaca(e.target.value)} readOnly={conductor !== 'otro' && conductor !== ''} />
       </div>
 
-      {/* Campo de Fecha de Viaje (opcional) */}
       <div>
         <label>Fecha de viaje (opcional):</label>
         <input type="date" value={fechaViaje} onChange={(e) => setFechaViaje(e.target.value)} />
       </div>
 
-      {/* Según el Tipo de Servicio se muestran los campos ORIGEN y SEDES */}
-      {tipoServicio === '' && (
-        <p>Seleccione un tipo de servicio para continuar.</p>
-      )}
-
       {tipoServicio === 'canastas' && (
         <>
-          {/* En modo CANASTAS: en ORIGEN se seleccionan las sedes disponibles */}
           <div>
             <label>Origen:</label>
             {sedesOptions.map((sede) => (
               <div key={sede.id}>
-                <input
-                  type="checkbox"
-                  id={`origen-${sede.id}`}
-                  value={sede.id}
-                  checked={selectedOrigen.includes(sede.id)}
-                  onChange={handleOrigenChange}
-                />
-                <label htmlFor={`origen-${sede.id}`}>
-                  {sede.name} (Valor: {sede.value})
-                </label>
+                <input type="checkbox" value={sede.id} checked={selectedOrigen.includes(sede.id)} onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)} />
+                <label>{sede.name} (Valor: {sede.value})</label>
               </div>
             ))}
           </div>
-
-          {/* El campo SEDES queda fijo a "Cedi" */}
-          <div>
-            <label>Sedes:</label>
-            <input type="text" value="Cedi" readOnly />
-          </div>
+          <div><label>Sedes:</label> <input type="text" value="Cedi" readOnly /></div>
         </>
       )}
 
-      {tipoServicio === 'transporte' && (
-        <>
-          {/* En modo TRANSPORTE: ORIGEN queda fijo a "Cedi" */}
-          <div>
-            <label>Origen:</label>
-            <input type="text" value="Cedi" readOnly />
-          </div>
-
-          {/* En SEDES se seleccionan las sedes disponibles */}
-          <div>
-            <label>Sedes:</label>
-            {sedesOptions.map((sede) => (
-              <div key={sede.id}>
-                <input
-                  type="checkbox"
-                  id={`sedes-${sede.id}`}
-                  value={sede.id}
-                  checked={selectedSedes.includes(sede.id)}
-                  onChange={handleSedesChange}
-                />
-                <label htmlFor={`sedes-${sede.id}`}>
-                  {sede.name} (Valor: {sede.value})
-                </label>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Campo que muestra el Total Valor */}
       <div>
         <label>Total Valor:</label>
         <input type="text" value={totalValor} readOnly />
       </div>
 
-      {/* Campo de Observación */}
       <div>
         <label>Observación:</label>
         <textarea value={observacion} onChange={(e) => setObservacion(e.target.value)} />
       </div>
 
-      <button type="submit">Enviar</button>
+      <button type="submit" disabled={loading}>{loading ? 'Enviando...' : 'Enviar'}</button>
+      {message && <p className={message.type}>{message.text}</p>}
     </form>
   );
 };
