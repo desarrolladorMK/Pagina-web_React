@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./SolicitudAprobacion.css";
+import "../flujo_perfil/SolicitudAprobacion.css";
 
 const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 
@@ -11,7 +11,7 @@ const SolicitudAprobacion = () => {
     director: "",
     gerencia: "",
     documento: null,
-    descripcion: "" // nuevo campo de descripción
+    descripcion: "", // nuevo campo de descripción
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowId, setWorkflowId] = useState("");
@@ -57,7 +57,9 @@ const SolicitudAprobacion = () => {
       fetchHistorial(); // Recargar historial después de enviar
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-      setMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+      setMessage(
+        "Error al enviar la solicitud. Por favor, inténtalo de nuevo."
+      );
     }
     setIsSubmitting(false);
   };
@@ -66,7 +68,7 @@ const SolicitudAprobacion = () => {
   const fetchHistorial = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/yuli`);
-      console.log("Historial completo:", response.data);
+
       setHistorial(response.data.historial);
     } catch (error) {
       console.error("Error al obtener el historial:", error);
@@ -78,7 +80,10 @@ const SolicitudAprobacion = () => {
     const estadoLower = estado.toLowerCase();
     if (estadoLower.includes("aprobado por director")) {
       return "estado-aprobado-director";
-    } else if (estadoLower.includes("aprobado por ambos") || estadoLower === "aprobado") {
+    } else if (
+      estadoLower.includes("aprobado por ambos") ||
+      estadoLower === "aprobado"
+    ) {
       return "estado-aprobado-ambos";
     } else if (estadoLower.includes("rechazado")) {
       return "solicitud-rechazado";
@@ -92,7 +97,10 @@ const SolicitudAprobacion = () => {
     const estadoLower = estado.toLowerCase();
     if (estadoLower.includes("aprobado por director")) {
       return "necesario por director";
-    } else if (estadoLower.includes("aprobado por ambos") || estadoLower === "aprobado") {
+    } else if (
+      estadoLower.includes("aprobado por ambos") ||
+      estadoLower === "aprobado"
+    ) {
       return "necesario por ambos";
     } else if (estadoLower.includes("rechazado")) {
       return "no necesario";
@@ -101,7 +109,6 @@ const SolicitudAprobacion = () => {
     }
     return estado;
   };
-  
 
   return (
     <div className="solicitud-aprobacion-container">
@@ -126,11 +133,11 @@ const SolicitudAprobacion = () => {
           />
         </div>
         <div className="solicitud-aprobacion-form-field">
-          <label className="solicitud-aprobacion-label">Documento (PDF):</label>
+          <label className="solicitud-aprobacion-label">Documento:</label>
           <input
             type="file"
             name="documento"
-            accept="application/pdf"
+            accept=".pdf, .doc, .docx, .xls, .xlsx"
             onChange={handleChange}
             required
             className="solicitud-aprobacion-input"
@@ -147,27 +154,62 @@ const SolicitudAprobacion = () => {
           />
         </div>
         <div className="solicitud-aprobacion-form-field">
-          <label className="solicitud-aprobacion-label">Director (correo):</label>
-          <input
-            type="email"
+          <label className="solicitud-aprobacion-label">
+            Director de Área:
+          </label>
+          <select
             name="director"
             value={formData.director}
             onChange={handleChange}
             required
             className="solicitud-aprobacion-input"
-          />
+          >
+            <option value="">--Seleccione--</option>
+            <option value="operaciones@merkahorrosas.com">
+              Ramiro Hincapié
+            </option>
+            <option value="contabilidad1@merkahorrosas.com">Ana Herrera</option>
+            <option value="gestionhumana@merkahorrosas.com">
+              Yuliana Garcia
+            </option>
+            <option value="analista@merkahorrosas.com">Anny Solarte</option>
+            <option value="operacionescomerciales@merkahorrosas.com">
+              Andrés Gómez
+            </option>
+            <option value="sistemas@merkahorrosas.com">
+              Yonatan Valencia
+            </option>
+            <option value="compras@merkahorrosas.com">Julián Hurtado</option>
+            <option value="carteraytesoreria@merkahorrosas.com">
+              Carolina Hernández
+            </option>
+            
+          </select>
         </div>
+
         <div className="solicitud-aprobacion-form-field">
-          <label className="solicitud-aprobacion-label">Gerencia (correo):</label>
-          <input
-            type="email"
+          <label className="solicitud-aprobacion-label">
+            Gerencia General:
+          </label>
+          <select
             name="gerencia"
             value={formData.gerencia}
             onChange={handleChange}
             required
             className="solicitud-aprobacion-input"
-          />
+          >
+            <option value="">--Seleccione--</option>
+            <option value="gerencia@merkahorrosas.com">Diego Salazar</option>
+            <option value="gerencia1@merkahorrosas.com">Steven Salazar</option>
+            <option value="gerencia@megamayoristas.com">Adrián Hoyos</option>
+            <option value="gerencia@construahorrosas.com">William Salazar </option>
+            
+
+           
+           
+          </select>
         </div>
+
         <button
           type="submit"
           className="solicitud-aprobacion-submit-button"
@@ -192,7 +234,7 @@ const SolicitudAprobacion = () => {
                 <th>Descripción</th>
                 <th>Estado</th>
                 <th>Observación</th>
-                <th>PDF</th>
+                <th>Documento</th>
               </tr>
             </thead>
             <tbody>
@@ -204,7 +246,7 @@ const SolicitudAprobacion = () => {
                     <span className={getEstadoClass(item.estado)}>
                       {getEstadoLabel(item.estado)}
                       {item.estado.toLowerCase().includes("rechazado") &&
-                        item.rechazadoPor
+                      item.rechazadoPor
                         ? ` (por ${item.rechazadoPor})`
                         : ""}
                     </span>
@@ -217,7 +259,7 @@ const SolicitudAprobacion = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Ver PDF
+                        Ver
                       </a>
                     ) : (
                       "Sin PDF"
@@ -229,7 +271,6 @@ const SolicitudAprobacion = () => {
           </table>
         </div>
       )}
-
     </div>
   );
 };

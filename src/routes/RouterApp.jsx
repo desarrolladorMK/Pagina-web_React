@@ -15,8 +15,8 @@ import { Automatizacion } from "../pages/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
 import {HistorialRegistros} from "../pages/HistorialRegistros";
 import {Acceso} from "../pages/Acceso";
-import {SolicitudAprobacion} from "../pages/SolicitudAprobacion";
-import {DGdecision} from "../pages/DGdecision";
+import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
+import {DGdecision} from "../pages/flujo_perfil/DGdecision";
 
 export let routes = [
   {

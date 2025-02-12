@@ -124,12 +124,23 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_13 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_13 || "",
-        redirect: "/acceso", // operacionescomerciales@merkahorrosas.com
+        redirect: "/acceso", //johanmerkahorro777@gmail.com
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" }
         ]
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_14 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_14 || "",
+        redirect: "/acceso", // gestionhumana@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },
+          { path: "/solicitudaprobacion", label: "Perfil gestion humana" }
+         
+        ]
       }
+      
     ];
     
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import "./AprobarRechazar.css";
+import "../AprobarRechazar.css";
 
 const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 
