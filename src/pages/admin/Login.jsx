@@ -30,7 +30,7 @@ const Login = () => {
       {
         correo: import.meta.env.VITE_LOGIN_EMAIL_2 || "",
         password: import.meta.env.VITE_LOGIN_PASSWORD_2 || "",
-        redirect: "/acceso", // basededatos@gmail.com
+        redirect: "/acceso", // analistadh@merkahorrosas.com
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
           { path: "/salones", label: "Reserva de salones" },
@@ -139,7 +139,8 @@ const Login = () => {
           { path: "/solicitudaprobacion", label: "Perfil gestion humana" }
          
         ]
-      }
+      },
+      
       
     ];
     

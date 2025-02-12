@@ -4,17 +4,17 @@ import { Promociones } from "../pages/Promociones";
 import { Politicas } from "../pages/Politicas";
 import { Condiciones } from "../pages/Condiciones";
 import { Trabaja } from "../pages/Trabaja";
-import { Login } from "../pages/Login";
+import { Login } from "../pages/admin/Login";
 import { Vacantes } from "../pages/Vacantes";
 import { Salones } from "../pages/Salones";
 import { ReservaForm } from "../pages/Reserva";
 import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
-import {Gastos} from "../pages/Gastos";
-import {HistorialGastos} from "../pages/HistorialGastos";
-import { Automatizacion } from "../pages/Automatizacion";
+import {Gastos} from "../pages/flujo_gastos/Gastos";
+import {HistorialGastos} from "../pages/flujo_gastos/HistorialGastos";
+import { Automatizacion } from "../pages/flujo_fruver/Automatizacion";
 import {AprobarRechazar} from "../pages/AprobarRechazar";
-import {HistorialRegistros} from "../pages/HistorialRegistros";
-import {Acceso} from "../pages/Acceso";
+import {HistorialRegistros} from "../pages/flujo_fruver/HistorialRegistros";
+import {Acceso} from "../pages/admin/Acceso";
 import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
 import {DGdecision} from "../pages/flujo_perfil/DGdecision";
 
