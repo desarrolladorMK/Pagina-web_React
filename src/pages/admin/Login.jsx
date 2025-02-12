@@ -140,7 +140,16 @@ const Login = () => {
          
         ]
       },
-      
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_15 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_15 || "",
+        redirect: "/acceso", // analistajuniordh@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },,
+          { path: "/postulacionesTable", label: "Base de datos Postulaciones" }
+         
+        ]
+      },
       
     ];
     
