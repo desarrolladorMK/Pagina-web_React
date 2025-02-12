@@ -17,6 +17,7 @@ import {HistorialRegistros} from "../pages/flujo_fruver/HistorialRegistros";
 import {Acceso} from "../pages/admin/Acceso";
 import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
 import {DGdecision} from "../pages/flujo_perfil/DGdecision";
+import {Transporte} from "../pages/flujo_transporte/Transporte";
 
 export let routes = [
   {
@@ -94,6 +95,10 @@ export let routes = [
   {
     path: '/dgdecision/:workflow_id/:role',
     element: <DGdecision />,
+  },
+  {
+    path: '/transporte',
+    element: <Transporte />,
   },
 
   {
