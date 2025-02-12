@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../flujo_perfil/SolicitudAprobacion.css";
 
@@ -7,7 +7,7 @@ const BACKEND_URL = "https://backend-yuli.vercel.app/api";
 const SolicitudAprobacion = () => {
   // Estados del formulario y de la aplicación
   const [formData, setFormData] = useState({
-    fecha: "",
+    fecha: new Date().toISOString().split('T')[0],
     director: "",
     gerencia: "",
     documento: null,
@@ -17,6 +17,8 @@ const SolicitudAprobacion = () => {
   const [workflowId, setWorkflowId] = useState("");
   const [message, setMessage] = useState("");
   const [historial, setHistorial] = useState([]);
+
+  const fileInputRef = useRef(null);
 
   // Cargar historial al iniciar el componente
   useEffect(() => {
@@ -30,6 +32,20 @@ const SolicitudAprobacion = () => {
       setFormData({ ...formData, documento: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  // Función para resetear el formulario
+  const resetForm = () => {
+    setFormData({
+      fecha: new Date().toISOString().split('T')[0],
+      director: "",
+      gerencia: "",
+      documento: null,
+      descripcion: "",
+    });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -54,12 +70,24 @@ const SolicitudAprobacion = () => {
       const workflowId = response.data.workflow_id;
       setWorkflowId(workflowId);
       setMessage("Solicitud enviada correctamente.");
+      resetForm(); // Resetear el formulario después de enviar
       fetchHistorial(); // Recargar historial después de enviar
+
+      // Eliminar el mensaje después de 5 segundos
+      setTimeout(() => {
+        setMessage("");
+      }, 4000);
+
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setMessage(
         "Error al enviar la solicitud. Por favor, inténtalo de nuevo."
       );
+
+      // Eliminar el mensaje de error después de 5 segundos
+      setTimeout(() => {
+        setMessage("");
+      }, 4000);
     }
     setIsSubmitting(false);
   };
@@ -141,6 +169,7 @@ const SolicitudAprobacion = () => {
             onChange={handleChange}
             required
             className="solicitud-aprobacion-input"
+            ref={fileInputRef}
           />
         </div>
         <div className="solicitud-aprobacion-form-field">
@@ -180,10 +209,10 @@ const SolicitudAprobacion = () => {
               Yonatan Valencia
             </option>
             <option value="compras@merkahorrosas.com">Julián Hurtado</option>
+            <option value="johanmerkahorro777@gmail.com">johan</option>
             <option value="carteraytesoreria@merkahorrosas.com">
               Carolina Hernández
             </option>
-            
           </select>
         </div>
 
@@ -203,10 +232,7 @@ const SolicitudAprobacion = () => {
             <option value="gerencia1@merkahorrosas.com">Steven Salazar</option>
             <option value="gerencia@megamayoristas.com">Adrián Hoyos</option>
             <option value="gerencia@construahorrosas.com">William Salazar </option>
-            
-
-           
-           
+            <option value="juanmerkahorro@gmail.com">juan</option>
           </select>
         </div>
 
