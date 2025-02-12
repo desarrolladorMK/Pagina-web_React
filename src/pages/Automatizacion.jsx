@@ -231,6 +231,9 @@ const Automatizacion = () => {
                   <option value="gerencia1@merkahorrosas.com">
                     gerencia1@merkahorrosas.com
                   </option>
+                  <option value="johanmerkahorro777@gmail.com">
+                    johan
+                  </option>
                 </select>
               </div>
 
