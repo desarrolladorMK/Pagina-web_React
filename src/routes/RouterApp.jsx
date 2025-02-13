@@ -18,6 +18,7 @@ import {Acceso} from "../pages/admin/Acceso";
 import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
 import {DGdecision} from "../pages/flujo_perfil/DGdecision";
 import {Transporte} from "../pages/flujo_transporte/Transporte";
+import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte";
 
 export let routes = [
   {
@@ -99,6 +100,10 @@ export let routes = [
   {
     path: '/transporte',
     element: <Transporte />,
+  },
+  {
+    path: '/historialtransporte',
+    element: <HistorialTransporte />,
   },
 
   {
