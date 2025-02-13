@@ -122,14 +122,14 @@ const Transporte = () => {
             const sede = sedesOptions.find((s) => s.id === id);
             return sede ? sede.name : id;
           })
-        : ["Cedi"];
+        : ["CEDI"];
     const sedesFull =
       tipoServicio === 'transporte'
         ? selectedSedes.map((id) => {
             const sede = sedesOptions.find((s) => s.id === id);
             return sede ? sede.name : id;
           })
-        : ["Cedi"];
+        : ["CEDI"];
 
     // Construye el mensaje de confirmación con todos los datos ingresados
     const confirmationMsg = `Por favor, revise los datos ingresados:
@@ -239,6 +239,7 @@ Observación: ${observacion}
               onChange={(date) => setFecha(date)} 
               dateFormat="yyyy-MM-dd" 
               customInput={<CustomDateInput />}
+              disabled
             />
           </div>
 
@@ -248,10 +249,12 @@ Observación: ${observacion}
               className="transporte-select"
               value={tipoServicio}
               onChange={handleTipoServicioChange}
+              required
             >
-              <option value="">Seleccione tipo de servicio</option>
+              <option value="" disabled>Seleccione tipo de servicio</option>
               <option value="canastas">Canastas</option>
               <option value="transporte">Transporte</option>
+             
             </select>
           </div>
 
@@ -261,6 +264,7 @@ Observación: ${observacion}
               className="transporte-select"
               value={conductor}
               onChange={(e) => setConductor(e.target.value)}
+              required
             >
               <option value="">Seleccione un conductor</option>
               {conductorOptions.map((option) => (
@@ -288,6 +292,7 @@ Observación: ${observacion}
               value={placa}
               onChange={(e) => setPlaca(e.target.value)}
               readOnly={conductor !== 'otro' && conductor !== ''}
+              required
             />
           </div>
 
@@ -314,6 +319,7 @@ Observación: ${observacion}
                         value={sede.id}
                         checked={selectedOrigen.includes(sede.id)}
                         onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)}
+                       
                       />
                       <label>{sede.name} (Valor: 100.000 COP)</label>
                     </div>
@@ -322,7 +328,7 @@ Observación: ${observacion}
               </div>
               <div className="transporte-form-field">
                 <label className="transporte-label">Sedes:</label>
-                <input type="text" className="transporte-input" value="Cedi" readOnly />
+                <input type="text" className="transporte-input" value="CEDI" readOnly />
               </div>
             </>
           )}
@@ -331,7 +337,7 @@ Observación: ${observacion}
             <>
               <div className="transporte-form-field">
                 <label className="transporte-label">Origen:</label>
-                <input type="text" className="transporte-input" value="Cedi" readOnly />
+                <input type="text" className="transporte-input" value="CEDI" readOnly />
               </div>
               <div className="transporte-form-field">
                 <label className="transporte-label">Sedes:</label>
@@ -343,6 +349,7 @@ Observación: ${observacion}
                         value={sede.id}
                         checked={selectedSedes.includes(sede.id)}
                         onChange={(e) => handleCheckboxChange(e, setSelectedSedes, selectedSedes)}
+                        
                       />
                       <label>
                         {sede.name} (Valor:{" "}

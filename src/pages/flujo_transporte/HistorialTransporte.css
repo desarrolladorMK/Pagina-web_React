@@ -1,0 +1,116 @@
+/* Automatizacion.css - Diseño Moderno y Profesional para Automatización */
+
+/* Variables de Colores */
+:root {
+  --primary-color: #89DC00;   /* Verde Merkahorro */
+  --secondary-color: #210d65; /* Azul Oscuro Merkahorro */
+  --light-color: #f4f4f9;
+  --text-color: #333;
+  --error-color: #e63946;
+  --success-color: #89DC00;
+  --background-color: #f0f2f5;
+  --border-color: #e0e0e0;
+  --hover-color: #76c400;
+}
+
+/* Contenedor de la tabla */
+.automatizacion-historial {
+  max-width: 1250px;
+  margin: 50px auto;
+  padding: 20px 15px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+/* Título del historial */
+.automatizacion-historial h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+/* Tabla de historial */
+.automatizacion-historial table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0 auto;
+}
+
+.automatizacion-historial th,
+.automatizacion-historial td {
+  padding: 12px 10px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  word-wrap: break-word;
+}
+
+.automatizacion-historial th {
+  background-color: var(--secondary-color);
+  color: #fff;
+  font-weight: 600;
+}
+
+.automatizacion-historial tr:nth-child(even) {
+  background-color: var(--light-color);
+}
+
+/* Botones de acciones */
+.accion-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.accion-button.editar {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.accion-button.editar:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.accion-button.guardar {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.accion-button.guardar:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.accion-button.cancelar {
+  background-color: var(--error-color);
+  color: #fff;
+}
+
+.accion-button.cancelar:hover {
+  background-color: #d12b3b;
+  transform: translateY(-2px);
+}
+
+/* Mensajes de estado */
+.automatizacion-submitted-message {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.automatizacion-submitted-message.success {
+  color: green;
+}
+
+.automatizacion-submitted-message.error {
+  color: red;
+}
