@@ -2,22 +2,27 @@ import React, { useState, useEffect } from 'react';
 
 // Opciones de sedes (cada sede tiene un id, nombre y valor)
 const sedesOptions = [
-  { id: 'sede1', name: 'Sede 1', value: 100 },
-  { id: 'sede2', name: 'Sede 2', value: 200 },
-  { id: 'sede3', name: 'Sede 3', value: 300 },
+  { id: 'sede1', name: 'Parque', value: 180 },
+  { id: 'sede2', name: 'Llano', value: 100 },
+  { id: 'sede3', name: 'Plaza', value: 180 },
+  { id: 'sede4', name: 'Vegas', value: 100 },
+  { id: 'sede5', name: 'Barbosa', value: 230 },
+  { id: 'sede6', name: 'San juan', value: 100 },
 ];
 
 // Opciones de conductor
 const conductorOptions = [
-  { value: 'conductor1', label: 'Conductor 1' },
-  { value: 'conductor2', label: 'Conductor 2' },
+  { value: 'conductor1', label: 'Juan Carlos Alvarez Saldarriaga' },
+  { value: 'conductor2', label: 'Duvan franco Morales' },
+  { value: 'conductor3', label: 'Stiven flores López' },
   { value: 'otro', label: 'Otro' },
 ];
 
 // Placas asociadas a cada conductor predefinido
 const conductorPlacas = {
-  conductor1: 'ABC-123',
-  conductor2: 'XYZ-789',
+  conductor1: 'TNH 033',
+  conductor2: 'THX 973',
+  conductor3: 'SVO 247',
 };
 
 // URL del backend en Vercel
@@ -69,13 +74,12 @@ const Transporte = () => {
     }
   };
 
-  // Calcula el total sumando los valores de las sedes seleccionadas según el tipo de servicio
+  // Calcula el total según el tipo de servicio:
+  // - En "canastas": cada opción seleccionada vale 100.
+  // - En "transporte": se usa el valor definido en sedesOptions.
   const totalValor =
     tipoServicio === 'canastas'
-      ? selectedOrigen.reduce((acc, sedeId) => {
-          const sede = sedesOptions.find((s) => s.id === sedeId);
-          return sede ? acc + sede.value : acc;
-        }, 0)
+      ? selectedOrigen.length * 100
       : selectedSedes.reduce((acc, sedeId) => {
           const sede = sedesOptions.find((s) => s.id === sedeId);
           return sede ? acc + sede.value : acc;
@@ -187,8 +191,9 @@ const Transporte = () => {
                   checked={selectedOrigen.includes(sede.id)}
                   onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)}
                 />
+                {/* En canastas, se muestra siempre "Valor: 100" */}
                 <label>
-                  {sede.name} (Valor: {sede.value})
+                  {sede.name} (Valor: 100)
                 </label>
               </div>
             ))}

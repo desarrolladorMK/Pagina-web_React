@@ -18,12 +18,12 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_1 || "",
         redirect: "/acceso", // developersmk@merkahorrosas.com
         routes: [
-          { path: "/salones", label: "Salones" },
+          { path: "/reserva", label: "Reservas" },
           { path: "/gastos", label: "Gastos" },
           { path: "/historialgastos", label: "Historial de Gastos" },
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
-          { path: "/reserva", label: "Reservas" },
+          { path: "/transporte", label: "Transporte" },
           { path: "/solicitudaprobacion", label: "Perfil gestion humana" }
         ]
       },
