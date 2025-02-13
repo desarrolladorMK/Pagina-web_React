@@ -190,6 +190,8 @@ const Gastos = () => {
     { value: "Fruver", label: "Fruver" },
     { value: "Abarrotes", label: "Abarrotes" },
     { value: "Administrativo", label: "Administrativo" },
+    { value: "Almacén", label: "Almacén" },
+
   ];
 
   const sedeOptions = [
@@ -499,6 +501,7 @@ const Gastos = () => {
                 <option value="Fruver">Fruver</option>
                 <option value="Cárnicos">Cárnicos</option>
                 <option value="Proyectos">Proyectos</option>
+                <option value="Operaciones-Comerciales">Operaciones Comerciales</option>
               </select>
             </div>
 
