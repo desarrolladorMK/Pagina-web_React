@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Transporte.css';
+
+// Componente para un input de fecha personalizado (botón)
+// Se agregó type="button" para evitar que se dispare el submit al hacer click.
+const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
+  <button type="button" className="custom-date-input" onClick={onClick} ref={ref}>
+    {value || placeholder || "Selecciona una fecha"}
+  </button>
+));
 
 // Opciones de sedes (cada sede tiene un id, nombre y valor en pesos colombianos)
 const sedesOptions = [
@@ -14,8 +24,8 @@ const sedesOptions = [
 // Opciones de conductor
 const conductorOptions = [
   { value: 'conductor1', label: 'Juan Carlos Alvarez Saldarriaga' },
-  { value: 'conductor2', label: 'Duvan franco Morales' },
-  { value: 'conductor3', label: 'Stiven flores López' },
+  { value: 'conductor2', label: 'Duvan Franco Morales' },
+  { value: 'conductor3', label: 'Stiven Flores López' },
   { value: 'otro', label: 'Otro' },
 ];
 
@@ -30,15 +40,13 @@ const conductorPlacas = {
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
-  const today = new Date().toISOString().split('T')[0];
-
-  // Estados generales del formulario
-  const [fecha, setFecha] = useState(today);
+  // Usamos objetos Date para las fechas
+  const [fecha, setFecha] = useState(new Date());
   const [tipoServicio, setTipoServicio] = useState('');
   const [conductor, setConductor] = useState('');
   const [otroConductor, setOtroConductor] = useState('');
   const [placa, setPlaca] = useState('');
-  const [fechaViaje, setFechaViaje] = useState('');
+  const [fechaViaje, setFechaViaje] = useState(null);
   const [observacion, setObservacion] = useState('');
 
   // Para "canastas": selección de sedes para el campo ORIGEN.
@@ -126,11 +134,11 @@ const Transporte = () => {
     // Construye el mensaje de confirmación con todos los datos ingresados
     const confirmationMsg = `Por favor, revise los datos ingresados:
 
-Fecha: ${fecha}
+Fecha: ${fecha.toISOString().split('T')[0]}
 Tipo de Servicio: ${tipoServicio}
 Conductor: ${fullConductor}
 Placa: ${placa}
-Fecha de Viaje: ${fechaViaje || "N/A"}
+Fecha de Viaje: ${fechaViaje ? fechaViaje.toISOString().split('T')[0] : "N/A"}
 Origen: ${origenFull.join(", ")}
 Sedes: ${sedesFull.join(", ")}
 Total Valor: ${formattedTotalValor}
@@ -140,11 +148,11 @@ Observación: ${observacion}
 
     // Guarda los datos a enviar y muestra el modal
     setPendingData({
-      fecha,
+      fecha: fecha.toISOString().split('T')[0],
       tipo_formulario: tipoServicio,
       conductor: fullConductor,
       placa_vehiculo: placa,
-      fecha_viaje: fechaViaje || null,
+      fecha_viaje: fechaViaje ? fechaViaje.toISOString().split('T')[0] : null,
       origen: origenFull,
       sedes: sedesFull,
       valor_total: totalValor,
@@ -176,10 +184,10 @@ Observación: ${observacion}
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Registro guardado correctamente' });
-        // Recarga la página después de 3 segundos
+        // Recarga la página después de 2 segundos
         setTimeout(() => {
           window.location.reload();
-        }, 2500);
+        }, 1500);
       } else {
         setMessage({ type: 'error', text: `Error: ${result.error || 'Error en la solicitud'}` });
       }
@@ -226,11 +234,11 @@ Observación: ${observacion}
         <form onSubmit={handleSubmit}>
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha:</label>
-            <input
-              type="date"
-              className="transporte-input"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
+            <ReactDatePicker 
+              selected={fecha} 
+              onChange={(date) => setFecha(date)} 
+              dateFormat="yyyy-MM-dd" 
+              customInput={<CustomDateInput />}
             />
           </div>
 
@@ -284,12 +292,13 @@ Observación: ${observacion}
           </div>
 
           <div className="transporte-form-field">
-            <label className="transporte-label">Fecha de viaje (opcional):</label>
-            <input
-              type="date"
-              className="transporte-input"
-              value={fechaViaje}
-              onChange={(e) => setFechaViaje(e.target.value)}
+            <label className="transporte-label">Fecha de viaje:</label>
+            <ReactDatePicker 
+              selected={fechaViaje} 
+              onChange={(date) => setFechaViaje(date)} 
+              dateFormat="yyyy-MM-dd" 
+              placeholderText="Seleccione fecha de viaje (opcional)"
+              customInput={<CustomDateInput />}
             />
           </div>
 
