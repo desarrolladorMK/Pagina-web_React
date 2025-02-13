@@ -49,6 +49,11 @@ const Transporte = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
+  // Estados para el modal de confirmación
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [pendingData, setPendingData] = useState(null);
+
   // Actualiza la placa automáticamente si se selecciona un conductor predefinido
   useEffect(() => {
     if (conductor && conductor !== 'otro' && conductorPlacas[conductor]) {
@@ -93,29 +98,73 @@ const Transporte = () => {
     minimumFractionDigits: 0,
   }).format(totalValor);
 
-  const handleSubmit = async (e) => {
+  // Función que prepara los datos y muestra el modal de confirmación
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage(null);
 
-    // Se envían los arrays directamente, ya que en la BD los campos "origen" y "sedes" son arrays.
-    const data = {
+    // Prepara los datos completos para la confirmación
+    const fullConductor =
+      conductor === 'otro'
+        ? otroConductor
+        : (conductorOptions.find((opt) => opt.value === conductor)?.label || conductor);
+
+    const origenFull =
+      tipoServicio === 'canastas'
+        ? selectedOrigen.map((id) => {
+            const sede = sedesOptions.find((s) => s.id === id);
+            return sede ? sede.name : id;
+          })
+        : ["Cedi"];
+    const sedesFull =
+      tipoServicio === 'transporte'
+        ? selectedSedes.map((id) => {
+            const sede = sedesOptions.find((s) => s.id === id);
+            return sede ? sede.name : id;
+          })
+        : ["Cedi"];
+
+    // Construye el mensaje de confirmación con todos los datos ingresados
+    const confirmationMsg = `Por favor, revise los datos ingresados:
+
+Fecha: ${fecha}
+Tipo de Servicio: ${tipoServicio}
+Conductor: ${fullConductor}
+Placa: ${placa}
+Fecha de Viaje: ${fechaViaje || "N/A"}
+Origen: ${origenFull.join(", ")}
+Sedes: ${sedesFull.join(", ")}
+Total Valor: ${formattedTotalValor}
+Observación: ${observacion}
+
+¿Desea enviar el formulario?`;
+
+    // Guarda los datos a enviar y muestra el modal
+    setPendingData({
       fecha,
-      tipo_formulario: tipoServicio, // Mapeo del tipo de servicio
-      conductor: conductor === 'otro' ? otroConductor : conductor,
+      tipo_formulario: tipoServicio,
+      conductor: fullConductor,
       placa_vehiculo: placa,
       fecha_viaje: fechaViaje || null,
-      origen: tipoServicio === 'canastas' ? selectedOrigen : ["Cedi"],
-      sedes: tipoServicio === 'canastas' ? ["Cedi"] : selectedSedes,
+      origen: origenFull,
+      sedes: sedesFull,
       valor_total: totalValor,
       observacion,
-    };
+    });
+    setConfirmationMessage(confirmationMsg);
+    setShowConfirmation(true);
+  };
+
+  // Función que se ejecuta al confirmar en el modal
+  const handleConfirm = async () => {
+    setShowConfirmation(false);
+    setLoading(true);
+    setMessage(null);
 
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(pendingData),
       });
 
       let result = {};
@@ -127,6 +176,10 @@ const Transporte = () => {
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Registro guardado correctamente' });
+        // Recarga la página después de 3 segundos
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
       } else {
         setMessage({ type: 'error', text: `Error: ${result.error || 'Error en la solicitud'}` });
       }
@@ -136,8 +189,37 @@ const Transporte = () => {
     setLoading(false);
   };
 
+  // Función que se ejecuta si se cancela la confirmación
+  const handleCancel = () => {
+    setShowConfirmation(false);
+    setPendingData(null);
+  };
+
   return (
     <div className="transporte-container">
+      {/* Anuncio sobre la pantalla para mensajes de éxito */}
+      {message && message.type === 'success' && (
+        <div className="transporte-announcement">{message.text}</div>
+      )}
+
+      {/* Modal de confirmación */}
+      {showConfirmation && (
+        <div className="confirmation-overlay">
+          <div className="confirmation-modal">
+            <h3>Confirme sus datos</h3>
+            <pre>{confirmationMessage}</pre>
+            <div className="confirmation-buttons">
+              <button className="confirm-btn" onClick={handleConfirm}>
+                Confirmar
+              </button>
+              <button className="cancel-btn" onClick={handleCancel}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1 className="transporte-header">Registro de Transporte</h1>
       <div className="transporte-form-container">
         <h2 className="transporte-form-title">Formulario de Registro</h2>
@@ -224,7 +306,6 @@ const Transporte = () => {
                         checked={selectedOrigen.includes(sede.id)}
                         onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)}
                       />
-                      {/* En canastas, se muestra siempre "Valor: 100.000 COP" */}
                       <label>{sede.name} (Valor: 100.000 COP)</label>
                     </div>
                   ))}
@@ -288,7 +369,9 @@ const Transporte = () => {
             {loading ? 'Enviando...' : 'Enviar'}
           </button>
 
-          {message && <p className={`transporte-message ${message.type}`}>{message.text}</p>}
+          {message && message.type === 'error' && (
+            <p className={`transporte-message ${message.type}`}>{message.text}</p>
+          )}
         </form>
       </div>
     </div>
