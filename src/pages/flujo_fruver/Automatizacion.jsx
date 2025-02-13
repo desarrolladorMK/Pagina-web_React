@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./Automatizacion.css";
 
 const Automatizacion = () => {
   const [formData, setFormData] = useState({
     descripcion: "",
     sede: "",
-    fecha_inicial: "",
-    fecha_final: "",
     correo_asignado: "",
   });
+  // Usamos react-datepicker para las fechas (objetos Date)
+  const [fechaInicial, setFechaInicial] = useState(new Date());
+  const [fechaFinal, setFechaFinal] = useState(new Date());
+  
   const [pdf, setPdf] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -26,7 +30,6 @@ const Automatizacion = () => {
   const obtenerHistorial = async () => {
     if (isLoadingHistorial) return;
     setIsLoadingHistorial(true);
-
     try {
       const response = await axios.get(
         `${API_URL}/historial/${formData.correo_asignado}`
@@ -37,7 +40,6 @@ const Automatizacion = () => {
         setHistorial([]);
       }
       setMostrarHistorial(true);
-
       setTimeout(() => {
         const historialElement = document.getElementById("automatizacion-historial");
         if (historialElement) {
@@ -81,8 +83,9 @@ const Automatizacion = () => {
     data.append("descripcion", formData.descripcion);
     data.append("pdf", pdf);
     data.append("sede", formData.sede);
-    data.append("fecha_inicial", formData.fecha_inicial);
-    data.append("fecha_final", formData.fecha_final);
+    // Enviar fechas en formato yyyy-MM-dd
+    data.append("fecha_inicial", fechaInicial.toISOString().split("T")[0]);
+    data.append("fecha_final", fechaFinal.toISOString().split("T")[0]);
     data.append("correo_asignado", formData.correo_asignado);
 
     try {
@@ -192,24 +195,20 @@ const Automatizacion = () => {
 
               <div className="automatizacion-form-field">
                 <label className="automatizacion-label">Fecha Inicial:</label>
-                <input
-                  type="date"
-                  name="fecha_inicial"
-                  value={formData.fecha_inicial}
-                  onChange={handleChange}
-                  required
+                <ReactDatePicker
+                  selected={fechaInicial}
+                  onChange={(date) => setFechaInicial(date)}
+                  dateFormat="yyyy-MM-dd"
                   className="automatizacion-input"
                 />
               </div>
 
               <div className="automatizacion-form-field">
                 <label className="automatizacion-label">Fecha Final:</label>
-                <input
-                  type="date"
-                  name="fecha_final"
-                  value={formData.fecha_final}
-                  onChange={handleChange}
-                  required
+                <ReactDatePicker
+                  selected={fechaFinal}
+                  onChange={(date) => setFechaFinal(date)}
+                  dateFormat="yyyy-MM-dd"
                   className="automatizacion-input"
                 />
               </div>
@@ -230,9 +229,6 @@ const Automatizacion = () => {
                   </option>
                   <option value="gerencia1@merkahorrosas.com">
                     gerencia1@merkahorrosas.com
-                  </option>
-                  <option value="johanmerkahorro777@gmail.com">
-                    johan
                   </option>
                 </select>
               </div>
@@ -292,7 +288,11 @@ const Automatizacion = () => {
                       <td>
                         {item.pdf ? (
                           <a
-                            href={item.pdf.startsWith("http") ? item.pdf : `${SUPABASE_PDF_URL}/${item.pdf}`}
+                            href={
+                              item.pdf.startsWith("http")
+                                ? item.pdf
+                                : `${SUPABASE_PDF_URL}/${item.pdf}`
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                           >
