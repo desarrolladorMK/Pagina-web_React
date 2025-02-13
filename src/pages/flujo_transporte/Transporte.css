@@ -1,0 +1,248 @@
+/* Transporte.css - Diseño Moderno y Profesional para Transporte */
+
+/* Variables de Colores */
+:root {
+    --primary-color: #89DC00;   /* Verde Merkahorro */
+    --secondary-color: #210d65; /* Azul Oscuro Merkahorro */
+    --light-color: #f4f4f9;
+    --text-color: #333;
+    --error-color: #e63946;
+    --success-color: #89DC00;
+    --background-color: #f0f2f5;
+    --border-color: #e0e0e0;
+    --hover-color: #76c400;
+}
+  
+/* Contenedor principal del formulario */
+.transporte-container {
+    background-color: var(--background-color);
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+/* Encabezado del formulario */
+.transporte-header {
+    text-align: center;
+    font-size: 2.8rem;
+    margin: 20px 0 30px;
+    color: var(--secondary-color);
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+  
+/* Contenedor del formulario */
+.transporte-form-container {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 12px 24px rgba(33, 13, 101, 0.2);
+    box-sizing: border-box;
+}
+  
+/* Título del formulario */
+.transporte-form-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+  
+/* Grupo de campos del formulario */
+.transporte-form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    width: 100%;
+}
+  
+/* Etiquetas */
+.transporte-label {
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+}
+  
+/* Inputs, selects y textareas */
+.transporte-input,
+.transporte-select,
+.transporte-textarea {
+    padding: 14px 16px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+  
+.transporte-input:focus,
+.transporte-select:focus,
+.transporte-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(137, 220, 0, 0.4);
+    outline: none;
+}
+  
+/* Contenedor para grupos de checkboxes */
+.transporte-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+  
+.transporte-checkbox-group label {
+    font-size: 1rem;
+    margin-left: 8px;
+    color: var(--text-color);
+}
+  
+/* Botón de enviar */
+.transporte-submit-button {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    display: block;
+    margin: 20px auto 0;
+}
+  
+.transporte-submit-button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+  
+/* Mensajes de estado */
+.transporte-message {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+  
+.transporte-message.success {
+    background-color: var(--success-color);
+    color: #fff;
+}
+  
+.transporte-message.error {
+    background-color: var(--error-color);
+    color: #fff;
+}
+  
+/* Responsive Design */
+
+/* Small devices (max-width: 600px) */
+@media (max-width: 600px) {
+    .transporte-header {
+      font-size: 2.2rem;
+      margin: 15px 0 20px;
+    }
+  
+    .transporte-form-container {
+      padding: 25px;
+    }
+
+    .transporte-form-title {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .transporte-label {
+      font-size: 1rem;
+    }
+
+    .transporte-input,
+    .transporte-select,
+    .transporte-textarea {
+      font-size: 0.9rem;
+      padding: 10px 12px;
+    }
+
+    .transporte-submit-button {
+      font-size: 1rem;
+      padding: 12px 25px;
+    }
+}
+
+/* Medium devices (min-width: 601px and max-width: 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .transporte-header {
+      font-size: 2.4rem;
+      margin: 18px 0 25px;
+    }
+  
+    .transporte-form-container {
+      padding: 30px;
+    }
+
+    .transporte-form-title {
+      font-size: 2rem;
+      margin-bottom: 22px;
+    }
+
+    .transporte-label {
+      font-size: 1.05rem;
+    }
+
+    .transporte-input,
+    .transporte-select,
+    .transporte-textarea {
+      font-size: 0.95rem;
+      padding: 12px 14px;
+    }
+
+    .transporte-submit-button {
+      font-size: 1.05rem;
+      padding: 13px 28px;
+    }
+}
+
+/* Large devices (min-width: 1025px) */
+@media (min-width: 1025px) {
+    .transporte-header {
+      font-size: 2.8rem;
+      margin: 20px 0 30px;
+    }
+  
+    .transporte-form-container {
+      padding: 40px;
+    }
+
+    .transporte-form-title {
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+    }
+
+    .transporte-label {
+      font-size: 1.1rem;
+    }
+
+    .transporte-input,
+    .transporte-select,
+    .transporte-textarea {
+      font-size: 1rem;
+      padding: 14px 16px;
+    }
+
+    .transporte-submit-button {
+      font-size: 1.1rem;
+      padding: 14px 30px;
+    }
+}
