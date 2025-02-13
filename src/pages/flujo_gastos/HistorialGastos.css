@@ -148,3 +148,27 @@
   background-color: #d33845;
   color: #000000;
 }
+
+.observacion-textarea {
+  width: 100%;
+  resize: vertical; /* Permite redimensionar el alto */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 0.9rem;
+}
+
+.copy-button {
+  margin-left: 6px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #0056b3;
+}

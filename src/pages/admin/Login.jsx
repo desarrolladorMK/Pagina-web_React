@@ -24,6 +24,7 @@ const Login = () => {
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
           { path: "/transporte", label: "Transporte" },
+          { path: "/historialtransporte", label: "Historial de Transporte" },
           { path: "/solicitudaprobacion", label: "Perfil gestion humana" }
         ]
       },
