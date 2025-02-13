@@ -1,65 +1,66 @@
-/* Automatizacion.css - Diseño Moderno y Profesional para Automatización */
+/* HistorialTransporte.css */
 
-/* Variables de Colores */
-:root {
-  --primary-color: #89DC00;   /* Verde Merkahorro */
-  --secondary-color: #210d65; /* Azul Oscuro Merkahorro */
-  --light-color: #f4f4f9;
-  --text-color: #333;
-  --error-color: #e63946;
-  --success-color: #89DC00;
-  --background-color: #f0f2f5;
-  --border-color: #e0e0e0;
-  --hover-color: #76c400;
-}
-
-/* Contenedor de la tabla */
-.automatizacion-historial {
+/* Contenedor principal */
+.historialTableContainer {
+  width: 100%;
   max-width: 1250px;
-  margin: 50px auto;
-  padding: 20px 15px;
-  border-radius: 12px;
+  margin: 30px auto;
+  padding: 20px;
   background-color: #fff;
+  border-radius: 12px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
 }
 
-/* Título del historial */
-.automatizacion-historial h2 {
+/* Título */
+.historialTitle {
   text-align: center;
   font-size: 1.8rem;
   margin-bottom: 20px;
-  color: var(--secondary-color);
+  color: #210d65;
+  font-weight: 600;
 }
 
-/* Tabla de historial */
-.automatizacion-historial table {
+/* Tabla */
+.historialTable {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   margin: 0 auto;
 }
 
-.automatizacion-historial th,
-.automatizacion-historial td {
+.historialTable th,
+.historialTable td {
   padding: 12px 10px;
   text-align: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid #e0e0e0;
   font-size: 0.85rem;
   word-wrap: break-word;
 }
 
-.automatizacion-historial th {
-  background-color: var(--secondary-color);
+.historialTable th {
+  background-color: #210d65;
   color: #fff;
   font-weight: 600;
 }
 
-.automatizacion-historial tr:nth-child(even) {
-  background-color: var(--light-color);
+.historialTable tbody tr:nth-child(even) {
+  background-color: #f4f4f9;
 }
 
-/* Botones de acciones */
+
+/* Estado Pendiente: fondo amarillo */
+.pendiente-estado {
+  background-color: #ffbf00; /* amarillo */
+  color: #000;
+}
+
+/* Estado Completado: fondo verde */
+.completado-estado {
+  background-color: #2ce056; /* verde */
+  color: #000;
+}
+
+/* Botones de acción */
 .accion-button {
   padding: 8px 12px;
   border: none;
@@ -67,6 +68,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
+  margin: 2px;
 }
 
 .accion-button.editar {
@@ -90,7 +92,7 @@
 }
 
 .accion-button.cancelar {
-  background-color: var(--error-color);
+  background-color: #e63946;
   color: #fff;
 }
 
@@ -99,7 +101,7 @@
   transform: translateY(-2px);
 }
 
-/* Mensajes de estado */
+/* Mensajes */
 .automatizacion-submitted-message {
   text-align: center;
   margin-top: 10px;
@@ -113,4 +115,27 @@
 
 .automatizacion-submitted-message.error {
   color: red;
+}
+
+/* Estilos para controles de edición (select y textarea) dentro de la tabla */
+.historialTable select,
+.historialTable textarea {
+  width: 90%;
+  padding: 4px;
+  margin: 4px 0;
+  font-size: 0.9rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+/* Ejemplo de estilos para el textarea de Observación Anny */
+.observacionAnny-textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical; /* Permite cambiar el alto arrastrando el borde */
+  font-size: 0.9rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 6px;
+  box-sizing: border-box;
 }
