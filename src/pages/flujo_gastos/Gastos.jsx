@@ -10,6 +10,7 @@ const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
 
 // Se definen los valores iniciales del formulario para facilitar el reset
 const initialFormData = {
+  fecha:new Date().toISOString().split("T")[0],
   nombre_completo: "",
   area: "",
   procesos: "",
@@ -25,6 +26,7 @@ const initialFormData = {
 };
 
 const Gastos = () => {
+  const [fecha, setFecha] = useState(initialFormData.fecha);
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
@@ -233,6 +235,7 @@ const Gastos = () => {
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
 
     const formDataToSend = new FormData();
+    formDataToSend.append("fecha", formData.fecha);
     formDataToSend.append("nombre_completo", formData.nombre_completo);
     formDataToSend.append("area", formData.area);
     formDataToSend.append("procesos", formData.procesos);
@@ -378,6 +381,7 @@ const Gastos = () => {
       }
 
       return {
+        fecha : gasto.fecha || "",
         Nombre: gasto.nombre_completo || "",
         Área: gasto.area || "",
         Procesos: gasto.procesos || "",
@@ -443,6 +447,20 @@ const Gastos = () => {
           </h4>
           <form onSubmit={handleSubmit} className="gastos-form">
             {/* Campos del formulario */}
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Fecha:</label>
+              <input
+                type="date"
+                name="fecha"
+                value={fecha}
+                required
+                disabled
+                className="gastos-input"
+              />
+            </div>
+
+
             <div className="gastos-form-field">
               <label className="gastos-label">
                 Responsable de la gestión del cuidado gasto:
@@ -663,6 +681,7 @@ const Gastos = () => {
             <table className="historial-table">
               <thead>
                 <tr>
+                  <th>Fecha</th>
                   <th>Nombre</th>
                   <th>Área</th>
                   <th>Procesos</th>
@@ -722,6 +741,7 @@ const Gastos = () => {
                       : gasto.archivos_proveedor;
                   return (
                     <tr key={gasto.id}>
+                      <td>{gasto.fecha ? gasto.fecha.slice(0, 10) : '-'}</td>
                       <td>{gasto.nombre_completo}</td>
                       <td>{gasto.area}</td>
                       <td>{gasto.procesos}</td>

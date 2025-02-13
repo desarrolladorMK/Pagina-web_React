@@ -65,6 +65,7 @@ const HistorialGastos = () => {
           <table>
             <thead>
               <tr>
+                <th>Fecha</th>
                 <th>Nombre</th>
                 <th>Área</th>
                 <th>Procesos</th>
@@ -98,6 +99,7 @@ const HistorialGastos = () => {
 
                 return (
                   <tr key={gasto.id}>
+                     <td>{gasto.fecha ? gasto.fecha.slice(0, 10) : ''}</td>
                     <td>{gasto.nombre_completo}</td>
                     <td>{gasto.area}</td>
                     <td>{gasto.procesos}</td>
