@@ -71,13 +71,37 @@ const HistorialTransporte = () => {
     }
   };
 
-  if (loading) return <div className="automatizacion-historial"><p>Cargando historial...</p></div>;
-  if (error) return <div className="automatizacion-historial"><p>Error: {error}</p></div>;
+  // Devuelve la clase CSS según el estado
+  const getEstadoClass = (estado) => {
+    switch (estado) {
+      case 'Pendiente':
+        return 'pendiente-estado';
+      case 'Completado':
+        return 'completado-estado';
+      default:
+        return '';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="automatizacion-historial">
+        <p>Cargando historial...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="automatizacion-historial">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="automatizacion-historial">
-      <h2>Historial de Transporte</h2>
-      <table>
+      <h2 className="historialTitle">Historial de Transporte</h2>
+      <table className="historialTable">
         <thead>
           <tr>
             <th>Fecha</th>
@@ -95,66 +119,101 @@ const HistorialTransporte = () => {
           </tr>
         </thead>
         <tbody>
-          {registros.map((registro, index) => (
-            <tr key={index}>
-              <td>{registro.fecha ? registro.fecha.slice(0, 10) : '-'}</td>
-              <td>{registro.tipo_formulario}</td>
-              <td>{registro.conductor}</td>
-              <td>{registro.placa_vehiculo}</td>
-              <td>{registro.fecha_viaje ? registro.fecha_viaje.slice(0, 10) : '-'}</td>
-              <td>{Array.isArray(registro.origen) ? registro.origen.join(', ') : registro.origen}</td>
-              <td>{Array.isArray(registro.sedes) ? registro.sedes.join(', ') : registro.sedes}</td>
-              <td>{registro.valor_total}</td>
-              <td>{registro.observacion}</td>
-              <td>
-                {editingId === registro.id ? (
-                  <select name="estado" value={editValues.estado} onChange={handleEditChange}>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Completado">Completado</option>
-                  </select>
-                ) : (
-                  registro.estado || 'Pendiente'
-                )}
-              </td>
-              <td>
-                {editingId === registro.id ? (
-                  <textarea
-                    name="observacion_anny"
-                    value={editValues.observacion_anny}
-                    onChange={handleEditChange}
-                    placeholder="Observación de admin"
-                  />
-                ) : (
-                  registro.observacion_anny || '-'
-                )}
-              </td>
-              <td>
-                {editingId === registro.id ? (
-                  <>
-                    <button className="accion-button guardar" onClick={() => handleSaveEdit(registro.id)}>
-                      Guardar
+          {registros.map((registro, index) => {
+            const estadoActual = registro.estado || 'Pendiente';
+            return (
+              <tr key={index}>
+                <td>{registro.fecha ? registro.fecha.slice(0, 10) : '-'}</td>
+                <td>{registro.tipo_formulario}</td>
+                <td>{registro.conductor}</td>
+                <td>{registro.placa_vehiculo}</td>
+                <td>{registro.fecha_viaje ? registro.fecha_viaje.slice(0, 10) : '-'}</td>
+                <td>
+                  {Array.isArray(registro.origen)
+                    ? registro.origen.join(', ')
+                    : registro.origen}
+                </td>
+                <td>
+                  {Array.isArray(registro.sedes)
+                    ? registro.sedes.join(', ')
+                    : registro.sedes}
+                </td>
+                <td>{registro.valor_total}</td>
+                <td>{registro.observacion}</td>
+                <td
+                  className={
+                    editingId === registro.id
+                      ? ''
+                      : getEstadoClass(estadoActual)
+                  }
+                >
+                  {editingId === registro.id ? (
+                    <select
+                      name="estado"
+                      value={editValues.estado}
+                      onChange={handleEditChange}
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="Completado">Completado</option>
+                    </select>
+                  ) : (
+                    estadoActual
+                  )}
+                </td>
+                <td>
+                  {editingId === registro.id ? (
+                    /* Reemplazamos <input> por <textarea> */
+                    <textarea
+                      name="observacion_anny"
+                      value={editValues.observacion_anny}
+                      onChange={handleEditChange}
+                      placeholder="Observación de admin"
+                      rows={4}
+                      className="observacionAnny-textarea"
+                    />
+                  ) : (
+                    registro.observacion_anny || '-'
+                  )}
+                </td>
+                <td>
+                  {editingId === registro.id ? (
+                    <>
+                      <button
+                        className="accion-button guardar"
+                        onClick={() => handleSaveEdit(registro.id)}
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        className="accion-button cancelar"
+                        onClick={handleCancelEdit}
+                      >
+                        Cancelar
+                      </button>
+                      {updateMessage && (
+                        <p
+                          className={`automatizacion-submitted-message ${updateMessage.type}`}
+                        >
+                          {updateMessage.text}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <button
+                      className="accion-button editar"
+                      onClick={() => handleEditClick(registro)}
+                    >
+                      Editar
                     </button>
-                    <button className="accion-button cancelar" onClick={handleCancelEdit}>
-                      Cancelar
-                    </button>
-                    {updateMessage && (
-                      <p className={`automatizacion-submitted-message ${updateMessage.type}`}>
-                        {updateMessage.text}
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <button className="accion-button editar" onClick={() => handleEditClick(registro)}>
-                    Editar
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
 };
 
-export  {HistorialTransporte};
+export { HistorialTransporte };
