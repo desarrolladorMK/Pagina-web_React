@@ -11,7 +11,6 @@ const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) 
   </button>
 ));
 
-// Opciones de sedes (cada sede tiene un id, nombre y valor en pesos colombianos)
 const sedesOptions = [
   { id: 'sede1', name: 'Parque', value: 180000 },
   { id: 'sede2', name: 'Llano', value: 100000 },
@@ -21,7 +20,6 @@ const sedesOptions = [
   { id: 'sede6', name: 'San juan', value: 100000 },
 ];
 
-// Opciones de conductor
 const conductorOptions = [
   { value: 'conductor1', label: 'Juan Carlos Alvarez Saldarriaga' },
   { value: 'conductor2', label: 'Duvan Franco Morales' },
@@ -29,14 +27,12 @@ const conductorOptions = [
   { value: 'otro', label: 'Otro' },
 ];
 
-// Placas asociadas a cada conductor predefinido
 const conductorPlacas = {
   conductor1: 'TNH 033',
   conductor2: 'THX 973',
   conductor3: 'SVO 247',
 };
 
-// URL del backend en Vercel
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
@@ -49,15 +45,12 @@ const Transporte = () => {
   const [fechaViaje, setFechaViaje] = useState(null);
   const [observacion, setObservacion] = useState('');
 
-  // Para "canastas": selección de sedes para el campo ORIGEN.
-  // Para "transporte": selección de sedes para el campo SEDES.
   const [selectedOrigen, setSelectedOrigen] = useState([]);
   const [selectedSedes, setSelectedSedes] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
-  // Estados para el modal de confirmación
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [pendingData, setPendingData] = useState(null);
@@ -88,9 +81,6 @@ const Transporte = () => {
     }
   };
 
-  // Calcula el total según el tipo de servicio:
-  // - En "canastas": cada opción seleccionada vale 100.000 COP.
-  // - En "transporte": se usa el valor definido en sedesOptions.
   const totalValor =
     tipoServicio === 'canastas'
       ? selectedOrigen.length * 100000
@@ -99,18 +89,27 @@ const Transporte = () => {
           return sede ? acc + sede.value : acc;
         }, 0);
 
-  // Formatea el total como dinero colombiano
   const formattedTotalValor = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
     minimumFractionDigits: 0,
   }).format(totalValor);
 
-  // Función que prepara los datos y muestra el modal de confirmación
+  // Validación: solo se habilita el botón si todos los campos requeridos tienen contenido
+  const isFormValid =
+    tipoServicio.trim() !== "" &&
+    conductor.trim() !== "" &&
+    (conductor !== "otro" || otroConductor.trim() !== "") &&
+    placa.trim() !== "" &&
+    fechaViaje !== null &&
+    // formData.sede?.trim() !== "" &&        // Línea original sin uso, se comenta para mantener el código
+    // formData.correo_asignado?.trim() !== "" &&  // Línea original sin uso, se comenta para mantener el código
+    ((tipoServicio === "canastas" && selectedOrigen.length > 0) ||
+      (tipoServicio === "transporte" && selectedSedes.length > 0));
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Prepara los datos completos para la confirmación
     const fullConductor =
       conductor === 'otro'
         ? otroConductor
@@ -131,7 +130,6 @@ const Transporte = () => {
           })
         : ["CEDI"];
 
-    // Construye el mensaje de confirmación con todos los datos ingresados
     const confirmationMsg = `Por favor, revise los datos ingresados:
 
 Fecha: ${fecha.toISOString().split('T')[0]}
@@ -146,7 +144,6 @@ Observación: ${observacion}
 
 ¿Desea enviar el formulario?`;
 
-    // Guarda los datos a enviar y muestra el modal
     setPendingData({
       fecha: fecha.toISOString().split('T')[0],
       tipo_formulario: tipoServicio,
@@ -162,7 +159,6 @@ Observación: ${observacion}
     setShowConfirmation(true);
   };
 
-  // Función que se ejecuta al confirmar en el modal
   const handleConfirm = async () => {
     setShowConfirmation(false);
     setLoading(true);
@@ -184,7 +180,6 @@ Observación: ${observacion}
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Registro guardado correctamente' });
-        // Recarga la página después de 2 segundos
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -197,7 +192,6 @@ Observación: ${observacion}
     setLoading(false);
   };
 
-  // Función que se ejecuta si se cancela la confirmación
   const handleCancel = () => {
     setShowConfirmation(false);
     setPendingData(null);
@@ -205,12 +199,10 @@ Observación: ${observacion}
 
   return (
     <div className="transporte-container">
-      {/* Anuncio sobre la pantalla para mensajes de éxito */}
       {message && message.type === 'success' && (
         <div className="transporte-announcement">{message.text}</div>
       )}
 
-      {/* Modal de confirmación */}
       {showConfirmation && (
         <div className="confirmation-overlay">
           <div className="confirmation-modal">
@@ -254,7 +246,6 @@ Observación: ${observacion}
               <option value="" disabled>Seleccione tipo de servicio</option>
               <option value="canastas">Canastas</option>
               <option value="transporte">Transporte</option>
-             
             </select>
           </div>
 
@@ -280,6 +271,7 @@ Observación: ${observacion}
                 placeholder="Escriba el nombre"
                 value={otroConductor}
                 onChange={(e) => setOtroConductor(e.target.value)}
+                required
               />
             )}
           </div>
@@ -302,7 +294,8 @@ Observación: ${observacion}
               selected={fechaViaje} 
               onChange={(date) => setFechaViaje(date)} 
               dateFormat="yyyy-MM-dd" 
-              placeholderText="Seleccione fecha de viaje (opcional)"
+              placeholderText="Seleccione fecha de viaje"
+              required
               customInput={<CustomDateInput />}
             />
           </div>
@@ -319,7 +312,6 @@ Observación: ${observacion}
                         value={sede.id}
                         checked={selectedOrigen.includes(sede.id)}
                         onChange={(e) => handleCheckboxChange(e, setSelectedOrigen, selectedOrigen)}
-                       
                       />
                       <label>{sede.name} (Valor: 100.000 COP)</label>
                     </div>
@@ -349,7 +341,6 @@ Observación: ${observacion}
                         value={sede.id}
                         checked={selectedSedes.includes(sede.id)}
                         onChange={(e) => handleCheckboxChange(e, setSelectedSedes, selectedSedes)}
-                        
                       />
                       <label>
                         {sede.name} (Valor:{" "}
@@ -381,7 +372,7 @@ Observación: ${observacion}
             />
           </div>
 
-          <button type="submit" disabled={loading} className="transporte-submit-button">
+          <button type="submit" disabled={loading || !isFormValid} className="transporte-submit-button">
             {loading ? 'Enviando...' : 'Enviar'}
           </button>
 
