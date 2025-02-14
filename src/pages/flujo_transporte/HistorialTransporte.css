@@ -1,22 +1,35 @@
-/* HistorialTransporte.css */
+/* HistorialTransporte.css - Diseño Moderno y Profesional para el Historial de Transporte */
+
+/* Variables de Colores */
+:root {
+  --primary-color: #89DC00;
+  --secondary-color: #210d65;
+  --light-color: #f4f4f9;
+  --text-color: #333;
+  --error-color: #e63946;
+  --success-color: #89DC00;
+  --background-color: #f0f2f5;
+  --border-color: #e0e0e0;
+  --hover-color: #76c400;
+}
 
 /* Contenedor principal */
 .historialTableContainer {
   width: 100%;
   max-width: 1250px;
   margin: 30px auto;
-  padding: 20px;
+  padding: 15px 20px;
   background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 /* Título */
 .historialTitle {
   text-align: center;
   font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #210d65;
+  margin-bottom: 15px;
+  color: var(--secondary-color);
   font-weight: 600;
 }
 
@@ -24,51 +37,66 @@
 .historialTable {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed; /* Forzar ancho uniforme para todas las columnas */
   margin: 0 auto;
 }
 
 .historialTable th,
 .historialTable td {
-  padding: 12px 10px;
+  padding: 6px 8px;
   text-align: center;
-  border: 1px solid #e0e0e0;
-  font-size: 0.85rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.8rem;
   word-wrap: break-word;
+  /* Igual ancho para cada columna (12 columnas en total) */
+  width: calc(100% / 12);
+  transition: background-color 0.3s;
 }
 
 .historialTable th {
-  background-color: #210d65;
+  background-color: var(--secondary-color);
   color: #fff;
   font-weight: 600;
 }
 
 .historialTable tbody tr:nth-child(even) {
-  background-color: #f4f4f9;
+  background-color: var(--light-color);
 }
 
+.historialTable tbody tr:hover {
+  background-color: #e6f7ff;
+}
 
-/* Estado Pendiente: fondo amarillo */
+/* Alinear valor total a la derecha (si es necesario) */
+.valor-columna {
+  text-align: right;
+}
+
+/* Estados */
 .pendiente-estado {
-  background-color: #ffbf00; /* amarillo */
+  background-color: #ffbf00;
   color: #000;
 }
 
-/* Estado Completado: fondo verde */
 .completado-estado {
-  background-color: #2ce056; /* verde */
+  background-color: #2ce056;
+  color: #000;
+}
+
+.no-completado-estado {
+  background-color: #ff0015;
   color: #000;
 }
 
 /* Botones de acción */
 .accion-button {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: none;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
   margin: 2px;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .accion-button.editar {
@@ -101,41 +129,57 @@
   transform: translateY(-2px);
 }
 
-/* Mensajes */
-.automatizacion-submitted-message {
-  text-align: center;
-  margin-top: 10px;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.automatizacion-submitted-message.success {
-  color: green;
-}
-
-.automatizacion-submitted-message.error {
-  color: red;
-}
-
-/* Estilos para controles de edición (select y textarea) dentro de la tabla */
+/* Controles de edición */
 .historialTable select,
 .historialTable textarea {
   width: 90%;
   padding: 4px;
   margin: 4px 0;
-  font-size: 0.9rem;
-  border: 1px solid #e0e0e0;
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 
-/* Ejemplo de estilos para el textarea de Observación Anny */
+/* Textarea para Observación Anny */
 .observacionAnny-textarea {
   width: 100%;
-  min-height: 80px;
-  resize: vertical; /* Permite cambiar el alto arrastrando el borde */
-  font-size: 0.9rem;
-  border: 1px solid #e0e0e0;
+  min-height: 60px;
+  resize: vertical;
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  padding: 6px;
+  padding: 4px;
   box-sizing: border-box;
+}
+
+/* Responsive Design */
+
+/* Small devices (max-width: 600px) */
+@media (max-width: 600px) {
+  .historialTable th,
+  .historialTable td {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    width: calc(100% / 12);
+  }
+}
+
+/* Medium devices (min-width: 601px and max-width: 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .historialTable th,
+  .historialTable td {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    width: calc(100% / 12);
+  }
+}
+
+/* Large devices (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .historialTable th,
+  .historialTable td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    width: calc(100% / 12);
+  }
 }

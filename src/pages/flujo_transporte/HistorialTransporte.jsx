@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 import './HistorialTransporte.css';
 
 const API_URL = 'https://backend-transporte.vercel.app/api/historial';
@@ -71,6 +72,14 @@ const HistorialTransporte = () => {
     }
   };
 
+  // Función para exportar a Excel
+  const handleExportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(registros);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "HistorialTransporte");
+    XLSX.writeFile(workbook, "HistorialTransporte.xlsx");
+  };
+
   // Devuelve la clase CSS según el estado
   const getEstadoClass = (estado) => {
     switch (estado) {
@@ -138,7 +147,13 @@ const HistorialTransporte = () => {
                     ? registro.sedes.join(', ')
                     : registro.sedes}
                 </td>
-                <td>{registro.valor_total}</td>
+                <td>
+                  {new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 0,
+                  }).format(registro.valor_total)}
+                </td>
                 <td>{registro.observacion}</td>
                 <td
                   className={
@@ -162,7 +177,6 @@ const HistorialTransporte = () => {
                 </td>
                 <td>
                   {editingId === registro.id ? (
-                    /* Reemplazamos <input> por <textarea> */
                     <textarea
                       name="observacion_anny"
                       value={editValues.observacion_anny}
@@ -186,7 +200,7 @@ const HistorialTransporte = () => {
                       </button>
                       <button
                         className="accion-button cancelar"
-                        onClick={handleCancelEdit}
+                        onClick={() => handleCancelEdit()}
                       >
                         Cancelar
                       </button>
@@ -212,6 +226,10 @@ const HistorialTransporte = () => {
           })}
         </tbody>
       </table>
+                    {/* Botón de Exportar a Excel */}
+                    <button onClick={handleExportExcel} className="excel-button">
+                      Exportar a Excel
+                    </button>
     </div>
   );
 };
