@@ -192,7 +192,6 @@ const Gastos = () => {
     { value: "Fruver", label: "Fruver" },
     { value: "Abarrotes", label: "Abarrotes" },
     { value: "Administrativo", label: "Administrativo" },
-    { value: "Almacén", label: "Almacén" },
 
   ];
 
@@ -501,7 +500,6 @@ const Gastos = () => {
                 <option value="Inventarios">Inventarios</option>
                 <option value="Sistemas">Sistemas</option>
                 <option value="Desarrollo">Desarrollo</option>
-                <option value="Almacén">Almacén</option>
                 <option value="Procesos">Procesos</option>
                 <option value="Fruver">Fruver</option>
                 <option value="Cárnicos">Cárnicos</option>
