@@ -74,7 +74,30 @@ const HistorialTransporte = () => {
 
   // Función para exportar a Excel
   const handleExportExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(registros);
+    // Define el orden de las columnas que se desea exportar
+    const headers = ["fecha", "tipo_formulario", "conductor", "placa_vehiculo", "fecha_viaje", "origen", "sedes", "valor_total", "observacion", "estado", "observacion_anny"];
+    
+    // Mapea los registros para formatear campos específicos y asegurar el orden deseado
+    const exportData = registros.map((reg) => ({
+      fecha: reg.fecha ? reg.fecha.slice(0, 10) : '-',
+      tipo_formulario: reg.tipo_formulario,
+      conductor: reg.conductor,
+      placa_vehiculo: reg.placa_vehiculo,
+      fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : '-',
+      origen: Array.isArray(reg.origen) ? reg.origen.join(', ') : reg.origen,
+      sedes: Array.isArray(reg.sedes) ? reg.sedes.join(', ') : reg.sedes,
+      valor_total: new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        minimumFractionDigits: 0,
+      }).format(reg.valor_total),
+      observacion: reg.observacion,
+      estado: reg.estado ? reg.estado : 'Pendiente',
+      observacion_anny: reg.observacion_anny || '',
+    }));
+
+    // Crea la hoja de cálculo con los datos exportados y el orden de columnas especificado
+    const worksheet = XLSX.utils.json_to_sheet(exportData, { header: headers });
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "HistorialTransporte");
     XLSX.writeFile(workbook, "HistorialTransporte.xlsx");
@@ -226,10 +249,10 @@ const HistorialTransporte = () => {
           })}
         </tbody>
       </table>
-                    {/* Botón de Exportar a Excel */}
-                    <button onClick={handleExportExcel} className="excel-button">
-                      Exportar a Excel
-                    </button>
+      {/* Botón de Exportar a Excel */}
+      <button onClick={handleExportExcel} className="excel-button">
+        Exportar a Excel
+      </button>
     </div>
   );
 };
