@@ -59,6 +59,7 @@ const Login = () => {
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/historialtransporte", label: "Historial de Transporte" },
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/salones", label: "Reserva de salones" }
         ]
@@ -96,7 +97,9 @@ const Login = () => {
         redirect: "/acceso", // Analista@merkahorrosas.com
         routes: [
           { path: "/gastos", label: "Gastos" },
-          { path: "/salones", label: "Reserva de salones" }
+          { path: "/transporte", label: "Transporte" },
+          { path: "/historialtransporte", label: "Historial de Transporte" },
+          { path: "/salones", label: "Reserva de salones" },
         ]
       },
       {
