@@ -19,6 +19,7 @@ import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
 import {DGdecision} from "../pages/flujo_perfil/DGdecision";
 import {Transporte} from "../pages/flujo_transporte/Transporte";
 import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte";
+import {PanoramaViewer} from "../pages/PanoramaViewer";
 
 export let routes = [
   {
@@ -104,6 +105,10 @@ export let routes = [
   {
     path: '/historialtransporte',
     element: <HistorialTransporte />,
+  },
+  {
+    path: '/panoramaViewer',
+    element: <PanoramaViewer />,
   },
 
   {
