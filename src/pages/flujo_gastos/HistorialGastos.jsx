@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './HistorialGastos.css';
-
 const HistorialGastos = () => {
   const [historial, setHistorial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
