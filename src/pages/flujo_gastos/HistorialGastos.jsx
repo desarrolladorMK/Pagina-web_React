@@ -7,6 +7,7 @@ const HistorialGastos = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(true);
   const [loading, setLoading] = useState(true); // Asegúrate de declararlo
+ 
 
   // Estado local para edición
   const [editingId, setEditingId] = useState(null);
@@ -61,6 +62,9 @@ const HistorialGastos = () => {
     setEditValues({
       estado: gasto.estado || 'Pendiente',
       observacion: gasto.observacion || '',
+      observacionC : gasto.observacionC || '', // Agregar observacionesClaudia al estado para el modal
+      
+    
     });
     setUpdateMessage(null);
   };
@@ -146,6 +150,7 @@ const HistorialGastos = () => {
               <th>Estado</th>
               <th>Acciones</th>
               <th>Verificado</th>
+              <th>Observación Claudia</th> 
             </tr>
           </thead>
           <tbody>
@@ -219,6 +224,7 @@ const HistorialGastos = () => {
                     </>
                   )}
                 </td>
+                
                 <td className={editingId === gasto.id ? "" : getEstadoClass(gasto.estado)}>
                   {editingId === gasto.id ? (
                     <select name="estado" value={editValues.estado} onChange={handleEditChange}>
@@ -263,6 +269,13 @@ const HistorialGastos = () => {
                     checked={gasto.verificado || false}
                     onChange={() => handleToggleVerified(gasto.id, gasto.verificado)}
                   />
+                </td>
+                <td>
+                  {editingId === gasto.id ? (
+                    <textarea name="observacionC" value={editValues.observacionC} onChange={handleEditChange} rows={3} className="observacion-textarea" placeholder="Observación Claudia" />
+                  ) : (
+                    gasto.observacionC || "Sin observación"
+                  )}
                 </td>
                 
               </tr>
