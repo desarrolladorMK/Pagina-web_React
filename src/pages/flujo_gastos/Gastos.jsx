@@ -680,6 +680,7 @@ const Gastos = () => {
                   <th>Proveedor</th>
                   <th>Observación</th>
                   <th>Estado</th>
+                  <th>Observacion Claudia</th>
                 </tr>
               </thead>
               <tbody>
@@ -773,6 +774,7 @@ const Gastos = () => {
                       <td className={getEstadoClass(gasto.estado)}>
                         {gasto.estado}
                       </td>
+                      <td>{gasto.observacionC || "Sin observación"}</td>
                     </tr>
                   );
                 })}
