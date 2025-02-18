@@ -3,20 +3,23 @@ import axios from 'axios';
 import './HistorialGastos.css';
 
 const HistorialGastos = () => {
+  // Recupera el correo del usuario autenticado desde sessionStorage
+  const currentUserEmail = sessionStorage.getItem("correo_empleado");
+  const isUsuario10 = currentUserEmail === import.meta.env.VITE_LOGIN_EMAIL_10;
+  
   const [historial, setHistorial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(true);
-  const [loading, setLoading] = useState(true); // Asegúrate de declararlo
+  const [loading, setLoading] = useState(true);
   
-  // Estado local para edición
+  // Estado de edición (incluye observacionC)
   const [editingId, setEditingId] = useState(null);
-  const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion: '' });
+  const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion: '', observacionC: '' });
   const [updateMessage, setUpdateMessage] = useState(null);
   
-  // URL de la API de historial de gastos
+  // URL de la API
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
-  // URL para actualizar
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos"; 
   const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones"; 
 
@@ -82,7 +85,7 @@ const HistorialGastos = () => {
     setEditValues({
       estado: gasto.estado || 'Pendiente',
       observacion: gasto.observacion || '',
-      observacionC : gasto.observacionC || '', // Agregar observacionesClaudia al estado para el modal
+      observacionC: gasto.observacionC || '',
     });
     setUpdateMessage(null);
   };
@@ -90,24 +93,25 @@ const HistorialGastos = () => {
   // Maneja el clic en "Cancelar"
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditValues({ estado: 'Pendiente', observacion: '' });
+    setEditValues({ estado: 'Pendiente', observacion: '', observacionC: '' });
     setUpdateMessage(null);
   };
 
-  // Maneja los cambios en los campos de edición
+  // Maneja los cambios en campos de edición
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Maneja la actualización (PUT) en el backend para editar estado y observación
+  // Actualiza el registro; si es Usuario 10, solo actualiza observacionC
   const handleSaveEdit = async (id) => {
     try {
-      const response = await axios.put(`${UPDATE_URL}/${id}`, editValues);
+      const payload = isUsuario10 ? { observacionC: editValues.observacionC } : editValues;
+      const response = await axios.put(`${UPDATE_URL}/${id}`, payload);
       if (response.status === 200) {
         setHistorial((prev) =>
           prev.map((item) => 
-            item.id === id ? { ...item, ...editValues } : item
+            item.id === id ? { ...item, ...payload } : item
           )
         );
         setEditingId(null);
@@ -121,7 +125,7 @@ const HistorialGastos = () => {
     }
   };
 
-  // Maneja el cambio de la casilla "Verificado"
+  // Actualiza la verificación
   const handleToggleVerified = async (id, currentValue) => {
     try {
       const newValue = !currentValue;
@@ -228,28 +232,36 @@ const HistorialGastos = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === gasto.id ? (
-                        <textarea
-                          name="observacion"
-                          value={editValues.observacion}
-                          onChange={handleEditChange}
-                          rows={3}
-                          className="observacion-textarea"
-                          placeholder="Observación"
-                        />
-                      ) : (
+                      {isUsuario10 ? (
                         gasto.observacion || "Sin observación"
+                      ) : (
+                        editingId === gasto.id ? (
+                          <textarea
+                            name="observacion"
+                            value={editValues.observacion}
+                            onChange={handleEditChange}
+                            rows={3}
+                            className="observacion-textarea"
+                            placeholder="Observación"
+                          />
+                        ) : (
+                          gasto.observacion || "Sin observación"
+                        )
                       )}
                     </td>
-                    <td className={editingId === gasto.id ? "" : getEstadoClass(gasto.estado)}>
-                      {editingId === gasto.id ? (
-                        <select name="estado" value={editValues.estado} onChange={handleEditChange}>
-                          <option value="Pendiente">Pendiente</option>
-                          <option value="Necesario">Necesario</option>
-                          <option value="No necesario">No necesario</option>
-                        </select>
-                      ) : (
+                    <td className={!isUsuario10 && editingId === gasto.id ? "" : getEstadoClass(gasto.estado)}>
+                      {isUsuario10 ? (
                         gasto.estado
+                      ) : (
+                        editingId === gasto.id ? (
+                          <select name="estado" value={editValues.estado} onChange={handleEditChange}>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Necesario">Necesario</option>
+                            <option value="No necesario">No necesario</option>
+                          </select>
+                        ) : (
+                          gasto.estado
+                        )
                       )}
                     </td>
                     <td>
