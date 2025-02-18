@@ -134,6 +134,7 @@
   }
 }
 
+/* Estados */
 .estado-pendiente {
   background-color: #ffbf00;
   color: #000000;
@@ -174,7 +175,7 @@
 }
 
 .accion-button.verificar {
-  background-color: #4a90e2;  /* Azul */
+  background-color: #4a90e2;
   color: #fff;
 }
 
@@ -183,3 +184,47 @@
   transform: translateY(-2px);
 }
 
+/* Contenedor para scroll horizontal con botones de navegación */
+.scroll-container-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar scrollbar nativo en Webkit */
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Botones de navegación fijos en la pantalla */
+.scroll-button {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  width: 40px;
+  border: none;
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.4;
+  z-index: 1000;
+}
+
+.scroll-button:hover {
+  opacity: 1;
+}
+
+.scroll-button.left {
+  left: 10px;
+}
+
+.scroll-button.right {
+  right: 10px;
+}

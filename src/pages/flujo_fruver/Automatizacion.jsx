@@ -140,6 +140,9 @@ const Automatizacion = () => {
       </div>
       <div className="automatizacion-container">
         <h1 className="automatizacion-header">Automatización Fruver</h1>
+        <h4 className="fraseMotivacional">
+            "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."<br /> Marco Aurelio
+          </h4>
 
         {!isSubmitted ? (
           <div className="automatizacion-form-container">

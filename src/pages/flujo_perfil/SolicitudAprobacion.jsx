@@ -209,7 +209,6 @@ const SolicitudAprobacion = () => {
               Yonatan Valencia
             </option>
             <option value="compras@merkahorrosas.com">Julián Hurtado</option>
-            <option value="johanmerkahorro777@gmail.com">johan</option>
             <option value="carteraytesoreria@merkahorrosas.com">
               Carolina Hernández
             </option>
@@ -232,7 +231,6 @@ const SolicitudAprobacion = () => {
             <option value="gerencia1@merkahorrosas.com">Steven Salazar</option>
             <option value="gerencia@megamayoristas.com">Adrián Hoyos</option>
             <option value="gerencia@construahorrosas.com">William Salazar </option>
-            <option value="juanmerkahorro@gmail.com">juan</option>
           </select>
         </div>
 
