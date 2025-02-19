@@ -168,6 +168,8 @@ const HistorialGastos = () => {
                   <th>Descripción</th>
                   <th>Monto</th>
                   <th>Monto por sede</th>
+                  <th>Anticipo</th>
+                  <th>Tiempo/Fecha Pago</th>
                   <th>Cotización</th>
                   <th>Proveedor</th>
                   <th>Observación</th>
@@ -190,6 +192,8 @@ const HistorialGastos = () => {
                     <td>{gasto.descripcion}</td>
                     <td>{formatoCOP.format(gasto.monto_estimado)}</td>
                     <td>{gasto.monto_sede}</td>
+                    <td>{formatoCOP.format(gasto.anticipo)}</td>
+                    <td>{gasto.tiempo_fecha_pago ? gasto.tiempo_fecha_pago.slice(0, 10) : "No especificado"}</td>
                     <td>
                       {gasto.archivo_cotizacion && (
                         <a

@@ -10,7 +10,7 @@ const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
 
 // Se definen los valores iniciales del formulario para facilitar el reset
 const initialFormData = {
-  fecha_creacion:new Date().toISOString().split("T")[0],
+  fecha_creacion: new Date().toISOString().split("T")[0],
   nombre_completo: "",
   area: "",
   procesos: "",
@@ -20,6 +20,8 @@ const initialFormData = {
   descripcion: "",
   monto_estimado: "",
   monto_sede: "",
+  anticipo: "",  // Nuevo campo
+  tiempo_fecha_pago: "",  // Nuevo campo
   archivo_cotizacion: null,
   archivos_proveedor: [],
   correo_empleado: sessionStorage.getItem("correo_empleado"),
@@ -146,27 +148,27 @@ const Gastos = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+  const { name, value, files } = e.target;
 
-    if (name === "monto_estimado") {
-      const valorNumerico = value.replace(/\D/g, "");
-      const valorFormateado = valorNumerico
-        ? formatoCOP.format(valorNumerico)
-        : "";
-      setFormData({ ...formData, [name]: valorFormateado });
-    } else if (name === "monto_sede") {
-      setFormData({ ...formData, [name]: value });
-    } else if (["unidad", "centro_costos", "sede"].includes(name)) {
-      const selectedOptions = Array.from(e.target.selectedOptions).map(
-        (option) => option.value
-      );
-      setFormData({ ...formData, [name]: selectedOptions });
-    } else if (name === "archivo_cotizacion") {
-      setFormData({ ...formData, archivo_cotizacion: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  if (name === "monto_estimado" || name === "anticipo") { // <-- Incluir "anticipo"
+    const valorNumerico = value.replace(/\D/g, "");
+    const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
+    setFormData({ ...formData, [name]: valorFormateado });
+  } else if (name === "tiempo_fecha_pago") {
+    setFormData({ ...formData, tiempo_fecha_pago: value });
+  } else if (name === "monto_sede") {
+    setFormData({ ...formData, [name]: value });
+  } else if (["unidad", "centro_costos", "sede"].includes(name)) {
+    const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
+    setFormData({ ...formData, [name]: selectedOptions });
+  } else if (name === "archivo_cotizacion") {
+    setFormData({ ...formData, archivo_cotizacion: files[0] });
+  } else {
+    setFormData({ ...formData, [name]: value });
+  }
+};
+
+  
 
   const handleInputChange = (e) => {
     const { name, files } = e.target;
@@ -232,6 +234,7 @@ const Gastos = () => {
     setIsSubmitting(true);
 
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
+    const valorNumericoAnticipo = formData.anticipo ? formData.anticipo.replace(/\D/g, "") : "0"; // ✅ Definir la variable correctamente
 
     const formDataToSend = new FormData();
     formDataToSend.append("fecha_creacion", formData.fecha_creacion);
@@ -256,11 +259,19 @@ const Gastos = () => {
     if (formData.monto_sede.trim() !== "") {
       formDataToSend.append("monto_sede", formData.monto_sede);
     }
+    formDataToSend.append("anticipo", valorNumericoAnticipo);
+    formDataToSend.append("tiempo_fecha_pago", formData.tiempo_fecha_pago);
+    
+
     formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
     formData.archivos_proveedor.forEach((file) => {
       formDataToSend.append("archivos_proveedor", file);
     });
     formDataToSend.append("correo_empleado", formData.correo_empleado);
+
+     // 🔍 Verifica los datos antes de enviarlos
+  console.log("Datos enviados al backend:", Object.fromEntries(formDataToSend.entries()));
+
 
     try {
       const response = await axios.post(
@@ -380,7 +391,7 @@ const Gastos = () => {
       }
 
       return {
-        fecha_creacion : gasto.fecha_creacion || "",
+        fecha_creacion: gasto.fecha_creacion || "",
         Nombre: gasto.nombre_completo || "",
         Área: gasto.area || "",
         Procesos: gasto.procesos || "",
@@ -586,12 +597,37 @@ const Gastos = () => {
             </div>
 
             <div className="gastos-form-field">
-              <label className="gastos-label">Monto por sede (opcional):</label>
+              <label className="gastos-label">Monto por sede:</label>
               <textarea
                 name="monto_sede"
                 value={formData.monto_sede}
                 onChange={handleChange}
                 placeholder="Ejemplo: Girardota: 300.000, Barbosa: 400.000"
+                className="gastos-input"
+              />
+            </div>
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Anticipo:</label>
+              <input
+                type="text"
+                name="anticipo"
+                value={formData.anticipo}
+                onChange={handleChange}
+                placeholder="Ingrese el monto del anticipo"
+                className="gastos-input"
+              />
+            </div>
+
+
+            <div className="gastos-form-field">
+              <label className="gastos-label">Fecha estimada de pago:</label>
+              <input
+                type="date"
+                name="tiempo_fecha_pago"
+                value={formData.tiempo_fecha_pago}
+                onChange={handleChange}
+                required
                 className="gastos-input"
               />
             </div>
@@ -676,6 +712,8 @@ const Gastos = () => {
                   <th>Descripción</th>
                   <th>Monto</th>
                   <th>Monto por sede</th>
+                  <th>Anticipo</th>
+                  <th>Tiempo/Fecha Pago</th>
                   <th>Cotización</th>
                   <th>Proveedor</th>
                   <th>Observación</th>
@@ -727,7 +765,7 @@ const Gastos = () => {
                       : gasto.archivos_proveedor;
                   return (
                     <tr key={gasto.id}>
-                      <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : '-'}</td>
+                      <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : '-'}</td>
                       <td>{gasto.nombre_completo}</td>
                       <td>{gasto.area}</td>
                       <td>{gasto.procesos}</td>
@@ -741,6 +779,8 @@ const Gastos = () => {
                       <td>{gasto.descripcion}</td>
                       <td>{formatoCOP.format(gasto.monto_estimado)}</td>
                       <td>{montoSede}</td>
+                      <td>{formatoCOP.format(gasto.anticipo)}</td>
+                      <td>{gasto.tiempo_fecha_pago ? gasto.tiempo_fecha_pago.slice(0, 10) : "No especificado"}</td>
                       <td>
                         <a
                           href={archivoCotizacionUrl}
