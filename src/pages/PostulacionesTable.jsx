@@ -136,7 +136,7 @@ const PostulacionesTable = () => {
             key.includes("fecha") && row[key]
               ? formatFecha(row[key])
               : row[key],
-          sortable: true,
+          sortable: key === "id", // Solo la columna "id" será sortable
           wrap: true,
         };
       }
@@ -145,6 +145,7 @@ const PostulacionesTable = () => {
   const toggleSearch = () => {
     setShowSearch(!showSearch);
     console.log("Toggle search:", !showSearch);
+    if (showSearch) setFilterText("");
   };
 
   return (
@@ -165,16 +166,16 @@ const PostulacionesTable = () => {
         subHeader
         customStyles={customStyles}
         subHeaderComponent={
-          <div className="search-container">
-            <span className="search-icon" onClick={toggleSearch}>
+          <div className="busqueda-container">
+            <button className="busqueda-boton" onClick={toggleSearch}>
               🔍
-            </span>
+            </button>
             <input
               type="text"
               placeholder="Buscar..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
-              className={`search-input ${showSearch ? "active" : ""}`}
+              className={`busqueda-input ${showSearch ? "active" : ""}`}
             />
           </div>
         }

@@ -6,7 +6,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-height: 100vh;
   overflow-x: hidden;
-  overflow-x: auto;
 }
 
 .postulaciones-container h2 {
@@ -104,16 +103,9 @@
   align-items: center;
 }
 
-/* Sobrescribir estilos del contenedor inyectado por DataTable (.eBdwMa) */
-.eBdwMa {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-/* Estilos para el input de búsqueda dentro de .eBdwMa */
-.eBdwMa .search-input {
+/* Estilos para el input de búsqueda */
+.search-input {
+  display: inline-block;
   width: 0;
   opacity: 0;
   padding: 0;
@@ -122,15 +114,14 @@
   margin-right: 10px;
 }
 
-/* Cuando el input está activo, se expande suavemente */
-.eBdwMa .search-input.active {
+.search-input.active {
   width: 220px;
   opacity: 1;
   padding: 8px 12px;
   border: 2px solid #ccc;
 }
 
-.eBdwMa .search-input:focus {
+.search-input:focus {
   outline: none;
   border-color: #007BFF;
 }
