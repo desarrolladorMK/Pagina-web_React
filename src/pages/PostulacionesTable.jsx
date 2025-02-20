@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import * as XLSX from "xlsx";
 import "./PostulacionesTable.css";
@@ -127,10 +127,7 @@ const PostulacionesTable = () => {
               </button>
             ),
           ignoreRowClick: true,
-          allowOverflow: true,
-          button: true,
           wrap: true,
-          grow: 1,
         };
       } else {
         return {
@@ -141,13 +138,13 @@ const PostulacionesTable = () => {
               : row[key],
           sortable: true,
           wrap: true,
-          grow: 1,
         };
       }
     });
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
+    console.log("Toggle search:", !showSearch);
   };
 
   return (
