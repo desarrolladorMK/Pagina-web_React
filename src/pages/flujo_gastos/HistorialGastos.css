@@ -229,12 +229,19 @@
   right: 10px;
 }
 
+.eBdwMa {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 /* Estilos y animación para el buscador con nombres únicos */
-.busqueda-container {
+.eBdwMa .busqueda-container  {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 20px;
+  background-color: transparent !important;;
 }
 
 .busqueda-boton {
