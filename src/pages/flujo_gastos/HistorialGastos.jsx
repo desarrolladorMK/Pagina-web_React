@@ -17,6 +17,10 @@ const HistorialGastos = () => {
   const [editingId, setEditingId] = useState(null);
   const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion: '', observacionC: '' });
   const [updateMessage, setUpdateMessage] = useState(null);
+
+  // Estados para búsqueda
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchInput, setShowSearchInput] = useState(false);
   
   // URL de la API
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
@@ -145,12 +149,41 @@ const HistorialGastos = () => {
     }
   };
 
+  // Filtra el historial según el texto de búsqueda (por nombre, descripción o área)
+  const filteredHistorial = historial.filter((gasto) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      gasto.nombre_completo.toLowerCase().includes(query) ||
+      (gasto.descripcion && gasto.descripcion.toLowerCase().includes(query)) ||
+      (gasto.area && gasto.area.toLowerCase().includes(query))
+    );
+  });
+
   if (isSubmitted || !mostrarHistorial) return null;
   if (errorMessage) return <div className="gastos-historial"><p>Error: {errorMessage}</p></div>;
 
   return (
     <div className="gastos-historial">
       <h2>Historial de Gastos</h2>
+      {/* Contenedor de búsqueda con nombres únicos */}
+      <div className="busqueda-container">
+        <button 
+          className="busqueda-boton" 
+          onClick={() => {
+            setShowSearchInput(!showSearchInput);
+            if (showSearchInput) setSearchQuery('');
+          }}
+        >
+          🔍
+        </button>
+        <input 
+          type="text" 
+          placeholder="Buscar..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
+        />
+      </div>
       <div id="gastos-historial" className="gastos-historial desplegado">
         <div className="scroll-container-wrapper">
           <button className="scroll-button left" onClick={scrollLeft}>‹</button>
@@ -180,7 +213,7 @@ const HistorialGastos = () => {
                 </tr>
               </thead>
               <tbody>
-                {historial.map((gasto) => (
+                {filteredHistorial.map((gasto) => (
                   <tr key={gasto.id}>
                     <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''}</td>
                     <td>{gasto.nombre_completo}</td>
@@ -321,7 +354,8 @@ const HistorialGastos = () => {
               </tbody>
             </table>
           </div>
-          <button className="scroll-button left" onClick={scrollLeft}>‹</button>
+          {/* Se oculta este botón duplicado para evitar sobre espacio */}
+          <button className="scroll-button left" onClick={scrollLeft} style={{ display: 'none' }}>‹</button>
           <button className="scroll-button right" onClick={scrollRight}>›</button>
         </div>
       </div>

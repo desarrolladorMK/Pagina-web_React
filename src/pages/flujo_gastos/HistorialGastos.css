@@ -33,7 +33,7 @@
 /* Tabla del historial */
 .gastos-historial {
   max-width: 1400px;
-  margin: 50px auto;
+  margin: 20px auto;
   padding: 20px;
   border-radius: 12px;
   background-color: #fff;
@@ -152,7 +152,7 @@
 
 .observacion-textarea {
   width: 100%;
-  resize: vertical; /* Permite redimensionar el alto */
+  resize: vertical;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 6px;
@@ -227,4 +227,63 @@
 
 .scroll-button.right {
   right: 10px;
+}
+
+/* Estilos y animación para el buscador con nombres únicos */
+.busqueda-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.busqueda-boton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.busqueda-boton:hover {
+  transform: scale(1.1);
+}
+
+/* Se definen animaciones con nombres únicos para la entrada y salida del input */
+.busqueda-input {
+  width: 0;
+  opacity: 0;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-left: 10px;
+  animation: busqueda-animacion-desaparecer 0.4s forwards;
+}
+
+.busqueda-input.active {
+  animation: busqueda-animacion-aparecer 0.4s forwards;
+}
+
+/* Keyframes con nombres únicos */
+@keyframes busqueda-animacion-aparecer {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 250px;
+    opacity: 1;
+  }
+}
+
+@keyframes busqueda-animacion-desaparecer {
+  from {
+    width: 250px;
+    opacity: 1;
+  }
+  to {
+    width: 0;
+    opacity: 0;
+  }
 }
