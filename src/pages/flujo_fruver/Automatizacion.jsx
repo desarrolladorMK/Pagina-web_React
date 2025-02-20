@@ -137,7 +137,20 @@ const Automatizacion = () => {
     }
   };
 
-  // Definición de columnas para DataTable con wrap activado
+  // Función que retorna la clase según el estado
+  const getEstadoClass = (estado) => {
+    switch (estado) {
+      case "Pendiente":
+        return "estado-pendiente";
+      case "Completado":
+        return "estado-completado";
+      case "No Completado":
+        return "estado-no-completado";
+      default:
+        return "";
+    }
+  };
+
   const columns = [
     {
       name: "Descripción",
@@ -193,8 +206,10 @@ const Automatizacion = () => {
         if (editRowId === row.id) {
           return (
             <select
+              name="estado"
               value={row.estado}
               onChange={(e) => cambiarEstado(index, e.target.value)}
+              style={{ width: "100%", height: "100%" }}
             >
               <option value="Pendiente">Pendiente</option>
               <option value="Completado">Completado</option>
@@ -202,7 +217,20 @@ const Automatizacion = () => {
             </select>
           );
         }
-        return row.estado;
+        return (
+          <div
+            className={`estado-cell ${getEstadoClass(row.estado || "Pendiente")}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {row.estado || "Pendiente"}
+          </div>
+        );
       },
       wrap: true,
     },
@@ -229,19 +257,13 @@ const Automatizacion = () => {
         const index = historial.findIndex((item) => item.id === row.id);
         if (editRowId === row.id) {
           return (
-            <button
-              className="accion-button guardar"
-              onClick={() => guardarCambios(index)}
-            >
+            <button className="accion-button guardar" onClick={() => guardarCambios(index)}>
               Guardar
             </button>
           );
         }
         return (
-          <button
-            className="accion-button editar"
-            onClick={() => setEditRowId(row.id)}
-          >
+          <button className="accion-button editar" onClick={() => setEditRowId(row.id)}>
             Editar
           </button>
         );
@@ -251,7 +273,6 @@ const Automatizacion = () => {
     },
   ];
 
-  // Estilos personalizados para DataTable
   const customStyles = {
     headRow: {
       style: {
@@ -341,9 +362,7 @@ const Automatizacion = () => {
                   <option value="Girardota llano">Girardota llano</option>
                   <option value="Carnes barbosa">Carnes Barbosa</option>
                   <option value="Copacabana Vegas">Copacabana Vegas</option>
-                  <option value="Copacabana San Juan">
-                    Copacabana San Juan
-                  </option>
+                  <option value="Copacabana San Juan">Copacabana San Juan</option>
                   <option value="Barbosa">Barbosa</option>
                 </select>
               </div>
@@ -379,12 +398,8 @@ const Automatizacion = () => {
                   className="automatizacion-input"
                 >
                   <option value="">Seleccione un correo</option>
-                  <option value="fruver@merkahorrosas.com">
-                    fruver@merkahorrosas.com
-                  </option>
-                  <option value="gerencia1@merkahorrosas.com">
-                    gerencia1@merkahorrosas.com
-                  </option>
+                  <option value="fruver@merkahorrosas.com">fruver@merkahorrosas.com</option>
+                  <option value="gerencia1@merkahorrosas.com">gerencia1@merkahorrosas.com</option>
                 </select>
               </div>
 
