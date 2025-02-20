@@ -149,13 +149,23 @@ const HistorialGastos = () => {
     }
   };
 
-  // Filtra el historial según el texto de búsqueda (por nombre, descripción o área)
+  // Función auxiliar para convertir cualquier campo a cadena en minúsculas
+  const getFieldString = (field) => {
+    if (!field) return "";
+    return Array.isArray(field) ? field.join(" ").toLowerCase() : String(field).toLowerCase();
+  };
+
+  // Filtra el historial según el texto de búsqueda
+  // Se separa el string de búsqueda por comas y se buscan los registros que contengan alguno de los términos
   const filteredHistorial = historial.filter((gasto) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      gasto.nombre_completo.toLowerCase().includes(query) ||
-      (gasto.descripcion && gasto.descripcion.toLowerCase().includes(query)) ||
-      (gasto.area && gasto.area.toLowerCase().includes(query))
+    const keywords = searchQuery
+      .split(',')
+      .map((k) => k.trim().toLowerCase())
+      .filter(Boolean);
+    if (keywords.length === 0) return true;
+    const fieldsToSearch = ['nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos', 'estado'];
+    return keywords.some((keyword) =>
+      fieldsToSearch.some((field) => getFieldString(gasto[field]).includes(keyword))
     );
   });
 
@@ -165,7 +175,7 @@ const HistorialGastos = () => {
   return (
     <div className="gastos-historial">
       <h2>Historial de Gastos</h2>
-      {/* Contenedor de búsqueda con nombres únicos */}
+      {/* Contenedor de búsqueda */}
       <div className="busqueda-container">
         <button 
           className="busqueda-boton" 
@@ -304,10 +314,7 @@ const HistorialGastos = () => {
                     <td>
                       {editingId === gasto.id ? (
                         <>
-                          <button
-                            className="accion-button guardar"
-                            onClick={() => handleSaveEdit(gasto.id)}
-                          >
+                          <button className="accion-button guardar" onClick={() => handleSaveEdit(gasto.id)}>
                             Guardar
                           </button>
                           <button className="accion-button cancelar" onClick={handleCancelEdit}>
@@ -320,10 +327,7 @@ const HistorialGastos = () => {
                           )}
                         </>
                       ) : (
-                        <button
-                          className="accion-button editar"
-                          onClick={() => handleEditClick(gasto)}
-                        >
+                        <button className="accion-button editar" onClick={() => handleEditClick(gasto)}>
                           Editar
                         </button>
                       )}
