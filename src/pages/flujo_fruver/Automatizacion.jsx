@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactDatePicker from "react-datepicker";
+import DataTable from "react-data-table-component";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Automatizacion.css";
 
@@ -20,7 +21,7 @@ const Automatizacion = () => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
+  const [editRowId, setEditRowId] = useState(null);
 
   const API_URL = "https://backend-cristian.vercel.app";
 
@@ -115,6 +116,8 @@ const Automatizacion = () => {
     setHistorial(nuevoHistorial);
   };
 
+  // Se utiliza la URL original sin incluir el id en la URL,
+  // y se envía el id en el body, que es lo que espera el backend.
   const guardarCambios = async (index) => {
     const item = historial[index];
     try {
@@ -124,11 +127,160 @@ const Automatizacion = () => {
         observacion: item.observacion,
       });
       alert("Cambios guardados exitosamente.");
-      setEditIndex(null);
+      setEditRowId(null);
     } catch (error) {
-      console.error("Error al guardar los cambios:", error);
+      console.error(
+        "Error al guardar los cambios:",
+        error.response ? error.response.data : error
+      );
       alert("Hubo un error al guardar los cambios.");
     }
+  };
+
+  // Definición de columnas para DataTable con wrap activado
+  const columns = [
+    {
+      name: "Descripción",
+      selector: (row) => row.descripcion,
+      wrap: true,
+    },
+    {
+      name: "Sede",
+      selector: (row) => row.sede,
+      wrap: true,
+    },
+    {
+      name: "Fecha Inicial",
+      selector: (row) => row.fecha_inicial,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Fecha Final",
+      selector: (row) => row.fecha_final,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Correo",
+      selector: (row) => row.correo_asignado,
+      wrap: true,
+    },
+    {
+      name: "PDF",
+      cell: (row) =>
+        row.pdf ? (
+          <a
+            href={
+              row.pdf.startsWith("http")
+                ? row.pdf
+                : `${SUPABASE_PDF_URL}/${row.pdf}`
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver PDF
+          </a>
+        ) : (
+          "Sin PDF"
+        ),
+      wrap: true,
+    },
+    {
+      name: "Estado",
+      cell: (row) => {
+        const index = historial.findIndex((item) => item.id === row.id);
+        if (editRowId === row.id) {
+          return (
+            <select
+              value={row.estado}
+              onChange={(e) => cambiarEstado(index, e.target.value)}
+            >
+              <option value="Pendiente">Pendiente</option>
+              <option value="Completado">Completado</option>
+              <option value="No Completado">No Completado</option>
+            </select>
+          );
+        }
+        return row.estado;
+      },
+      wrap: true,
+    },
+    {
+      name: "Observación",
+      cell: (row) => {
+        const index = historial.findIndex((item) => item.id === row.id);
+        if (editRowId === row.id) {
+          return (
+            <input
+              type="text"
+              value={row.observacion}
+              onChange={(e) => actualizarObservacion(index, e.target.value)}
+            />
+          );
+        }
+        return row.observacion;
+      },
+      wrap: true,
+    },
+    {
+      name: "Acciones",
+      cell: (row) => {
+        const index = historial.findIndex((item) => item.id === row.id);
+        if (editRowId === row.id) {
+          return (
+            <button
+              className="accion-button guardar"
+              onClick={() => guardarCambios(index)}
+            >
+              Guardar
+            </button>
+          );
+        }
+        return (
+          <button
+            className="accion-button editar"
+            onClick={() => setEditRowId(row.id)}
+          >
+            Editar
+          </button>
+        );
+      },
+      ignoreRowClick: true,
+      wrap: true,
+    },
+  ];
+
+  // Estilos personalizados para DataTable
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: "var(--secondary-color)",
+        color: "#fff",
+        fontWeight: "600",
+        verticalAlign: "middle",
+      },
+    },
+    headCells: {
+      style: {
+        padding: "10px",
+        verticalAlign: "middle",
+        textAlign: "center",
+      },
+    },
+    cells: {
+      style: {
+        padding: "10px",
+        whiteSpace: "normal",
+        wordBreak: "break-word",
+        overflow: "visible",
+        verticalAlign: "middle",
+        textAlign: "center",
+        minHeight: "50px",
+        height: "auto",
+        lineHeight: "1.5",
+      },
+    },
   };
 
   return (
@@ -141,8 +293,8 @@ const Automatizacion = () => {
       <div className="automatizacion-container">
         <h1 className="automatizacion-header">Automatización Fruver</h1>
         <h4 className="fraseMotivacional">
-            "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."<br /> Marco Aurelio
-          </h4>
+          "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."<br /> Marco Aurelio
+        </h4>
 
         {!isSubmitted ? (
           <div className="automatizacion-form-container">
@@ -266,103 +418,15 @@ const Automatizacion = () => {
               className="automatizacion-historial desplegado"
             >
               <h2>Historial reposición Fruver</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Descripción</th>
-                    <th>Sede</th>
-                    <th>Fecha Inicial</th>
-                    <th>Fecha Final</th>
-                    <th>Correo</th>
-                    <th>PDF</th>
-                    <th>Estado</th>
-                    <th>Observación</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historial.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{item.descripcion}</td>
-                      <td>{item.sede}</td>
-                      <td>{item.fecha_inicial}</td>
-                      <td>{item.fecha_final}</td>
-                      <td>{item.correo_asignado}</td>
-                      <td>
-                        {item.pdf ? (
-                          <a
-                            href={
-                              item.pdf.startsWith("http")
-                                ? item.pdf
-                                : `${SUPABASE_PDF_URL}/${item.pdf}`
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Ver PDF
-                          </a>
-                        ) : (
-                          "Sin PDF"
-                        )}
-                      </td>
-                      <td
-                        className={
-                          item.estado === "Completado"
-                            ? "estado-completado"
-                            : item.estado === "Pendiente"
-                            ? "estado-pendiente"
-                            : "estado-no-completado"
-                        }
-                      >
-                        {editIndex === index ? (
-                          <select
-                            value={item.estado}
-                            onChange={(e) =>
-                              cambiarEstado(index, e.target.value)
-                            }
-                          >
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Completado">Completado</option>
-                            <option value="No Completado">No Completado</option>
-                          </select>
-                        ) : (
-                          item.estado
-                        )}
-                      </td>
-                      <td>
-                        {editIndex === index ? (
-                          <input
-                            type="text"
-                            value={item.observacion}
-                            onChange={(e) =>
-                              actualizarObservacion(index, e.target.value)
-                            }
-                          />
-                        ) : (
-                          item.observacion
-                        )}
-                      </td>
-                      <td>
-                        {editIndex === index ? (
-                          <button
-                            className="accion-button guardar"
-                            onClick={() => guardarCambios(index)}
-                          >
-                            Guardar
-                          </button>
-                        ) : (
-                          <button
-                            className="accion-button editar"
-                            onClick={() => setEditIndex(index)}
-                          >
-                            Editar
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <DataTable
+                columns={columns}
+                data={historial}
+                pagination
+                highlightOnHover
+                striped
+                responsive
+                customStyles={customStyles}
+              />
             </div>
           )}
         </>

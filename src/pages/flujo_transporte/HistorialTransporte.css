@@ -33,46 +33,12 @@
   font-weight: 600;
 }
 
-/* Tabla */
-.historialTable {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed; /* Forzar ancho uniforme para todas las columnas */
-  margin: 0 auto;
+/* Estados - el fondo se aplicará a toda la celda */
+.estado-cell {
+  padding: 10px;
+  border-radius: 4px;
 }
 
-.historialTable th,
-.historialTable td {
-  padding: 6px 8px;
-  text-align: center;
-  border: 1px solid var(--border-color);
-  font-size: 0.8rem;
-  word-wrap: break-word;
-  /* Igual ancho para cada columna (12 columnas en total) */
-  width: calc(100% / 12);
-  transition: background-color 0.3s;
-}
-
-.historialTable th {
-  background-color: var(--secondary-color);
-  color: #fff;
-  font-weight: 600;
-}
-
-.historialTable tbody tr:nth-child(even) {
-  background-color: var(--light-color);
-}
-
-.historialTable tbody tr:hover {
-  background-color: #e6f7ff;
-}
-
-/* Alinear valor total a la derecha (si es necesario) */
-.valor-columna {
-  text-align: right;
-}
-
-/* Estados */
 .pendiente-estado {
   background-color: #ffbf00;
   color: #000;

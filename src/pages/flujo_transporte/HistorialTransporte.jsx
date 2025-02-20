@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import * as XLSX from 'xlsx';
-import './HistorialTransporte.css';
+import React, { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
+import axios from "axios";
+import * as XLSX from "xlsx";
+import "./HistorialTransporte.css";
 
-const API_URL = 'https://backend-transporte.vercel.app/api/historial';
+const API_URL = "https://backend-transporte.vercel.app/api/historial";
 
 const HistorialTransporte = () => {
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion_anny: '' });
+  const [editValues, setEditValues] = useState({ estado: "Pendiente", observacion_anny: "" });
   const [updateMessage, setUpdateMessage] = useState(null);
 
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        const res = await fetch(API_URL);
-        if (!res.ok) {
-          throw new Error('Error al obtener el historial');
-        }
-        const data = await res.json();
-        setRegistros(data);
+        const res = await axios.get(API_URL);
+        setRegistros(res.data);
       } catch (err) {
-        setError(err.message);
+        setError("Error al obtener el historial");
       } finally {
         setLoading(false);
       }
@@ -33,15 +31,15 @@ const HistorialTransporte = () => {
   const handleEditClick = (registro) => {
     setEditingId(registro.id);
     setEditValues({
-      estado: registro.estado ? registro.estado : 'Pendiente',
-      observacion_anny: registro.observacion_anny || '',
+      estado: registro.estado || "Pendiente",
+      observacion_anny: registro.observacion_anny || "",
     });
     setUpdateMessage(null);
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditValues({ estado: 'Pendiente', observacion_anny: '' });
+    setEditValues({ estado: "Pendiente", observacion_anny: "" });
     setUpdateMessage(null);
   };
 
@@ -52,67 +50,245 @@ const HistorialTransporte = () => {
 
   const handleSaveEdit = async (id) => {
     try {
-      const res = await fetch(`https://backend-transporte.vercel.app/api/registro/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editValues),
-      });
-      const result = await res.json();
-      if (res.ok) {
-        setUpdateMessage({ type: 'success', text: 'Registro actualizado correctamente' });
+      const res = await axios.put(`https://backend-transporte.vercel.app/api/registro/${id}`, editValues);
+      if (res.status === 200) {
+        setUpdateMessage({ type: "success", text: "Registro actualizado correctamente" });
         setRegistros((prev) =>
           prev.map((r) => (r.id === id ? { ...r, ...editValues } : r))
         );
         setEditingId(null);
       } else {
-        setUpdateMessage({ type: 'error', text: `Error: ${result.error}` });
+        setUpdateMessage({ type: "error", text: `Error: ${res.data.error}` });
       }
     } catch (err) {
-      setUpdateMessage({ type: 'error', text: 'Error al actualizar el registro' });
+      setUpdateMessage({ type: "error", text: "Error al actualizar el registro" });
     }
   };
 
-  // Función para exportar a Excel
   const handleExportExcel = () => {
-    // Define el orden de las columnas que se desea exportar
-    const headers = ["fecha", "tipo_formulario", "conductor", "placa_vehiculo", "fecha_viaje", "origen", "sedes", "valor_total", "observacion", "estado", "observacion_anny"];
-    
-    // Mapea los registros para formatear campos específicos y asegurar el orden deseado
+    const headers = [
+      "fecha",
+      "tipo_formulario",
+      "conductor",
+      "placa_vehiculo",
+      "fecha_viaje",
+      "origen",
+      "sedes",
+      "valor_total",
+      "observacion",
+      "estado",
+      "observacion_anny",
+    ];
     const exportData = registros.map((reg) => ({
-      fecha: reg.fecha ? reg.fecha.slice(0, 10) : '-',
+      fecha: reg.fecha ? reg.fecha.slice(0, 10) : "-",
       tipo_formulario: reg.tipo_formulario,
       conductor: reg.conductor,
       placa_vehiculo: reg.placa_vehiculo,
-      fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : '-',
-      origen: Array.isArray(reg.origen) ? reg.origen.join(', ') : reg.origen,
-      sedes: Array.isArray(reg.sedes) ? reg.sedes.join(', ') : reg.sedes,
+      fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : "-",
+      origen: Array.isArray(reg.origen) ? reg.origen.join(", ") : reg.origen,
+      sedes: Array.isArray(reg.sedes) ? reg.sedes.join(", ") : reg.sedes,
       valor_total: new Intl.NumberFormat("es-CO", {
         style: "currency",
         currency: "COP",
         minimumFractionDigits: 0,
       }).format(reg.valor_total),
       observacion: reg.observacion,
-      estado: reg.estado ? reg.estado : 'Pendiente',
-      observacion_anny: reg.observacion_anny || '',
+      estado: reg.estado || "Pendiente",
+      observacion_anny: reg.observacion_anny || "",
     }));
-
-    // Crea la hoja de cálculo con los datos exportados y el orden de columnas especificado
     const worksheet = XLSX.utils.json_to_sheet(exportData, { header: headers });
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "HistorialTransporte");
     XLSX.writeFile(workbook, "HistorialTransporte.xlsx");
   };
 
-  // Devuelve la clase CSS según el estado
+  // Función para obtener la clase del estado
   const getEstadoClass = (estado) => {
     switch (estado) {
-      case 'Pendiente':
-        return 'pendiente-estado';
-      case 'Completado':
-        return 'completado-estado';
+      case "Pendiente":
+        return "pendiente-estado";
+      case "Completado":
+        return "completado-estado";
+      case "No Completado":
+        return "no-completado-estado";
       default:
-        return '';
+        return "";
     }
+  };
+
+  const columns = [
+    {
+      name: "Fecha",
+      selector: (row) => (row.fecha ? row.fecha.slice(0, 10) : "-"),
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Tipo Formulario",
+      selector: (row) => row.tipo_formulario,
+      wrap: true,
+    },
+    {
+      name: "Conductor",
+      selector: (row) => row.conductor,
+      wrap: true,
+    },
+    {
+      name: "Placa Vehículo",
+      selector: (row) => row.placa_vehiculo,
+      wrap: true,
+    },
+    {
+      name: "Fecha Viaje",
+      selector: (row) => (row.fecha_viaje ? row.fecha_viaje.slice(0, 10) : "-"),
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: "Origen",
+      selector: (row) =>
+        Array.isArray(row.origen) ? row.origen.join(", ") : row.origen,
+      wrap: true,
+    },
+    {
+      name: "Sedes",
+      selector: (row) =>
+        Array.isArray(row.sedes) ? row.sedes.join(", ") : row.sedes,
+      wrap: true,
+    },
+    {
+      name: "Valor Total",
+      cell: (row) =>
+        new Intl.NumberFormat("es-CO", {
+          style: "currency",
+          currency: "COP",
+          minimumFractionDigits: 0,
+        }).format(row.valor_total),
+      wrap: true,
+    },
+    {
+      name: "Observación",
+      selector: (row) => row.observacion,
+      wrap: true,
+    },
+    {
+      name: "Estado",
+      cell: (row) => {
+        if (editingId === row.id) {
+          return (
+            <select
+              name="estado"
+              value={editValues.estado}
+              onChange={handleEditChange}
+              style={{ width: "100%", height: "100%" }}
+            >
+              <option value="Pendiente">Pendiente</option>
+              <option value="Completado">Completado</option>
+            </select>
+          );
+        }
+        return (
+          <div
+            className={`estado-cell ${getEstadoClass(row.estado || "Pendiente")}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {row.estado || "Pendiente"}
+          </div>
+        );
+      },
+      wrap: true,
+    },
+    {
+      name: "Obs... Anny",
+      cell: (row) => {
+        if (editingId === row.id) {
+          return (
+            <textarea
+              name="observacion_anny"
+              value={editValues.observacion_anny}
+              onChange={handleEditChange}
+              placeholder="Observación de admin"
+              rows={4}
+              className="observacionAnny-textarea"
+            />
+          );
+        }
+        return row.observacion_anny || "-";
+      },
+      wrap: true,
+    },
+    {
+      name: "Acciones",
+      cell: (row) => {
+        if (editingId === row.id) {
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <button
+                className="accion-button guardar"
+                onClick={() => handleSaveEdit(row.id)}
+              >
+                Guardar
+              </button>
+              <button
+                className="accion-button cancelar"
+                onClick={handleCancelEdit}
+              >
+                Cancelar
+              </button>
+              {updateMessage && (
+                <p className={`automatizacion-submitted-message ${updateMessage.type}`}>
+                  {updateMessage.text}
+                </p>
+              )}
+            </div>
+          );
+        }
+        return (
+          <button className="accion-button editar" onClick={() => handleEditClick(row)}>
+            Editar
+          </button>
+        );
+      },
+      ignoreRowClick: true,
+      wrap: true,
+    },
+  ];
+
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: "var(--secondary-color)",
+        color: "#fff",
+        fontWeight: "600",
+        verticalAlign: "middle",
+      },
+    },
+    headCells: {
+      style: {
+        padding: "10px",
+        verticalAlign: "middle",
+        textAlign: "center",
+      },
+    },
+    cells: {
+      style: {
+        padding: "10px",
+        whiteSpace: "normal",
+        wordBreak: "break-word",
+        overflow: "visible",
+        verticalAlign: "middle",
+        textAlign: "center",
+        minHeight: "50px",
+        height: "auto",
+        lineHeight: "1.5",
+      },
+    },
   };
 
   if (loading) {
@@ -122,6 +298,7 @@ const HistorialTransporte = () => {
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="automatizacion-historial">
@@ -133,123 +310,15 @@ const HistorialTransporte = () => {
   return (
     <div className="automatizacion-historial">
       <h2 className="historialTitle">Historial de Transporte</h2>
-      <table className="historialTable">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Tipo Formulario</th>
-            <th>Conductor</th>
-            <th>Placa Vehículo</th>
-            <th>Fecha Viaje</th>
-            <th>Origen</th>
-            <th>Sedes</th>
-            <th>Valor Total</th>
-            <th>Observación</th>
-            <th>Estado</th>
-            <th>Observación Anny</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {registros.map((registro, index) => {
-            const estadoActual = registro.estado || 'Pendiente';
-            return (
-              <tr key={index}>
-                <td>{registro.fecha ? registro.fecha.slice(0, 10) : '-'}</td>
-                <td>{registro.tipo_formulario}</td>
-                <td>{registro.conductor}</td>
-                <td>{registro.placa_vehiculo}</td>
-                <td>{registro.fecha_viaje ? registro.fecha_viaje.slice(0, 10) : '-'}</td>
-                <td>
-                  {Array.isArray(registro.origen)
-                    ? registro.origen.join(', ')
-                    : registro.origen}
-                </td>
-                <td>
-                  {Array.isArray(registro.sedes)
-                    ? registro.sedes.join(', ')
-                    : registro.sedes}
-                </td>
-                <td>
-                  {new Intl.NumberFormat("es-CO", {
-                    style: "currency",
-                    currency: "COP",
-                    minimumFractionDigits: 0,
-                  }).format(registro.valor_total)}
-                </td>
-                <td>{registro.observacion}</td>
-                <td
-                  className={
-                    editingId === registro.id
-                      ? ''
-                      : getEstadoClass(estadoActual)
-                  }
-                >
-                  {editingId === registro.id ? (
-                    <select
-                      name="estado"
-                      value={editValues.estado}
-                      onChange={handleEditChange}
-                    >
-                      <option value="Pendiente">Pendiente</option>
-                      <option value="Completado">Completado</option>
-                    </select>
-                  ) : (
-                    estadoActual
-                  )}
-                </td>
-                <td>
-                  {editingId === registro.id ? (
-                    <textarea
-                      name="observacion_anny"
-                      value={editValues.observacion_anny}
-                      onChange={handleEditChange}
-                      placeholder="Observación de admin"
-                      rows={4}
-                      className="observacionAnny-textarea"
-                    />
-                  ) : (
-                    registro.observacion_anny || '-'
-                  )}
-                </td>
-                <td>
-                  {editingId === registro.id ? (
-                    <>
-                      <button
-                        className="accion-button guardar"
-                        onClick={() => handleSaveEdit(registro.id)}
-                      >
-                        Guardar
-                      </button>
-                      <button
-                        className="accion-button cancelar"
-                        onClick={() => handleCancelEdit()}
-                      >
-                        Cancelar
-                      </button>
-                      {updateMessage && (
-                        <p
-                          className={`automatizacion-submitted-message ${updateMessage.type}`}
-                        >
-                          {updateMessage.text}
-                        </p>
-                      )}
-                    </>
-                  ) : (
-                    <button
-                      className="accion-button editar"
-                      onClick={() => handleEditClick(registro)}
-                    >
-                      Editar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      {/* Botón de Exportar a Excel */}
+      <DataTable
+        columns={columns}
+        data={registros}
+        pagination
+        highlightOnHover
+        striped
+        responsive
+        customStyles={customStyles}
+      />
       <button onClick={handleExportExcel} className="excel-button">
         Exportar a Excel
       </button>
