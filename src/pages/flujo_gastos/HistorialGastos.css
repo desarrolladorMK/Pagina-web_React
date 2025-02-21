@@ -35,7 +35,7 @@
   max-width: 1400px;
   margin: 20px auto;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 20px;
   background-color: #fff;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
@@ -51,14 +51,33 @@
 .gastos-historial table {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 5px;
 }
 
 .gastos-historial th,
 .gastos-historial td {
-  padding: 15px;
+  padding: 10px;
   text-align: center;
   border: 1px solid var(--border-color);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+}
+
+/* Ajuste de ancho para la columna de Descripción */
+.gastos-historial th:nth-child(8),
+.gastos-historial td:nth-child(8) {
+  min-width: 300px;
+  max-width: 500px;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+/* Ajuste de ancho para la columna de Observación */
+.gastos-historial th:nth-child(15),
+.gastos-historial td:nth-child(15) {
+  min-width: 300px;
+  max-width: 500px;
+  word-wrap: break-word;
+  text-align: center;
 }
 
 .gastos-historial th {

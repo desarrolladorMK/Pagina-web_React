@@ -9,10 +9,10 @@ body {
 }
 
 html {
-  scroll-behavior: smooth; /* Desplazamiento suave */
+  scroll-behavior: smooth;
 }
 
-/* Estilos del navbar */
+/* Navbar Header */
 .navbar-header {
   background-color: #210d65;
   position: sticky;
@@ -21,29 +21,27 @@ html {
   width: 100%;
   display: flex;
   justify-content: center;
-  font-family: "Roboto", sans-serif;
 }
 
-/* Contenedor del navbar */
 .container-navbar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 1200px;
   width: 100%;
-  box-sizing: border-box;
+  padding: 0 20px;
 }
 
 /* Logo */
 .logo-header img {
   max-width: 150px;
-  margin: 20px auto;
+  margin: 20px 0;
   display: block;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Botón de alternar menú (hamburguesa) */
+/* Botón de menú (hamburguesa) */
 .menu-toggle {
   display: none;
   font-size: 24px;
@@ -53,40 +51,48 @@ html {
   color: #ffffff;
 }
 
-/* Lista del navbar */
+/* Lista de navegación */
 .nav-list {
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
-  position: relative;
   align-items: center;
 }
 
-/* Elementos de la lista */
 .nav-list li {
   margin-left: 20px;
   position: relative;
 }
 
-/* Enlaces del navbar */
+/* Estilo de los enlaces */
 .nav-list a {
   text-decoration: none;
   color: #ffffff;
   font-weight: 500;
-  padding: 10px;
-  transition: color 0.3s, background-color 0.3s;
   font-size: 19px;
-  border-radius: 5px;
+  padding: 10px 0;
+  position: relative;
+  transition: color 0.3s;
 }
 
-.nav-list a:hover {
-  color: black;
-  background-color: beige;
-  border-radius: 5px;
+/* Línea animada debajo del enlace */
+.nav-list a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffffff;
+  transition: width 0.3s;
 }
 
-/* Lista desplegable */
+.nav-list a:hover::after {
+  width: 100%;
+}
+
+/* Submenú */
 .sub-nav-list {
   display: none;
   list-style: none;
@@ -94,7 +100,7 @@ html {
   padding: 0;
   background-color: #f9f9f9;
   position: absolute;
-  top: 100%; /* Debajo del elemento principal */
+  top: 100%;
   left: 0;
   width: 200px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -102,7 +108,6 @@ html {
   z-index: 1000;
 }
 
-/* Elementos del submenú */
 .sub-nav-list li {
   margin: 0;
 }
@@ -113,39 +118,52 @@ html {
   display: block;
   padding: 10px 15px;
   font-size: 16px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
+  position: relative;
+  border-radius: 10px;
+}
+
+.sub-nav-list a::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  bottom: 5px;
+  width: 0;
+  height: 2px;
+  background-color: #210d65;
+  transition: width 0.3s;
 }
 
 .sub-nav-list a:hover {
-  background-color: #89dc00;
-  color: #000000;
+  background-color: #e6e6e6;
+  color: #000;
+  border-radius: 10px;
 }
 
-/* Mostrar el submenú al pasar el cursor */
+.sub-nav-list a:hover::after {
+  width: calc(100% - 30px);
+}
+
+/* Mostrar submenú al hacer hover */
 .nav-list li:hover .sub-nav-list {
   display: block;
 }
 
-/* Ícono de login */
+/* Estilos para el ícono de login */
 .login-icon a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 20px;
   display: flex;
   align-items: center;
   padding: 10px;
-  transition: color 0.3s ease;
+  transition: color 0.3s;
 }
 
 .default-icon {
-  display: inline-block;
   color: #ffffff;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s;
 }
 
 .hover-icon {
   display: none;
-  color: #210d65;
 }
 
 .login-icon a:hover .default-icon {
@@ -156,7 +174,7 @@ html {
   display: inline-block;
 }
 
-/* Navbar para móviles */
+/* Responsive (móviles) */
 @media (max-width: 1008px) {
   .menu-toggle {
     display: block;
@@ -177,7 +195,6 @@ html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1001;
     transition: top 0.4s ease-in-out;
   }
 
@@ -185,16 +202,15 @@ html {
     top: 0;
   }
 
+  .nav-list li {
+    margin: 15px 0;
+  }
+
   .nav-list a {
-    font-size: 19px;
+    font-size: 22px;
     padding: 15px;
     text-align: center;
     width: 100%;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .login-icon {
-    margin: 15px 0;
   }
 
   .login-icon a {

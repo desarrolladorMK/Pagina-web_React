@@ -229,7 +229,7 @@ const HistorialGastos = () => {
                     <td>{gasto.nombre_completo}</td>
                     <td>{gasto.area}</td>
                     <td>{gasto.procesos}</td>
-                    <td>{gasto.sede}</td>
+                    <td>{Array.isArray(gasto.sede) ? gasto.sede.join(", ") : gasto.sede}</td>
                     <td>{Array.isArray(gasto.unidad) ? gasto.unidad.join(", ") : gasto.unidad}</td>
                     <td>{Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : gasto.centro_costos}</td>
                     <td>{gasto.descripcion}</td>

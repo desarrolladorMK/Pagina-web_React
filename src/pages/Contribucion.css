@@ -1,13 +1,13 @@
-/* ======== ANIMACIÓN DE FONDO ======== */
-@keyframes contribucionGradientAnimation {
+/* ======== ANIMACIÓN DE FONDO SUAVE ======== */
+@keyframes fondoDegradado {
   0% {
-    background-color: #210d65;
+    background-position: 0% 50%;
   }
   50% {
-    background-color: #89dc00;
+    background-position: 100% 50%;
   }
   100% {
-    background-color: #210d65;
+    background-position: 0% 50%;
   }
 }
 
@@ -16,7 +16,6 @@
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  animation: contribucionGradientAnimation 8s ease infinite;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,6 +23,9 @@
   width: 100%;
   box-sizing: border-box;
   transition: all 0.5s ease-in-out;
+  background: linear-gradient(-45deg, #210d65, #4a2e85, #89dc00, #4a2e85, #210d65);
+  background-size: 300% 300%;
+  animation: fondoDegradado 15s ease infinite;
 }
 
 /* ======== HEADER ======== */
@@ -32,7 +34,7 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #210d65;
+  background-color: rgba(33, 13, 101, 0.9);
   color: #ffffff;
   width: 100%;
   box-sizing: border-box;

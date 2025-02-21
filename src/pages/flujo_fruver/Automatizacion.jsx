@@ -24,7 +24,6 @@ const Automatizacion = () => {
   const [editRowId, setEditRowId] = useState(null);
 
   const API_URL = "https://backend-cristian.vercel.app";
-
   // URL base para los PDFs en Supabase (bucket: pdf-cristian, carpeta: pdfs)
   const SUPABASE_PDF_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/pdf-cristian/pdfs";
 
@@ -156,28 +155,34 @@ const Automatizacion = () => {
       name: "Descripción",
       selector: (row) => row.descripcion,
       wrap: true,
+      grow: 2,
+      width: "300px", // Ancho fijo para el encabezado y celdas
     },
     {
       name: "Sede",
       selector: (row) => row.sede,
       wrap: true,
+      width: "150px",
     },
     {
-      name: "Fecha Inicial",
+      name: "F. Inicial",
       selector: (row) => row.fecha_inicial,
       sortable: true,
       wrap: true,
+      width: "120px",
     },
     {
-      name: "Fecha Final",
+      name: "F. Final",
       selector: (row) => row.fecha_final,
       sortable: true,
       wrap: true,
+      width: "120px",
     },
     {
       name: "Correo",
       selector: (row) => row.correo_asignado,
       wrap: true,
+      width: "180px",
     },
     {
       name: "PDF",
@@ -198,6 +203,7 @@ const Automatizacion = () => {
           "Sin PDF"
         ),
       wrap: true,
+      width: "100px",
     },
     {
       name: "Estado",
@@ -233,6 +239,7 @@ const Automatizacion = () => {
         );
       },
       wrap: true,
+      width: "120px",
     },
     {
       name: "Observación",
@@ -250,6 +257,8 @@ const Automatizacion = () => {
         return row.observacion;
       },
       wrap: true,
+      grow: 2,
+      width: "250px",
     },
     {
       name: "Acciones",
@@ -257,22 +266,28 @@ const Automatizacion = () => {
         const index = historial.findIndex((item) => item.id === row.id);
         if (editRowId === row.id) {
           return (
-            <button className="accion-button guardar" onClick={() => guardarCambios(index)}>
+            <button
+              className="accion-button guardar"
+              onClick={() => guardarCambios(index)}
+            >
               Guardar
             </button>
           );
         }
         return (
-          <button className="accion-button editar" onClick={() => setEditRowId(row.id)}>
+          <button
+            className="accion-button editar"
+            onClick={() => setEditRowId(row.id)}
+          >
             Editar
           </button>
         );
       },
       ignoreRowClick: true,
       wrap: true,
+      width: "100px",
     },
   ];
-
   const customStyles = {
     headRow: {
       style: {
@@ -284,9 +299,10 @@ const Automatizacion = () => {
     },
     headCells: {
       style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         padding: "10px",
-        verticalAlign: "middle",
-        textAlign: "center",
       },
     },
     cells: {
