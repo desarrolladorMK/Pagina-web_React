@@ -1,8 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./Home.css";
-
-
-
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { ChatBot } from "../components/ChatBot";
@@ -284,123 +281,102 @@ const Home = () => {
 
 
       <main>
-        <div className="card-container">
-          <section className="card" id="compañia">
-            <img
-              className="logosmain"
-              src="/carritomercado.png"
-              alt="Logo"
-            />
-            <h2>Nuestra Compañía</h2>
-            <p>
-              Merkahorro es una entidad empresarial que ha destacado por su
-              notable presencia en el mercado. Su expansión se fundamenta en el
-              compromiso constante de perfeccionar y agilizar los procesos de
-              pedidos, entregas, promociones, órdenes y servicios al cliente.
-            </p>
-          </section>
-
-          <section className="card" id="mision">
-            <h2>Misión</h2>
-            <p>
-              Llevamos bienestar y felicidad a los hogares, a través de
-              productos y servicios de alta calidad que distribuimos en cada uno
-              de nuestros supermercados, con un ambiente de respeto y cuidado
-              hacia nuestros visitantes, y un equipo humano que disfruta lo que
-              hace.
-            </p>
-            <img
-              className="logosmain"
-              src="/objetivo.png"
-              alt="Logom"
-            />
-          </section>
-
-          <section className="card" id="vision">
-            <h2>Visión</h2>
-            <img
-              className="logosmain"
-              src="/visionymision.png"
-              alt=""
-            />
-            <p>
-              En el año 2026, se proyecta que Merkahorro S.A.S tendrá 12 sedes
-              en todo el territorio nacional en diversos municipios, con
-              alrededor de 450 empleados, siendo líder en el segmento de
-              supermercados independientes. La empresa tendrá alta eficiencia en
-              todas sus unidades de negocio, como Fruver, Carnes y Abarrotes en
-              todas sus categorías, optimizando al máximo cada uno de sus
-              procesos y mejorando continuamente los beneficios económicos para
-              sus socios y el bienestar de todos los empleados directos e
-              indirectos.
-            </p>
-          </section>
-
-          <section className="card" id="principios">
-            <h2>Principios</h2>
-            <p>
-              Nuestros principios se fundamentan en transformaciones
-              significativas que surgen al romper valientemente con las formas
-              tradicionales de pensamiento. Estos principios son:
-            </p>
-            <ul>
-              <img
-                className="logosmain"
-                src="/principios-morales.png"
-                alt=""
-              />
-              <br />
-              <li>
-                <strong>La Verdad:</strong> Es la razón del ser, que nos lleva
-                a vivir en responsabilidad y confiabilidad, fortaleciendo el
-                carácter y las relaciones de valor impactando vidas.
-              </li>
-              <li>
-                <strong>La Belleza:</strong> Valorar y crear estética en todos
-                los aspectos de nuestras vidas.
-              </li>
-              <li>
-                <strong>La Bondad:</strong> Fomentar la empatía, la compasión y
-                la integridad en nuestras acciones.
-              </li>
-              <li>
-                <strong>La Unidad:</strong> Promover la cohesión y la
-                colaboración entre las personas y las ideas.
-              </li>
-            </ul>
-          </section>
-
-          <section className="card" id="fundadores">
-            <img
-              className="logosmain"
-              src="/Ceo.png"
-              alt=""
-            />
-            <h2>Fundadores</h2>
-            <p>
-              Supermercados Merkahorro surgió como la materialización de la
-              visión compartida por los dos hermanos en 2015.
-              A pesar de la carencia inicial de recursos, estos emprendedores se
-              dedicaron a hacer realidad su ambicioso proyecto, concentrándose en
-              el municipio de Copacabana.
-            </p>
-            <p>
-              Su enfoque claro y definido desde el principio consistió en
-              alcanzar la posición de ser el principal supermercado en dicha
-              localidad.
-            </p>
-          </section>
+  <div className="card-container">
+    {/* Nuestra Compañía */}
+    <div className="flip-card" id="compañia">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          <img className="logosmain" src="/carritomercado.png" alt="Logo Nuestra Compañía" />
+          <h2>Nuestra Compañía</h2>
         </div>
-      </main>
-
-      <div className="video-container">
-        <h1>Historia de nuestra compañía</h1>
-        <video className="video" controls muted loop>
-          <source src="Videomercahorro.mp4" type="video/mp4" />
-          Tu navegador no soporta el elemento de video.
-        </video>
+        <div className="flip-card-back">
+          <p>
+            Merkahorro es una entidad empresarial que ha destacado por su notable presencia en el mercado. Su expansión se fundamenta en el compromiso constante de perfeccionar y agilizar los procesos de pedidos, entregas, promociones, órdenes y servicios al cliente.
+          </p>
+        </div>
       </div>
-      <Footer />
+    </div>
+
+    {/* Misión */}
+    <div className="flip-card" id="mision">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          <img className="logosmain" src="/objetivo.png" alt="Logo Misión" />
+          <h2>Misión</h2>
+        </div>
+        <div className="flip-card-back">
+          <p>
+            Llevamos bienestar y felicidad a los hogares, a través de productos y servicios de alta calidad que distribuimos en cada uno de nuestros supermercados, con un ambiente de respeto y cuidado hacia nuestros visitantes, y un equipo humano que disfruta lo que hace.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Visión */}
+    <div className="flip-card" id="vision">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          <img className="logosmain" src="/visionymision.png" alt="Logo Visión" />
+          <h2>Visión</h2>
+        </div>
+        <div className="flip-card-back">
+          <p>
+            En el año 2026, se proyecta que Merkahorro S.A.S tendrá 12 sedes en todo el territorio nacional en diversos municipios, con alrededor de 450 empleados, siendo líder en el segmento de supermercados independientes.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Principios */}
+    <div className="flip-card" id="principios">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          <img className="logosmain" src="/principios-morales.png" alt="Logo Principios" />
+          <h2>Principios</h2>
+        </div>
+        <div className="flip-card-back">
+          <p>
+            Nuestros principios se fundamentan en transformaciones significativas que surgen al romper con formas tradicionales. Estos incluyen:
+          </p>
+          <ul>
+            <li><strong>La Verdad:</strong> Vivir con responsabilidad y confiabilidad.</li>
+            <li><strong>La Belleza:</strong> Crear estética en todos los aspectos de la vida.</li>
+            <li><strong>La Bondad:</strong> Fomentar empatía, compasión e integridad.</li>
+            <li><strong>La Unidad:</strong> Promover la cohesión y colaboración.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {/* Fundadores */}
+    <div className="flip-card" id="fundadores">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          <img className="logosmain" src="/Ceo.png" alt="Logo Fundadores" />
+          <h2>Fundadores</h2>
+        </div>
+        <div className="flip-card-back">
+          <p>
+            Supermercados Merkahorro surgió como la materialización de la visión compartida por dos hermanos en 2015, quienes, pese a la carencia inicial de recursos, se dedicaron a hacer realidad su ambicioso proyecto en Copacabana.
+          </p>
+          <p>
+            Su enfoque fue lograr ser el principal supermercado en la localidad.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div className="video-container">
+  <h1>Historia de nuestra compañía</h1>
+  <video className="video" controls muted loop>
+    <source src="Videomercahorro.mp4" type="video/mp4" />
+    Tu navegador no soporta el elemento de video.
+  </video>
+</div>
+<Footer />
+
     </div>
 
   );
