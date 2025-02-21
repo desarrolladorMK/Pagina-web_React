@@ -1,6 +1,8 @@
 import React from "react";
 import "./Footer.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { FaFacebookF, FaInstagram, FaYoutube, FaRegCopyright } from "react-icons/fa";
+import { SiTiktok } from "react-icons/si";
 
 const Footer = () => {
     return (
@@ -24,7 +26,7 @@ const Footer = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <img src="/facebook.png" alt="Facebook" />
+                            <FaFacebookF size={30} color="#fff" />
                         </a>
                         <a
                             href="https://www.tiktok.com/@supermercadomerkahorro"
@@ -32,7 +34,7 @@ const Footer = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <img src="/tiktok.png" alt="TikTok" />
+                            <SiTiktok size={30} color="#fff" />
                         </a>
                         <a
                             href="https://www.instagram.com/supermercadomerkahorro/?hl=es"
@@ -40,16 +42,15 @@ const Footer = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <img src="/instagram.png" alt="Instagram" />
+                            <FaInstagram size={30} color="#fff" />
                         </a>
-
                         <a
                             href="https://www.youtube.com/@Merkahorro"
                             aria-label="Youtube"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <img src="/youtube.png" alt="Youtube" />
+                            <FaYoutube size={30} color="#fff" />
                         </a>
                     </div>
                 </div>
@@ -70,6 +71,12 @@ const Footer = () => {
                     <p>Kevin Pineda</p>
                     <p>Juan Isaza</p>
                 </div>
+            </div>
+            <div className="all-rights">
+                <p>
+                    <FaRegCopyright size={16} color="#fff" style={{ marginRight: "8px" }} />
+                   Supermercados Merkahorro - Todos los derechos reservados
+                </p>
             </div>
         </footer>
     );
