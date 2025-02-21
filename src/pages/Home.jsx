@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./Home.css";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css";
+
+
+
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { ChatBot } from "../components/ChatBot";
@@ -14,6 +14,20 @@ const Home = () => {
   const playButtonRef = useRef(null);
 
   const images = ["/mk1.jpg", "/mk2.jpg", "/mk3.jpg", "/mk4.jpg"];
+
+ 
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -30,37 +44,47 @@ const Home = () => {
       }
     }
   };
- 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-  };
+
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
+
+
 
   return (
     <div className="Home-body">
       <Header />
-    
+
 
       {/* Carrusel */}
       <div className="carousel">
-        <Slider {...settings}>
+        <div className="container-slides">
           {images.map((image, index) => (
-            <div key={index}>
-              <img 
-                src={image} 
-                alt={`Imagen ${index + 1}`} 
-                className="carousel-image" 
-                style={{ width: "100%", height: "auto" }}
-              />
+            <div
+              key={index}
+              className={`slide ${index === currentIndex ? "active" : ""}`}
+              style={{
+                display: index === currentIndex ? "block" : "none",
+              }}
+            >
+              <img src={image} alt={`Imagen ${index + 1}`} />
             </div>
           ))}
-        </Slider>
+        </div>
+        <div className="dots">
+          {images.map((_, index) => (
+            <span
+              key={index}
+              className={`dot ${index === currentIndex ? "active" : ""}`}
+              onClick={() => goToSlide(index)}
+            ></span>
+          ))}
+        </div>
       </div>
 
 
@@ -83,7 +107,7 @@ const Home = () => {
   <ChatBot />
 </div>
 
-       
+
       {/* Código de las sedes */}
       <h1 className="title-sedes">Conoce nuestras sedes</h1>
       <div className="tarjeta-container">
