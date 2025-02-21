@@ -33,6 +33,12 @@ const conductorPlacas = {
   conductor3: 'SVO 247',
 };
 
+const conductorDatos = {
+  conductor1: { cedula: "1035418709", cuenta: "1234567" },
+  conductor2: { cedula: "1041328787", cuenta: "7777777" },
+  conductor3: { cedula: "1001244007", cuenta: "10101010" },
+};
+
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
@@ -42,6 +48,8 @@ const Transporte = () => {
   const [conductor, setConductor] = useState('');
   const [otroConductor, setOtroConductor] = useState('');
   const [placa, setPlaca] = useState('');
+  const [cedula, setCedula] = useState("");
+  const [cuentaBancaria, setCuentaBancaria] = useState("");
   const [fechaViaje, setFechaViaje] = useState(null);
   const [observacion, setObservacion] = useState('');
 
@@ -59,8 +67,14 @@ const Transporte = () => {
   useEffect(() => {
     if (conductor && conductor !== 'otro' && conductorPlacas[conductor]) {
       setPlaca(conductorPlacas[conductor]);
+      if (conductorDatos[conductor]) {
+        setCedula(conductorDatos[conductor].cedula);
+        setCuentaBancaria(conductorDatos[conductor].cuenta);
+      }
     } else {
       setPlaca('');
+      setCedula("");
+      setCuentaBancaria("");
     }
   }, [conductor]);
 
@@ -85,9 +99,9 @@ const Transporte = () => {
     tipoServicio === 'canastas'
       ? selectedOrigen.length * 100000
       : selectedSedes.reduce((acc, sedeId) => {
-          const sede = sedesOptions.find((s) => s.id === sedeId);
-          return sede ? acc + sede.value : acc;
-        }, 0);
+        const sede = sedesOptions.find((s) => s.id === sedeId);
+        return sede ? acc + sede.value : acc;
+      }, 0);
 
   const formattedTotalValor = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -118,16 +132,16 @@ const Transporte = () => {
     const origenFull =
       tipoServicio === 'canastas'
         ? selectedOrigen.map((id) => {
-            const sede = sedesOptions.find((s) => s.id === id);
-            return sede ? sede.name : id;
-          })
+          const sede = sedesOptions.find((s) => s.id === id);
+          return sede ? sede.name : id;
+        })
         : ["CEDI"];
     const sedesFull =
       tipoServicio === 'transporte'
         ? selectedSedes.map((id) => {
-            const sede = sedesOptions.find((s) => s.id === id);
-            return sede ? sede.name : id;
-          })
+          const sede = sedesOptions.find((s) => s.id === id);
+          return sede ? sede.name : id;
+        })
         : ["CEDI"];
 
     const confirmationMsg = `Por favor, revise los datos ingresados:
@@ -149,6 +163,8 @@ Observación: ${observacion}
       tipo_formulario: tipoServicio,
       conductor: fullConductor,
       placa_vehiculo: placa,
+      cedula: cedula,
+      cuenta_bancaria: cuentaBancaria,
       fecha_viaje: fechaViaje ? fechaViaje.toISOString().split('T')[0] : null,
       origen: origenFull,
       sedes: sedesFull,
@@ -226,10 +242,10 @@ Observación: ${observacion}
         <form onSubmit={handleSubmit}>
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha:</label>
-            <ReactDatePicker 
-              selected={fecha} 
-              onChange={(date) => setFecha(date)} 
-              dateFormat="yyyy-MM-dd" 
+            <ReactDatePicker
+              selected={fecha}
+              onChange={(date) => setFecha(date)}
+              dateFormat="yyyy-MM-dd"
               customInput={<CustomDateInput />}
               disabled
             />
@@ -249,6 +265,7 @@ Observación: ${observacion}
             </select>
           </div>
 
+          {/* Selección del Conductor */}
           <div className="transporte-form-field">
             <label className="transporte-label">Conductor:</label>
             <select
@@ -276,24 +293,88 @@ Observación: ${observacion}
             )}
           </div>
 
-          <div className="transporte-form-field">
-            <label className="transporte-label">Placa:</label>
-            <input
-              type="text"
-              className="transporte-input"
-              value={placa}
-              onChange={(e) => setPlaca(e.target.value)}
-              readOnly={conductor !== 'otro' && conductor !== ''}
-              required
-            />
-          </div>
+          {/* Mostrar los campos de Placa, Cédula y Cuenta Bancaria solo si se ha seleccionado algún conductor */}
+          {conductor !== '' && (
+            <div className="detalles-conductor">
+              <div className="transporte-form-field">
+                <label className="transporte-label">Placa:</label>
+                {conductor === 'otro' ? (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    placeholder="Ingrese placa"
+                    value={placa}
+                    onChange={(e) => setPlaca(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    value={placa}
+                    readOnly
+                    style={{ userSelect: 'none' }}
+                    required
+                  />
+                )}
+              </div>
+
+              <div className="transporte-form-field">
+                <label className="transporte-label">Cédula:</label>
+                {conductor === 'otro' ? (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    placeholder="Ingrese cédula"
+                    value={cedula}
+                    onChange={(e) => setCedula(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    value={cedula}
+                    readOnly
+                    style={{ userSelect: 'none' }}
+                    required
+                  />
+                )}
+              </div>
+
+              <div className="transporte-form-field">
+                <label className="transporte-label">Cuenta Bancaria:</label>
+                {conductor === 'otro' ? (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    placeholder="Ingrese cuenta bancaria"
+                    value={cuentaBancaria}
+                    onChange={(e) => setCuentaBancaria(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    value={cuentaBancaria}
+                    readOnly
+                    style={{ userSelect: 'none' }}
+                    required
+                  />
+                )}
+              </div>
+            </div>
+          )}
+
+
 
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha de viaje:</label>
-            <ReactDatePicker 
-              selected={fechaViaje} 
-              onChange={(date) => setFechaViaje(date)} 
-              dateFormat="yyyy-MM-dd" 
+            <ReactDatePicker
+              selected={fechaViaje}
+              onChange={(date) => setFechaViaje(date)}
+              dateFormat="yyyy-MM-dd"
               placeholderText="Seleccione fecha de viaje"
               required
               customInput={<CustomDateInput />}
