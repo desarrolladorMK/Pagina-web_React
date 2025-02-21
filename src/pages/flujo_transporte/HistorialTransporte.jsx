@@ -71,6 +71,8 @@ const HistorialTransporte = () => {
       "tipo_formulario",
       "conductor",
       "placa_vehiculo",
+      "cedula",
+      "cuenta_bancaria",
       "fecha_viaje",
       "origen",
       "sedes",
@@ -136,6 +138,16 @@ const HistorialTransporte = () => {
     {
       name: "Placa Vehículo",
       selector: (row) => row.placa_vehiculo,
+      wrap: true,
+    },
+    {
+      name: "Documento de identidad",
+      selector: (row) => row.cedula,
+      wrap: true,
+    },
+    {
+      name: "Cuenta Bancaria",
+      selector: (row) => row.cuenta_bancaria,
       wrap: true,
     },
     {
