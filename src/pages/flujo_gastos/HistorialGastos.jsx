@@ -7,13 +7,13 @@ const HistorialGastos = () => {
   // Recupera el correo del usuario autenticado desde sessionStorage
   const currentUserEmail = sessionStorage.getItem("correo_empleado");
   const isUsuario10 = currentUserEmail === import.meta.env.VITE_LOGIN_EMAIL_10;
-  
+
   const [historial, setHistorial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(true);
   const [loading, setLoading] = useState(true);
-  
+
   // Estado de edición (incluye observacionC)
   const [editingId, setEditingId] = useState(null);
   const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion: '', observacionC: '' });
@@ -22,11 +22,11 @@ const HistorialGastos = () => {
   // Estados para búsqueda
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
-  
+
   // URL de la API
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
-  const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos"; 
-  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones"; 
+  const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
+  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
 
   const scrollContainerRef = useRef(null);
 
@@ -127,7 +127,7 @@ const HistorialGastos = () => {
       const response = await axios.put(`${UPDATE_URL}/${id}`, payload);
       if (response.status === 200) {
         setHistorial((prev) =>
-          prev.map((item) => 
+          prev.map((item) =>
             item.id === id ? { ...item, ...payload } : item
           )
         );
@@ -149,7 +149,7 @@ const HistorialGastos = () => {
       const response = await axios.put(`${UPDATE_URL}/${id}`, { verificado: newValue });
       if (response.status === 200) {
         setHistorial((prev) =>
-          prev.map((item) => 
+          prev.map((item) =>
             item.id === id ? { ...item, verificado: newValue } : item
           )
         );
@@ -191,31 +191,33 @@ const HistorialGastos = () => {
       <h4 className="fraseMotivacional">
         “No es la abundancia de bienes lo que define una vida plena, sino la prudencia con que utilizamos lo que tenemos.”
       </h4>
+
       {/* Botón para exportar a Excel */}
-    
       {/* Contenedor de búsqueda */}
-      <div className="busqueda-container">
-        <button 
-          className="busqueda-boton" 
-          onClick={() => {
-            setShowSearchInput(!showSearchInput);
-            if (showSearchInput) setSearchQuery('');
-          }}
-        >
-          🔍
+      <div className="busqueda-export-container">
+        <div className="busqueda-container">
+          <button
+            className="busqueda-boton"
+            onClick={() => {
+              setShowSearchInput(!showSearchInput);
+              if (showSearchInput) setSearchQuery('');
+            }}
+          >
+            🔍
+          </button>
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
+          />
+        </div>
+        <button className="excel-button-gastos" onClick={exportToExcel}>
+          Exportar a Excel
         </button>
-        
-        <input 
-          type="text" 
-          placeholder="Buscar..." 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
-        />
-         <button className="excel-button-gastos" onClick={exportToExcel}>
-        Exportar a Excel
-      </button>
       </div>
+
       <div id="gastos-historial" className="gastos-historial desplegado">
         <div className="scroll-container-wrapper">
           <button className="scroll-button left" onClick={scrollLeft}>‹</button>
@@ -241,7 +243,7 @@ const HistorialGastos = () => {
                   <th>Estado</th>
                   <th>Acciones</th>
                   <th>Verificado</th>
-                  <th>Observación Claudia</th> 
+                  <th>Observación Claudia</th>
                 </tr>
               </thead>
               <tbody>
