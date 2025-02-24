@@ -23,6 +23,11 @@ const HistorialGastos = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
 
+  // Estado para guardar los IDs de filas ocultas
+  const [hiddenRows, setHiddenRows] = useState([]);
+  // Estado para controlar la visibilidad de la sección de filas ocultas
+  const [showHiddenRowsList, setShowHiddenRowsList] = useState(false);
+
   // URL de la API
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
@@ -48,6 +53,7 @@ const HistorialGastos = () => {
     }
   };
 
+  // Cargar historial de la API
   useEffect(() => {
     const obtenerHistorial = async () => {
       try {
@@ -67,15 +73,24 @@ const HistorialGastos = () => {
     obtenerHistorial();
   }, []);
 
+  // Cargar hiddenRows desde localStorage al montar el componente
+  useEffect(() => {
+    const storedHiddenRows = localStorage.getItem('hiddenRows');
+    if (storedHiddenRows) {
+      setHiddenRows(JSON.parse(storedHiddenRows));
+    }
+  }, []);
+
+  // Guardar hiddenRows en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('hiddenRows', JSON.stringify(hiddenRows));
+  }, [hiddenRows]);
+
   // Función para exportar a Excel
   const exportToExcel = () => {
-    // Convierte el historial a una hoja de cálculo
     const worksheet = XLSX.utils.json_to_sheet(historial);
-    // Crea un libro de trabajo nuevo
     const workbook = XLSX.utils.book_new();
-    // Agrega la hoja al libro
     XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
-    // Genera y descarga el archivo Excel
     XLSX.writeFile(workbook, "historial_gastos.xlsx");
   };
 
@@ -165,22 +180,36 @@ const HistorialGastos = () => {
   // Función auxiliar para convertir cualquier campo a cadena en minúsculas
   const getFieldString = (field) => {
     if (!field) return "";
-    return Array.isArray(field) ? field.join(" ").toLowerCase() : String(field).toLowerCase();
+    return Array.isArray(field)
+      ? field.join(" ").toLowerCase()
+      : String(field).toLowerCase();
   };
 
-  // Filtra el historial según el texto de búsqueda
-  // Se separa el string de búsqueda por comas y se buscan los registros que contengan alguno de los términos
+  // Filtra el historial según el texto de búsqueda usando todos los campos de cada objeto
   const filteredHistorial = historial.filter((gasto) => {
     const keywords = searchQuery
       .split(',')
       .map((k) => k.trim().toLowerCase())
       .filter(Boolean);
     if (keywords.length === 0) return true;
-    const fieldsToSearch = ['nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos', 'estado'];
+
     return keywords.some((keyword) =>
-      fieldsToSearch.some((field) => getFieldString(gasto[field]).includes(keyword))
+      Object.values(gasto).some((value) => getFieldString(value).includes(keyword))
     );
   });
+
+  // Se excluyen las filas ocultas para la tabla principal
+  const visibleHistorial = filteredHistorial.filter((gasto) => !hiddenRows.includes(gasto.id));
+
+  // Función para ocultar una fila
+  const handleHideRow = (id) => {
+    setHiddenRows([...hiddenRows, id]);
+  };
+
+  // Función para restaurar (mostrar) una fila oculta individualmente
+  const handleShowHiddenRow = (id) => {
+    setHiddenRows(hiddenRows.filter(hiddenId => hiddenId !== id));
+  };
 
   if (isSubmitted || !mostrarHistorial) return null;
   if (errorMessage) return <div className="gastos-historial"><p>Error: {errorMessage}</p></div>;
@@ -192,8 +221,7 @@ const HistorialGastos = () => {
         “No es la abundancia de bienes lo que define una vida plena, sino la prudencia con que utilizamos lo que tenemos.”
       </h4>
 
-      {/* Botón para exportar a Excel */}
-      {/* Contenedor de búsqueda */}
+      {/* Contenedor de búsqueda y exportación */}
       <div className="busqueda-export-container">
         <div className="busqueda-container">
           <button
@@ -217,6 +245,40 @@ const HistorialGastos = () => {
           Exportar a Excel
         </button>
       </div>
+
+      {/* Botón para revelar u ocultar la sección de filas ocultas */}
+      {hiddenRows.length > 0 && (
+        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+          <button
+            className="boton-mostrar-ocultos"
+            onClick={() => setShowHiddenRowsList(!showHiddenRowsList)}
+          >
+            {showHiddenRowsList ? "Ocultar" : "Mostrar filas ocultas"}
+          </button>
+        </div>
+      )}
+
+      {/* Sección de filas ocultas, solo se muestra si showHiddenRowsList es true */}
+      {showHiddenRowsList && hiddenRows.length > 0 && (
+        <div className="hidden-rows-container">
+          <h3>Filas Ocultas</h3>
+          <ul>
+            {historial.filter(gasto => hiddenRows.includes(gasto.id)).map((gasto) => (
+              <li key={gasto.id}>
+                <span>
+                  {gasto.nombre_completo} - {gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''} - Obs... Claudia: {gasto.observacionC || "Sin observación"}
+                </span>
+                <button
+                  className="boton-mostrar-oculto-individual"
+                  onClick={() => handleShowHiddenRow(gasto.id)}
+                >
+                  Mostrar
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div id="gastos-historial" className="gastos-historial desplegado">
         <div className="scroll-container-wrapper">
@@ -247,7 +309,7 @@ const HistorialGastos = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredHistorial.map((gasto) => (
+                {visibleHistorial.map((gasto) => (
                   <tr key={gasto.id}>
                     <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''}</td>
                     <td>{gasto.nombre_completo}</td>
@@ -351,9 +413,14 @@ const HistorialGastos = () => {
                           )}
                         </>
                       ) : (
-                        <button className="accion-button editar" onClick={() => handleEditClick(gasto)}>
-                          Editar
-                        </button>
+                        <>
+                          <button className="accion-button editar" onClick={() => handleEditClick(gasto)}>
+                            Editar
+                          </button>
+                          <button className="accion-button ocultar" onClick={() => handleHideRow(gasto.id)}>
+                            Ocultar
+                          </button>
+                        </>
                       )}
                     </td>
                     <td>
@@ -382,7 +449,7 @@ const HistorialGastos = () => {
               </tbody>
             </table>
           </div>
-          {/* Se oculta este botón duplicado para evitar sobre espacio */}
+          {/* Botones de scroll */}
           <button className="scroll-button left" onClick={scrollLeft} style={{ display: 'none' }}>‹</button>
           <button className="scroll-button right" onClick={scrollRight}>›</button>
         </div>
