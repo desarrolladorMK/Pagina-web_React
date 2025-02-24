@@ -314,6 +314,14 @@
   }
 }
 
+.busqueda-export-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
 .excel-button-gastos {
   padding: 12px 25px;
   margin-bottom: 20px;
@@ -327,6 +335,7 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   transition: background 0.3s ease, transform 0.3s ease;
   margin-top: 20px;
+  
 }
 
 .excel-button-gastos:hover {
