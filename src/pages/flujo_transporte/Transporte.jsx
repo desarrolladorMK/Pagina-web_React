@@ -239,6 +239,9 @@ Observación: ${observacion}
       <h1 className="transporte-header">Registro de Transporte</h1>
       <div className="transporte-form-container">
         <h2 className="transporte-form-title">Formulario de Registro</h2>
+        <h4 className="fraseMotivacional">
+        “Hablar con verdad puede doler, pero vivir sin ella es perderse a uno mismo.”
+          </h4>
         <form onSubmit={handleSubmit}>
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha:</label>

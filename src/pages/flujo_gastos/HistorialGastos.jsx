@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './HistorialGastos.css';
+import * as XLSX from "xlsx";
 
 const HistorialGastos = () => {
   // Recupera el correo del usuario autenticado desde sessionStorage
@@ -65,6 +66,18 @@ const HistorialGastos = () => {
 
     obtenerHistorial();
   }, []);
+
+  // Función para exportar a Excel
+  const exportToExcel = () => {
+    // Convierte el historial a una hoja de cálculo
+    const worksheet = XLSX.utils.json_to_sheet(historial);
+    // Crea un libro de trabajo nuevo
+    const workbook = XLSX.utils.book_new();
+    // Agrega la hoja al libro
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
+    // Genera y descarga el archivo Excel
+    XLSX.writeFile(workbook, "historial_gastos.xlsx");
+  };
 
   // Formateo de moneda en COP
   const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
@@ -175,6 +188,11 @@ const HistorialGastos = () => {
   return (
     <div className="gastos-historial">
       <h2>Historial de Gastos</h2>
+      <h4 className="fraseMotivacional">
+        “No es la abundancia de bienes lo que define una vida plena, sino la prudencia con que utilizamos lo que tenemos.”
+      </h4>
+      {/* Botón para exportar a Excel */}
+    
       {/* Contenedor de búsqueda */}
       <div className="busqueda-container">
         <button 
@@ -186,6 +204,7 @@ const HistorialGastos = () => {
         >
           🔍
         </button>
+        
         <input 
           type="text" 
           placeholder="Buscar..." 
@@ -193,6 +212,9 @@ const HistorialGastos = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
         />
+         <button className="excel-button-gastos" onClick={exportToExcel}>
+        Exportar a Excel
+      </button>
       </div>
       <div id="gastos-historial" className="gastos-historial desplegado">
         <div className="scroll-container-wrapper">

@@ -866,6 +866,9 @@ const Gastos = () => {
               striped
               customStyles={customStyles}
             />
+             <button onClick={exportToExcel} className="excel-button">
+            Exportar a Excel
+          </button>
           </div>
         )
       )}

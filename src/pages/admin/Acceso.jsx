@@ -16,6 +16,9 @@ const Acceso = () => {
   return (
     <div className="emp-dashboard">
       <h2 className="emp-dashboard-title">Bienvenido al Panel de Administración</h2>
+      <h4 className="fraseMotivacional">
+      “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
+          </h4>
       <p className="emp-dashboard-user">Ingresaste como: {correoUsuario}</p>
       <div className="emp-dashboard-links">
         {opciones && opciones.length > 0 ? (

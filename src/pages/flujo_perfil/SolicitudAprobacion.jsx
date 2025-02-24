@@ -146,6 +146,9 @@ const SolicitudAprobacion = () => {
         </a>
       </div>
       <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>
+      <h4 className="fraseMotivacional">
+      “La belleza de la vida está en los detalles que a menudo pasamos por alto”
+          </h4>
 
       {/* Formulario de Solicitud */}
       <form onSubmit={handleSubmit} className="solicitud-aprobacion-form">
