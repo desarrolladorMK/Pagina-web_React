@@ -91,7 +91,6 @@ body {
     object-fit: cover;
     transition: transform;
   }
-  
 
   /* Asegura que el navbar ocupe todo el ancho de la pantalla */
   .navbar {
@@ -219,7 +218,7 @@ body {
   .play-button,
   .merkahorro-chatbot-icon {
     width: 50px;
-    height: 0px;
+    height: 50px; /* Corregí el height: 0px anterior */
   }
 
   .merkahorro-chatbot-icon img {
@@ -228,34 +227,29 @@ body {
   }
 }
 
-
-
-
 /* Estilo general para el main */
 main.Home {
   padding: 20px;
-  font-family: 'Roboto', sans-serif; /* Asegúrate de incluir la fuente en tu HTML */
-  color: #333; /* Color del texto */
-  background-color: #f9f9f9; /* Color de fondo del main */
-  max-width: 1200px; /* Ancho máximo del contenedor */
-  margin: 0 auto; /* Centra el main horizontalmente */
-
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Contenedor de la flip card */
 .flip-card {
   background-color: transparent;
   width: 190px;
-  min-height: 254px; /* Altura mínima para la vista inicial */
+  min-height: 254px;
   perspective: 1000px;
   font-family: sans-serif;
   margin: 1rem;
   transition: height 0.8s;
-  position: relative; /* Para poder usar z-index */
-  z-index: 1; /* Valor base */
+  position: relative;
+  z-index: 1;
 }
 
-/* Cuando se hace hover, elevamos el z-index para que aparezca por encima de otros elementos */
 .flip-card:hover {
   height: auto;
   z-index: 10;
@@ -342,9 +336,8 @@ main.Home {
 
 .flip-card {
   width: 90%;
-  max-width: 300px; /* Limitar el ancho máximo */
+  max-width: 300px;
 }
-
 
 .card-container {
   display: flex;
@@ -358,7 +351,7 @@ main.Home {
 .card {
   background-color: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 4px 8px  #210D65;
+  box-shadow: 0 4px 8px #210D65;
   overflow: hidden;
   padding: 20px;
   width: 300px;
@@ -372,7 +365,7 @@ main.Home {
 .card h2 {
   text-align: center;
   margin: 1.3rem;
-  color: rgb(#333);
+  color: #333;
   text-shadow: -10px 5px 10px rgba(21, 255, 0, 0.573);
 }
 
@@ -397,24 +390,23 @@ main.Home {
 
 @media (max-width: 768px) {
   .main-content {
-      padding: 15px;
+    padding: 15px;
   }
 }
 
 @media (max-width: 480px) {
   .main-content {
-      padding: 10px;
+    padding: 10px;
   }
 }
-
 
 .video-container {
   max-width: 100%;
   overflow: hidden;
-  position: relative ;
-  padding: 20px; /* Espacio alrededor del video */
+  position: relative;
+  padding: 20px;
   box-sizing: border-box;
-  text-align: center; /* Centra el título */
+  text-align: center;
   margin-top: 15rem;
   top: 9rem;
   margin-bottom: 150px;
@@ -422,7 +414,7 @@ main.Home {
 
 .video-container h1 {
   color: #210D65;
-  margin-bottom: 20px; /* Espacio debajo del título */
+  margin-bottom: 20px;
   font-size: 2.2em;
 }
 
@@ -441,139 +433,163 @@ main.Home {
     padding: 15px;
   }
   .video-container h1 {
-    font-size: 24px; /* Tamaño de fuente más pequeño para dispositivos móviles */
+    font-size: 24px;
   }
 }
 
-
-
 /* Estilo general para las tarjetas */
 .tarjeta-container {
-display: flex;
-flex-wrap: wrap; /* Permite que las tarjetas se muevan a la siguiente línea en pantallas pequeñas */
-justify-content: center;
-align-items: center; /* Alinea las tarjetas al centro verticalmente */
-padding: 20px;
-gap: 25px;
-position: relative;
-top: 8rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 25px;
+  position: relative;
+  top: 2rem; /* Reduje para evitar superposición */
+  z-index: 1; /* Por encima del logo */
 }
 
 .tarjeta {
-background-color: #ffffff;
-border-radius: 12px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-overflow: hidden;
-width: 300px; /* Ancho fijo para tarjetas */
-max-width: 100%; /* Asegura que la tarjeta no exceda el ancho del contenedor */
-text-align: center;
-transition: transform 0.2s, box-shadow 0.2s;
-margin-bottom: 20px; /* Espacio entre las filas de tarjetas */
-position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 300px;
+  max-width: 100%;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2; /* Asegura accesibilidad de botones */
 }
 
 .tarjeta:hover {
-transform: scale(1.05);
-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Incrementa la sombra en hover */
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .logo-sedes {
-width: 100%; /* Asegura que la imagen cubra el ancho del contenedor */
-height: auto; /* Mantiene la proporción de la imagen */
-object-fit: cover; /* Asegura que la imagen cubra el contenedor sin distorsionarse */
-border-bottom: 4px solid #210D65; /* Borde para resaltar la imagen */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-bottom: 4px solid #210D65;
 }
 
 .tarjeta h2 {
-font-size: 1.5em;
-margin: 15px 0;
-color: #210D65; /* Color oscuro para el título */
+  font-size: 1.5em;
+  margin: 15px 0;
+  color: #210D65;
 }
 
 .tarjeta p {
-font-size: 1em;
-color: #555;
-margin: 0 15px 15px 15px;
+  font-size: 1em;
+  color: #555;
+  margin: 0 15px 15px 15px;
 }
 
 .title-sedes {
-color: #210D65;
-margin-bottom: 20px; /* Espacio debajo del título */
-text-align: center; /* Alinea el título al centro */
-position: relative;
-top: 7rem;
+  color: #210D65;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  top: 7rem;
+}
+
+/* Estilo del contenedor del logo corporativo */
+.container-logocorporativo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh; /* Altura reducida para evitar superposición */
+  margin-top: 2rem; /* Espacio superior */
+  filter: drop-shadow(3px 3px 3px rgb(129, 170, 75));
+  position: relative;
+  z-index: 0; /* Debajo de las tarjetas */
+}
+
+/* Estilo del logo corporativo */
+.logocorporativo {
+  max-width: 70%;
+  height: auto;
+  margin: 0 auto;
 }
 
 /* Media Queries para hacer responsivo el diseño */
 @media (max-width: 768px) {
-.tarjeta-container {
-  padding: 10px;
-}
+  .tarjeta-container {
+    padding: 10px;
+    top: 1rem;
+  }
 
-.tarjeta {
-  width: 90%; /* Ajusta el ancho para pantallas pequeñas */
-  margin-bottom: 20px;
-}
+  .tarjeta {
+    width: 90%;
+    margin-bottom: 20px;
+  }
 
-.logo-sedes {
-  max-height: 300px; /* Aumenta la altura máxima para pantallas más pequeñas */
-}
+  .logo-sedes {
+    max-height: 300px;
+  }
 
-.title-sedes {
-  font-size: 1.8em; /* Ajusta el tamaño del texto para pantallas más pequeñas */
-  top: 2rem;
-}
+  .title-sedes {
+    font-size: 1.8em;
+    top: 2rem;
+  }
 
+  .container-logocorporativo {
+    height: 15vh;
+    margin-top: 1rem;
+  }
+
+  .logocorporativo {
+    max-width: 60%;
+  }
 }
 
 @media (max-width: 480px) {
-.tarjeta {
-  width: 90%; /* Tarjetas de ancho completo en móviles */
-  margin-bottom: 15px;
+  .tarjeta {
+    width: 90%;
+    margin-bottom: 15px;
+  }
+
+  .logo-sedes {
+    max-height: 400px;
+  }
+
+  .title-sedes {
+    font-size: 1.5em;
+    top: 6.5rem;
+  }
+
+  .container-logocorporativo {
+    height: 10vh;
+    margin-top: 0.5rem;
+  }
+
+  .logocorporativo {
+    max-width: 50%;
+  }
 }
 
-.logo-sedes {
-  max-height: 400px; /* Aumenta la altura máxima para dispositivos móviles */
-}
-
-.title-sedes {
-  font-size: 1.5em;
-  top: 6.5rem;
-}
-
-
-}
-
-.logocorporativo {
-max-width: 70%;
-margin: 0 auto;
-position: relative;
-top: 9rem;
-left: 0rem;
-}
-.container-logocorporativo {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 60vh; /* Ajusta la altura según tus necesidades */
-filter: drop-shadow(3px 3px 3px rgb(129, 170, 75)); /* Sombra suave */
-}
-.icono-tarjetas, .icono-tarjetatel {
-width: 24px; /* Ancho de los iconos */
-height: auto; /* Mantener proporciones */
-vertical-align: middle; /* Alinear verticalmente con el texto */
-margin-right: 8px; /* Espacio entre el icono y el texto */
-transition: transform 0.2s; /* Efecto de transición al pasar el ratón */
+.icono-tarjetas,
+.icono-tarjetatel {
+  width: 24px;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 8px;
+  transition: transform 0.2s;
 }
 
 /* Efecto al pasar el ratón */
-.icono-tarjetas:hover, .icono-tarjetatel:hover {
-transform: scale(1.1); /* Aumentar ligeramente el tamaño al pasar el ratón */
+.icono-tarjetas:hover,
+.icono-tarjetatel:hover {
+  transform: scale(1.1);
 }
 
 /* Estilos responsivos */
 @media (max-width: 600px) {
-.icono-tarjetas, .icono-tarjetatel {
-    width: 20px; /* Reducir tamaño en pantallas pequeñas */
-}
+  .icono-tarjetas,
+  .icono-tarjetatel {
+    width: 20px;
+  }
 }

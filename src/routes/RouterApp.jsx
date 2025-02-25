@@ -20,6 +20,7 @@ import {DGdecision} from "../pages/flujo_perfil/DGdecision";
 import {Transporte} from "../pages/flujo_transporte/Transporte";
 import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte";
 import {PanoramaViewer} from "../pages/PanoramaViewer";
+import {Contador} from "../pages/Contador";
 
 export let routes = [
   {
@@ -109,6 +110,10 @@ export let routes = [
   {
     path: '/panoramaViewer',
     element: <PanoramaViewer />,
+  },
+  {
+    path: '/contador',
+    element: <Contador />,
   },
 
   {

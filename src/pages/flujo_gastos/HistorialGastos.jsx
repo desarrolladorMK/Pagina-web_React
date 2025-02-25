@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './HistorialGastos.css';
 import * as XLSX from "xlsx";
+import Fuse from "fuse.js";
 
 const HistorialGastos = () => {
   // Recupera el correo del usuario autenticado desde sessionStorage
@@ -22,6 +23,8 @@ const HistorialGastos = () => {
   // Estados para búsqueda
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
+  // Estado que almacenará el resultado filtrado usando Fuse.js
+  const [filteredHistorial, setFilteredHistorial] = useState([]);
 
   // Estado para guardar los IDs de filas ocultas
   const [hiddenRows, setHiddenRows] = useState([]);
@@ -61,6 +64,7 @@ const HistorialGastos = () => {
         if (response.status === 200) {
           const data = response.data.data || [];
           setHistorial(data);
+          setFilteredHistorial(data); // Inicialmente se muestran todos los registros
         } else {
           setErrorMessage("No se pudo cargar el historial de gastos.");
         }
@@ -85,6 +89,33 @@ const HistorialGastos = () => {
   useEffect(() => {
     localStorage.setItem('hiddenRows', JSON.stringify(hiddenRows));
   }, [hiddenRows]);
+
+  // Integración de Fuse.js: Filtrar historial según searchQuery
+  useEffect(() => {
+    // Si la búsqueda está vacía, muestra todos los registros
+    if (searchQuery.trim() === "") {
+      setFilteredHistorial(historial);
+      return;
+    }
+    // Configuración de Fuse.js con las claves deseadas
+    const fuse = new Fuse(historial, {
+      keys: [
+        'fecha_creacion',  // Puedes incluir este campo si quieres buscar por fecha
+        'nombre_completo',
+        'descripcion',
+        'monto_estimado',
+        'area',
+        'sede',
+        'unidad',
+        'centro_costos',
+        'estado'
+      ],
+      threshold: 0.3, // Ajusta la sensibilidad de la búsqueda
+      includeScore: true,
+    });
+    const results = fuse.search(searchQuery);
+    setFilteredHistorial(results.map(result => result.item));
+  }, [searchQuery, historial]);
 
   // Función para exportar a Excel
   const exportToExcel = () => {
@@ -177,27 +208,6 @@ const HistorialGastos = () => {
     }
   };
 
-  // Función auxiliar para convertir cualquier campo a cadena en minúsculas
-  const getFieldString = (field) => {
-    if (!field) return "";
-    return Array.isArray(field)
-      ? field.join(" ").toLowerCase()
-      : String(field).toLowerCase();
-  };
-
-  // Filtra el historial según el texto de búsqueda usando todos los campos de cada objeto
-  const filteredHistorial = historial.filter((gasto) => {
-    const keywords = searchQuery
-      .split(',')
-      .map((k) => k.trim().toLowerCase())
-      .filter(Boolean);
-    if (keywords.length === 0) return true;
-
-    return keywords.some((keyword) =>
-      Object.values(gasto).some((value) => getFieldString(value).includes(keyword))
-    );
-  });
-
   // Se excluyen las filas ocultas para la tabla principal
   const visibleHistorial = filteredHistorial.filter((gasto) => !hiddenRows.includes(gasto.id));
 
@@ -258,7 +268,7 @@ const HistorialGastos = () => {
         </div>
       )}
 
-      {/* Sección de filas ocultas, solo se muestra si showHiddenRowsList es true */}
+      {/* Sección de filas ocultas */}
       {showHiddenRowsList && hiddenRows.length > 0 && (
         <div className="hidden-rows-container">
           <h3>Filas Ocultas</h3>
