@@ -100,7 +100,7 @@ const Contador = () => {
   };
 
   return (
-    <div className="main-container">
+    <div className="main-container-contador">
     <div className="tournament-container">
       <div className="logo-container">
         <a href="/">
