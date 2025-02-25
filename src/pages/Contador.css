@@ -1,4 +1,4 @@
-.main-container {
+.main-container-contador {
   margin: 0;
   padding: 0;
   background-image: url('../../public/mesa-pingpong.jpg'); /* Ruta relativa a la carpeta public */
@@ -21,7 +21,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.names-container {
+.main-container-contador {
   display: flex;
   justify-content: center;
   gap: 1rem;
