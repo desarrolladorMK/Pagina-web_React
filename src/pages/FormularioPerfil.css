@@ -1,0 +1,74 @@
+/* Contenedor general del formulario */
+.socio-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  /* Títulos y descripciones */
+  .socio-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .socio-description {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .socio-hr {
+    margin: 1rem 0;
+  }
+  
+  .socio-subtitle {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #210d65;
+  }
+  
+  /* Cada campo del formulario */
+  .socio-field {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .socio-label {
+    margin-bottom: 0.3rem;
+  }
+  
+  /* Estilos para inputs y selects */
+  .socio-input,
+  .socio-select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Botón de envío */
+  .socio-button-container {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .socio-submit-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    background-color: #210d65;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .socio-submit-btn:hover {
+    background-color: #89dc00;
+  }
+  

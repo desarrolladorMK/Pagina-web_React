@@ -437,17 +437,16 @@ main.Home {
   }
 }
 
-/* Estilo general para las tarjetas */
+/* Contenedor de tarjetas */
 .tarjeta-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 20px;
   gap: 25px;
-  position: relative;
-  top: 2rem; /* Reduje para evitar superposición */
-  z-index: 1; /* Por encima del logo */
+  padding: 20px;
+  /* Se eliminan top, position, z-index */
+  margin-bottom: 3rem; /* Espacio debajo de las tarjetas, si lo deseas */
 }
 
 .tarjeta {
@@ -490,10 +489,10 @@ main.Home {
 
 .title-sedes {
   color: #210D65;
-  margin-bottom: 20px;
   text-align: center;
-  position: relative;
-  top: 7rem;
+  font-size: 2rem; /* Ajusta a tu gusto */
+  margin-top: 3rem; /* Espacio superior */
+  margin-bottom: 2rem; /* Espacio inferior */
 }
 
 /* Estilo del contenedor del logo corporativo */
@@ -501,7 +500,7 @@ main.Home {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 20vh; /* Altura reducida para evitar superposición */
+  height: 60vh; /* Altura reducida para evitar superposición */
   margin-top: 2rem; /* Espacio superior */
   filter: drop-shadow(3px 3px 3px rgb(129, 170, 75));
   position: relative;
