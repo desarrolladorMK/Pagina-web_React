@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import "./FormularioPerfil.css"; // Crea o ajusta este archivo para los estilos
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./FormularioPerfil.css";
 const FormularioPerfil = () => {
   const [formData, setFormData] = useState({
     // PERFIL SOCIODEMOGRÁFICO
@@ -9,7 +10,8 @@ const FormularioPerfil = () => {
     numeroDocumento: "",
     celular: "",
     correo: "",
-    fechaNacimiento: "",
+    // Usamos Date para almacenar las fechas como objeto
+    fechaNacimiento: null,
     ciudadNacimiento: "",
     edad: "",
     peso: "",
@@ -31,7 +33,7 @@ const FormularioPerfil = () => {
     gradoEscolaridad: "",
     estadoCivil: "",
     tipoContrato: "",
-    fechaIngresoEmpresa: "",
+    fechaIngresoEmpresa: null,
     sede: "",
     cargoOperativo: "",
     departamentoOperaciones: "",
@@ -55,8 +57,8 @@ const FormularioPerfil = () => {
     contactoNombres: "",
     contactoCelular: "",
     parentescoContacto: "",
-    // FECHA DEL DILIGENCIAMIENTO
-    fechaDiligenciamiento: ""
+    // FECHA DEL DILIGENCIAMIENTO (automática)
+    fechaDiligenciamiento: new Date().toISOString().slice(0, 10)
   });
 
   // Manejador genérico para actualizar cualquier campo
@@ -71,12 +73,27 @@ const FormularioPerfil = () => {
   // Manejador para enviar el formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
+    // Formateamos las fechas a yyyy-MM-dd antes de enviar
+    const formattedData = {
+      ...formData,
+      fechaNacimiento: formData.fechaNacimiento
+        ? formData.fechaNacimiento.toISOString().slice(0, 10)
+        : "",
+      fechaIngresoEmpresa: formData.fechaIngresoEmpresa
+        ? formData.fechaIngresoEmpresa.toISOString().slice(0, 10)
+        : "",
+    };
+    console.log("Datos del formulario:", formattedData);
     alert("Formulario enviado. Revisa la consola para ver los datos.");
   };
 
   return (
     <form onSubmit={handleSubmit} className="socio-form">
+       <div className="logo-container">
+          <a href="/">
+            <img src="logoMK.png" alt="Logo Merkahorro" />
+          </a>
+        </div>
       <h1 className="socio-title">PERFIL SOCIODEMOGRÁFICO</h1>
       <p className="socio-description">
         Es una descripción de las características sociales y demográficas de los empleados del supermercado Merkahorro S.A.S
@@ -169,13 +186,13 @@ const FormularioPerfil = () => {
         <label className="socio-label">
           <strong>6. FECHA DE NACIMIENTO (d/M/yyyy)</strong>
         </label>
-        <input
-          type="date"
-          name="fechaNacimiento"
-          value={formData.fechaNacimiento}
-          onChange={handleChange}
-          required
+        <DatePicker
+          selected={formData.fechaNacimiento}
+          onChange={(date) => handleDateChange("fechaNacimiento", date)}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Selecciona una fecha"
           className="socio-input"
+          required
         />
       </div>
 
@@ -582,11 +599,11 @@ const FormularioPerfil = () => {
         <label className="socio-label">
           <strong>28. FECHA DE INGRESO A LA EMPRESA (d/M/yyyy)</strong>
         </label>
-        <input
-          type="date"
-          name="fechaIngresoEmpresa"
-          value={formData.fechaIngresoEmpresa}
-          onChange={handleChange}
+        <DatePicker
+          selected={formData.fechaIngresoEmpresa}
+          onChange={(date) => handleDateChange("fechaIngresoEmpresa", date)}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Selecciona una fecha"
           className="socio-input"
         />
       </div>
@@ -1002,7 +1019,7 @@ const FormularioPerfil = () => {
 
       <hr className="socio-hr" />
 
-      {/* 50. FECHA DEL DILIGENCIAMIENTO */}
+      {/* 50. FECHA DEL DILIGENCIAMIENTO (automática y no editable) */}
       <div className="socio-field">
         <label className="socio-label">
           <strong>50. FECHA DEL DILIGENCIAMIENTO (d/M/yyyy)</strong>
@@ -1013,6 +1030,7 @@ const FormularioPerfil = () => {
           value={formData.fechaDiligenciamiento}
           onChange={handleChange}
           required
+          disabled
           className="socio-input"
         />
       </div>
