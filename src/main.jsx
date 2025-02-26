@@ -21,9 +21,3 @@ if (rootElement) {
 } else {
   console.error("No se encontró el elemento con id 'root'.");
 }
-
-
-const awo = () => {
-  <h1>Pam</h1>
-  
-}
