@@ -201,7 +201,7 @@ const Home = () => {
           <img className="logo-sedes" src="/carnes barbosa.jpg" alt="Logo de carnes barbosa" />
           <h2>Carnes barbosa</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%2311-09" target="_blank">
+            <a href="https://maps.app.goo.gl/7jCPPiDha7FviHP58" target="_blank">
               <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
             </a>
             Dirección: Carrera 14 #11-09
@@ -237,7 +237,7 @@ const Home = () => {
           <img className="logo-sedes" src="/barbosa.jpg" alt="Logo de Barbosa" />
           <h2>Barbosa</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+14+%23+11-18" target="_blank">
+            <a href="https://maps.app.goo.gl/3K9oqWHPMk5WpXfK6" target="_blank">
               <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
             </a>
             Dirección:  Carrera 14 # 11-18
