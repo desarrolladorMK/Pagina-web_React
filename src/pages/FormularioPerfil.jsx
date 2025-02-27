@@ -1,1047 +1,854 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FormularioPerfil.css";
+
+const letterPattern = {
+  value: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+  message: "Solo se permiten letras y espacios"
+};
+
 const FormularioPerfil = () => {
-  const [formData, setFormData] = useState({
-    // PERFIL SOCIODEMOGRÁFICO
-    nombresApellidos: "",
-    tipoDocumento: "",
-    numeroDocumento: "",
-    celular: "",
-    correo: "",
-    // Usamos Date para almacenar las fechas como objeto
-    fechaNacimiento: null,
-    ciudadNacimiento: "",
-    edad: "",
-    peso: "",
-    estatura: "",
-    tipoVivienda: "",
-    caracteristicasVivienda: "",
-    estrato: "",
-    zona: "",
-    paisOrigen: "",
-    municipioResidencia: "",
-    barrio: "",
-    direccion: "",
-    genero: "",
-    grupoEtnico: "",
-    poblacionMovilidad: "",
-    grupoReligioso: "",
-    eps: "",
-    fondoPension: "",
-    gradoEscolaridad: "",
-    estadoCivil: "",
-    tipoContrato: "",
-    fechaIngresoEmpresa: null,
-    sede: "",
-    cargoOperativo: "",
-    departamentoOperaciones: "",
-    departamentoFinanciero: "",
-    departamentoComercial: "",
-    departamentoGestionHumana: "",
-    soloGerencia: "",
-    antiguedad: "",
-    grupoSanguineo: "",
-    dependientesEconomicos: "",
-    embarazo: "",
-    sufreEnfermedad: "",
-    descripcionEnfermedad: "",
-    // ACTUALIZACIÓN DE DATOS - HIJOS
-    tieneHijos: "",
-    cuantosHijos: "",
-    nombresHijos: "",
-    edadesHijos: "",
-    gradoEscolaridadHijos: "",
-    // CONTACTO EN CASO DE EMERGENCIA
-    contactoNombres: "",
-    contactoCelular: "",
-    parentescoContacto: "",
-    // FECHA DEL DILIGENCIAMIENTO (automática)
-    fechaDiligenciamiento: new Date().toISOString().slice(0, 10)
+  const { 
+    register, 
+    handleSubmit, 
+    control, 
+    watch, 
+    reset, 
+    formState: { errors } 
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      // PERFIL SOCIODEMOGRÁFICO
+      nombresApellidos: "",
+      tipoDocumento: "",
+      numeroDocumento: "",
+      celular: "",
+      correo: "",
+      fechaNacimiento: null,
+      ciudadNacimiento: "",
+      edad: "",
+      peso: "",
+      estatura: "",
+      tipoVivienda: "",
+      caracteristicasVivienda: "",
+      estrato: "",
+      zona: "",
+      paisOrigen: "",
+      municipioResidencia: "",
+      barrio: "",
+      direccion: "",
+      genero: "",
+      grupoEtnico: "",
+      poblacionMovilidad: "",
+      grupoReligioso: "",
+      eps: "",
+      fondoPension: "",
+      gradoEscolaridad: "",
+      estadoCivil: "",
+      tipoContrato: "",
+      fechaIngresoEmpresa: null,
+      sede: "",
+      cargoOperativo: "",
+      departamentoOperaciones: "",
+      departamentoFinanciero: "",
+      departamentoComercial: "",
+      departamentoGestionHumana: "",
+      soloGerencia: "",
+      // PREGUNTAS ADICIONALES (36 a 41)
+      antiguedad: "",
+      grupoSanguineo: "",
+      dependientesEconomicos: "",
+      embarazo: "",
+      sufreEnfermedad: "",
+      descripcionEnfermedad: "",
+      // ACTUALIZACIÓN DE DATOS - HIJOS
+      tieneHijos: "",
+      cuantosHijos: "",
+      nombresHijos: "",
+      edadesHijos: "",
+      gradoEscolaridadHijos: "",
+      // CONTACTO EN CASO DE EMERGENCIA
+      contactoNombres: "",
+      contactoCelular: "",
+      parentescoContacto: "",
+      // FECHA DEL DILIGENCIAMIENTO
+      fechaDiligenciamiento: new Date().toISOString().slice(0, 10)
+    }
   });
 
-  // Manejador genérico para actualizar cualquier campo
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // Campos condicionales
+  const sufreEnfermedad = watch("sufreEnfermedad");
+  const tieneHijos = watch("tieneHijos");
 
-  // Manejador para enviar el formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Formateamos las fechas a yyyy-MM-dd antes de enviar
+  const onSubmit = async (data) => {
     const formattedData = {
-      ...formData,
-      fechaNacimiento: formData.fechaNacimiento
-        ? formData.fechaNacimiento.toISOString().slice(0, 10)
+      ...data,
+      fechaNacimiento: data.fechaNacimiento
+        ? data.fechaNacimiento.toISOString().slice(0, 10)
         : "",
-      fechaIngresoEmpresa: formData.fechaIngresoEmpresa
-        ? formData.fechaIngresoEmpresa.toISOString().slice(0, 10)
-        : "",
+      fechaIngresoEmpresa: data.fechaIngresoEmpresa
+        ? data.fechaIngresoEmpresa.toISOString().slice(0, 10)
+        : ""
     };
     console.log("Datos del formulario:", formattedData);
-    alert("Formulario enviado. Revisa la consola para ver los datos.");
+    try {
+      const response = await fetch("https://backend-formulario-ruby.vercel.app/api/form/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formattedData)
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert("Formulario enviado y datos guardados correctamente.");
+        reset();
+      } else {
+        alert("Error al enviar formulario: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      alert("Ocurrió un error al enviar el formulario.");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="socio-form">
-       <div className="logo-container">
-          <a href="/">
-            <img src="logoMK.png" alt="Logo Merkahorro" />
-          </a>
-        </div>
-      <h1 className="socio-title">PERFIL SOCIODEMOGRÁFICO</h1>
-      <p className="socio-description">
+    <form onSubmit={handleSubmit(onSubmit)} className="formulario-perfil">
+      <div className="logo-container">
+        <a href="/"><img src="logoMK.png" alt="Logo Merkahorro" /></a>
+      </div>
+      <h1 className="perfil-title">PERFIL SOCIODEMOGRÁFICO</h1>
+      <p className="perfil-desc">
         Es una descripción de las características sociales y demográficas de los empleados del supermercado Merkahorro S.A.S
       </p>
-      <hr className="socio-hr" />
+      <hr className="perfil-hr" />
 
-      {/* 1. NOMBRES Y APELLIDOS COMPLETOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>1. NOMBRES Y APELLIDOS COMPLETOS</strong>
-        </label>
-        <input
-          type="text"
-          name="nombresApellidos"
-          value={formData.nombresApellidos}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 1: Datos Personales */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Datos Personales</h2>
+        
+        <div className="perfil-field">
+          <label>1. Nombres y Apellidos</label>
+          <input 
+            type="text" 
+            {...register("nombresApellidos", { 
+              required: "Campo obligatorio", 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+          />
+          {errors.nombresApellidos && <p className="error-text">{errors.nombresApellidos.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>2. Tipo de Documento</label>
+          <select {...register("tipoDocumento", { required: "Seleccione un tipo" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="CÉDULA DE CIUDADANÍA">CÉDULA DE CIUDADANÍA</option>
+            <option value="PPT">PPT</option>
+            <option value="CÉDULA DE EXTRANJERÍA">CÉDULA DE EXTRANJERÍA</option>
+            <option value="TARJETA DE IDENTIDAD">TARJETA DE IDENTIDAD</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.tipoDocumento && <p className="error-text">{errors.tipoDocumento.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>3. Número de Documento</label>
+          <input 
+            type="text" 
+            {...register("numeroDocumento", { 
+              required: "Campo obligatorio", 
+              pattern: { value: /^[0-9]+$/, message: "Solo se permiten números" },
+              maxLength: { value: 20, message: "Máximo 20 caracteres" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.numeroDocumento && <p className="error-text">{errors.numeroDocumento.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>4. Número de Celular</label>
+          <input 
+            type="text" 
+            {...register("celular", { 
+              required: "Campo obligatorio", 
+              pattern: { value: /^3\d{9}$/, message: "Debe ser un celular colombiano válido" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.celular && <p className="error-text">{errors.celular.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>5. Correo Electrónico</label>
+          <input 
+            type="email" 
+            {...register("correo", { required: "Campo obligatorio" })} 
+            className="perfil-input" 
+          />
+          {errors.correo && <p className="error-text">{errors.correo.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>6. Fecha de Nacimiento</label>
+          <Controller
+            control={control}
+            name="fechaNacimiento"
+            rules={{ required: "Campo obligatorio" }}
+            render={({ field }) => (
+              <DatePicker 
+                placeholderText="Selecciona una fecha" 
+                selected={field.value} 
+                onChange={(date) => field.onChange(date)} 
+                dateFormat="yyyy-MM-dd" 
+                className="perfil-input" 
+              />
+            )}
+          />
+          {errors.fechaNacimiento && <p className="error-text">{errors.fechaNacimiento.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>7. Ciudad de Nacimiento</label>
+          <input 
+            type="text" 
+            {...register("ciudadNacimiento", { 
+              required: "Campo obligatorio", 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+          />
+          {errors.ciudadNacimiento && <p className="error-text">{errors.ciudadNacimiento.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>8. Edad</label>
+          <input 
+            type="number" 
+            {...register("edad", { 
+              required: "Campo obligatorio", 
+              min: { value: 1, message: "Edad mínima 1" }, 
+              max: { value: 120, message: "Edad máxima 120" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.edad && <p className="error-text">{errors.edad.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>9. Peso (kg)</label>
+          <input 
+            type="number" 
+            step="any"
+            {...register("peso", { 
+              pattern: { value: /^\d+(\.\d{1,2})?$/, message: "Hasta 2 decimales" },
+              min: { value: 30, message: "Peso mínimo 30kg" },
+              max: { value: 200, message: "Peso máximo 200kg" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.peso && <p className="error-text">{errors.peso.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>10. Estatura (cm)</label>
+          <input 
+            type="number" 
+            step="any"
+            {...register("estatura", { 
+              pattern: { value: /^\d+(\.\d{1,2})?$/, message: "Hasta 2 decimales" },
+              min: { value: 100, message: "Estatura mínima 100cm" },
+              max: { value: 250, message: "Estatura máxima 250cm" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.estatura && <p className="error-text">{errors.estatura.message}</p>}
+        </div>
+      </section>
 
-      {/* 2. TIPO DE DOCUMENTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>2. TIPO DE DOCUMENTO</strong>
-        </label>
-        <select
-          name="tipoDocumento"
-          value={formData.tipoDocumento}
-          onChange={handleChange}
-          required
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="CÉDULA DE CIUDADANÍA">CÉDULA DE CIUDADANÍA</option>
-          <option value="PPT">PPT</option>
-          <option value="CÉDULA DE EXTRANJERÍA">CÉDULA DE EXTRANJERÍA</option>
-          <option value="TARJETA DE IDENTIDAD">TARJETA DE IDENTIDAD</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 3. NÚMERO DE DOCUMENTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>3. NÚMERO DE DOCUMENTO</strong>
-        </label>
-        <input
-          type="text"
-          name="numeroDocumento"
-          value={formData.numeroDocumento}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 2: Vivienda y Ubicación */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Vivienda y Ubicación</h2>
+        
+        <div className="perfil-field">
+          <label>11. Tipo de Vivienda</label>
+          <select {...register("tipoVivienda", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="PROPIA">PROPIA</option>
+            <option value="ARRENDADA">ARRENDADA</option>
+            <option value="FAMILIAR">FAMILIAR</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.tipoVivienda && <p className="error-text">{errors.tipoVivienda.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>12. Características de la Vivienda</label>
+          <select {...register("caracteristicasVivienda", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="FINCA">FINCA</option>
+            <option value="CASA LOTE">CASA LOTE</option>
+            <option value="CASA CONJUNTO CERRADO">CASA CONJUNTO CERRADO</option>
+            <option value="CASA BARRIO">CASA BARRIO</option>
+            <option value="APARTAMENTO">APARTAMENTO</option>
+            <option value="HABITACIÓN">HABITACIÓN</option>
+          </select>
+          {errors.caracteristicasVivienda && <p className="error-text">{errors.caracteristicasVivienda.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>13. Estrato Socioeconómico</label>
+          <select {...register("estrato", { required: "Seleccione un estrato" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          {errors.estrato && <p className="error-text">{errors.estrato.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>14. Zona</label>
+          <select {...register("zona", { required: "Seleccione una zona" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="URBANA">URBANA</option>
+            <option value="RURAL">RURAL</option>
+          </select>
+          {errors.zona && <p className="error-text">{errors.zona.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>15. País de Origen</label>
+          <input 
+            type="text" 
+            {...register("paisOrigen", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+          />
+          {errors.paisOrigen && <p className="error-text">{errors.paisOrigen.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>16. Municipio de Residencia</label>
+          <input 
+            type="text" 
+            {...register("municipioResidencia", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.municipioResidencia && <p className="error-text">{errors.municipioResidencia.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>17. Barrio</label>
+          <input 
+            type="text" 
+            {...register("barrio", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.barrio && <p className="error-text">{errors.barrio.message}</p>}
+        </div>
+        
+        <div className="perfil-field">
+          <label>18. Dirección Completa</label>
+          {/* Permite números para direcciones */}
+          <input 
+            type="text" 
+            {...register("direccion", { 
+              maxLength: { value: 255, message: "Máximo 255 caracteres" } 
+            })} 
+            className="perfil-input" 
+          />
+          {errors.direccion && <p className="error-text">{errors.direccion.message}</p>}
+        </div>
+      </section>
 
-      {/* 4. NÚMERO DE CELULAR */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>4. NÚMERO DE CELULAR</strong>
-        </label>
-        <input
-          type="text"
-          name="celular"
-          value={formData.celular}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 5. CORREO ELECTRÓNICO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>5. CORREO ELECTRÓNICO</strong>
-        </label>
-        <input
-          type="email"
-          name="correo"
-          value={formData.correo}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 3: Datos Demográficos */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Datos Demográficos</h2>
+        <div className="perfil-field">
+          <label>19. Género</label>
+          <select {...register("genero", { required: "Seleccione un género" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="MASCULINO">MASCULINO</option>
+            <option value="FEMENINO">FEMENINO</option>
+            <option value="NO BINARIO">NO BINARIO</option>
+            <option value="LGTBIQ+">LGTBIQ+</option>
+            <option value="PREFIERO NO DECIRLO">PREFIERO NO DECIRLO</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.genero && <p className="error-text">{errors.genero.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>20. Grupo Étnico</label>
+          <select {...register("grupoEtnico", { required: "Seleccione un grupo étnico" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="INDÍGENA">INDÍGENA</option>
+            <option value="GITANO O RROM">GITANO O RROM</option>
+            <option value="RAIZAL">RAIZAL</option>
+            <option value="AFRO">AFRO</option>
+            <option value="NO ME IDENTIFICO">NO ME IDENTIFICO</option>
+          </select>
+          {errors.grupoEtnico && <p className="error-text">{errors.grupoEtnico.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>21. Población en Movilidad</label>
+          <select {...register("poblacionMovilidad", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="POBLACIÓN MIGRANTE">POBLACIÓN MIGRANTE</option>
+            <option value="DESPLAZADO">DESPLAZADO</option>
+            <option value="APÁTRIDA">APÁTRIDA</option>
+            <option value="REASENTADO">REASENTADO</option>
+            <option value="RETORNADO">RETORNADO</option>
+            <option value="EXILIADO">EXILIADO</option>
+            <option value="TRÁNSITO MIGRATORIO">TRÁNSITO MIGRATORIO</option>
+            <option value="NINGUNA">NINGUNA</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.poblacionMovilidad && <p className="error-text">{errors.poblacionMovilidad.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>22. Grupo Religioso</label>
+          <select {...register("grupoReligioso", { required: "Seleccione un grupo religioso" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="CATOLICISMO">CATOLICISMO</option>
+            <option value="PROTESTANTISMO">PROTESTANTISMO</option>
+            <option value="RELIGIONES AFRODESCENDIENTES">RELIGIONES AFRODESCENDIENTES</option>
+            <option value="RELIGIONES INDÍGENAS">RELIGIONES INDÍGENAS</option>
+            <option value="ISLAM">ISLAM</option>
+            <option value="JUDAÍSMO">JUDAÍSMO</option>
+            <option value="HINDUISMO, BUDISMO Ó BAHISMO">HINDUISMO, BUDISMO Ó BAHISMO</option>
+            <option value="NINGUNO">NINGUNO</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.grupoReligioso && <p className="error-text">{errors.grupoReligioso.message}</p>}
+        </div>
+      </section>
 
-      {/* 6. FECHA DE NACIMIENTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>6. FECHA DE NACIMIENTO (d/M/yyyy)</strong>
-        </label>
-        <DatePicker
-          selected={formData.fechaNacimiento}
-          onChange={(date) => handleDateChange("fechaNacimiento", date)}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="Selecciona una fecha"
-          className="socio-input"
-          required
-        />
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 7. CIUDAD DE NACIMIENTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>7. CIUDAD DE NACIMIENTO</strong>
-        </label>
-        <input
-          type="text"
-          name="ciudadNacimiento"
-          value={formData.ciudadNacimiento}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 4: Afiliación y Escolaridad */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Afiliación y Escolaridad</h2>
+        <div className="perfil-field">
+          <label>23. EPS</label>
+          <select {...register("eps", { required: "Seleccione una EPS" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="SURA">SURA</option>
+            <option value="SALUD TOTAL">SALUD TOTAL</option>
+            <option value="SANITAS">SANITAS</option>
+            <option value="NUEVA EPS">NUEVA EPS</option>
+            <option value="SAVIA SALUD">SAVIA SALUD</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.eps && <p className="error-text">{errors.eps.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>24. Fondo de Pensión</label>
+          <select {...register("fondoPension", { required: "Seleccione un fondo" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="COLPENSIONES">COLPENSIONES</option>
+            <option value="PROTECCIÓN">PROTECCIÓN</option>
+            <option value="COLFONDOS">COLFONDOS</option>
+            <option value="PORVENIR">PORVENIR</option>
+            <option value="NO APLICA (APRENDIZ)">NO APLICA (APRENDIZ)</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.fondoPension && <p className="error-text">{errors.fondoPension.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>25. Grado de Escolaridad</label>
+          <select {...register("gradoEscolaridad", { required: "Seleccione un grado" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="PRIMARIA INCOMPLETA">PRIMARIA INCOMPLETA</option>
+            <option value="PRIMARIA COMPLETA">PRIMARIA COMPLETA</option>
+            <option value="BACHILLER INCOMPLETO">BACHILLER INCOMPLETO</option>
+            <option value="BACHILLER COMPLETO">BACHILLER COMPLETO</option>
+            <option value="TECNICO/TECNOLOGO INCOMPLETO">TECNICO/TECNOLOGO INCOMPLETO</option>
+            <option value="TECNICO/TECNOLOGO COMPLETO">TECNICO/TECNOLOGO COMPLETO</option>
+            <option value="PROFESIONAL INCOMPLETO">PROFESIONAL INCOMPLETO</option>
+            <option value="PROFESIONAL COMPLETO">PROFESIONAL COMPLETO</option>
+            <option value="POSTGRADO">POSTGRADO</option>
+            <option value="NINGUNO">NINGUNO</option>
+          </select>
+          {errors.gradoEscolaridad && <p className="error-text">{errors.gradoEscolaridad.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>26. Estado Civil</label>
+          <select {...register("estadoCivil", { required: "Seleccione un estado" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="SOLTERO/RA">SOLTERO/RA</option>
+            <option value="CASADO/DA">CASADO/DA</option>
+            <option value="UNIÓN LIBRE">UNIÓN LIBRE</option>
+            <option value="DIVORCIADO/DA">DIVORCIADO/DA</option>
+            <option value="VIUDO/DA">VIUDO/DA</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.estadoCivil && <p className="error-text">{errors.estadoCivil.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>27. Tipo de Contrato</label>
+          <select {...register("tipoContrato", { required: "Seleccione un tipo" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="TERMINO INDEFINIDO">TERMINO INDEFINIDO</option>
+            <option value="TERMINO FIJO">TERMINO FIJO</option>
+          </select>
+          {errors.tipoContrato && <p className="error-text">{errors.tipoContrato.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>28. Fecha de Ingreso a la Empresa</label>
+          <Controller
+            control={control}
+            name="fechaIngresoEmpresa"
+            render={({ field }) => (
+              <DatePicker 
+                placeholderText="Selecciona una fecha" 
+                selected={field.value} 
+                onChange={(date) => field.onChange(date)} 
+                dateFormat="yyyy-MM-dd" 
+                className="perfil-input" 
+              />
+            )}
+          />
+        </div>
+      </section>
 
-      {/* 8. EDAD */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>8. EDAD</strong>
-        </label>
-        <input
-          type="number"
-          name="edad"
-          value={formData.edad}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 9. PESO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>9. PESO</strong>
-        </label>
-        <input
-          type="number"
-          name="peso"
-          value={formData.peso}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 5: Información Laboral */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Información Laboral</h2>
+        <div className="perfil-field">
+          <label>29. Sede</label>
+          <select {...register("sede", { required: "Seleccione una sede" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="BARBOSA">BARBOSA</option>
+            <option value="GIRARDOTA PARQUE">GIRARDOTA PARQUE</option>
+            <option value="GIRARDOTA LLANO">GIRARDOTA LLANO</option>
+            <option value="COPACABANA SAN JUAN">COPACABANA SAN JUAN</option>
+            <option value="COPACABANA VEGAS">COPACABANA VEGAS</option>
+            <option value="COPACABANA PLAZA">COPACABANA PLAZA</option>
+            <option value="VILLA HERMOSA">VILLA HERMOSA</option>
+            <option value="CEDI FRUVER MAYORISTA">CEDI FRUVER MAYORISTA</option>
+          </select>
+          {errors.sede && <p className="error-text">{errors.sede.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>30. Cargo Operativo</label>
+          <select {...register("cargoOperativo", { required: "Seleccione un cargo" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="CAJERO">CAJERO</option>
+            <option value="SURTIDOR">SURTIDOR</option>
+            <option value="EMPACADOR">EMPACADOR</option>
+            <option value="MONITOR DE SERVICIOS">MONITOR DE SERVICIOS</option>
+            <option value="SERVICIOS GENERALES">SERVICIOS GENERALES</option>
+            <option value="DOMICILIARIO">DOMICILIARIO</option>
+            <option value="CONDUCTOR">CONDUCTOR</option>
+            <option value="AUXILIAR BODEGA">AUXILIAR BODEGA</option>
+            <option value="AUXILIAR FRUVER">AUXILIAR FRUVER</option>
+            <option value="AUXILIAR CARNICO">AUXILIAR CARNICO</option>
+            <option value="MANTENIMIENTO">MANTENIMIENTO</option>
+            <option value="LÍDER DEL PUNTO">LÍDER DEL PUNTO</option>
+          </select>
+          {errors.cargoOperativo && <p className="error-text">{errors.cargoOperativo.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>31. Departamento Operaciones</label>
+          <select {...register("departamentoOperaciones", { required: "Seleccione un departamento" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="ANALISTA OPERACIONES">ANALISTA OPERACIONES</option>
+            <option value="DIRECTOR OPERACIONES">DIRECTOR OPERACIONES</option>
+            <option value="AUXILIAR INVENTARIO">AUXILIAR INVENTARIO</option>
+            <option value="AUXILIAR RECIBO">AUXILIAR RECIBO</option>
+            <option value="AUXILIAR SISTEMAS">AUXILIAR SISTEMAS</option>
+            <option value="ALMACEN Y SUMINISTROS">ALMACEN Y SUMINISTROS</option>
+            <option value="LÍDER SISTEMAS">LÍDER SISTEMAS</option>
+            <option value="COORDINADOR LOGÍSTICO">COORDINADOR LOGÍSTICO</option>
+            <option value="PRACTICANTE">PRACTICANTE</option>
+          </select>
+          {errors.departamentoOperaciones && <p className="error-text">{errors.departamentoOperaciones.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>32. Departamento Financiero</label>
+          <select {...register("departamentoFinanciero", { required: "Seleccione un departamento" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="DIRECTORA ADMINISTRATIVA Y FINANCIERA">DIRECTORA ADMINISTRATIVA Y FINANCIERA</option>
+            <option value="AUXILIAR TESORERIA">AUXILIAR TESORERIA</option>
+            <option value="AUXILIAR CARTERA">AUXILIAR CARTERA</option>
+            <option value="AUXILIAR NÓMINA">AUXILIAR NÓMINA</option>
+            <option value="ANALISTA CONTABLE">ANALISTA CONTABLE</option>
+            <option value="AUXILIAR CONTABLE">AUXILIAR CONTABLE</option>
+            <option value="AUXILIAR CAUSACIONES">AUXILIAR CAUSACIONES</option>
+            <option value="LÍDER CONTABILIDAD">LÍDER CONTABILIDAD</option>
+          </select>
+          {errors.departamentoFinanciero && <p className="error-text">{errors.departamentoFinanciero.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>33. Departamento Comercial</label>
+          <select {...register("departamentoComercial", { required: "Seleccione un departamento" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="ASISTENTE COMERCIAL">ASISTENTE COMERCIAL</option>
+            <option value="AUXILIAR COMERCIAL">AUXILIAR COMERCIAL</option>
+            <option value="LÍDER COMPRAS">LÍDER COMPRAS</option>
+            <option value="AUXILIAR COMPRAS">AUXILIAR COMPRAS</option>
+          </select>
+          {errors.departamentoComercial && <p className="error-text">{errors.departamentoComercial.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>34. Departamento Gestión Humana</label>
+          <select {...register("departamentoGestionHumana", { required: "Seleccione un departamento" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="DIRECTOR GESTIÓN HUMANA">DIRECTOR GESTIÓN HUMANA</option>
+            <option value="ASISTENTE GESTIÓN HUMANA">ASISTENTE GESTIÓN HUMANA</option>
+            <option value="LÍDER DE DESARROLLO Y TALENTO HUMANO">LÍDER DE DESARROLLO Y TALENTO HUMANO</option>
+            <option value="AUXILIAR GESTIÓN HUMANA">AUXILIAR GESTIÓN HUMANA</option>
+            <option value="AUXILIAR SISTEMAS INTEGRADOS">AUXILIAR SISTEMAS INTEGRADOS</option>
+            <option value="PRACTICANTE SST">PRACTICANTE SST</option>
+            <option value="PRACTICANTE">PRACTICANTE</option>
+          </select>
+          {errors.departamentoGestionHumana && <p className="error-text">{errors.departamentoGestionHumana.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>35. Solo Gerencia</label>
+          <select {...register("soloGerencia", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="GERENTE">GERENTE</option>
+          </select>
+          {errors.soloGerencia && <p className="error-text">{errors.soloGerencia.message}</p>}
+        </div>
+      </section>
 
-      {/* 10. ESTATURA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>10. ESTATURA</strong>
-        </label>
-        <input
-          type="number"
-          name="estatura"
-          value={formData.estatura}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 11. TIPO DE VIVIENDA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>11. TIPO DE VIVIENDA</strong>
-        </label>
-        <select
-          name="tipoVivienda"
-          value={formData.tipoVivienda}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="PROPIA">PROPIA</option>
-          <option value="ARRENDADA">ARRENDADA</option>
-          <option value="FAMILIAR">FAMILIAR</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
+      {/* Sección 5.1: Datos Adicionales (Preguntas 36 a 41) */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Datos Adicionales</h2>
+        <div className="perfil-field">
+          <label>36. Antigüedad en la Empresa</label>
+          <select {...register("antiguedad", { required: "Seleccione la antigüedad" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="MENOS DE 6 MESES">MENOS DE 6 MESES</option>
+            <option value="6 MESES a 1 AÑO">6 MESES a 1 AÑO</option>
+            <option value="1 a 3 AÑOS">1 a 3 AÑOS</option>
+            <option value="4 a 6 AÑOS">4 a 6 AÑOS</option>
+            <option value="7 a 8 AÑOS">7 a 8 AÑOS</option>
+          </select>
+          {errors.antiguedad && <p className="error-text">{errors.antiguedad.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>37. Grupo Sanguíneo</label>
+          <select {...register("grupoSanguineo", { required: "Seleccione un grupo sanguíneo" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+          {errors.grupoSanguineo && <p className="error-text">{errors.grupoSanguineo.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>38. Número de Personas que Dependen Económicamente</label>
+          <select {...register("dependientesEconomicos", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="Otras">Otras</option>
+          </select>
+          {errors.dependientesEconomicos && <p className="error-text">{errors.dependientesEconomicos.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>39. ¿Actualmente Tú o Tu Pareja Están en Estado de Embarazo?</label>
+          <select {...register("embarazo", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+          {errors.embarazo && <p className="error-text">{errors.embarazo.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>40. ¿Sufres de Alguna Enfermedad?</label>
+          <select {...register("sufreEnfermedad", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+          {errors.sufreEnfermedad && <p className="error-text">{errors.sufreEnfermedad.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>41. Si la respuesta anterior fue SI, describa la enfermedad</label>
+          <input 
+            type="text" 
+            {...register("descripcionEnfermedad", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+            disabled={watch("sufreEnfermedad") !== "SI"} 
+          />
+          {errors.descripcionEnfermedad && <p className="error-text">{errors.descripcionEnfermedad.message}</p>}
+        </div>
+      </section>
 
-      {/* 12. CARACTERÍSTICAS DE LA VIVIENDA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>12. CARACTERÍSTICAS DE LA VIVIENDA</strong>
-        </label>
-        <select
-          name="caracteristicasVivienda"
-          value={formData.caracteristicasVivienda}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="FINCA">FINCA</option>
-          <option value="CASA LOTE">CASA LOTE</option>
-          <option value="CASA CONJUNTO CERRADO">CASA CONJUNTO CERRADO</option>
-          <option value="CASA BARRIO">CASA BARRIO</option>
-          <option value="APARTAMENTO">APARTAMENTO</option>
-          <option value="HABITACIÓN">HABITACIÓN</option>
-        </select>
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 13. ESTRATO SOCIOECONÓMICO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>13. ESTRATO SOCIOECONÓMICO</strong>
-        </label>
-        <select
-          name="estrato"
-          value={formData.estrato}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-        </select>
-      </div>
+      {/* Sección 6: Información Familiar */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Actualización de Datos - Hijos</h2>
+        <div className="perfil-field">
+          <label>42. ¿Tiene Hijos?</label>
+          <select {...register("tieneHijos", { required: "Seleccione una opción" })} className="perfil-select">
+            <option value="">Seleccione...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+          {errors.tieneHijos && <p className="error-text">{errors.tieneHijos.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>43. Si la respuesta fue SI, ¿cuántos Hijos?</label>
+          <select 
+            {...register("cuantosHijos", { required: tieneHijos === "SI" ? "Seleccione la cantidad" : false })} 
+            disabled={tieneHijos !== "SI"} 
+            className="perfil-select"
+          >
+            <option value="">Seleccione...</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="OTRAS">Otras</option>
+          </select>
+          {errors.cuantosHijos && <p className="error-text">{errors.cuantosHijos.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>44. Nombres de Hijos (separados por ;)</label>
+          <input 
+            type="text" 
+            {...register("nombresHijos", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            disabled={tieneHijos !== "SI"} 
+            className="perfil-input" 
+          />
+          {errors.nombresHijos && <p className="error-text">{errors.nombresHijos.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>45. Edades de Hijos (separadas por ;)</label>
+          <input 
+            type="text" 
+            {...register("edadesHijos", { 
+              pattern: { value: /^(\d+;?)+$/, message: "Solo números separados por ;" }
+            })} 
+            disabled={tieneHijos !== "SI"} 
+            className="perfil-input" 
+          />
+          {errors.edadesHijos && <p className="error-text">{errors.edadesHijos.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>46. Grado de Escolaridad de Hijos</label>
+          <input 
+            type="text" 
+            {...register("gradoEscolaridadHijos", { 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            disabled={tieneHijos !== "SI"} 
+            className="perfil-input" 
+          />
+          {errors.gradoEscolaridadHijos && <p className="error-text">{errors.gradoEscolaridadHijos.message}</p>}
+        </div>
+      </section>
 
-      {/* 14. ZONA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>14. ZONA</strong>
-        </label>
-        <select
-          name="zona"
-          value={formData.zona}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="URBANA">URBANA</option>
-          <option value="RURAL">RURAL</option>
-        </select>
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 15. PAÍS DE ORIGEN */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>15. PAÍS DE ORIGEN</strong>
-        </label>
-        <input
-          type="text"
-          name="paisOrigen"
-          value={formData.paisOrigen}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 7: Contacto en Caso de Emergencia */}
+      <section className="perfil-section">
+        <h2 className="perfil-section-title">Contacto en Caso de Emergencia</h2>
+        <div className="perfil-field">
+          <label>47. Nombres y Apellidos del Contacto</label>
+          <input 
+            type="text" 
+            {...register("contactoNombres", { 
+              required: "Campo obligatorio", 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+          />
+          {errors.contactoNombres && <p className="error-text">{errors.contactoNombres.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>48. Número de Celular del Contacto</label>
+          <input 
+            type="text" 
+            {...register("contactoCelular", { 
+              required: "Campo obligatorio", 
+              pattern: { value: /^3\d{9}$/, message: "Ingrese celular colombiano válido" }
+            })} 
+            className="perfil-input" 
+          />
+          {errors.contactoCelular && <p className="error-text">{errors.contactoCelular.message}</p>}
+        </div>
+        <div className="perfil-field">
+          <label>49. Parentesco</label>
+          <input 
+            type="text" 
+            {...register("parentescoContacto", { 
+              required: "Campo obligatorio", 
+              maxLength: { value: 50, message: "Máximo 50 caracteres" },
+              pattern: letterPattern
+            })} 
+            className="perfil-input" 
+          />
+          {errors.parentescoContacto && <p className="error-text">{errors.parentescoContacto.message}</p>}
+        </div>
+      </section>
 
-      {/* 16. MUNICIPIO DE RESIDENCIA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>16. MUNICIPIO DE RESIDENCIA</strong>
-        </label>
-        <input
-          type="text"
-          name="municipioResidencia"
-          value={formData.municipioResidencia}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
+      <hr className="perfil-hr" />
 
-      {/* 17. BARRIO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>17. BARRIO</strong>
-        </label>
-        <input
-          type="text"
-          name="barrio"
-          value={formData.barrio}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
+      {/* Sección 8: Fecha del Diligenciamiento */}
+      <section className="perfil-section">
+        <div className="perfil-field">
+          <label>50. Fecha del Diligenciamiento</label>
+          <input 
+            type="date" 
+            {...register("fechaDiligenciamiento", { required: "Campo obligatorio" })} 
+            className="perfil-input" 
+            disabled 
+          />
+          {errors.fechaDiligenciamiento && <p className="error-text">{errors.fechaDiligenciamiento.message}</p>}
+        </div>
+      </section>
 
-      {/* 18. DIRECCIÓN DE RESIDENCIA COMPLETA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>18. DIRECCIÓN DE RESIDENCIA COMPLETA</strong>
-        </label>
-        <input
-          type="text"
-          name="direccion"
-          value={formData.direccion}
-          onChange={handleChange}
-          className="socio-input"
-        />
-      </div>
-
-      {/* 19. GÉNERO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>19. GÉNERO</strong>
-        </label>
-        <select
-          name="genero"
-          value={formData.genero}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="MASCULINO">MASCULINO</option>
-          <option value="FEMENINO">FEMENINO</option>
-          <option value="NO BINARIO">NO BINARIO</option>
-          <option value="LGTBIQ+">LGTBIQ+</option>
-          <option value="PREFIERO NO DECIRLO">PREFIERO NO DECIRLO</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 20. GRUPO ÉTNICO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>20. GRUPO ÉTNICO</strong>
-        </label>
-        <select
-          name="grupoEtnico"
-          value={formData.grupoEtnico}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="INDÍGENA">INDÍGENA</option>
-          <option value="GITANO O RROM">GITANO O RROM</option>
-          <option value="RAIZAL">RAIZAL</option>
-          <option value="AFRO">NEGRO, MULATO, AFRODESCENDIENTE, AFROCOLOMBIANO</option>
-          <option value="NO ME IDENTIFICO">NO ME IDENTIFICO</option>
-        </select>
-      </div>
-
-      {/* 21. POBLACIÓN EN MOVILIDAD */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>21. POBLACIÓN EN MOVILIDAD</strong>
-        </label>
-        <select
-          name="poblacionMovilidad"
-          value={formData.poblacionMovilidad}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="POBLACIÓN MIGRANTE">POBLACIÓN MIGRANTE</option>
-          <option value="DESPLAZADO">DESPLAZADO</option>
-          <option value="APÁTRIDA">APÁTRIDA</option>
-          <option value="REASENTADO">REASENTADO</option>
-          <option value="RETORNADO">RETORNADO</option>
-          <option value="EXILIADO">EXILIADO</option>
-          <option value="TRÁNSITO MIGRATORIO">TRÁNSITO MIGRATORIO</option>
-          <option value="NINGUNA">NINGUNA</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 22. GRUPO RELIGIOSO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>22. GRUPO RELIGIOSO</strong>
-        </label>
-        <select
-          name="grupoReligioso"
-          value={formData.grupoReligioso}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="CATOLICISMO">CATOLICISMO</option>
-          <option value="PROTESTANTISMO">PROTESTANTISMO</option>
-          <option value="RELIGIONES AFRODESCENDIENTES">
-            RELIGIONES AFRODESCENDIENTES
-          </option>
-          <option value="RELIGIONES INDÍGENAS">RELIGIONES INDÍGENAS</option>
-          <option value="ISLAM">ISLAM</option>
-          <option value="JUDAÍSMO">JUDAÍSMO</option>
-          <option value="HINDUISMO, BUDISMO Ó BAHISMO">
-            HINDUISMO, BUDISMO Ó BAHISMO
-          </option>
-          <option value="NINGUNO">NINGUNO</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 23. EPS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>23. EPS A LA QUE ESTÁ AFILIADO</strong>
-        </label>
-        <select
-          name="eps"
-          value={formData.eps}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="SURA">SURA</option>
-          <option value="SALUD TOTAL">SALUD TOTAL</option>
-          <option value="SANITAS">SANITAS</option>
-          <option value="NUEVA EPS">NUEVA EPS</option>
-          <option value="SAVIA SALUD">SAVIA SALUD</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 24. FONDO DE PENSIÓN */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>24. FONDO DE PENSIÓN A LA QUE ESTÁ AFILIADO</strong>
-        </label>
-        <select
-          name="fondoPension"
-          value={formData.fondoPension}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="COLPENSIONES">COLPENSIONES</option>
-          <option value="PROTECCIÓN">PROTECCIÓN</option>
-          <option value="COLFONDOS">COLFONDOS</option>
-          <option value="PORVENIR">PORVENIR</option>
-          <option value="NO APLICA (APRENDIZ)">
-            NO APLICA (APRENDIZ)
-          </option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 25. GRADO DE ESCOLARIDAD */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>25. GRADO DE ESCOLARIDAD</strong>
-        </label>
-        <select
-          name="gradoEscolaridad"
-          value={formData.gradoEscolaridad}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="PRIMARIA INCOMPLETA">PRIMARIA INCOMPLETA</option>
-          <option value="PRIMARIA COMPLETA">PRIMARIA COMPLETA</option>
-          <option value="BACHILLER INCOMPLETO">BACHILLER INCOMPLETO</option>
-          <option value="BACHILLER COMPLETO">BACHILLER COMPLETO</option>
-          <option value="TECNICO/TECNOLOGO INCOMPLETO">
-            TECNICO/TECNOLOGO INCOMPLETO
-          </option>
-          <option value="TECNICO/TECNOLOGO COMPLETO">
-            TECNICO/TECNOLOGO COMPLETO
-          </option>
-          <option value="PROFESIONAL INCOMPLETO">
-            PROFESIONAL INCOMPLETO
-          </option>
-          <option value="PROFESIONAL COMPLETO">PROFESIONAL COMPLETO</option>
-          <option value="POSTGRADO">POSTGRADO</option>
-          <option value="NINGUNO">NINGUNO</option>
-        </select>
-      </div>
-
-      {/* 26. ESTADO CIVIL */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>26. ESTADO CIVIL</strong>
-        </label>
-        <select
-          name="estadoCivil"
-          value={formData.estadoCivil}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="SOLTERO/RA">SOLTERO/RA</option>
-          <option value="CASADO/DA">CASADO/DA</option>
-          <option value="UNIÓN LIBRE">UNIÓN LIBRE</option>
-          <option value="DIVORCIADO/DA">DIVORCIADO/DA</option>
-          <option value="VIUDO/DA">VIUDO/DA</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 27. TIPO DE CONTRATO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>27. TIPO DE CONTRATO</strong>
-        </label>
-        <select
-          name="tipoContrato"
-          value={formData.tipoContrato}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="TERMINO INDEFINIDO">TERMINO INDEFINIDO</option>
-          <option value="TERMINO FIJO">TERMINO FIJO</option>
-        </select>
-      </div>
-
-      {/* 28. FECHA DE INGRESO A LA EMPRESA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>28. FECHA DE INGRESO A LA EMPRESA (d/M/yyyy)</strong>
-        </label>
-        <DatePicker
-          selected={formData.fechaIngresoEmpresa}
-          onChange={(date) => handleDateChange("fechaIngresoEmpresa", date)}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="Selecciona una fecha"
-          className="socio-input"
-        />
-      </div>
-
-      {/* 29. SEDE */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>29. SEDE</strong>
-        </label>
-        <select
-          name="sede"
-          value={formData.sede}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="BARBOSA">BARBOSA</option>
-          <option value="GIRARDOTA PARQUE">GIRARDOTA PARQUE</option>
-          <option value="GIRARDOTA LLANO">GIRARDOTA LLANO</option>
-          <option value="COPACABANA SAN JUAN">COPACABANA SAN JUAN</option>
-          <option value="COPACABANA VEGAS">COPACABANA VEGAS</option>
-          <option value="COPACABANA PLAZA">COPACABANA PLAZA</option>
-          <option value="VILLA HERMOSA">VILLA HERMOSA</option>
-          <option value="CEDI FRUVER MAYORISTA">CEDI FRUVER MAYORISTA</option>
-        </select>
-      </div>
-
-      {/* 30. CARGO OPERATIVO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>30. CARGO OPERATIVO (SOLO COLABORADORES DEL PUNTO)</strong>
-        </label>
-        <select
-          name="cargoOperativo"
-          value={formData.cargoOperativo}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="CAJERO">CAJERO</option>
-          <option value="SURTIDOR">SURTIDOR</option>
-          <option value="EMPACADOR">EMPACADOR</option>
-          <option value="MONITOR DE SERVICIOS">MONITOR DE SERVICIOS</option>
-          <option value="SERVICIOS GENERALES">SERVICIOS GENERALES</option>
-          <option value="DOMICILIARIO">DOMICILIARIO</option>
-          <option value="CONDUCTOR">CONDUCTOR</option>
-          <option value="AUXILIAR BODEGA">AUXILIAR BODEGA</option>
-          <option value="AUXILIAR FRUVER">AUXILIAR FRUVER</option>
-          <option value="AUXILIAR CARNICO">AUXILIAR CARNICO</option>
-          <option value="MANTENIMIENTO">MANTENIMIENTO</option>
-          <option value="LÍDER DEL PUNTO">LÍDER DEL PUNTO</option>
-        </select>
-      </div>
-
-      {/* 31. DEPARTAMENTO OPERACIONES (ADM) */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>31. DEPARTAMENTO OPERACIONES AREA ADMINISTRATIVA</strong>
-        </label>
-        <select
-          name="departamentoOperaciones"
-          value={formData.departamentoOperaciones}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="ANALISTA OPERACIONES">ANALISTA OPERACIONES</option>
-          <option value="DIRECTOR OPERACIONES">DIRECTOR OPERACIONES</option>
-          <option value="AUXILIAR INVENTARIO">AUXILIAR INVENTARIO</option>
-          <option value="AUXILIAR RECIBO">AUXILIAR RECIBO</option>
-          <option value="AUXILIAR SISTEMAS">AUXILIAR SISTEMAS</option>
-          <option value="ALMACEN Y SUMINISTROS">ALMACEN Y SUMINISTROS</option>
-          <option value="LÍDER SISTEMAS">LÍDER SISTEMAS</option>
-          <option value="COORDINADOR LOGÍSTICO">COORDINADOR LOGÍSTICO</option>
-          <option value="PRACTICANTE">PRACTICANTE</option>
-        </select>
-      </div>
-
-      {/* 32. DEPARTAMENTO FINANCIERO (ADM) */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>32. DEPARTAMENTO FINANCIERO AREA ADMINISTRATIVA</strong>
-        </label>
-        <select
-          name="departamentoFinanciero"
-          value={formData.departamentoFinanciero}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="DIRECTORA ADMINISTRATIVA Y FINANCIERA">
-            DIRECTORA ADMINISTRATIVA Y FINANCIERA
-          </option>
-          <option value="AUXILIAR TESORERIA">AUXILIAR TESORERIA</option>
-          <option value="AUXILIAR CARTERA">AUXILIAR CARTERA</option>
-          <option value="AUXILIAR NÓMINA">AUXILIAR NÓMINA</option>
-          <option value="ANALISTA CONTABLE">ANALISTA CONTABLE</option>
-          <option value="AUXILIAR CONTABLE">AUXILIAR CONTABLE</option>
-          <option value="AUXILIAR CAUSACIONES">AUXILIAR CAUSACIONES</option>
-          <option value="LÍDER CONTABILIDAD">LÍDER CONTABILIDAD</option>
-        </select>
-      </div>
-
-      {/* 33. DEPARTAMENTO COMERCIAL (ADM) */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>33. DEPARTAMENTO COMERCIAL (ADM)</strong>
-        </label>
-        <select
-          name="departamentoComercial"
-          value={formData.departamentoComercial}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="ASISTENTE COMERCIAL">ASISTENTE COMERCIAL</option>
-          <option value="AUXILIAR COMERCIAL">AUXILIAR COMERCIAL</option>
-          <option value="LÍDER COMPRAS">LÍDER COMPRAS</option>
-          <option value="AUXILIAR COMPRAS">AUXILIAR COMPRAS</option>
-        </select>
-      </div>
-
-      {/* 34. DEPARTAMENTO GESTIÓN HUMANA (ADM) */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>34. DEPARTAMENTO GESTIÓN HUMANA (ADM)</strong>
-        </label>
-        <select
-          name="departamentoGestionHumana"
-          value={formData.departamentoGestionHumana}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="DIRECTOR GESTIÓN HUMANA">DIRECTOR GESTIÓN HUMANA</option>
-          <option value="ASISTENTE GESTIÓN HUMANA">ASISTENTE GESTIÓN HUMANA</option>
-          <option value="LÍDER DE DESARROLLO Y TALENTO HUMANO">
-            LÍDER DE DESARROLLO Y TALENTO HUMANO
-          </option>
-          <option value="AUXILIAR GESTIÓN HUMANA">AUXILIAR GESTIÓN HUMANA</option>
-          <option value="AUXILIAR SISTEMAS INTEGRADOS">
-            AUXILIAR SISTEMAS INTEGRADOS
-          </option>
-          <option value="PRACTICANTE SST">PRACTICANTE SST</option>
-          <option value="PRACTICANTE">PRACTICANTE</option>
-        </select>
-      </div>
-
-      {/* 35. SOLO GERENCIA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>35. ESTE ESPACIO SOLO ES PARA DON DIEGO Y DON WILLIAM</strong>
-        </label>
-        <select
-          name="soloGerencia"
-          value={formData.soloGerencia}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="GERENTE">GERENTE</option>
-        </select>
-      </div>
-
-      {/* 36. ANTIGÜEDAD EN LA EMPRESA */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>36. ANTIGÜEDAD EN LA EMPRESA</strong>
-        </label>
-        <select
-          name="antiguedad"
-          value={formData.antiguedad}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="MENOS DE 6 MESES">MENOS DE 6 MESES</option>
-          <option value="6 MESES a 1 AÑO">6 MESES a 1 AÑO</option>
-          <option value="1 a 3 AÑOS">1 a 3 AÑOS</option>
-          <option value="4 a 6 AÑOS">4 a 6 AÑOS</option>
-          <option value="7 a 8 AÑOS">7 a 8 AÑOS</option>
-        </select>
-      </div>
-
-      {/* 37. GRUPO SANGUÍNEO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>37. GRUPO SANGUÍNEO (TIPO DE SANGRE)</strong>
-        </label>
-        <select
-          name="grupoSanguineo"
-          value={formData.grupoSanguineo}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="A+">A+</option>
-          <option value="A-">A-</option>
-          <option value="B+">B+</option>
-          <option value="B-">B-</option>
-          <option value="AB+">AB+</option>
-          <option value="AB-">AB-</option>
-          <option value="O+">O+</option>
-          <option value="O-">O-</option>
-        </select>
-      </div>
-
-      {/* 38. NÚMERO DE PERSONAS QUE DEPENDEN ECONÓMICAMENTE */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>38. NÚMERO DE PERSONAS QUE DEPENDEN ECONÓMICAMENTE</strong>
-        </label>
-        <select
-          name="dependientesEconomicos"
-          value={formData.dependientesEconomicos}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 39. EMBARAZO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>39. ¿ACTUALMENTE TÚ O TU PAREJA ESTÁN EN ESTADO DE EMBARAZO?</strong>
-        </label>
-        <select
-          name="embarazo"
-          value={formData.embarazo}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="SI">SI</option>
-          <option value="NO">NO</option>
-        </select>
-      </div>
-
-      {/* 40. SUFRES DE ALGUNA ENFERMEDAD */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>40. ¿SUFRES DE ALGUNA ENFERMEDAD?</strong>
-        </label>
-        <select
-          name="sufreEnfermedad"
-          value={formData.sufreEnfermedad}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="SI">SI</option>
-          <option value="NO">NO</option>
-        </select>
-      </div>
-
-      {/* 41. DESCRIPCIÓN DE ENFERMEDAD */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>41. SI SU RESPUESTA ANTERIOR FUE SI, DESCRIBA CUÁL</strong>
-        </label>
-        <input
-          type="text"
-          name="descripcionEnfermedad"
-          value={formData.descripcionEnfermedad}
-          onChange={handleChange}
-          disabled={formData.sufreEnfermedad !== "SI"}
-          className="socio-input"
-        />
-      </div>
-
-      <hr className="socio-hr" />
-      <h2 className="socio-subtitle">ACTUALIZACIÓN DE DATOS - HIJOS</h2>
-
-      {/* 42. TIENE HIJOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>42. TIENE HIJOS</strong>
-        </label>
-        <select
-          name="tieneHijos"
-          value={formData.tieneHijos}
-          onChange={handleChange}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="SI">SI</option>
-          <option value="NO">NO</option>
-        </select>
-      </div>
-
-      {/* 43. CUÁNTOS HIJOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>43. SI SU RESPUESTA FUE SI, ¿CUÁNTOS HIJOS TIENES?</strong>
-        </label>
-        <select
-          name="cuantosHijos"
-          value={formData.cuantosHijos}
-          onChange={handleChange}
-          disabled={formData.tieneHijos !== "SI"}
-          className="socio-select"
-        >
-          <option value="">Seleccione...</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="OTRAS">Otras</option>
-        </select>
-      </div>
-
-      {/* 44. NOMBRES DE LOS HIJOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>44. NOMBRES COMPLETOS DE SUS HIJOS (separados por ;)</strong>
-        </label>
-        <input
-          type="text"
-          name="nombresHijos"
-          value={formData.nombresHijos}
-          onChange={handleChange}
-          disabled={formData.tieneHijos !== "SI"}
-          className="socio-input"
-        />
-      </div>
-
-      {/* 45. EDAD DE LOS HIJOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>45. EDAD DE SUS HIJOS (separadas por ;)</strong>
-        </label>
-        <input
-          type="text"
-          name="edadesHijos"
-          value={formData.edadesHijos}
-          onChange={handleChange}
-          disabled={formData.tieneHijos !== "SI"}
-          className="socio-input"
-        />
-      </div>
-
-      {/* 46. GRADO DE ESCOLARIDAD DE LOS HIJOS */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>46. GRADO DE ESCOLARIDAD DE SUS HIJOS</strong>
-        </label>
-        <input
-          type="text"
-          name="gradoEscolaridadHijos"
-          value={formData.gradoEscolaridadHijos}
-          onChange={handleChange}
-          disabled={formData.tieneHijos !== "SI"}
-          className="socio-input"
-        />
-      </div>
-
-      <hr className="socio-hr" />
-      <h2 className="socio-subtitle">CONTACTO EN CASO DE EMERGENCIA</h2>
-
-      {/* 47. NOMBRES Y APELLIDOS DEL CONTACTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>47. NOMBRES Y APELLIDOS</strong>
-        </label>
-        <input
-          type="text"
-          name="contactoNombres"
-          value={formData.contactoNombres}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
-
-      {/* 48. NÚMERO DE CELULAR DEL CONTACTO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>48. NÚMERO DE CELULAR</strong>
-        </label>
-        <input
-          type="text"
-          name="contactoCelular"
-          value={formData.contactoCelular}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
-
-      {/* 49. PARENTESCO */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>49. PARENTESCO</strong>
-        </label>
-        <input
-          type="text"
-          name="parentescoContacto"
-          value={formData.parentescoContacto}
-          onChange={handleChange}
-          required
-          className="socio-input"
-        />
-      </div>
-
-      <hr className="socio-hr" />
-
-      {/* 50. FECHA DEL DILIGENCIAMIENTO (automática y no editable) */}
-      <div className="socio-field">
-        <label className="socio-label">
-          <strong>50. FECHA DEL DILIGENCIAMIENTO (d/M/yyyy)</strong>
-        </label>
-        <input
-          type="date"
-          name="fechaDiligenciamiento"
-          value={formData.fechaDiligenciamiento}
-          onChange={handleChange}
-          required
-          disabled
-          className="socio-input"
-        />
-      </div>
-
-      <div className="socio-button-container">
-        <button type="submit" className="socio-submit-btn">
-          Enviar Formulario
-        </button>
+      <div className="perfil-button-container">
+        <button type="submit" className="perfil-submit-btn">Enviar Formulario</button>
       </div>
     </form>
   );
 };
 
-export {FormularioPerfil};
+export { FormularioPerfil };
