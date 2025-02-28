@@ -192,6 +192,7 @@ const Login = () => {
       },
     ];
     
+    
 
     // Buscar las credenciales correctas
     const usuarioValido = credenciales.find(
