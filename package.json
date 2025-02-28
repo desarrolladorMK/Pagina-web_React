@@ -14,6 +14,10 @@
     "deploy": "npm run build && copyfiles dist/* /home/u971-avd1snjdtuxd/www/construahorrosas.com/public_html/"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.6",
+    "@mui/x-data-grid": "^7.27.2",
     "@supabase/supabase-js": "^2.47.9",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
