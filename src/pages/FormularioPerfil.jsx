@@ -117,11 +117,15 @@ const FormularioPerfil = () => {
       <div className="logo-container">
         <a href="/"><img src="logoMK.png" alt="Logo Merkahorro" /></a>
       </div>
+      
       <h1 className="perfil-title">PERFIL SOCIODEMOGRÁFICO</h1>
       <p className="perfil-desc">
         Es una descripción de las características sociales y demográficas de los empleados del supermercado Merkahorro S.A.S
       </p>
       <hr className="perfil-hr" />
+      <h4 className="fraseMotivacional">
+      "Somos lo que hacemos repetidamente; la excelencia, entonces, no es un acto, sino un hábito."
+          </h4>
 
       {/* Sección 1: Datos Personales */}
       <section className="perfil-section">
