@@ -22,6 +22,7 @@ import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte
 import {PanoramaViewer} from "../pages/PanoramaViewer";
 import {Contador} from "../pages/Contador";
 import {FormularioPerfil} from "../pages/FormularioPerfil";
+import {HistorialFormulario} from "../pages/HistorialFormulario";
 
 export let routes = [
   {
@@ -119,6 +120,10 @@ export let routes = [
   {
     path: '/formularioperfil',
     element: <FormularioPerfil />, 
+  },
+  {
+    path: '/historialformulario',
+    element: <HistorialFormulario />, 
   },
   {
     path: '/https://merkahorro.com/Aula/', 
