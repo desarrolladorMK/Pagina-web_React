@@ -19,14 +19,17 @@ const Login = () => {
         redirect: "/acceso", // developersmk@merkahorrosas.com
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
+          {path: "/historialformulario", label: "Hisotrial formulario Perfil"},
           { path: "/automatizacion", label: "Automatizacion Fruver" },
           { path: "/historialtransporte", label: "Historial de Transporte" },
           { path: "/solicitudaprobacion", label: "Perfil gestion humana" },
           { path: "/historialgastos", label: "Historial de Gastos" },
+          {path: "/formularioperfil", label: "Formulario Perfil"},
+          
           { path: "/transporte", label: "Transporte" },
           { path: "/reserva", label: "Reservas" },
           { path: "/gastos", label: "Gastos" },
-          {path: "/formularioperfil", label: "Formulario Perfil"}
+          
         ]
       },
       {
