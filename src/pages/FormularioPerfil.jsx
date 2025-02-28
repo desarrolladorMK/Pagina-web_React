@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,6 +18,7 @@ const FormularioPerfil = () => {
     watch,
     reset,
     formState: { errors },
+    trigger,
   } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -75,11 +76,37 @@ const FormularioPerfil = () => {
   });
 
   const [step, setStep] = useState(1);
+  const [isNavigating, setIsNavigating] = useState(false); // Para evitar clics rápidos
   const totalSteps = 7;
   const sufreEnfermedad = watch("sufreEnfermedad");
   const tieneHijos = watch("tieneHijos");
+  const formRef = useRef(null);
 
   const onSubmit = async (data) => {
+    const isValid = await trigger();
+    if (!isValid) {
+      const errorFields = Object.keys(errors).map((field) => ({
+        name: field,
+        message: errors[field].message || "Campo obligatorio",
+      }));
+      const firstErrorField = errorFields[0].name;
+      const stepWithError = getStepForField(firstErrorField);
+      setStep(stepWithError);
+
+      // Verificar que el elemento exista antes de desplazarlo
+      setTimeout(() => {
+        const errorElement = formRef.current?.querySelector(`[name="${firstErrorField}"]`);
+        if (errorElement) {
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          errorElement.focus();
+        }
+      }, 100); // Pequeño retraso para asegurar que el DOM esté listo
+
+      const errorMessage = "Por favor completa los siguientes campos:\n" + errorFields.map((f) => `- ${f.name}: ${f.message}`).join("\n");
+      alert(errorMessage);
+      return;
+    }
+
     const formattedData = {
       ...data,
       fechaNacimiento: data.fechaNacimiento ? data.fechaNacimiento.toISOString().slice(0, 10) : "",
@@ -106,8 +133,62 @@ const FormularioPerfil = () => {
     }
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+  const nextStep = async () => {
+    if (isNavigating) return; // Evitar clics múltiples
+    setIsNavigating(true);
+
+    const fieldsInStep = getFieldsForStep(step);
+    const isValid = await trigger(fieldsInStep);
+    if (isValid) {
+      setStep((prev) => Math.min(prev + 1, totalSteps));
+    } else {
+      setTimeout(() => {
+        const errorElement = formRef.current?.querySelector(`[name="${Object.keys(errors)[0]}"]`);
+        if (errorElement) {
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          errorElement.focus();
+        }
+      }, 100); // Retraso para asegurar que el DOM esté listo
+    }
+
+    setTimeout(() => setIsNavigating(false), 300); // Debounce de 300ms
+  };
+
+  const prevStep = () => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+    setStep((prev) => Math.max(prev - 1, 1));
+    setTimeout(() => setIsNavigating(false), 300);
+  };
+
+  const getStepForField = (fieldName) => {
+    const steps = {
+      1: ["nombresApellidos", "tipoDocumento", "numeroDocumento", "celular", "correo", "fechaNacimiento", "ciudadNacimiento", "edad", "peso", "estatura"],
+      2: ["tipoVivienda", "caracteristicasVivienda", "estrato", "zona", "paisOrigen", "municipioResidencia", "barrio", "direccion"],
+      3: ["genero", "grupoEtnico", "poblacionMovilidad", "grupoReligioso"],
+      4: ["eps", "fondoPension", "gradoEscolaridad", "estadoCivil", "tipoContrato", "fechaIngresoEmpresa"],
+      5: ["sede", "cargoOperativo", "departamentoOperaciones", "departamentoFinanciero", "departamentoComercial", "departamentoGestionHumana", "soloGerencia", "antiguedad", "grupoSanguineo", "dependientesEconomicos", "embarazo", "sufreEnfermedad", "descripcionEnfermedad"],
+      6: ["tieneHijos", "cuantosHijos", "nombresHijos", "edadesHijos", "gradoEscolaridadHijos"],
+      7: ["contactoNombres", "contactoCelular", "parentescoContacto", "fechaDiligenciamiento"],
+    };
+    for (let s = 1; s <= totalSteps; s++) {
+      if (steps[s].includes(fieldName)) return s;
+    }
+    return 1;
+  };
+
+  const getFieldsForStep = (stepNumber) => {
+    const steps = {
+      1: ["nombresApellidos", "tipoDocumento", "numeroDocumento", "celular", "correo", "fechaNacimiento", "ciudadNacimiento", "edad", "peso", "estatura"],
+      2: ["tipoVivienda", "caracteristicasVivienda", "estrato", "zona", "paisOrigen", "municipioResidencia", "barrio", "direccion"],
+      3: ["genero", "grupoEtnico", "poblacionMovilidad", "grupoReligioso"],
+      4: ["eps", "fondoPension", "gradoEscolaridad", "estadoCivil", "tipoContrato", "fechaIngresoEmpresa"],
+      5: ["sede", "cargoOperativo", "departamentoOperaciones", "departamentoFinanciero", "departamentoComercial", "departamentoGestionHumana", "soloGerencia", "antiguedad", "grupoSanguineo", "dependientesEconomicos", "embarazo", "sufreEnfermedad", "descripcionEnfermedad"],
+      6: ["tieneHijos", "cuantosHijos", "nombresHijos", "edadesHijos", "gradoEscolaridadHijos"],
+      7: ["contactoNombres", "contactoCelular", "parentescoContacto", "fechaDiligenciamiento"],
+    };
+    return steps[stepNumber] || [];
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -161,6 +242,7 @@ const FormularioPerfil = () => {
                     dateFormat="yyyy-MM-dd"
                     className="perfil-input"
                     placeholderText="Selecciona una fecha"
+                    popperPlacement="bottom" // Asegurar que el calendario aparezca debajo
                   />
                 )}
               />
@@ -407,6 +489,7 @@ const FormularioPerfil = () => {
                     dateFormat="yyyy-MM-dd"
                     className="perfil-input"
                     placeholderText="Selecciona una fecha"
+                    popperPlacement="bottom" // Asegurar que el calendario aparezca debajo
                   />
                 )}
               />
@@ -659,15 +742,15 @@ const FormularioPerfil = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="formulario-perfil">
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="formulario-perfil">
       <div className="logo-container">
         <a href="/"><img src="logoMK.png" alt="Logo Merkahorro" /></a>
       </div>
 
       <h1 className="perfil-title">PERFIL SOCIODEMOGRÁFICO</h1>
       <h4 className="fraseMotivacional">
-      "Somos lo que hacemos repetidamente; la excelencia, entonces, no es un acto, sino un hábito."
-          </h4>
+        "Somos lo que hacemos repetidamente; la excelencia, entonces, no es un acto, sino un hábito."
+      </h4>
 
       <div className="progress-container">
         <div className="progress-bar" style={{ width: `${(step / totalSteps) * 100}%` }}></div>
