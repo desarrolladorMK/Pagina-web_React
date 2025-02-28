@@ -181,7 +181,15 @@ const Login = () => {
           { path: "/gastos", label: "Gastos" },
         ]
       },
-      
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_18|| "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_18 || "",
+        redirect: "/acceso", // fruver@merkahorrosas.com
+        routes: [
+          { path: "/transporte", label: "Transporte" },
+          { path: "/gastos", label: "Gastos" },
+        ]
+      },
     ];
     
 
