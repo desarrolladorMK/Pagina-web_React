@@ -30,7 +30,7 @@ const Login = () => {
           { path: "/reserva", label: "Reservas" },
           { path: "/gastos", label: "Gastos" },
 
-          
+
           
         ]
       },
@@ -192,6 +192,7 @@ const Login = () => {
           { path: "/gastos", label: "Gastos" },
         ]
       },
+      
     ];
     
 
