@@ -231,7 +231,7 @@ const SolicitudAprobacion = () => {
           >
             <option value="">--Seleccione--</option>
             <option value="gerencia@merkahorrosas.com">Diego Salazar</option>
-            <option value="gerencia1@merkahorrosas.com">Steven Salazar</option>
+            <option value="gerencia1@merkahorrosas.com">Stiven Salazar</option>
             <option value="gerencia@megamayoristas.com">Adrián Hoyos</option>
             <option value="gerencia@construahorrosas.com">William Salazar </option>
           </select>
