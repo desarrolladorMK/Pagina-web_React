@@ -877,3 +877,6 @@ const Gastos = () => {
 };
 
 export { Gastos };
+
+
+
