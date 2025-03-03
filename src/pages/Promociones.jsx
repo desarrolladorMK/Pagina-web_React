@@ -69,8 +69,6 @@ const Promociones = () => {
             <img id="modal-img" src={modalImg} alt="Modal" />
           </div>
         </div>
-
-        <ChatBot />
         <Footer />
       </div>
     </div>

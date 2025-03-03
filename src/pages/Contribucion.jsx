@@ -167,7 +167,6 @@ const Contribucion = () => {
           </section>
         ))}
       </main>
-      <ChatBot />
       <Footer />
     </div>
   );
