@@ -1,0 +1,264 @@
+/* Contenedor general */
+.historial-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Título principal */
+  .historial-container h2 {
+    color: #210D65;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  /* Botón de exportar a Excel */
+  .export-button {
+    background-color: #210D65 !important;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 0.6rem 1.8rem !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .export-button:hover {
+    background-color: #89DC00 !important;
+    color: #210D65 !important;
+    transform: translateY(-2px);
+  }
+  
+  /* Estilo para el DataGrid */
+
+  
+  /* Estilos para la tabla principal - DataGrid */
+.MuiDataGrid-root {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .MuiDataGrid-columnHeaders {
+    background-color: #220d65;
+    color: #000000;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .MuiDataGrid-cell {
+    padding: 1rem;
+    color: #333333;
+    font-size: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .MuiDataGrid-row:hover {
+    background-color: rgba(33, 13, 101, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .MuiDataGrid-footerContainer {
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    color: #210d65;
+  }
+  
+  /* Botones en la tabla */
+  .MuiButton-contained {
+    background-color: #210d65 !important;
+    color: #ffffff !important;
+    font-size: 0.9rem !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 6px !important;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .MuiButton-contained:hover {
+    background-color: #89dc00 !important;
+    color: #210d65 !important;
+    transform: translateY(-2px);
+  }
+  
+  /* Diálogo */
+  .MuiDialog-paper {
+    border-radius: 14px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+    background: #fff !important;
+    padding: 1rem;
+  }
+  
+  .MuiDialogTitle-root {
+    background: linear-gradient(90deg, #210D65, #3a1e8a) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    padding: 1.5rem !important;
+    text-align: center;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 2rem !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    background-color: #fafafa !important;
+  }
+  
+  .MuiDialogActions-root {
+    padding: 1.5rem !important;
+    background-color: #fff !important;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .MuiDialogActions-root .MuiButton-root {
+    background-color: #210D65 !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 6px !important;
+    margin-left: 0.75rem !important;
+  }
+  
+  .MuiDialogActions-root .MuiButton-root:hover {
+    background-color: #89DC00 !important;
+    color: #210D65 !important;
+  }
+  
+  /* Detalles del registro (vista de solo lectura) */
+  .record-details {
+    padding: 1rem;
+  }
+  
+  .record-details .MuiTypography-h6 {
+    color: #210D65;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(137, 220, 0, 0.1);
+    border-left: 4px solid #89DC00;
+    border-radius: 4px 0 0 4px;
+  }
+  
+  .record-details p {
+    margin: 0.75rem 0;
+    color: #444;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .record-details p strong {
+    color: #210D65;
+    font-weight: 600;
+    flex: 0 0 40%;
+  }
+  
+  .record-details p span {
+    flex: 0 0 60%;
+    text-align: left;
+  }
+  
+  /* Formulario de edición */
+  .edit-form {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .edit-form .MuiTypography-subtitle1 {
+    color: #210D65;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(137, 220, 0, 0.1);
+    border-left: 4px solid #89DC00;
+    border-radius: 4px 0 0 4px;
+    grid-column: 1 / -1;
+  }
+  
+  .edit-form .MuiTextField-root {
+    margin: 0 !important;
+  }
+  
+  .edit-form .MuiInputLabel-root {
+    color: #210D65 !important;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+  
+  .edit-form .MuiInputBase-root {
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .edit-form .MuiInputBase-input {
+    color: #333 !important;
+    padding: 0.8rem !important;
+  }
+  
+  .edit-form .Mui-focused .MuiInputLabel-root {
+    color: #89DC00 !important;
+  }
+  
+  .edit-form .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #89DC00 !important;
+    border-width: 2px;
+  }
+  
+  .edit-form .Mui-error .MuiOutlinedInput-notchedOutline {
+    border-color: #ff4d4d !important;
+  }
+  
+  .edit-form .MuiFormHelperText-root {
+    color: #ff4d4d !important;
+    margin-top: 0.3rem;
+  }
+  
+  /* Estilo para el DatePicker */
+  .edit-form .react-datepicker-wrapper {
+    width: 100%;
+  }
+  
+  .edit-form .react-datepicker__input-container input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .edit-form .react-datepicker__input-container input:focus {
+    border-color: #89DC00;
+    outline: none;
+    box-shadow: 0 0 6px rgba(137, 220, 0, 0.5);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .edit-form {
+      grid-template-columns: 1fr;
+    }
+  }
