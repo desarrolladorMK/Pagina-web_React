@@ -1,6 +1,5 @@
 import React from 'react';
 import './Vacantes.css'; // Asegúrate de importar el archivo CSS
-import { ChatBot } from '../components/ChatBot';
 
 const Vacantes = () => {
   const vacantesActivas = false; // Cambia a false para ocultar las vacantes
@@ -42,7 +41,6 @@ const Vacantes = () => {
           </div>
         )}
       </div>
-      <ChatBot />
     </div>
   );
 };

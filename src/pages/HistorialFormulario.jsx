@@ -178,6 +178,7 @@ const HistorialFormulario = () => {
         pageSize={10}
         rowsPerPageOptions={[10]}
         disableSelectionOnClick
+        hideFooterSelectedRowCount // Oculta el mensaje de selección
       />
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>
