@@ -160,13 +160,6 @@ function ChatBot() {
         </div>
       )}
 
-      {showWelcomeTour && (
-        <div className="chatbot-welcome-tour" role="dialog" aria-label="Tour introductorio del chatbot">
-          <p>¡Haz clic en el ícono para ayuda personalizada!</p>
-          <button onClick={closeWelcomeTour} aria-label="Cerrar tour introductorio">Entendido</button>
-        </div>
-      )}
-
       {chatbotOpen && (
         <div
           className={`merkahorro-chatbot-container ${chatbotOpen ? "open" : "closed"}`}

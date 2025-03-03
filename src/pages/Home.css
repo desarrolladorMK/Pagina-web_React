@@ -172,6 +172,7 @@ body {
   font-size: clamp(1.5rem, 5vw, 1.8rem);
   color: #210D65;
   margin: 15px 0;
+  text-align: center;
 }
 
 .tarjeta p {
