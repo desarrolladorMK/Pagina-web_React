@@ -2,7 +2,7 @@
 
 
 .back-logo {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
   z-index: 1000; /* Asegura que el logo esté encima de otros elementos */
@@ -14,7 +14,7 @@
   height: auto;
   cursor: pointer;
   margin-right: -26%;
-  position: static;
+  position: fixed;
 }
 
 .back-logo:hover .logo-image {

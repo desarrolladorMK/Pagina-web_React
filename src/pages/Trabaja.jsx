@@ -632,7 +632,11 @@ const Trabaja = () => {
           </form>
         </div>
       </div>
-      <ChatBot />
+              {/* Contenedor flotante con el ChatBot, sin mensaje de invitación */}
+              <div className="floating-buttons">
+          <ChatBot showInviteMessage={false} />
+        </div>
+
       <Footer />
     </div>
   );

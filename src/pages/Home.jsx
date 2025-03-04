@@ -300,6 +300,24 @@ const Home = () => {
             </div>
           </div>
 
+
+
+          <div className="flip-card" id="fundadores">
+            <div className="flip-card-inner">
+              <div className="flip-card-front">
+                <img className="logosmain" src="/Ceo.png" alt="Fundadores" />
+                <h2>Fundadores</h2>
+              </div>
+              <div className="flip-card-back">
+                <p>
+                  Supermercados Merkahorro surgió como la materialización de la visión compartida por dos hermanos en 2015, quienes, pese a la carencia inicial de recursos, se dedicaron a hacer realidad su ambicioso proyecto en Copacabana.
+                </p>
+                <p>
+                  Su enfoque fue lograr ser el principal supermercado en la localidad.
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="flip-card" id="principios">
             <div className="flip-card-inner">
               <div className="flip-card-front">
@@ -316,23 +334,6 @@ const Home = () => {
                   <li><strong>La Bondad:</strong> Fomentar empatía, compasión e integridad.</li>
                   <li><strong>La Unidad:</strong> Promover la cohesión y colaboración.</li>
                 </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="flip-card" id="fundadores">
-            <div className="flip-card-inner">
-              <div className="flip-card-front">
-                <img className="logosmain" src="/Ceo.png" alt="Fundadores" />
-                <h2>Fundadores</h2>
-              </div>
-              <div className="flip-card-back">
-                <p>
-                  Supermercados Merkahorro surgió como la materialización de la visión compartida por dos hermanos en 2015, quienes, pese a la carencia inicial de recursos, se dedicaron a hacer realidad su ambicioso proyecto en Copacabana.
-                </p>
-                <p>
-                  Su enfoque fue lograr ser el principal supermercado en la localidad.
-                </p>
               </div>
             </div>
           </div>

@@ -101,3 +101,52 @@
     text-align: center;
     margin-top: 15px;
 }
+
+/* Media Queries para ajustes específicos */
+@media (max-width: 480px) {
+  .vacante-card {
+    max-width: clamp(250px, 90vw, 300px); /* Ajuste para pantallas muy pequeñas */
+  }
+  .vacantes-container {
+    padding: 0 1rem 1rem;
+  }
+  .titulo-vacantes {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+  }
+  .logo-vacantes {
+    width: clamp(100px, 25vw, 150px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .vacante-card {
+    max-width: 550px; /* Límite superior para pantallas muy grandes */
+  }
+  .vacante-card-img {
+    max-height: 350px;
+  }
+  .titulo-vacantes {
+    font-size: 3.5rem;
+  }
+  .logo-vacantes {
+    width: clamp(200px, 15vw, 300px);
+  }
+  .btn-aplicar {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Asegurar que el diseño sea fluido en todos los tamaños */
+@media (max-width: 320px) {
+  .vacante-card {
+    max-width: 100%; /* Ocupa todo el ancho disponible */
+  }
+  .vacantes-grid {
+    gap: 10px;
+  }
+  .btn-aplicar {
+    width: 100%;
+    padding: 8px 15px;
+  }
+}
