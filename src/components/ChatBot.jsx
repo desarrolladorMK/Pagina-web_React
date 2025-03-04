@@ -1,18 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Añadimos useRef
 import "./ChatBot.css";
 
-function ChatBot() {
+function ChatBot({ showInviteMessage = true }) {
   const [message, setMessage] = useState("");
   const [responses, setResponses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState("");
   const [isPQR, setIsPQR] = useState(false);
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const [showWelcomeTour, setShowWelcomeTour] = useState(!localStorage.getItem("chatbotTourSeen"));
-  const [showInviteMessage, setShowInviteMessage] = useState(true);
+  const [inviteVisible, setInviteVisible] = useState(showInviteMessage);
   const apiUrl = import.meta.env.VITE_API_URL || "https://backendpythonbot.vercel.app";
+  const messagesEndRef = useRef(null); // Referencia al final del contenedor de mensajes
+
+  // Efecto para hacer scroll automático
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [responses, isTyping]); // Se ejecuta cuando cambian las respuestas o el estado de "escribiendo"
 
   useEffect(() => {
     if (!apiUrl) {
@@ -20,12 +29,13 @@ function ChatBot() {
       setError("Error de configuración. Contacta al administrador.");
     }
 
-    const timer = setTimeout(() => {
-      setShowInviteMessage(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (showInviteMessage) {
+      const timer = setTimeout(() => {
+        setInviteVisible(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showInviteMessage]);
 
   const handleMessageChange = (e) => setMessage(e.target.value);
 
@@ -35,9 +45,11 @@ function ChatBot() {
       return;
     }
 
-    setLoading(true);
-    setError("");
     setResponses((prev) => [...prev, { text: messageToSend, user: true }]);
+    setMessage("");
+    setLoading(true);
+    setIsTyping(true);
+    setError("");
 
     try {
       const res = await fetch(`${apiUrl}/ask`, {
@@ -65,6 +77,7 @@ function ChatBot() {
       setResponses((prev) => [...prev, { text: "Lo siento, ocurrió un error. Inténtalo de nuevo.", user: false }]);
     } finally {
       setLoading(false);
+      setIsTyping(false);
     }
   };
 
@@ -154,7 +167,7 @@ function ChatBot() {
         <img src="chatbot.png" alt="Ícono del chatbot" />
       </button>
 
-      {showInviteMessage && (
+      {inviteVisible && showInviteMessage && (
         <div className="chatbot-invite-message" role="alert" aria-label="Mensaje de invitación al chatbot">
           <p>¡Chatea con nosotros! 😊</p>
         </div>
@@ -184,6 +197,15 @@ function ChatBot() {
                 {response.text}
               </div>
             ))}
+            {isTyping && (
+              <div className="merkahorro-typing-indicator">
+                <span>Escribiendo</span>
+                <span className="dot">.</span>
+                <span className="dot">.</span>
+                <span className="dot">.</span>
+              </div>
+            )}
+            <div ref={messagesEndRef} /> {/* Punto de referencia invisible para el scroll */}
           </div>
 
           {showMenu && hasStartedChat && (

@@ -21,20 +21,21 @@
 }
 
 /* ======== LOGO ======== */
-.logo-image {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 8%;
-  max-width: 150px;
-  z-index: 100;
+.back-logo-promo {
+  position: absolute;
+  top: clamp(0.5rem, 2vw, 1rem);
+  left: clamp(0.5rem, 2vw, 1rem);
+}
+
+.logo-image-promo {
+  width: clamp(40px, 8vw, 60px); /* Ajusta el tamaño según sea necesario */
+  height: auto;
   transition: transform 0.3s ease;
 }
 
-.logo-image:hover {
-  transform: scale(1.1);
+.logo-image-promo:hover {
+  transform: scale(1.1); /* Efecto de agrandamiento al pasar el mouse */
 }
-
 /* ======== OFERTAS ======== */
 .ofertas {
   border-radius: 12px;
@@ -140,6 +141,19 @@
   font-size: 4em;
   color: #FF6347; /* Color llamativo para el icono */
   margin-bottom: 15px;
+}
+
+/* ======== BOTON FLOTANTE DE BOT ======== */
+
+.floating-buttons {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 1001;
+  animation: bounceIn 1s ease-out;
 }
 /* ======== RESPONSIVE DESIGN ======== */
 

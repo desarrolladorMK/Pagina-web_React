@@ -1,11 +1,12 @@
 import React from 'react';
-import './Vacantes.css'; // Asegúrate de importar el archivo CSS
+import './Vacantes.css';
+import { ChatBot } from '../components/ChatBot';
 
 const Vacantes = () => {
-  const vacantesActivas = false; // Cambia a false para ocultar las vacantes
+  const vacantesActivas = true; // Cambia a false para ocultar las vacantes
 
   return (
-    <div>
+    <div className="vacantes-body">
       <div className="logo-container">
         <a href="/">
           <img src="/logoMK.png" alt="Logo" className="logo-vacantes" />
@@ -28,7 +29,6 @@ const Vacantes = () => {
                 <a href="/aplicar" className="btn-aplicar aplicar-color">Aplicar</a>
               </div>
             </div>
-            {/* Agrega más vacantes según necesites */}
           </div>
         ) : (
           <div className="no-vacantes">
@@ -40,6 +40,10 @@ const Vacantes = () => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="floating-buttons">
+        <ChatBot showInviteMessage={false} />
       </div>
     </div>
   );

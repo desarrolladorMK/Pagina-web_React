@@ -1,7 +1,7 @@
 /* Ícono del chatbot */
 .merkahorro-chatbot-icon {
-  width: 50px;
-  height: 50px;
+  width: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
+  height: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
   background-color: #210d65;
   border: none;
   border-radius: 50%;
@@ -12,7 +12,6 @@
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1000;
-  position: relative;
 }
 
 .merkahorro-chatbot-icon:hover {
@@ -21,8 +20,8 @@
 }
 
 .merkahorro-chatbot-icon img {
-  width: 70%;
-  height: 70%;
+  width: 80%;
+  height: 80%;
   object-fit: contain;
 }
 
@@ -48,6 +47,7 @@
   90% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(10px); }
 }
+
 /* Contenedor del chatbot desplegado */
 .merkahorro-chatbot-container {
   position: fixed;
@@ -277,6 +277,35 @@
 
 .chatbot-welcome-tour button:hover {
   background-color: #210d65;
+}
+
+/* Indicador de escribiendo */
+.merkahorro-typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: clamp(0.5rem, 1vw, 0.75rem);
+  color: #666;
+  font-size: clamp(12px, 3vw, 14px);
+  align-self: flex-start;
+}
+
+.merkahorro-typing-indicator .dot {
+  animation: blink 1.4s infinite both;
+  margin-left: 2px;
+}
+
+.merkahorro-typing-indicator .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.merkahorro-typing-indicator .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
 }
 
 /* Media Queries */

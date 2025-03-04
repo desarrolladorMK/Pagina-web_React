@@ -1,3 +1,11 @@
+/* Fondo animado opcional */
+@keyframes fondoDegradado {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Estilo general */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -6,24 +14,26 @@ body {
   color: #333;
   background: linear-gradient(135deg, hsl(60, 47%, 97%) 0%, #f0f8ff 100%);
   overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Carrusel */
 .carousel {
   position: relative;
-  width: 100vw; /* Ocupa todo el ancho disponible */
+  width: 100vw;
   margin: 0;
   overflow: hidden;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  height: 500px; /* Altura base para pantallas grandes */
+  height: clamp(450px, 70vw, 900px); /* Más altura para mostrar más imagen */
 }
 
-/* Estilo de las imágenes dentro del carrusel */
 .carousel img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Muestra la imagen completa sin recortarla */
+  object-fit: cover; /* Volvemos a cover para borde a borde */
 }
 
 .container-slides {
@@ -32,15 +42,17 @@ body {
   width: 100%;
   height: 100%;
 }
+
 .slide {
   min-width: 100%;
   position: relative;
   transition: opacity 0.5s ease-in-out;
 }
+
 .slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Asegura borde a borde */
   display: block;
   transition: transform 0.5s ease, opacity 0.5s ease;
   opacity: 1;
@@ -50,54 +62,59 @@ body {
   transform: scale(1.05);
 }
 
-
 .slide-title {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: clamp(10px, 4vw, 10px);
+  left: clamp(10px, 2vw, 20px);
   color: white;
-  font-size: clamp(1rem, 3vw, 2.5rem); /* Texto adaptable */
+  font-size: clamp(1rem, 3vw, 2.5rem);
   font-weight: 700;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
   animation: slideIn 1s ease-out;
   z-index: 1000;
+  padding: clamp(5px, 1vw, 10px);
+  border-radius: 5px;
 }
+
 .dots {
   position: absolute;
-  bottom: 10px;
+  bottom: clamp(10px, 2vw, 10px);
   width: 100%;
   text-align: center;
+  padding: clamp(5px, 1vw, 10px);
 }
 
 .dot {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin: 8px;
+  width: clamp(10px, 2vw, 14px);
+  height: clamp(10px, 2vw, 14px);
+  margin: clamp(5px, 1vw, 8px);
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .dot.active {
   background-color: #210D65;
   transform: scale(1.3);
 }
+
 /* Botones flotantes */
 .floating-buttons {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
+  bottom: clamp(0.5rem, 2vw, 1rem);
+  right: clamp(0.5rem, 2vw, 1rem);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: clamp(1rem, 2vw, 1.5rem); /* Aumentar el gap */
   z-index: 1001;
   animation: bounceIn 1s ease-out;
 }
 
 .play-button {
-  width: 50px;
-  height: 50px;
+  width: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
+  height: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
   background-color: #210d65;
   border: none;
   border-radius: 50%;
@@ -117,25 +134,25 @@ body {
 .play-icon {
   width: 0;
   height: 0;
-  border-left: 10px solid white;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
+  border-left: clamp(10px, 2vw, 12px) solid white; /* Aumentar el tamaño */
+  border-top: clamp(6px, 1vw, 8px) solid transparent;
+  border-bottom: clamp(6px, 1vw, 8px) solid transparent;
 }
 
 .play-button.playing .play-icon {
   border-left: 0;
-  border-right: 8px solid white;
-  border-left: 8px solid white;
-  height: 10px;
-  width: 4px;
+  border-right: clamp(8px, 1.5vw, 10px) solid white; /* Aumentar el tamaño */
+  border-left: clamp(8px, 1.5vw, 10px) solid white; /* Aumentar el tamaño */
+  height: clamp(10px, 2.5vw, 12px); /* Aumentar el tamaño */
+  width: clamp(4px, 1vw, 5px); /* Aumentar el tamaño */
 }
 
 /* Tarjetas de sedes */
 .title-sedes {
   color: #210D65;
   text-align: center;
-  font-size: clamp(2rem, 5vw, 2.5rem);
-  margin: 3rem 0 2rem;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin: clamp(2rem, 5vw, 3rem) 0 clamp(1rem, 3vw, 2rem);
   text-shadow: 2px 2px 10px rgba(33, 13, 101, 0.3);
 }
 
@@ -143,15 +160,15 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  padding: 20px;
+  gap: clamp(15px, 3vw, 20px);
+  padding: clamp(10px, 3vw, 20px);
 }
 
 .tarjeta {
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  width: clamp(280px, 90%, 320px);
+  width: clamp(250px, 45vw, 320px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
@@ -163,33 +180,35 @@ body {
 
 .logo-sedes {
   width: 100%;
-  height: 200px;
+  height: clamp(150px, 25vw, 200px);
   object-fit: cover;
   border-bottom: 5px solid #89DC00;
 }
 
 .tarjeta h2 {
-  font-size: clamp(1.5rem, 5vw, 1.8rem);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
   color: #210D65;
-  margin: 15px 0;
+  margin: clamp(10px, 2vw, 15px) 0;
   text-align: center;
 }
 
 .tarjeta p {
-  font-size: clamp(0.9rem, 3vw, 1rem);
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
   color: #555;
-  margin: 0 15px 15px;
+  margin: 0 clamp(10px, 2vw, 15px) clamp(10px, 2vw, 15px);
 }
 
-.icono-tarjetas, .icono-tarjetatel {
-  width: 28px;
+.icono-tarjetas,
+.icono-tarjetatel {
+  width: clamp(20px, 5vw, 28px);
   height: auto;
   vertical-align: middle;
-  margin-right: 8px;
+  margin-right: clamp(5px, 1vw, 8px);
   transition: transform 0.3s ease;
 }
 
-.tarjeta:hover .icono-tarjetas, .tarjeta:hover .icono-tarjetatel {
+.tarjeta:hover .icono-tarjetas,
+.tarjeta:hover .icono-tarjetatel {
   transform: rotate(360deg);
 }
 
@@ -198,12 +217,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: clamp(40vh, 60vh, 60vh);
-  margin: 3rem 0;
+  height: clamp(30vh, 50vh, 60vh);
+  margin: clamp(2rem, 5vw, 3rem) 0;
 }
 
 .logocorporativo {
-  max-width: clamp(50%, 70%, 70%);
+  max-width: clamp(40%, 60vw, 70%);
   height: auto;
   filter: drop-shadow(5px 5px 15px rgba(33, 13, 101, 0.5));
   transition: transform 0.3s ease;
@@ -215,25 +234,27 @@ body {
 
 /* Flip cards */
 main.Home {
-  padding: 40px 20px;
+  padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);
   background: #f9f9f9;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: clamp(300px, 90vw, 1200px);
+  margin: 0 auto clamp(2rem, 5vw, 4rem) auto;
 }
 
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: clamp(15px, 3vw, 30px);
   justify-content: center;
+  min-height: clamp(300px, 50vw, 350px);
 }
 
 .flip-card {
   background-color: transparent;
-  width: clamp(220px, 90%, 250px);
-  min-height: 300px;
+  width: clamp(200px, 40vw, 250px);
+  min-height: clamp(250px, 45vw, 300px);
   perspective: 1000px;
-  margin: 1rem;
+  margin: clamp(0.5rem, 2vw, 1rem);
+  z-index: 1; /* Asegura que las tarjetas tengan un z-index base */
 }
 
 .flip-card-inner {
@@ -243,16 +264,18 @@ main.Home {
   text-align: center;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+  z-index: 2; /* Asegura que el contenido interno tenga un z-index mayor */
 }
 
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-.flip-card-front, .flip-card-back {
+.flip-card-front,
+.flip-card-back {
   position: absolute;
   width: 100%;
-  min-height: 300px;
+  min-height: clamp(250px, 45vw, 300px);
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   backface-visibility: hidden;
@@ -260,7 +283,8 @@ main.Home {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: clamp(10px, 3vw, 20px);
+  z-index: 3; /* Asegura que las caras de las tarjetas tengan un z-index mayor */
 }
 
 .flip-card-front {
@@ -275,44 +299,47 @@ main.Home {
 }
 
 .logosmain {
-  width: 100px;
-  height: 100px;
+  width: clamp(80px, 15vw, 100px);
+  height: clamp(80px, 15vw, 100px);
   object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: clamp(10px, 2vw, 15px);
 }
 
 .flip-card-front h2 {
-  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-size: clamp(1rem, 3vw, 1.5rem);
   font-weight: 700;
-  margin: 0.5rem 0;
+  margin: clamp(0.3rem, 1vw, 0.5rem) 0;
 }
 
-.flip-card-back p, .flip-card-back ul {
-  font-size: clamp(0.85rem, 3vw, 0.95rem);
-  margin: 0.5rem 0;
+.flip-card-back p,
+.flip-card-back ul {
+  font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+  margin: clamp(0.3rem, 1vw, 0.5rem) 0;
   text-align: left;
 }
 
 .flip-card-back ul {
   list-style-type: disc;
-  padding-left: 1.5rem;
+  padding-left: clamp(1rem, 3vw, 1.5rem);
 }
 
 /* Video */
 .video-container {
-  max-width: clamp(300px, 90%, 1000px);
-  margin: 5rem auto;
-  padding: clamp(20px, 5vw, 40px);
+  max-width: clamp(280px, 90vw, 1000px);
+  margin: clamp(3rem, 8vw, 6rem) auto;
+  padding: clamp(15px, 4vw, 40px);
   background: linear-gradient(135deg, rgba(33, 13, 101, 0.1), rgba(137, 220, 0, 0.1));
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .video-container h1 {
   color: #210D65;
-  font-size: clamp(1.8rem, 5vw, 2.5rem);
-  margin-bottom: 30px;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: clamp(20px, 3vw, 30px);
   text-shadow: 2px 2px 10px rgba(33, 13, 101, 0.3);
   animation: flyIn 1s ease-out;
 }
@@ -326,22 +353,106 @@ main.Home {
   animation: borderGlow 3s infinite;
 }
 
-/* Media Queries */
-@media (max-width: 768px) {
+/* Media Queries para diferentes tamaños */
+@media (max-width: 320px) {
   .carousel {
-    height: 400px; /* Altura original para pantallas medianas */
+    height: clamp(350px, 60vw, 400px);
+  }
+  .slide-title {
+    bottom: clamp(15px, 3vw, 20px);
+  }
+  .dots {
+    bottom: clamp(5px, 1vw, 10px);
+  }
+  .tarjeta,
+  .flip-card {
+    width: 100%;
+    max-width: none;
+  }
+  .video-container {
+    margin-top: clamp(3.5rem, 15vw, 6rem);
   }
 }
 
 @media (max-width: 480px) {
   .carousel {
-    height: 300px; /* Altura original para pantallas pequeñas */
+    height: clamp(400px, 65vw, 500px);
   }
   .logo-sedes {
-     height: 150px; 
+    height: clamp(120px, 20vw, 150px);
   }
   .floating-buttons {
-    right: 0.5rem; /* Ajusta este valor según necesites */
+    right: clamp(0.3rem, 1vw, 0.5rem);
+  }
+  .title-sedes {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+  }
+  .carousel img {
+    object-fit: cover; /* Asegura que las imágenes se vean de todo el ancho */
+    width: 100%; /* Asegura que las imágenes ocupen todo el ancho */
+  }
+  .video-container {
+    margin-top: clamp(4rem, 12vw, 7rem); /* Ajuste para pantallas más pequeñas */
+  }
+
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: clamp(450px, 70vw, 600px);
+  }
+  .tarjeta-container {
+    gap: 15px;
+  }
+  .video-container {
+    padding: clamp(10px, 3vw, 20px);
+    margin-top: clamp(5rem, 10vw, 8rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .carousel {
+    height: clamp(550px, 55vh, 700px);
+  }
+  .tarjeta {
+    width: clamp(300px, 30vw, 350px);
+  }
+  .flip-card {
+    width: clamp(230px, 25vw, 280px);
+  }
+}
+
+@media (min-width: 1440px) {
+  .carousel {
+    height: clamp(600px, 50vh, 800px);
+  }
+  .tarjeta {
+    width: clamp(320px, 25vw, 400px);
+  }
+  .flip-card {
+    width: clamp(250px, 20vw, 300px);
+  }
+  .video-container {
+    max-width: clamp(800px, 80vw, 1200px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .carousel {
+    height: clamp(700px, 55vh, 1000px); /* Más altura para pantallas grandes */
+  }
+  .tarjeta {
+    width: clamp(350px, 20vw, 450px);
+  }
+  .flip-card {
+    width: clamp(280px, 15vw, 350px);
+  }
+  .logosmain {
+    width: clamp(100px, 10vw, 120px);
+    height: clamp(100px, 10vw, 120px);
+  }
+  .logocorporativo {
+    max-width: clamp(50%, 50vw, 60%);
   }
 }
 
