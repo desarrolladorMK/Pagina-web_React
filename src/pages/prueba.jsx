@@ -1,37 +1,70 @@
-
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, MenuItem } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as XLSX from 'xlsx';
+import './HistorialFormulario.css';
 
 const HistorialFormulario = () => {
   const [rows, setRows] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, reset, watch, formState: { errors, isDirty } } = useForm({
     mode: 'onChange',
   });
 
+  // Mostrar notificaciones con Snackbar
+  const showSnackbar = (message, severity = 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
+
+  // Cargar datos iniciales con mejor manejo de errores
   useEffect(() => {
-    fetch('https://backend-formulario-ruby.vercel.app/api/form/list')
-      .then((res) => res.json())
-      .then((data) => setRows(data))
-      .catch((error) => console.error("Error fetching data:", error));
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://backend-formulario-ruby.vercel.app/api/form/list');
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setRows(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        showSnackbar('Error al cargar los datos del historial', 'error');
+      }
+    };
+    fetchData();
   }, []);
 
-  // Función para exportar a Excel
+  // Exportar a Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Historial');
     XLSX.writeFile(workbook, 'historial_registros.xlsx');
+    showSnackbar('Datos exportados a Excel correctamente', 'success');
   };
 
+  // Columnas de la tabla
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'nombresApellidos', headerName: 'Nombre Completo', width: 200 },
@@ -51,125 +84,150 @@ const HistorialFormulario = () => {
     },
   ];
 
+  // Abrir el diálogo con los detalles del registro
   const handleOpenDialog = (record) => {
     setSelectedRecord(record);
-    reset(record); // Precargar los datos en el formulario
+    reset(record);
     setEditMode(false);
     setOpenDialog(true);
   };
 
+  // Cerrar el diálogo principal
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedRecord(null);
     setEditMode(false);
   };
 
+  // Manejar el envío del formulario
   const onSubmit = async (data) => {
-    // Compara solo las claves que están en el formulario con los datos originales
+    const normalizeValue = (value) => (value == null ? '' : String(value));
     const changesMade = Object.keys(data).some(
-      key => String(data[key] || "") !== String(selectedRecord[key] || "")
+      (key) => normalizeValue(data[key]) !== normalizeValue(selectedRecord[key])
     );
 
     if (!changesMade) {
-      // Si no se detectan cambios, simplemente cierra el diálogo sin notificar
-      handleCloseDialog();
+      showSnackbar('No se detectaron cambios. Ingresando al modo edición...', 'info');
+      setEditMode(true);
       return;
     }
 
     try {
-      const response = await fetch(`https://backend-formulario-ruby.vercel.app/api/form/update/${selectedRecord.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          fechaNacimiento: data.fechaNacimiento ? new Date(data.fechaNacimiento).toISOString().slice(0, 10) : "",
-          fechaIngresoEmpresa: data.fechaIngresoEmpresa ? new Date(data.fechaIngresoEmpresa).toISOString().slice(0, 10) : "",
-        }),
-      });
+      const formattedData = {
+        ...data,
+        fechaNacimiento: data.fechaNacimiento
+          ? new Date(data.fechaNacimiento).toISOString().slice(0, 10)
+          : '',
+        fechaIngresoEmpresa: data.fechaIngresoEmpresa
+          ? new Date(data.fechaIngresoEmpresa).toISOString().slice(0, 10)
+          : '',
+        fechaDiligenciamiento: data.fechaDiligenciamiento
+          ? new Date(data.fechaDiligenciamiento).toISOString().slice(0, 10)
+          : '',
+      };
+
+      const response = await fetch(
+        `https://backend-formulario-ruby.vercel.app/api/form/update/${selectedRecord.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formattedData),
+        }
+      );
+
       const result = await response.json();
 
-      if (response.ok) {
-        alert("Registro actualizado correctamente");
-        // Asumiendo que result.data es un arreglo con el registro actualizado
-        setRows(rows.map(r => (r.id === selectedRecord.id ? result.data[0] : r)));
-        handleCloseDialog(); // Cierra el diálogo tras la actualización exitosa
+      if (response.ok && result.message === 'Datos actualizados correctamente') {
+        setRows((prevRows) =>
+          prevRows.map((r) => (r.id === selectedRecord.id ? result.data[0] : r))
+        );
+        showSnackbar('Registro actualizado correctamente', 'success');
+        handleCloseDialog();
       } else {
-        alert("Error al actualizar: " + result.error);
+        showSnackbar(`Error al actualizar: ${result.error || 'Respuesta inesperada'}`, 'error');
       }
     } catch (error) {
-      console.error("Error al actualizar el registro:", error);
-      alert("Error al actualizar el registro");
+      console.error('Error al actualizar el registro:', error);
+      showSnackbar('Error al actualizar el registro', 'error');
     }
   };
 
+  // Verificar si hay cambios usando watch
+  const formValues = watch();
+
+  const hasChanges = () => {
+    if (!selectedRecord) return false;
+    const normalizeValue = (value) => (value == null ? '' : String(value));
+    return Object.keys(formValues).some(
+      (key) => normalizeValue(formValues[key]) !== normalizeValue(selectedRecord[key])
+    );
+  };
+
+  // Renderizar los detalles del registro
   const renderRecordDetails = (record) => (
-    <div>
+    <div className="record-details">
       <Typography variant="h6">Datos Personales</Typography>
-      <p><strong>Nombres y Apellidos:</strong> {record.nombresApellidos}</p>
-      <p><strong>Documento:</strong> {record.numeroDocumento}</p>
-      <p><strong>Celular:</strong> {record.celular}</p>
-      <p><strong>Correo:</strong> {record.correo}</p>
-      <p><strong>Fecha de Nacimiento:</strong> {record.fechaNacimiento}</p>
-      <p><strong>Ciudad de Nacimiento:</strong> {record.ciudadNacimiento}</p>
+      <p><strong>Nombres y Apellidos:</strong> <span>{record.nombresApellidos}</span></p>
+      <p><strong>Documento:</strong> <span>{record.numeroDocumento}</span></p>
+      <p><strong>Celular:</strong> <span>{record.celular}</span></p>
+      <p><strong>Correo:</strong> <span>{record.correo}</span></p>
+      <p><strong>Fecha de Nacimiento:</strong> <span>{record.fechaNacimiento}</span></p>
+      <p><strong>Ciudad de Nacimiento:</strong> <span>{record.ciudadNacimiento}</span></p>
       <Typography variant="h6">Vivienda y Ubicación</Typography>
-      <p><strong>Tipo de Vivienda:</strong> {record.tipoVivienda}</p>
-      <p><strong>Características de la Vivienda:</strong> {record.caracteristicasVivienda}</p>
-      <p><strong>Estrato:</strong> {record.estrato}</p>
-      <p><strong>Zona:</strong> {record.zona}</p>
-      <p><strong>País de Origen:</strong> {record.paisOrigen}</p>
-      <p><strong>Municipio de Residencia:</strong> {record.municipioResidencia}</p>
-      <p><strong>Barrio:</strong> {record.barrio}</p>
-      <p><strong>Dirección:</strong> {record.direccion}</p>
+      <p><strong>Tipo de Vivienda:</strong> <span>{record.tipoVivienda}</span></p>
+      <p><strong>Características de la Vivienda:</strong> <span>{record.caracteristicasVivienda}</span></p>
+      <p><strong>Estrato:</strong> <span>{record.estrato}</span></p>
+      <p><strong>Zona:</strong> <span>{record.zona}</span></p>
+      <p><strong>País de Origen:</strong> <span>{record.paisOrigen}</span></p>
+      <p><strong>Municipio de Residencia:</strong> <span>{record.municipioResidencia}</span></p>
+      <p><strong>Barrio:</strong> <span>{record.barrio}</span></p>
+      <p><strong>Dirección:</strong> <span>{record.direccion}</span></p>
       <Typography variant="h6">Datos Demográficos</Typography>
-      <p><strong>Género:</strong> {record.genero}</p>
-      <p><strong>Grupo Étnico:</strong> {record.grupoEtnico}</p>
-      <p><strong>Población en Movilidad:</strong> {record.poblacionMovilidad}</p>
-      <p><strong>Grupo Religioso:</strong> {record.grupoReligioso}</p>
+      <p><strong>Género:</strong> <span>{record.genero}</span></p>
+      <p><strong>Grupo Étnico:</strong> <span>{record.grupoEtnico}</span></p>
+      <p><strong>Población en Movilidad:</strong> <span>{record.poblacionMovilidad}</span></p>
+      <p><strong>Grupo Religioso:</strong> <span>{record.grupoReligioso}</span></p>
       <Typography variant="h6">Afiliación y Escolaridad</Typography>
-      <p><strong>EPS:</strong> {record.eps}</p>
-      <p><strong>Fondo de Pensión:</strong> {record.fondoPension}</p>
-      <p><strong>Grado de Escolaridad:</strong> {record.gradoEscolaridad}</p>
-      <p><strong>Estado Civil:</strong> {record.estadoCivil}</p>
-      <p><strong>Tipo de Contrato:</strong> {record.tipoContrato}</p>
-      <p><strong>Fecha de Ingreso a la Empresa:</strong> {record.fechaIngresoEmpresa}</p>
+      <p><strong>EPS:</strong> <span>{record.eps}</span></p>
+      <p><strong>Fondo de Pensión:</strong> <span>{record.fondoPension}</span></p>
+      <p><strong>Grado de Escolaridad:</strong> <span>{record.gradoEscolaridad}</span></p>
+      <p><strong>Estado Civil:</strong> <span>{record.estadoCivil}</span></p>
+      <p><strong>Tipo de Contrato:</strong> <span>{record.tipoContrato}</span></p>
+      <p><strong>Fecha de Ingreso a la Empresa:</strong> <span>{record.fechaIngresoEmpresa}</span></p>
       <Typography variant="h6">Información Laboral</Typography>
-      <p><strong>Sede:</strong> {record.sede}</p>
-      <p><strong>Cargo Operativo:</strong> {record.cargoOperativo}</p>
-      <p><strong>Departamento Operaciones:</strong> {record.departamentoOperaciones}</p>
-      <p><strong>Departamento Financiero:</strong> {record.departamentoFinanciero}</p>
-      <p><strong>Departamento Comercial:</strong> {record.departamentoComercial}</p>
-      <p><strong>Departamento Gestión Humana:</strong> {record.departamentoGestionHumana}</p>
-      <p><strong>Solo Gerencia:</strong> {record.soloGerencia}</p>
+      <p><strong>Sede:</strong> <span>{record.sede}</span></p>
+      <p><strong>Cargo Operativo:</strong> <span>{record.cargoOperativo}</span></p>
+      <p><strong>Departamento Operaciones:</strong> <span>{record.departamentoOperaciones}</span></p>
+      <p><strong>Departamento Financiero:</strong> <span>{record.departamentoFinanciero}</span></p>
+      <p><strong>Departamento Comercial:</strong> <span>{record.departamentoComercial}</span></p>
+      <p><strong>Departamento Gestión Humana:</strong> <span>{record.departamentoGestionHumana}</span></p>
+      <p><strong>Solo Gerencia:</strong> <span>{record.soloGerencia}</span></p>
       <Typography variant="h6">Datos Adicionales</Typography>
-      <p><strong>Antigüedad:</strong> {record.antiguedad}</p>
-      <p><strong>Grupo Sanguíneo:</strong> {record.grupoSanguineo}</p>
-      <p><strong>Personas Dependientes:</strong> {record.dependientesEconomicos}</p>
-      <p><strong>Embarazo:</strong> {record.embarazo}</p>
-      <p><strong>Sufre Enfermedad:</strong> {record.sufreEnfermedad}</p>
-      <p><strong>Descripción de Enfermedad:</strong> {record.descripcionEnfermedad}</p>
+      <p><strong>Antigüedad:</strong> <span>{record.antiguedad}</span></p>
+      <p><strong>Grupo Sanguíneo:</strong> <span>{record.grupoSanguineo}</span></p>
+      <p><strong>Personas Dependientes:</strong> <span>{record.dependientesEconomicos}</span></p>
+      <p><strong>Embarazo:</strong> <span>{record.embarazo}</span></p>
+      <p><strong>Sufre Enfermedad:</strong> <span>{record.sufreEnfermedad}</span></p>
+      <p><strong>Descripción de Enfermedad:</strong> <span>{record.descripcionEnfermedad}</span></p>
       <Typography variant="h6">Actualización de Datos - Hijos</Typography>
-      <p><strong>¿Tiene Hijos?:</strong> {record.tieneHijos}</p>
-      <p><strong>Cantidad de Hijos:</strong> {record.cuantosHijos}</p>
-      <p><strong>Nombres de Hijos:</strong> {record.nombresHijos}</p>
-      <p><strong>Edades de Hijos:</strong> {record.edadesHijos}</p>
-      <p><strong>Grado Escolar de Hijos:</strong> {record.gradoEscolaridadHijos}</p>
+      <p><strong>¿Tiene Hijos?:</strong> <span>{record.tieneHijos}</span></p>
+      <p><strong>Cantidad de Hijos:</strong> <span>{record.cuantosHijos}</span></p>
+      <p><strong>Nombres de Hijos:</strong> <span>{record.nombresHijos}</span></p>
+      <p><strong>Edades de Hijos:</strong> <span>{record.edadesHijos}</span></p>
+      <p><strong>Grado Escolar de Hijos:</strong> <span>{record.gradoEscolaridadHijos}</span></p>
       <Typography variant="h6">Contacto en Caso de Emergencia</Typography>
-      <p><strong>Nombres y Apellidos:</strong> {record.contactoNombres}</p>
-      <p><strong>Celular:</strong> {record.contactoCelular}</p>
-      <p><strong>Parentesco:</strong> {record.parentescoContacto}</p>
+      <p><strong>Nombres y Apellidos:</strong> <span>{record.contactoNombres}</span></p>
+      <p><strong>Celular:</strong> <span>{record.contactoCelular}</span></p>
+      <p><strong>Parentesco:</strong> <span>{record.parentescoContacto}</span></p>
       <Typography variant="h6">Fecha del Diligenciamiento</Typography>
-      <p>{record.fechaDiligenciamiento}</p>
+      <p><strong>Fecha:</strong> <span>{record.fechaDiligenciamiento}</span></p>
     </div>
   );
 
   return (
-    <div style={{ height: 600, width: '100%' }}>
+    <div className="historial-container">
       <h2>Historial de Registros</h2>
-      <Button 
-        variant="contained" 
-        onClick={exportToExcel} 
-        style={{ marginBottom: 10, marginRight: 10 }}
-      >
+      <Button className="export-button" variant="contained" onClick={exportToExcel}>
         Exportar a Excel
       </Button>
       <DataGrid
@@ -178,22 +236,26 @@ const HistorialFormulario = () => {
         pageSize={10}
         rowsPerPageOptions={[10]}
         disableSelectionOnClick
+        hideFooterSelectedRowCount
       />
-
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>
-          {editMode ? "Editar Registro" : `Detalles del Registro #${selectedRecord ? selectedRecord.id : ""}`}
+          {editMode
+            ? "Editar Registro"
+            : `Detalles del Registro #${selectedRecord ? selectedRecord.id : ""}`}
         </DialogTitle>
         <DialogContent dividers>
           {editMode ? (
-            <form id="edit-form" onSubmit={handleSubmit(onSubmit)}>
-              {/* Datos Personales */}
+            <form id="edit-form" className="edit-form" onSubmit={handleSubmit(onSubmit)}>
               <Typography variant="subtitle1">Datos Personales</Typography>
               <TextField
                 fullWidth
                 margin="normal"
                 label="Nombres y Apellidos"
-                {...register("nombresApellidos", { required: "Obligatorio", maxLength: { value: 50, message: "Máximo 50 caracteres" } })}
+                {...register("nombresApellidos", {
+                  required: "Obligatorio",
+                  maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                })}
                 error={!!errors.nombresApellidos}
                 helperText={errors.nombresApellidos?.message}
               />
@@ -240,117 +302,29 @@ const HistorialFormulario = () => {
                 label="Ciudad de Nacimiento"
                 {...register("ciudadNacimiento")}
               />
-              
-              {/* Vivienda y Ubicación */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Vivienda y Ubicación</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Tipo de Vivienda"
-                {...register("tipoVivienda")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Características de la Vivienda"
-                {...register("caracteristicasVivienda")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Estrato"
-                {...register("estrato")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Zona"
-                {...register("zona")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="País de Origen"
-                {...register("paisOrigen")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Municipio de Residencia"
-                {...register("municipioResidencia")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Barrio"
-                {...register("barrio")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Dirección"
-                {...register("direccion")}
-              />
-        
-              {/* Datos Demográficos */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Datos Demográficos</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Género"
-                {...register("genero")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Étnico"
-                {...register("grupoEtnico")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Población en Movilidad"
-                {...register("poblacionMovilidad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Religioso"
-                {...register("grupoReligioso")}
-              />
-        
-              {/* Afiliación y Escolaridad */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Afiliación y Escolaridad</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="EPS"
-                {...register("eps")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Fondo de Pensión"
-                {...register("fondoPension")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grado de Escolaridad"
-                {...register("gradoEscolaridad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Estado Civil"
-                {...register("estadoCivil")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Tipo de Contrato"
-                {...register("tipoContrato")}
-              />
+
+              <Typography variant="subtitle1">Vivienda y Ubicación</Typography>
+              <TextField fullWidth margin="normal" label="Tipo de Vivienda" {...register("tipoVivienda")} />
+              <TextField fullWidth margin="normal" label="Características de la Vivienda" {...register("caracteristicasVivienda")} />
+              <TextField fullWidth margin="normal" label="Estrato" {...register("estrato")} />
+              <TextField fullWidth margin="normal" label="Zona" {...register("zona")} />
+              <TextField fullWidth margin="normal" label="País de Origen" {...register("paisOrigen")} />
+              <TextField fullWidth margin="normal" label="Municipio de Residencia" {...register("municipioResidencia")} />
+              <TextField fullWidth margin="normal" label="Barrio" {...register("barrio")} />
+              <TextField fullWidth margin="normal" label="Dirección" {...register("direccion")} />
+
+              <Typography variant="subtitle1">Datos Demográficos</Typography>
+              <TextField fullWidth margin="normal" label="Género" {...register("genero")} />
+              <TextField fullWidth margin="normal" label="Grupo Étnico" {...register("grupoEtnico")} />
+              <TextField fullWidth margin="normal" label="Población en Movilidad" {...register("poblacionMovilidad")} />
+              <TextField fullWidth margin="normal" label="Grupo Religioso" {...register("grupoReligioso")} />
+
+              <Typography variant="subtitle1">Afiliación y Escolaridad</Typography>
+              <TextField fullWidth margin="normal" label="EPS" {...register("eps")} />
+              <TextField fullWidth margin="normal" label="Fondo de Pensión" {...register("fondoPension")} />
+              <TextField fullWidth margin="normal" label="Grado de Escolaridad" {...register("gradoEscolaridad")} />
+              <TextField fullWidth margin="normal" label="Estado Civil" {...register("estadoCivil")} />
+              <TextField fullWidth margin="normal" label="Tipo de Contrato" {...register("tipoContrato")} />
               <Controller
                 name="fechaIngresoEmpresa"
                 control={control}
@@ -364,147 +338,37 @@ const HistorialFormulario = () => {
                   />
                 )}
               />
-        
-              {/* Información Laboral */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Información Laboral</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Sede"
-                {...register("sede")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Cargo Operativo"
-                {...register("cargoOperativo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Operaciones"
-                {...register("departamentoOperaciones")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Financiero"
-                {...register("departamentoFinanciero")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Comercial"
-                {...register("departamentoComercial")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Gestión Humana"
-                {...register("departamentoGestionHumana")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Solo Gerencia"
-                {...register("soloGerencia")}
-              />
-        
-              {/* Datos Adicionales */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Datos Adicionales</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Antigüedad"
-                {...register("antiguedad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Sanguíneo"
-                {...register("grupoSanguineo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Personas Dependientes"
-                {...register("dependientesEconomicos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Embarazo"
-                {...register("embarazo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Sufre Enfermedad"
-                {...register("sufreEnfermedad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Descripción de Enfermedad"
-                {...register("descripcionEnfermedad")}
-              />
-        
-              {/* Actualización de Datos - Hijos */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Actualización de Datos - Hijos</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="¿Tiene Hijos?"
-                {...register("tieneHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Cantidad de Hijos"
-                {...register("cuantosHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nombres de Hijos"
-                {...register("nombresHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Edades de Hijos"
-                {...register("edadesHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grado Escolar de Hijos"
-                {...register("gradoEscolaridadHijos")}
-              />
-        
-              {/* Contacto en Caso de Emergencia */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Contacto en Caso de Emergencia</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nombres y Apellidos"
-                {...register("contactoNombres")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Celular"
-                {...register("contactoCelular")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Parentesco"
-                {...register("parentescoContacto")}
-              />
-        
-              {/* Fecha del Diligenciamiento */}
-              <Typography variant="subtitle1" style={{ marginTop: 20 }}>Fecha del Diligenciamiento</Typography>
+
+              <Typography variant="subtitle1">Información Laboral</Typography>
+              <TextField fullWidth margin="normal" label="Sede" {...register("sede")} />
+              <TextField fullWidth margin="normal" label="Cargo Operativo" {...register("cargoOperativo")} />
+              <TextField fullWidth margin="normal" label="Departamento Operaciones" {...register("departamentoOperaciones")} />
+              <TextField fullWidth margin="normal" label="Departamento Financiero" {...register("departamentoFinanciero")} />
+              <TextField fullWidth margin="normal" label="Departamento Comercial" {...register("departamentoComercial")} />
+              <TextField fullWidth margin="normal" label="Departamento Gestión Humana" {...register("departamentoGestionHumana")} />
+              <TextField fullWidth margin="normal" label="Solo Gerencia" {...register("soloGerencia")} />
+
+              <Typography variant="subtitle1">Datos Adicionales</Typography>
+              <TextField fullWidth margin="normal" label="Antigüedad" {...register("antiguedad")} />
+              <TextField fullWidth margin="normal" label="Grupo Sanguíneo" {...register("grupoSanguineo")} />
+              <TextField fullWidth margin="normal" label="Personas Dependientes" {...register("dependientesEconomicos")} />
+              <TextField fullWidth margin="normal" label="Embarazo" {...register("embarazo")} />
+              <TextField fullWidth margin="normal" label="Sufre Enfermedad" {...register("sufreEnfermedad")} />
+              <TextField fullWidth margin="normal" label="Descripción de Enfermedad" {...register("descripcionEnfermedad")} />
+
+              <Typography variant="subtitle1">Actualización de Datos - Hijos</Typography>
+              <TextField fullWidth margin="normal" label="¿Tiene Hijos?" {...register("tieneHijos")} />
+              <TextField fullWidth margin="normal" label="Cantidad de Hijos" {...register("cuantosHijos")} />
+              <TextField fullWidth margin="normal" label="Nombres de Hijos" {...register("nombresHijos")} />
+              <TextField fullWidth margin="normal" label="Edades de Hijos" {...register("edadesHijos")} />
+              <TextField fullWidth margin="normal" label="Grado Escolar de Hijos" {...register("gradoEscolaridadHijos")} />
+
+              <Typography variant="subtitle1">Contacto en Caso de Emergencia</Typography>
+              <TextField fullWidth margin="normal" label="Nombres y Apellidos" {...register("contactoNombres")} />
+              <TextField fullWidth margin="normal" label="Celular" {...register("contactoCelular")} />
+              <TextField fullWidth margin="normal" label="Parentesco" {...register("parentescoContacto")} />
+
+              <Typography variant="subtitle1">Fecha del Diligenciamiento</Typography>
               <Controller
                 name="fechaDiligenciamiento"
                 control={control}
@@ -527,7 +391,14 @@ const HistorialFormulario = () => {
           {editMode ? (
             <>
               <Button onClick={() => setEditMode(false)}>Cancelar Edición</Button>
-              <Button form="edit-form" type="submit" variant="contained">Guardar</Button>
+              <Button
+                form="edit-form"
+                type="submit"
+                variant="contained"
+                disabled={!hasChanges()} // Deshabilitar si no hay cambios
+              >
+                Guardar
+              </Button>
             </>
           ) : (
             <>
@@ -537,6 +408,22 @@ const HistorialFormulario = () => {
           )}
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar para notificaciones */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
