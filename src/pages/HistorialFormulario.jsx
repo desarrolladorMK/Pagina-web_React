@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,25 +22,49 @@ const HistorialFormulario = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, reset, watch, formState: { errors, isDirty } } = useForm({
     mode: 'onChange',
   });
 
+  // Mostrar notificaciones con Snackbar
+  const showSnackbar = (message, severity = 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
+
+  // Cargar datos iniciales con mejor manejo de errores
   useEffect(() => {
-    fetch('https://backend-formulario-ruby.vercel.app/api/form/list')
-      .then((res) => res.json())
-      .then((data) => setRows(data))
-      .catch((error) => console.error("Error fetching data:", error));
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://backend-formulario-ruby.vercel.app/api/form/list');
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setRows(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        showSnackbar('Error al cargar los datos del historial', 'error');
+      }
+    };
+    fetchData();
   }, []);
 
+  // Exportar a Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Historial');
     XLSX.writeFile(workbook, 'historial_registros.xlsx');
+    showSnackbar('Datos exportados a Excel correctamente', 'success');
   };
 
+  // Columnas de la tabla
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'nombresApellidos', headerName: 'Nombre Completo', width: 200 },
@@ -50,6 +84,7 @@ const HistorialFormulario = () => {
     },
   ];
 
+  // Abrir el diálogo con los detalles del registro
   const handleOpenDialog = (record) => {
     setSelectedRecord(record);
     reset(record);
@@ -57,51 +92,78 @@ const HistorialFormulario = () => {
     setOpenDialog(true);
   };
 
+  // Cerrar el diálogo principal
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedRecord(null);
     setEditMode(false);
   };
 
+  // Manejar el envío del formulario
   const onSubmit = async (data) => {
+    const normalizeValue = (value) => (value == null ? '' : String(value));
     const changesMade = Object.keys(data).some(
-      key => String(data[key] || "") !== String(selectedRecord[key] || "")
+      (key) => normalizeValue(data[key]) !== normalizeValue(selectedRecord[key])
     );
 
     if (!changesMade) {
-      alert("Estás a punto de ingresar al modo edición");
+      showSnackbar('No se detectaron cambios. Ingresando al modo edición...', 'info');
+      setEditMode(true);
       return;
     }
 
     try {
-      const response = await fetch(`https://backend-formulario-ruby.vercel.app/api/form/update/${selectedRecord.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          fechaNacimiento: data.fechaNacimiento ? new Date(data.fechaNacimiento).toISOString().slice(0, 10) : "",
-          fechaIngresoEmpresa: data.fechaIngresoEmpresa ? new Date(data.fechaIngresoEmpresa).toISOString().slice(0, 10) : "",
-        }),
-      });
+      const formattedData = {
+        ...data,
+        fechaNacimiento: data.fechaNacimiento
+          ? new Date(data.fechaNacimiento).toISOString().slice(0, 10)
+          : '',
+        fechaIngresoEmpresa: data.fechaIngresoEmpresa
+          ? new Date(data.fechaIngresoEmpresa).toISOString().slice(0, 10)
+          : '',
+        fechaDiligenciamiento: data.fechaDiligenciamiento
+          ? new Date(data.fechaDiligenciamiento).toISOString().slice(0, 10)
+          : '',
+      };
+
+      const response = await fetch(
+        `https://backend-formulario-ruby.vercel.app/api/form/update/${selectedRecord.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formattedData),
+        }
+      );
+
       const result = await response.json();
 
-      if (response.ok) {
-        if (result.message === "Datos actualizados correctamente") {
-          alert("Registro actualizado correctamente");
-          setRows(rows.map(r => (r.id === selectedRecord.id ? result.data[0] : r)));
-          handleCloseDialog();
-        } else {
-          alert("Respuesta inesperada del servidor.");
-        }
+      if (response.ok && result.message === 'Datos actualizados correctamente') {
+        setRows((prevRows) =>
+          prevRows.map((r) => (r.id === selectedRecord.id ? result.data[0] : r))
+        );
+        showSnackbar('Registro actualizado correctamente', 'success');
+        handleCloseDialog();
       } else {
-        alert("Error al actualizar: " + result.error);
+        showSnackbar(`Error al actualizar: ${result.error || 'Respuesta inesperada'}`, 'error');
       }
     } catch (error) {
-      console.error("Error al actualizar el registro:", error);
-      alert("Error al actualizar el registro");
+      console.error('Error al actualizar el registro:', error);
+      showSnackbar('Error al actualizar el registro', 'error');
     }
   };
 
+  // Verificar si hay cambios usando watch
+  const formValues = watch();
+
+  const hasChanges = () => {
+    if (!selectedRecord) return false;
+    const normalizeValue = (value) => (value == null ? '' : String(value));
+    return Object.keys(formValues).some(
+      (key) => normalizeValue(formValues[key]) !== normalizeValue(selectedRecord[key])
+    );
+  };
+
+  // Renderizar los detalles del registro
   const renderRecordDetails = (record) => (
     <div className="record-details">
       <Typography variant="h6">Datos Personales</Typography>
@@ -165,11 +227,7 @@ const HistorialFormulario = () => {
   return (
     <div className="historial-container">
       <h2>Historial de Registros</h2>
-      <Button
-        className="export-button"
-        variant="contained"
-        onClick={exportToExcel}
-      >
+      <Button className="export-button" variant="contained" onClick={exportToExcel}>
         Exportar a Excel
       </Button>
       <DataGrid
@@ -178,11 +236,13 @@ const HistorialFormulario = () => {
         pageSize={10}
         rowsPerPageOptions={[10]}
         disableSelectionOnClick
-        hideFooterSelectedRowCount // Oculta el mensaje de selección
+        hideFooterSelectedRowCount
       />
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>
-          {editMode ? "Editar Registro" : `Detalles del Registro #${selectedRecord ? selectedRecord.id : ""}`}
+          {editMode
+            ? "Editar Registro"
+            : `Detalles del Registro #${selectedRecord ? selectedRecord.id : ""}`}
         </DialogTitle>
         <DialogContent dividers>
           {editMode ? (
@@ -192,7 +252,10 @@ const HistorialFormulario = () => {
                 fullWidth
                 margin="normal"
                 label="Nombres y Apellidos"
-                {...register("nombresApellidos", { required: "Obligatorio", maxLength: { value: 50, message: "Máximo 50 caracteres" } })}
+                {...register("nombresApellidos", {
+                  required: "Obligatorio",
+                  maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                })}
                 error={!!errors.nombresApellidos}
                 helperText={errors.nombresApellidos?.message}
               />
@@ -241,112 +304,27 @@ const HistorialFormulario = () => {
               />
 
               <Typography variant="subtitle1">Vivienda y Ubicación</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Tipo de Vivienda"
-                {...register("tipoVivienda")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Características de la Vivienda"
-                {...register("caracteristicasVivienda")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Estrato"
-                {...register("estrato")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Zona"
-                {...register("zona")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="País de Origen"
-                {...register("paisOrigen")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Municipio de Residencia"
-                {...register("municipioResidencia")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Barrio"
-                {...register("barrio")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Dirección"
-                {...register("direccion")}
-              />
+              <TextField fullWidth margin="normal" label="Tipo de Vivienda" {...register("tipoVivienda")} />
+              <TextField fullWidth margin="normal" label="Características de la Vivienda" {...register("caracteristicasVivienda")} />
+              <TextField fullWidth margin="normal" label="Estrato" {...register("estrato")} />
+              <TextField fullWidth margin="normal" label="Zona" {...register("zona")} />
+              <TextField fullWidth margin="normal" label="País de Origen" {...register("paisOrigen")} />
+              <TextField fullWidth margin="normal" label="Municipio de Residencia" {...register("municipioResidencia")} />
+              <TextField fullWidth margin="normal" label="Barrio" {...register("barrio")} />
+              <TextField fullWidth margin="normal" label="Dirección" {...register("direccion")} />
 
               <Typography variant="subtitle1">Datos Demográficos</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Género"
-                {...register("genero")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Étnico"
-                {...register("grupoEtnico")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Población en Movilidad"
-                {...register("poblacionMovilidad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Religioso"
-                {...register("grupoReligioso")}
-              />
+              <TextField fullWidth margin="normal" label="Género" {...register("genero")} />
+              <TextField fullWidth margin="normal" label="Grupo Étnico" {...register("grupoEtnico")} />
+              <TextField fullWidth margin="normal" label="Población en Movilidad" {...register("poblacionMovilidad")} />
+              <TextField fullWidth margin="normal" label="Grupo Religioso" {...register("grupoReligioso")} />
 
               <Typography variant="subtitle1">Afiliación y Escolaridad</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="EPS"
-                {...register("eps")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Fondo de Pensión"
-                {...register("fondoPension")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grado de Escolaridad"
-                {...register("gradoEscolaridad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Estado Civil"
-                {...register("estadoCivil")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Tipo de Contrato"
-                {...register("tipoContrato")}
-              />
+              <TextField fullWidth margin="normal" label="EPS" {...register("eps")} />
+              <TextField fullWidth margin="normal" label="Fondo de Pensión" {...register("fondoPension")} />
+              <TextField fullWidth margin="normal" label="Grado de Escolaridad" {...register("gradoEscolaridad")} />
+              <TextField fullWidth margin="normal" label="Estado Civil" {...register("estadoCivil")} />
+              <TextField fullWidth margin="normal" label="Tipo de Contrato" {...register("tipoContrato")} />
               <Controller
                 name="fechaIngresoEmpresa"
                 control={control}
@@ -362,138 +340,33 @@ const HistorialFormulario = () => {
               />
 
               <Typography variant="subtitle1">Información Laboral</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Sede"
-                {...register("sede")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Cargo Operativo"
-                {...register("cargoOperativo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Operaciones"
-                {...register("departamentoOperaciones")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Financiero"
-                {...register("departamentoFinanciero")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Comercial"
-                {...register("departamentoComercial")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Departamento Gestión Humana"
-                {...register("departamentoGestionHumana")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Solo Gerencia"
-                {...register("soloGerencia")}
-              />
+              <TextField fullWidth margin="normal" label="Sede" {...register("sede")} />
+              <TextField fullWidth margin="normal" label="Cargo Operativo" {...register("cargoOperativo")} />
+              <TextField fullWidth margin="normal" label="Departamento Operaciones" {...register("departamentoOperaciones")} />
+              <TextField fullWidth margin="normal" label="Departamento Financiero" {...register("departamentoFinanciero")} />
+              <TextField fullWidth margin="normal" label="Departamento Comercial" {...register("departamentoComercial")} />
+              <TextField fullWidth margin="normal" label="Departamento Gestión Humana" {...register("departamentoGestionHumana")} />
+              <TextField fullWidth margin="normal" label="Solo Gerencia" {...register("soloGerencia")} />
 
               <Typography variant="subtitle1">Datos Adicionales</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Antigüedad"
-                {...register("antiguedad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grupo Sanguíneo"
-                {...register("grupoSanguineo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Personas Dependientes"
-                {...register("dependientesEconomicos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Embarazo"
-                {...register("embarazo")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Sufre Enfermedad"
-                {...register("sufreEnfermedad")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Descripción de Enfermedad"
-                {...register("descripcionEnfermedad")}
-              />
+              <TextField fullWidth margin="normal" label="Antigüedad" {...register("antiguedad")} />
+              <TextField fullWidth margin="normal" label="Grupo Sanguíneo" {...register("grupoSanguineo")} />
+              <TextField fullWidth margin="normal" label="Personas Dependientes" {...register("dependientesEconomicos")} />
+              <TextField fullWidth margin="normal" label="Embarazo" {...register("embarazo")} />
+              <TextField fullWidth margin="normal" label="Sufre Enfermedad" {...register("sufreEnfermedad")} />
+              <TextField fullWidth margin="normal" label="Descripción de Enfermedad" {...register("descripcionEnfermedad")} />
 
               <Typography variant="subtitle1">Actualización de Datos - Hijos</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="¿Tiene Hijos?"
-                {...register("tieneHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Cantidad de Hijos"
-                {...register("cuantosHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nombres de Hijos"
-                {...register("nombresHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Edades de Hijos"
-                {...register("edadesHijos")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Grado Escolar de Hijos"
-                {...register("gradoEscolaridadHijos")}
-              />
+              <TextField fullWidth margin="normal" label="¿Tiene Hijos?" {...register("tieneHijos")} />
+              <TextField fullWidth margin="normal" label="Cantidad de Hijos" {...register("cuantosHijos")} />
+              <TextField fullWidth margin="normal" label="Nombres de Hijos" {...register("nombresHijos")} />
+              <TextField fullWidth margin="normal" label="Edades de Hijos" {...register("edadesHijos")} />
+              <TextField fullWidth margin="normal" label="Grado Escolar de Hijos" {...register("gradoEscolaridadHijos")} />
 
               <Typography variant="subtitle1">Contacto en Caso de Emergencia</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nombres y Apellidos"
-                {...register("contactoNombres")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Celular"
-                {...register("contactoCelular")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Parentesco"
-                {...register("parentescoContacto")}
-              />
+              <TextField fullWidth margin="normal" label="Nombres y Apellidos" {...register("contactoNombres")} />
+              <TextField fullWidth margin="normal" label="Celular" {...register("contactoCelular")} />
+              <TextField fullWidth margin="normal" label="Parentesco" {...register("parentescoContacto")} />
 
               <Typography variant="subtitle1">Fecha del Diligenciamiento</Typography>
               <Controller
@@ -518,7 +391,14 @@ const HistorialFormulario = () => {
           {editMode ? (
             <>
               <Button onClick={() => setEditMode(false)}>Cancelar Edición</Button>
-              <Button form="edit-form" type="submit" variant="contained">Guardar</Button>
+              <Button
+                form="edit-form"
+                type="submit"
+                variant="contained"
+                disabled={!hasChanges()} // Deshabilitar si no hay cambios
+              >
+                Guardar
+              </Button>
             </>
           ) : (
             <>
@@ -528,6 +408,22 @@ const HistorialFormulario = () => {
           )}
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar para notificaciones */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

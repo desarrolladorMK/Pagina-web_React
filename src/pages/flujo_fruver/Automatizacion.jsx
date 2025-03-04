@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactDatePicker from "react-datepicker";
 import DataTable from "react-data-table-component";
+import { ToastContainer, toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./Automatizacion.css";
 
 const Automatizacion = () => {
@@ -11,10 +13,8 @@ const Automatizacion = () => {
     sede: "",
     correo_asignado: "",
   });
-  // Usamos react-datepicker para las fechas (objetos Date)
   const [fechaInicial, setFechaInicial] = useState(new Date());
   const [fechaFinal, setFechaFinal] = useState(new Date());
-  
   const [pdf, setPdf] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [historial, setHistorial] = useState([]);
@@ -24,56 +24,60 @@ const Automatizacion = () => {
   const [editRowId, setEditRowId] = useState(null);
 
   const API_URL = "https://backend-cristian.vercel.app";
-  // URL base para los PDFs en Supabase (bucket: pdf-cristian, carpeta: pdfs)
   const SUPABASE_PDF_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/pdf-cristian/pdfs";
 
+  // Opciones estáticas
+  const SEDES = [
+    "Copacabana Plaza", "Villa Hermosa", "Girardota Parque", "Girardota llano",
+    "Carnes Barbosa", "Copacabana Vegas", "Copacabana San Juan", "Barbosa",
+  ];
+  const CORREOS = ["fruver@merkahorrosas.com", "gerencia1@merkahorrosas.com"];
+
+  // Obtener historial completo de todos los correos
   const obtenerHistorial = async () => {
     if (isLoadingHistorial) return;
     setIsLoadingHistorial(true);
     try {
-      const response = await axios.get(
-        `${API_URL}/historial/${formData.correo_asignado}`
-      );
-      if (Array.isArray(response.data)) {
-        setHistorial(response.data);
-      } else {
-        setHistorial([]);
-      }
+      const response = await axios.get(`${API_URL}/historial`);
+      const data = Array.isArray(response.data) ? response.data : [];
+      setHistorial(data);
       setMostrarHistorial(true);
-      setTimeout(() => {
-        const historialElement = document.getElementById("automatizacion-historial");
-        if (historialElement) {
-          historialElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }, 0);
+      scrollToHistorial();
     } catch (error) {
-      console.error("Error al obtener el historial:", error);
-      alert("Hubo un error al cargar el historial.");
+      console.error("Error al obtener el historial completo:", error);
+      toast.error("Error al cargar el historial completo.");
     } finally {
       setIsLoadingHistorial(false);
     }
   };
 
-  const toggleHistorial = () => {
-    if (mostrarHistorial) {
-      setMostrarHistorial(false);
-    } else {
-      obtenerHistorial();
-    }
+  // Función para hacer scroll al historial
+  const scrollToHistorial = () => {
+    setTimeout(() => {
+      const historialElement = document.getElementById("automatizacion-historial");
+      if (historialElement) {
+        historialElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
   };
 
+  // Alternar visibilidad del historial
+  const toggleHistorial = () => {
+    setMostrarHistorial((prev) => !prev);
+    if (!mostrarHistorial) obtenerHistorial();
+  };
+
+  // Manejar cambios en el formulario
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "pdf") {
       setPdf(files[0]);
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  // Enviar formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -83,60 +87,61 @@ const Automatizacion = () => {
     data.append("descripcion", formData.descripcion);
     data.append("pdf", pdf);
     data.append("sede", formData.sede);
-    // Enviar fechas en formato yyyy-MM-dd
     data.append("fecha_inicial", fechaInicial.toISOString().split("T")[0]);
     data.append("fecha_final", fechaFinal.toISOString().split("T")[0]);
     data.append("correo_asignado", formData.correo_asignado);
 
     try {
       await axios.post(`${API_URL}/registro`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       setIsSubmitted(true);
+      toast.success("Solicitud enviada exitosamente.");
     } catch (error) {
       console.error("Error al enviar el formulario:", error);
-      alert("Hubo un error al enviar la solicitud.");
+      toast.error("Error al enviar la solicitud.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const cambiarEstado = (index, nuevoEstado) => {
-    const nuevoHistorial = [...historial];
-    nuevoHistorial[index].estado = nuevoEstado;
-    setHistorial(nuevoHistorial);
+  // Actualizar estado y observación en el historial
+  const updateHistorialField = (index, field, value) => {
+    setHistorial((prev) => {
+      const newHistorial = [...prev];
+      newHistorial[index][field] = value;
+      return newHistorial;
+    });
   };
 
-  const actualizarObservacion = (index, nuevaObservacion) => {
-    const nuevoHistorial = [...historial];
-    nuevoHistorial[index].observacion = nuevaObservacion;
-    setHistorial(nuevoHistorial);
-  };
-
-  // Se utiliza la URL original sin incluir el id en la URL,
-  // y se envía el id en el body, que es lo que espera el backend.
+  // Guardar cambios en el historial
   const guardarCambios = async (index) => {
     const item = historial[index];
     try {
       await axios.put(`${API_URL}/historial`, {
         id: item.id,
         estado: item.estado,
-        observacion: item.observacion,
+        observacion: item.observacion || "", // Enviar siempre una cadena, aunque sea vacía
       });
-      alert("Cambios guardados exitosamente.");
+      toast.success("Cambios guardados exitosamente.");
       setEditRowId(null);
     } catch (error) {
-      console.error(
-        "Error al guardar los cambios:",
-        error.response ? error.response.data : error
-      );
-      alert("Hubo un error al guardar los cambios.");
+      console.error("Error al guardar los cambios:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      toast.error(`Error al guardar los cambios: ${error.response?.data?.error || error.message}`);
     }
   };
 
-  // Función que retorna la clase según el estado
+  // Cancelar edición
+  const cancelarEdicion = () => {
+    setEditRowId(null);
+    obtenerHistorial(); // Restaurar los datos originales
+  };
+
+  // Clase según estado
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Pendiente":
@@ -150,50 +155,19 @@ const Automatizacion = () => {
     }
   };
 
+  // Columnas de DataTable
   const columns = [
-    {
-      name: "Descripción",
-      selector: (row) => row.descripcion,
-      wrap: true,
-      grow: 2,
-      width: "300px", // Ancho fijo para el encabezado y celdas
-    },
-    {
-      name: "Sede",
-      selector: (row) => row.sede,
-      wrap: true,
-      width: "150px",
-    },
-    {
-      name: "F. Inicial",
-      selector: (row) => row.fecha_inicial,
-      sortable: true,
-      wrap: true,
-      width: "120px",
-    },
-    {
-      name: "F. Final",
-      selector: (row) => row.fecha_final,
-      sortable: true,
-      wrap: true,
-      width: "120px",
-    },
-    {
-      name: "Correo",
-      selector: (row) => row.correo_asignado,
-      wrap: true,
-      width: "180px",
-    },
+    { name: "Descripción", selector: (row) => row.descripcion, wrap: true, grow: 2, width: "300px" },
+    { name: "Sede", selector: (row) => row.sede, wrap: true, width: "150px" },
+    { name: "F. Inicial", selector: (row) => row.fecha_inicial, sortable: true, wrap: true, width: "120px" },
+    { name: "F. Final", selector: (row) => row.fecha_final, sortable: true, wrap: true, width: "120px" },
+    { name: "Correo", selector: (row) => row.correo_asignado, wrap: true, width: "180px" },
     {
       name: "PDF",
       cell: (row) =>
         row.pdf ? (
           <a
-            href={
-              row.pdf.startsWith("http")
-                ? row.pdf
-                : `${SUPABASE_PDF_URL}/${row.pdf}`
-            }
+            href={row.pdf.startsWith("http") ? row.pdf : `${SUPABASE_PDF_URL}/${row.pdf}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -209,31 +183,18 @@ const Automatizacion = () => {
       name: "Estado",
       cell: (row) => {
         const index = historial.findIndex((item) => item.id === row.id);
-        if (editRowId === row.id) {
-          return (
-            <select
-              name="estado"
-              value={row.estado}
-              onChange={(e) => cambiarEstado(index, e.target.value)}
-              style={{ width: "100%", height: "100%" }}
-            >
-              <option value="Pendiente">Pendiente</option>
-              <option value="Completado">Completado</option>
-              <option value="No Completado">No Completado</option>
-            </select>
-          );
-        }
-        return (
-          <div
-            className={`estado-cell ${getEstadoClass(row.estado || "Pendiente")}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+        return editRowId === row.id ? (
+          <select
+            value={row.estado}
+            onChange={(e) => updateHistorialField(index, "estado", e.target.value)}
+            style={{ width: "100%", height: "100%" }}
           >
+            <option value="Pendiente">Pendiente</option>
+            <option value="Completado">Completado</option>
+            <option value="No Completado">No Completado</option>
+          </select>
+        ) : (
+          <div className={`estado-cell ${getEstadoClass(row.estado || "Pendiente")}`}>
             {row.estado || "Pendiente"}
           </div>
         );
@@ -245,16 +206,16 @@ const Automatizacion = () => {
       name: "Observación",
       cell: (row) => {
         const index = historial.findIndex((item) => item.id === row.id);
-        if (editRowId === row.id) {
-          return (
-            <input
-              type="text"
-              value={row.observacion}
-              onChange={(e) => actualizarObservacion(index, e.target.value)}
-            />
-          );
-        }
-        return row.observacion;
+        return editRowId === row.id ? (
+          <input
+            type="text"
+            value={row.observacion || ""}
+            onChange={(e) => updateHistorialField(index, "observacion", e.target.value)}
+            style={{ width: "100%" }}
+          />
+        ) : (
+          row.observacion || ""
+        );
       },
       wrap: true,
       grow: 2,
@@ -264,60 +225,32 @@ const Automatizacion = () => {
       name: "Acciones",
       cell: (row) => {
         const index = historial.findIndex((item) => item.id === row.id);
-        if (editRowId === row.id) {
-          return (
-            <button
-              className="accion-button guardar"
-              onClick={() => guardarCambios(index)}
-            >
+        return editRowId === row.id ? (
+          <div className="acciones-container">
+            <button className="accion-button guardar" onClick={() => guardarCambios(index)}>
               Guardar
             </button>
-          );
-        }
-        return (
-          <button
-            className="accion-button editar"
-            onClick={() => setEditRowId(row.id)}
-          >
+            <button className="accion-button cancelar" onClick={cancelarEdicion}>
+              Cancelar
+            </button>
+          </div>
+        ) : (
+          <button className="accion-button editar" onClick={() => setEditRowId(row.id)}>
             Editar
           </button>
         );
       },
       ignoreRowClick: true,
       wrap: true,
-      width: "100px",
+      width: "150px",
     },
   ];
+
+  // Estilos personalizados para DataTable
   const customStyles = {
-    headRow: {
-      style: {
-        backgroundColor: "var(--secondary-color)",
-        color: "#fff",
-        fontWeight: "600",
-        verticalAlign: "middle",
-      },
-    },
-    headCells: {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "10px",
-      },
-    },
-    cells: {
-      style: {
-        padding: "10px",
-        whiteSpace: "normal",
-        wordBreak: "break-word",
-        overflow: "visible",
-        verticalAlign: "middle",
-        textAlign: "center",
-        minHeight: "50px",
-        height: "auto",
-        lineHeight: "1.5",
-      },
-    },
+    headRow: { style: { backgroundColor: "var(--secondary-color)", color: "#fff", fontWeight: "600" } },
+    headCells: { style: { display: "flex", alignItems: "center", justifyContent: "center", padding: "10px" } },
+    cells: { style: { padding: "10px", whiteSpace: "normal", wordBreak: "break-word", textAlign: "center" } },
   };
 
   return (
@@ -330,7 +263,8 @@ const Automatizacion = () => {
       <div className="automatizacion-container">
         <h1 className="automatizacion-header">Automatización Fruver</h1>
         <h4 className="fraseMotivacional">
-          "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."<br /> Marco Aurelio
+          "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."
+          <br /> Marco Aurelio
         </h4>
 
         {!isSubmitted ? (
@@ -344,6 +278,7 @@ const Automatizacion = () => {
                   value={formData.descripcion}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 />
               </div>
@@ -356,6 +291,7 @@ const Automatizacion = () => {
                   accept="application/pdf"
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 />
               </div>
@@ -367,19 +303,17 @@ const Automatizacion = () => {
                   value={formData.sede}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 >
                   <option value="" disabled>
                     Selecciona una sede
                   </option>
-                  <option value="Copacabana Plaza">Copacabana Plaza</option>
-                  <option value="Villa Hermosa">Villa Hermosa</option>
-                  <option value="Girardota parque">Girardota Parque</option>
-                  <option value="Girardota llano">Girardota llano</option>
-                  <option value="Carnes barbosa">Carnes Barbosa</option>
-                  <option value="Copacabana Vegas">Copacabana Vegas</option>
-                  <option value="Copacabana San Juan">Copacabana San Juan</option>
-                  <option value="Barbosa">Barbosa</option>
+                  {SEDES.map((sede) => (
+                    <option key={sede} value={sede}>
+                      {sede}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -387,8 +321,9 @@ const Automatizacion = () => {
                 <label className="automatizacion-label">Fecha Inicial:</label>
                 <ReactDatePicker
                   selected={fechaInicial}
-                  onChange={(date) => setFechaInicial(date)}
+                  onChange={setFechaInicial}
                   dateFormat="yyyy-MM-dd"
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 />
               </div>
@@ -397,8 +332,9 @@ const Automatizacion = () => {
                 <label className="automatizacion-label">Fecha Final:</label>
                 <ReactDatePicker
                   selected={fechaFinal}
-                  onChange={(date) => setFechaFinal(date)}
+                  onChange={setFechaFinal}
                   dateFormat="yyyy-MM-dd"
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 />
               </div>
@@ -406,25 +342,26 @@ const Automatizacion = () => {
               <div className="automatizacion-form-field">
                 <label className="automatizacion-label">Correo Asignado:</label>
                 <select
-                  type="email"
                   name="correo_asignado"
                   value={formData.correo_asignado}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   className="automatizacion-input"
                 >
-                  <option value="">Seleccione un correo</option>
-                  <option value="fruver@merkahorrosas.com">fruver@merkahorrosas.com</option>
-                  <option value="gerencia1@merkahorrosas.com">gerencia1@merkahorrosas.com</option>
+                  <option value="" disabled>
+                    Seleccione un correo
+                  </option>
+                  {CORREOS.map((correo) => (
+                    <option key={correo} value={correo}>
+                      {correo}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div className="automatizacion-form-field automatizacion-submit-container">
-                <button
-                  type="submit"
-                  className="automatizacion-submit-button"
-                  disabled={isSubmitting}
-                >
+                <button type="submit" className="automatizacion-submit-button" disabled={isSubmitting}>
                   {isSubmitting ? "Enviando..." : "Enviar"}
                 </button>
               </div>
@@ -439,16 +376,13 @@ const Automatizacion = () => {
 
       {!isSubmitted && (
         <>
-          <button className="floating-button" onClick={toggleHistorial}>
-            📜
+          <button className="floating-button" onClick={toggleHistorial} disabled={isLoadingHistorial}>
+            {isLoadingHistorial ? "⏳" : "📜"}
           </button>
 
           {mostrarHistorial && (
-            <div
-              id="automatizacion-historial"
-              className="automatizacion-historial desplegado"
-            >
-              <h2>Historial reposición Fruver</h2>
+            <div id="automatizacion-historial" className="automatizacion-historial desplegado">
+              <h2>Historial Completo de Reposición Fruver</h2>
               <DataTable
                 columns={columns}
                 data={historial}
@@ -457,11 +391,13 @@ const Automatizacion = () => {
                 striped
                 responsive
                 customStyles={customStyles}
+                noDataComponent="No hay registros en el historial."
               />
             </div>
           )}
         </>
       )}
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </div>
   );
 };
