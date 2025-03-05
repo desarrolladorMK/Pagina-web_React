@@ -169,7 +169,7 @@ function ChatBot({ showInviteMessage = true }) {
 
       {inviteVisible && showInviteMessage && (
         <div className="chatbot-invite-message" role="alert" aria-label="Mensaje de invitación al chatbot">
-          <p>¡Chatea con nosotros! 😊</p>
+          <p>¡Pregunta a Merkahorro IA! 🤖 </p>
         </div>
       )}
 

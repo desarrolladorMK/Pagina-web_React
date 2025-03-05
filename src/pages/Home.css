@@ -27,77 +27,79 @@ body {
   overflow: hidden;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(240, 240, 255, 0.85));
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  height: clamp(450px, 70vw, 900px); /* Más altura para mostrar más imagen */
+  aspect-ratio: 8 / 3;
+  height: auto;
+}
+
+.container-slides {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform: translateX(100%);
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .carousel img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Volvemos a cover para borde a borde */
-}
-
-.container-slides {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  width: 100%;
-  height: 100%;
-}
-
-.slide {
-  min-width: 100%;
-  position: relative;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Asegura borde a borde */
+  object-fit: cover;
+  object-position: center;
   display: block;
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  opacity: 1;
+  transition: transform 0.5s ease;
 }
 
 .slide:hover img {
   transform: scale(1.05);
 }
 
-.slide-title {
-  position: absolute;
-  bottom: clamp(10px, 4vw, 10px);
-  left: clamp(10px, 2vw, 20px);
-  color: white;
-  font-size: clamp(1rem, 3vw, 2.5rem);
-  font-weight: 700;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-  animation: slideIn 1s ease-out;
-  z-index: 1000;
-  padding: clamp(5px, 1vw, 10px);
-  border-radius: 5px;
-}
+
 
 .dots {
-  position: absolute;
-  bottom: clamp(10px, 2vw, 10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  text-align: center;
-  padding: clamp(5px, 1vw, 10px);
+  padding: clamp(10px, 2vw, 15px) 0;
+  background: #f9f9f9; /* Fondo claro para contraste fuera del carrusel */
+  z-index: 10;
 }
 
 .dot {
   display: inline-block;
-  width: clamp(10px, 2vw, 14px);
-  height: clamp(10px, 2vw, 14px);
-  margin: clamp(5px, 1vw, 8px);
-  background-color: rgba(255, 255, 255, 0.5);
+  width: clamp(12px, 2.5vw, 16px);
+  height: clamp(12px, 2.5vw, 16px);
+  margin: clamp(6px, 1.2vw, 10px);
+  background-color: #ffffff;
+  border: 2px solid #210D65;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dot:hover {
+  background-color: #89DC00;
+  transform: scale(1.2);
 }
 
 .dot.active {
   background-color: #210D65;
-  transform: scale(1.3);
+  border-color: #ffffff;
+  transform: scale(1.4);
 }
 
 /* Botones flotantes */
@@ -107,14 +109,14 @@ body {
   right: clamp(0.5rem, 2vw, 1rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 1.5rem); /* Aumentar el gap */
+  gap: clamp(1rem, 2vw, 1.5rem);
   z-index: 1001;
   animation: bounceIn 1s ease-out;
 }
 
 .play-button {
-  width: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
-  height: clamp(50px, 10vw, 60px); /* Aumentar el tamaño */
+  width: clamp(50px, 10vw, 60px);
+  height: clamp(50px, 10vw, 60px);
   background-color: #210d65;
   border: none;
   border-radius: 50%;
@@ -132,19 +134,14 @@ body {
 }
 
 .play-icon {
-  width: 0;
-  height: 0;
-  border-left: clamp(10px, 2vw, 12px) solid white; /* Aumentar el tamaño */
-  border-top: clamp(6px, 1vw, 8px) solid transparent;
-  border-bottom: clamp(6px, 1vw, 8px) solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.play-button.playing .play-icon {
-  border-left: 0;
-  border-right: clamp(8px, 1.5vw, 10px) solid white; /* Aumentar el tamaño */
-  border-left: clamp(8px, 1.5vw, 10px) solid white; /* Aumentar el tamaño */
-  height: clamp(10px, 2.5vw, 12px); /* Aumentar el tamaño */
-  width: clamp(4px, 1vw, 5px); /* Aumentar el tamaño */
+.play-icon svg {
+  font-size: clamp(20px, 4vw, 24px);
+  color: #ffffff;
 }
 
 /* Tarjetas de sedes */
@@ -254,7 +251,7 @@ main.Home {
   min-height: clamp(250px, 45vw, 300px);
   perspective: 1000px;
   margin: clamp(0.5rem, 2vw, 1rem);
-  z-index: 1; /* Asegura que las tarjetas tengan un z-index base */
+  z-index: 1;
 }
 
 .flip-card-inner {
@@ -264,7 +261,7 @@ main.Home {
   text-align: center;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  z-index: 2; /* Asegura que el contenido interno tenga un z-index mayor */
+  z-index: 2;
 }
 
 .flip-card:hover .flip-card-inner {
@@ -284,7 +281,7 @@ main.Home {
   justify-content: center;
   align-items: center;
   padding: clamp(10px, 3vw, 20px);
-  z-index: 3; /* Asegura que las caras de las tarjetas tengan un z-index mayor */
+  z-index: 3;
 }
 
 .flip-card-front {
@@ -354,29 +351,19 @@ main.Home {
 }
 
 /* Media Queries para diferentes tamaños */
-@media (max-width: 320px) {
-  .carousel {
-    height: clamp(350px, 60vw, 400px);
-  }
-  .slide-title {
-    bottom: clamp(15px, 3vw, 20px);
-  }
-  .dots {
-    bottom: clamp(5px, 1vw, 10px);
-  }
-  .tarjeta,
-  .flip-card {
-    width: 100%;
-    max-width: none;
-  }
-  .video-container {
-    margin-top: clamp(3.5rem, 15vw, 6rem);
-  }
-}
-
 @media (max-width: 480px) {
   .carousel {
-    height: clamp(400px, 65vw, 500px);
+    width: 100vw;
+    aspect-ratio: 8 / 3;
+  }
+
+  .dots {
+    padding: clamp(8px, 1.5vw, 12px) 0;
+  }
+  .dot {
+    width: clamp(10px, 2vw, 12px);
+    height: clamp(10px, 2vw, 12px);
+    margin: clamp(4px, 0.8vw, 6px);
   }
   .logo-sedes {
     height: clamp(120px, 20vw, 150px);
@@ -387,19 +374,19 @@ main.Home {
   .title-sedes {
     font-size: clamp(1.2rem, 4vw, 1.5rem);
   }
-  .carousel img {
-    object-fit: cover; /* Asegura que las imágenes se vean de todo el ancho */
-    width: 100%; /* Asegura que las imágenes ocupen todo el ancho */
-  }
   .video-container {
-    margin-top: clamp(4rem, 12vw, 7rem); /* Ajuste para pantallas más pequeñas */
+    margin-top: clamp(4rem, 12vw, 7rem);
   }
-
 }
 
 @media (max-width: 768px) {
   .carousel {
-    height: clamp(450px, 70vw, 600px);
+    width: 100vw;
+    aspect-ratio: 8 / 3;
+  }
+
+  .dots {
+    padding: clamp(10px, 2vw, 15px) 0;
   }
   .tarjeta-container {
     gap: 15px;
@@ -412,7 +399,8 @@ main.Home {
 
 @media (min-width: 1024px) {
   .carousel {
-    height: clamp(550px, 55vh, 700px);
+    width: 100vw;
+    aspect-ratio: 8 / 3;
   }
   .tarjeta {
     width: clamp(300px, 30vw, 350px);
@@ -424,7 +412,8 @@ main.Home {
 
 @media (min-width: 1440px) {
   .carousel {
-    height: clamp(600px, 50vh, 800px);
+    width: 100vw;
+    aspect-ratio: 8 / 3;
   }
   .tarjeta {
     width: clamp(320px, 25vw, 400px);
@@ -439,7 +428,8 @@ main.Home {
 
 @media (min-width: 1920px) {
   .carousel {
-    height: clamp(700px, 55vh, 1000px); /* Más altura para pantallas grandes */
+    width: 100vw;
+    aspect-ratio: 8 / 3;
   }
   .tarjeta {
     width: clamp(350px, 20vw, 450px);
@@ -457,6 +447,17 @@ main.Home {
 }
 
 /* Animaciones */
+@keyframes slideInTitle {
+  from {
+    transform: translate(-50%, -30px); /* Entra desde arriba, ajustado con translate */
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%); /* Posición final centrada */
+    opacity: 1;
+  }
+}
+
 @keyframes slideIn {
   from { transform: translateY(50px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }

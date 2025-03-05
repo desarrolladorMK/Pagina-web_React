@@ -1,111 +1,145 @@
+/* Estilos existentes que mantengo y ajusto */
 .vacantes-container img {
-    width: 100%;
-    max-width: 400px; /* Aumentar el tamaño de las imágenes */
-    border-radius: 10px;
-    margin: 0; /* Elimina márgenes extra */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logo-container {
-    display: inline-block;
-    text-align: center;
-    margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .logo-vacantes {
-    display: inline-block; /* Solo la imagen será clickeable */
-    max-width: 150px;
-    margin: 0 auto;
-    border-radius: 5px;    
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 150px;
+  border-radius: 5px;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .logo-vacantes:hover {
-    transform: scale(1.1);
-    /* box-shadow: 0 15px 20px #8f77df; */
-    filter: drop-shadow( 5px 5px 5px #8f77df);
+  transform: scale(1.1);
+  filter: drop-shadow(5px 5px 5px #8f77df);
 }
 
 .vacantes-container {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
 }
 
 .vacantes-grid {
-    display: flex; /* Usamos flexbox para un control más fino */
-    flex-wrap: wrap;
-    justify-content: center; /* Centra las tarjetas */
-    gap: 50px; /* Elimina el espacio entre las tarjetas */
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 20px;
 }
 
 .vacante-card {
-    background: transparent;
-    border: none;
-    padding: 0;
-    box-shadow: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
-    margin: 0; /* Elimina márgenes extra de las tarjetas */
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .vacante-card-img {
-    width: 100%; /* La imagen ocupará todo el ancho disponible */
-    max-width: 400px; /* Tamaño máximo de la imagen */
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .vacante-card:hover .vacante-card-img {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 10px #919989;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 10px #919989;
 }
 
 .vacante-footer {
-    padding: 15px;
-    width: 100%;
-    display: flex;
-    justify-content: center; /* Centra el botón */
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .btn-aplicar {
-    background-color: #210d65;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #210d65;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .btn-aplicar:hover {
-    background-color: #89dc00;
-    transform: translateY(-3px);
+  background-color: #89dc00;
+  transform: translateY(-3px);
 }
 
 .aplicar-color {
-    color: white;
+  color: white;
 }
 
 .titulo-vacantes {
-    color: #210d65;
-    font-size: 2em;
-    margin-bottom: 30px;
-    text-align: center;
-    margin-top: 15px;
+  color: #210d65;
+  font-size: 2em;
+  margin-bottom: 30px;
+  margin-top: 15px;
 }
 
-/* Media Queries para ajustes específicos */
+/* Nuevos estilos para el estado "sin vacantes" */
+.no-vacantes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh; /* Altura mínima para centrar verticalmente */
+}
+
+.no-vacantes-content {
+  background: #f9f9f9;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.no-vacantes-content:hover {
+  transform: scale(1.02);
+}
+
+.no-vacantes-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.mensaje-titulo {
+  color: #210d65;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.mensaje-vacantes {
+  color: #555;
+  font-size: 1.1em;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Media Queries ajustados */
 @media (max-width: 480px) {
-  .vacante-card {
-    max-width: clamp(250px, 90vw, 300px); /* Ajuste para pantallas muy pequeñas */
+  .vacante-card,
+  .no-vacantes-content {
+    max-width: clamp(250px, 90vw, 300px);
   }
   .vacantes-container {
     padding: 0 1rem 1rem;
@@ -116,11 +150,16 @@
   .logo-vacantes {
     width: clamp(100px, 25vw, 150px);
   }
+  .no-vacantes-icon {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 @media (min-width: 1920px) {
-  .vacante-card {
-    max-width: 550px; /* Límite superior para pantallas muy grandes */
+  .vacante-card,
+  .no-vacantes-content {
+    max-width: 650px;
   }
   .vacante-card-img {
     max-height: 350px;
@@ -137,10 +176,10 @@
   }
 }
 
-/* Asegurar que el diseño sea fluido en todos los tamaños */
 @media (max-width: 320px) {
-  .vacante-card {
-    max-width: 100%; /* Ocupa todo el ancho disponible */
+  .vacante-card,
+  .no-vacantes-content {
+    max-width: 100%;
   }
   .vacantes-grid {
     gap: 10px;

@@ -21,6 +21,7 @@ html {
   width: 100%;
   display: flex;
   justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .container-navbar-header {
@@ -35,20 +36,29 @@ html {
 /* Logo */
 .logo-header img {
   max-width: 150px;
-  margin: 20px 0;
+  margin: 15px 0;
   display: block;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.logo-header img:hover {
+  transform: scale(1.05);
 }
 
 /* Botón de menú (hamburguesa) */
 .menu-toggle {
   display: none;
-  font-size: 24px;
+  font-size: 28px;
   cursor: pointer;
   background: none;
   border: none;
   color: #ffffff;
+  transition: transform 0.3s ease;
+}
+
+.menu-toggle:hover {
+  transform: rotate(90deg);
 }
 
 /* Lista de navegación */
@@ -58,54 +68,70 @@ html {
   margin: 0;
   padding: 0;
   align-items: center;
+  transition: all 0.4s ease;
 }
 
 .nav-list li {
-  margin-left: 20px;
+  margin-left: 10px;
   position: relative;
 }
 
-/* Estilo de los enlaces */
-.nav-list a {
+.nav-list a, .submenu-trigger {
   text-decoration: none;
   color: #ffffff;
   font-weight: 500;
   font-size: 19px;
-  padding: 10px 0;
+  padding: 10px 15px;
   position: relative;
-  transition: color 0.3s;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* Línea animada debajo del enlace */
-.nav-list a::after {
+.nav-list a::after, .submenu-trigger::after {
   content: "";
   position: absolute;
-  left: 0;
-  bottom: 0;
+  left: 15px;
+  bottom: 5px;
   width: 0;
   height: 2px;
   background-color: #ffffff;
-  transition: width 0.3s;
+  transition: width 0.3s ease;
 }
 
-.nav-list a:hover::after {
-  width: 100%;
+.nav-list a:hover::after, .submenu-trigger:hover::after {
+  width: calc(100% - 30px);
+}
+
+.nav-list a:hover, .submenu-trigger:hover {
+  color: #e6e6e6;
 }
 
 /* Submenú */
 .sub-nav-list {
-  display: none;
   list-style: none;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   position: absolute;
   top: 100%;
   left: 0;
-  width: 200px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
-  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.nav-item-with-submenu:hover .sub-nav-list,
+.sub-nav-list.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .sub-nav-list li {
@@ -114,39 +140,16 @@ html {
 
 .sub-nav-list a {
   color: #210d65;
-  text-decoration: none;
   display: block;
-  padding: 10px 15px;
+  padding: 12px 20px;
   font-size: 16px;
-  transition: background-color 0.3s, color 0.3s;
-  position: relative;
-  border-radius: 10px;
-}
-
-.sub-nav-list a::after {
-  content: "";
-  position: absolute;
-  left: 15px;
-  bottom: 5px;
-  width: 0;
-  height: 2px;
-  background-color: #210d65;
-  transition: width 0.3s;
+  transition: all 0.3s ease;
 }
 
 .sub-nav-list a:hover {
-  background-color: #e6e6e6;
+  background-color: #f0f0f0;
   color: #000;
-  border-radius: 10px;
-}
-
-.sub-nav-list a:hover::after {
-  width: calc(100% - 30px);
-}
-
-/* Mostrar submenú al hacer hover */
-.nav-list li:hover .sub-nav-list {
-  display: block;
+  padding-left: 25px;
 }
 
 /* Estilos para el ícono de login */
@@ -154,16 +157,18 @@ html {
   display: flex;
   align-items: center;
   padding: 10px;
-  transition: color 0.3s;
 }
 
 .default-icon {
   color: #ffffff;
-  transition: opacity 0.3s;
+  font-size: 24px;
+  transition: all 0.3s ease;
 }
 
 .hover-icon {
   display: none;
+  color: #e6e6e6;
+  font-size: 24px;
 }
 
 .login-icon a:hover .default-icon {
@@ -180,41 +185,63 @@ html {
     display: block;
     position: absolute;
     right: 20px;
-    font-size: 32px;
-    color: #ffffff;
     z-index: 1002;
   }
 
   .nav-list {
     position: fixed;
-    top: -100vh;
-    left: 0;
-    width: 100%;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    max-width: 300px;
     height: 100vh;
     background-color: #210d65;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: top 0.4s ease-in-out;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 80px;
+    transition: left 0.4s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   }
 
   .nav-list.show {
-    top: 0;
+    left: 0;
   }
 
   .nav-list li {
-    margin: 15px 0;
+    margin: 10px 0;
+    width: 100%;
   }
 
-  .nav-list a {
-    font-size: 22px;
-    padding: 15px;
-    text-align: center;
+  .nav-list a, .submenu-trigger {
+    font-size: 20px;
+    padding: 15px 25px;
     width: 100%;
+    text-align: left;
+  }
+
+  .sub-nav-list {
+    position: static;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: none;
+    border-radius: 0;
+    padding-left: 20px;
+    transform: none;
+    opacity: 1;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .sub-nav-list.show {
+    visibility: visible;
+    max-height: 300px;
   }
 
   .login-icon a {
     font-size: 24px;
-    padding: 15px;
+    padding: 15px 25px;
   }
 }

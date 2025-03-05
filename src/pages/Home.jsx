@@ -5,24 +5,26 @@ import { Footer } from "../components/Footer";
 import { ChatBot } from "../components/ChatBot";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const playButtonRef = useRef(null);
 
   const images = [
-    { src: "/mk1.jpg", title: "Bienvenidos a Merkahorro" },
-    { src: "/mk2.jpg", title: "Calidad en cada rincón" },
-    { src: "/mk3.jpg", title: "Tu supermercado favorito" },
-    { src: "/mk4.jpg", title: "Siempre cerca de ti" },
+    { src: "/mk1.jpg"},
+    { src: "/mk2.jpg"},
+    { src: "/mk3.jpg"},
+    { src: "/mk4.jpg"},
   ];
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000);
+    }, 5000); // 5 segundos como ya lo tenías
     return () => clearInterval(interval);
   }, [images.length]);
 
@@ -34,9 +36,11 @@ const Home = () => {
     if (audioRef.current) {
       if (audioRef.current.paused) {
         audioRef.current.play();
+        setIsPlaying(true);
         playButtonRef.current?.classList.add("playing");
       } else {
         audioRef.current.pause();
+        setIsPlaying(false);
         playButtonRef.current?.classList.remove("playing");
       }
     }
@@ -46,7 +50,7 @@ const Home = () => {
     <div className="Home-body">
       <Header />
 
-      {/* Carrusel sin flechas y a todo el ancho */}
+      {/* Carrusel */}
       <div className="carousel" data-aos="fade-in">
         <div className="container-slides">
           {images.map((image, index) => (
@@ -56,19 +60,19 @@ const Home = () => {
               style={{ display: index === currentIndex ? "block" : "none" }}
             >
               <img src={image.src} alt={`Imagen ${index + 1}`} />
-              <div className="slide-title">{image.title}</div>
             </div>
           ))}
         </div>
-        <div className="dots">
-          {images.map((_, index) => (
-            <span
-              key={index}
-              className={`dot ${index === currentIndex ? "active" : ""}`}
-              onClick={() => goToSlide(index)}
-            ></span>
-          ))}
-        </div>
+      </div>
+      {/* Puntos fuera del carrusel */}
+      <div className="dots">
+        {images.map((_, index) => (
+          <span
+            key={index}
+            className={`dot ${index === currentIndex ? "active" : ""}`}
+            onClick={() => goToSlide(index)}
+          ></span>
+        ))}
       </div>
 
       {/* Botones flotantes */}
@@ -78,8 +82,9 @@ const Home = () => {
           className="play-button"
           ref={playButtonRef}
           onClick={handlePlay}
+          aria-label="Reproducir o pausar radio"
         >
-          <span className="play-icon"></span>
+          <span className="play-icon">{isPlaying ? <FaPause /> : <FaPlay />}</span>
         </button>
         <audio id="live-audio" preload="auto" ref={audioRef}>
           <source src="https://radiolatina.info/8016/stream" type="audio/mpeg" />
@@ -300,8 +305,6 @@ const Home = () => {
             </div>
           </div>
 
-
-
           <div className="flip-card" id="fundadores">
             <div className="flip-card-inner">
               <div className="flip-card-front">
@@ -318,6 +321,7 @@ const Home = () => {
               </div>
             </div>
           </div>
+
           <div className="flip-card" id="principios">
             <div className="flip-card-inner">
               <div className="flip-card-front">
@@ -340,7 +344,7 @@ const Home = () => {
         </div>
       </main>
 
-      {/* Video mejorado */}
+      {/* Video */}
       <div className="video-container" data-aos="zoom-in">
         <h1>Historia de nuestra compañía</h1>
         <video className="video" controls muted loop>
