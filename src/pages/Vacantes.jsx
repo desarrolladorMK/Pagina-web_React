@@ -3,7 +3,7 @@ import './Vacantes.css';
 import { ChatBot } from '../components/ChatBot';
 
 const Vacantes = () => {
-  const vacantesActivas = true; // Cambia a false para ocultar las vacantes
+  const vacantesActivas = false; // Cambia a false para ocultar las vacantes
 
   return (
     <div className="vacantes-body">
@@ -32,11 +32,14 @@ const Vacantes = () => {
           </div>
         ) : (
           <div className="no-vacantes">
-            <h2 className="mensaje-vacantes">
-              En estos momentos no hay vacantes específicas disponibles, pero puedes enviarnos tu hoja de vida.
-            </h2>
-            <div className="vacante-footer">
-              <a href="/aplicar" className="btn-aplicar aplicar-color">Aplicar</a>
+            <div className="no-vacantes-content">
+              <h3 className="mensaje-titulo">¡Estamos creciendo!</h3>
+              <p className="mensaje-vacantes">
+                Actualmente no hay vacantes disponibles, pero siempre estamos buscando talento. Envíanos tu hoja de vida y te contactaremos cuando surja una oportunidad perfecta para ti.
+              </p>
+              <div className="vacante-footer">
+                <a href="/aplicar" className="btn-aplicar aplicar-color">¡Postularme!</a>
+              </div>
             </div>
           </div>
         )}

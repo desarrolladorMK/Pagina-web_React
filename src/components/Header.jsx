@@ -1,39 +1,54 @@
 import React, { useState } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserTie, FaTimes } from 'react-icons/fa'; // Cambié FaUserCircle por FaUserTie
+import { GiHamburgerMenu } from 'react-icons/gi';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
+    if (isSubMenuOpen) setIsSubMenuOpen(false);
+  };
+
+  const toggleSubMenu = () => {
+    setIsSubMenuOpen((prev) => !prev);
   };
 
   const handleLinkClick = () => {
     setIsMenuOpen(false);
+    setIsSubMenuOpen(false);
   };
 
   return (
     <header>
       <nav className="navbar-header">
         <div className="container-navbar-header">
-          <a href="#" className="logo-header">
-            <img src="/logoMK.png" alt="Logo de Merkahorro" />
-          </a>
+          <Link to="/" className="logo-header" onClick={handleLinkClick}>
+            <img src="/logoMK.png" alt="Logo de Merkaharro" />
+          </Link>
+
           <button
             className="menu-toggle"
             onClick={toggleMenu}
             aria-label="Abrir o cerrar menú"
           >
-            ☰
+            {isMenuOpen ? <FaTimes /> : <GiHamburgerMenu />}
           </button>
+
           <ul className={`nav-list ${isMenuOpen ? 'show' : ''}`}>
-            <li>
-              <a href="#" className="nav-item" onClick={handleLinkClick}>
+            <li className="nav-item-with-submenu">
+              <button
+                className="nav-item submenu-trigger"
+                onClick={toggleSubMenu}
+                onMouseEnter={() => !isMenuOpen && setIsSubMenuOpen(true)}
+                onMouseLeave={() => !isMenuOpen && setIsSubMenuOpen(false)}
+              >
                 Nosotros
-              </a>
-              <ul className="sub-nav-list">
+              </button>
+              <ul className={`sub-nav-list ${isSubMenuOpen ? 'show' : ''}`}>
                 <li>
                   <a href="#compañia" onClick={handleLinkClick}>
                     Nuestra Compañía
@@ -77,14 +92,14 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <a href="https://merkahorro.com/Aula/" onClick={handleLinkClick}>
+              <a href="https://merkaharro.com/Aula/" onClick={handleLinkClick}>
                 Aula
               </a>
             </li>
             <li className="login-icon">
               <Link to="/login" onClick={handleLinkClick}>
-                <FaUserCircle className="default-icon" />
-                <FaUserCircle className="hover-icon" />
+                <FaUserTie className="default-icon" /> {/* Ícono por defecto */}
+                <FaUserTie className="hover-icon" />  {/* Ícono al hacer hover */}
               </Link>
             </li>
           </ul>
