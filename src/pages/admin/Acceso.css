@@ -1,124 +1,128 @@
-/* Variables globales de la paleta de colores */
-:root {
-  --primary-color: #89DC00;           /* Verde brillante */
-  --secondary-color: #210d65;         /* Púrpura oscuro */
-  --bg-gradient-start: #e6f7d0;         /* Versión suave y clara del verde */
-  --bg-gradient-end: #d0d1ea;           /* Versión suave y clara del púrpura */
-  --text-primary: #210d65;            /* Usamos el púrpura oscuro para textos destacados */
-  --text-secondary: #555;             /* Color secundario para textos */
-  --text-muted: #888;                 /* Para mensajes o textos de menor énfasis */
-}
-
-/* Contenedor principal con animación de entrada y fondo elegante */
+/* Estilo base */
 .emp-dashboard {
-  text-align: center;
-  margin: 20px auto;
+  min-height: 100vh;
   padding: 40px;
-  max-width: 600px;
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.397);
-  animation: fadeInDown 0.8s ease-out;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Roboto', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Título y correo con estilos sobrios */
-.emp-dashboard-title {
-  font-size: 2.2rem;
-  margin-bottom: 12px;
-  color: var(--text-primary);
-}
-
-.emp-dashboard-user {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  color: var(--text-secondary);
-}
-
-/* Contenedor de botones con separación */
-.emp-dashboard-links {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
-}
-
-/* Botón principal con transiciones, efecto "ripple" y feedback visual */
-.emp-dashboard-button {
+/* Cabecera */
+.emp-dashboard-header {
   position: relative;
-  overflow: hidden;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 500;
-  background-color: var(--secondary-color); /* Fondo púrpura oscuro */
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  margin-bottom: 40px;
+  padding-top: 20px;
 }
 
-/* Efecto de "ripple" utilizando un pseudo-elemento */
-.emp-dashboard-button::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.5s ease, height 0.5s ease;
-}
-
-/* Efectos al pasar el mouse sobre el botón */
-.emp-dashboard-button:hover {
-  background-color: var(--primary-color);  /* Cambia a verde brillante */
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.emp-dashboard-button:hover::before {
-  width: 250%;
-  height: 250%;
-}
-
-/* Efecto al hacer clic */
-.emp-dashboard-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Enfoque para accesibilidad */
-.emp-dashboard-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--primary-color);
-}
-
-/* Estilo para el mensaje de rutas no disponibles */
-.emp-dashboard-no-routes {
-  font-size: 1rem;
-  color: var(--text-muted);
+.emp-dashboard-title {
+  font-size: 2.5rem;
+  color: #210d65;
+  margin-bottom: 10px;
+  line-height: 1.2;
   animation: fadeIn 1s ease-in;
 }
 
-/* Keyframes para animaciones */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.emp-dashboard-user {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 20px;
 }
 
+.emp-dashboard-user span {
+  font-weight: bold;
+  color: #210d65;
+}
+
+/* Botón de cerrar sesión en esquina superior derecha */
+.logout-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.logout-button {
+  padding: 10px 15px;
+  border: 2px solid #210d65;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #210d65;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #89dc00;
+  color: #fff;
+}
+
+/* Contenedor de enlaces */
+.emp-dashboard-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.emp-dashboard-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: #fff;
+  border: 2px solid #210d65;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  color: #210d65;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.emp-dashboard-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #89dc00;
+  color: #fff;
+}
+
+.button-icon {
+  font-size: 1.5rem;
+}
+
+.button-text {
+  flex: 1;
+}
+
+.emp-dashboard-no-routes {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+/* Animación de entrada */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .emp-dashboard {
+    padding: 20px;
   }
-  to {
-    opacity: 1;
+  .emp-dashboard-title {
+    font-size: 2rem;
+  }
+  .emp-dashboard-links {
+    grid-template-columns: 1fr;
+  }
+  .logout-button {
+    font-size: 0.9rem;
   }
 }

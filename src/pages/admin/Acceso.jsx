@@ -1,34 +1,93 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { 
+  FaSignOutAlt, 
+  FaHome, 
+  FaClipboardList, 
+  FaMoneyBillWave, 
+  FaCalendarAlt, 
+  FaTruck,
+  FaUser,
+  FaAppleAlt,
+  FaDatabase
+} from 'react-icons/fa';
 import './Acceso.css';
 
 const Acceso = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Obtener correo y rutas pasadas por el login
   const { correoUsuario, opciones } = location.state || {};
 
+  const [greeting, setGreeting] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const empleados = import.meta.env.VITE_EMPLEADOS.split(',');
+    const nombres = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(',');
+    const index = empleados.indexOf(correoUsuario);
+    const name = index !== -1 && nombres[index] ? nombres[index] : 'Usuario';
+    setUserName(name);
+
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting('¡Buenos días');
+    else if (hour < 18) setGreeting('¡Buenas tardes');
+    else setGreeting('¡Buenas noches');
+  }, [correoUsuario]);
+
   const handleNavigation = (path) => {
-    navigate(path); // Redirige a la vista seleccionada
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    navigate('/login');
+  };
+
+  // Mapeo de iconos para cada sección
+  const iconMap = {
+    'Inicio': <FaHome />,
+    'Historial': <FaClipboardList />,
+    'Gastos': <FaMoneyBillWave />,
+    'Reserva de salones': <FaCalendarAlt />,
+    'Transporte': <FaTruck />,
+    'Perfil gestión humana': <FaUser />,
+    'Automatización Fruver': <FaAppleAlt />,
+    'Base de datos Postulaciones': <FaDatabase />,
   };
 
   return (
     <div className="emp-dashboard">
-      <h2 className="emp-dashboard-title">Bienvenido al Panel de Administración</h2>
-      <h4 className="fraseMotivacional">
-      “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
-          </h4>
-      <p className="emp-dashboard-user">Ingresaste como: {correoUsuario}</p>
+      <div className="emp-dashboard-header">
+        <h2 className="emp-dashboard-title">
+          {greeting}, {userName}!<br />
+          Bienvenido al Panel de Control
+        </h2>
+        
+        <h4 className="fraseMotivacional">
+          “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
+        </h4>
+        <p className="emp-dashboard-user">
+          Has iniciado sesión con: <span>{correoUsuario}</span>
+        </p>
+        <div className="logout-container">
+          <button className="logout-button" onClick={handleLogout}>
+            <FaSignOutAlt /> <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </div>
+
       <div className="emp-dashboard-links">
         {opciones && opciones.length > 0 ? (
           opciones.map((opcion, index) => (
             <button
-              className="emp-dashboard-button"
               key={index}
+              className="emp-dashboard-button"
               onClick={() => handleNavigation(opcion.path)}
             >
-              {opcion.label}
+              <span className="button-icon">
+                {iconMap[opcion.label] || <FaClipboardList />}
+              </span>
+              <span className="button-text">{opcion.label}</span>
             </button>
           ))
         ) : (

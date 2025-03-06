@@ -143,7 +143,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/centro A.JPG"
+            src="/centro A.jpg"
             alt="Centro Administrativo"
           />
           <h2>Centro Administrativo</h2>

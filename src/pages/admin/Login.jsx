@@ -25,7 +25,7 @@ const Login = () => {
           { path: "/historialgastos", label: "Historial de Gastos" },
           { path: "/formularioperfil", label: "Formulario Perfil" },
           { path: "/transporte", label: "Transporte" },
-          { path: "/reserva", label: "Reservas" },
+          { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
         ],
       },
@@ -79,7 +79,7 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_7 || "",
         redirect: "/acceso",
         routes: [
-          { path: "/salones", label: "Salones" },
+          { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
         ],
       },
