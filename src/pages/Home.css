@@ -66,15 +66,13 @@ body {
   transform: scale(1.05);
 }
 
-
-
 .dots {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   padding: clamp(10px, 2vw, 15px) 0;
-  background: #f9f9f9; /* Fondo claro para contraste fuera del carrusel */
+  background: #f9f9f9;
   z-index: 10;
 }
 
@@ -323,7 +321,7 @@ main.Home {
 /* Video */
 .video-container {
   max-width: clamp(280px, 90vw, 1000px);
-  margin: clamp(3rem, 8vw, 6rem) auto;
+  margin: clamp(3rem, 8vw, 6rem) auto clamp(6rem, 10vw, 8rem) auto;
   padding: clamp(15px, 4vw, 40px);
   background: linear-gradient(135deg, rgba(33, 13, 101, 0.1), rgba(137, 220, 0, 0.1));
   border-radius: 20px;
@@ -349,6 +347,51 @@ main.Home {
   border: 3px solid transparent;
   animation: borderGlow 3s infinite;
 }
+
+/* Contenedor de las olas */
+.wave-container {
+  position: relative; /* Cambia de absolute a relative */
+  width: 150%;
+  height: 150px;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  margin-top: -5px; /* Ajusta el margen superior si es necesario */
+}
+
+/* Estilo general de las olas */
+.waves {
+  width: 100%;
+  height: 104%;
+  fill: #1a0b4d;
+}
+
+/* Animación de las olas */
+.wave {
+  fill: #1a0b4d;
+}
+
+.wave1 {
+  animation: waveMove1 5s ease-in-out infinite;
+}
+
+.wave2 {
+  opacity: 0.9;
+  animation: waveMove2 6s ease-in-out infinite;
+}
+
+@keyframes waveMove1 {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-500px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes waveMove2 {
+  0% { transform: translateX(-300px); }
+  50% { transform: translateX(200px); }
+  100% { transform: translateX(-300px); }
+}
+
 
 /* Media Queries para diferentes tamaños */
 @media (max-width: 480px) {
@@ -449,11 +492,11 @@ main.Home {
 /* Animaciones */
 @keyframes slideInTitle {
   from {
-    transform: translate(-50%, -30px); /* Entra desde arriba, ajustado con translate */
+    transform: translate(-50%, -30px);
     opacity: 0;
   }
   to {
-    transform: translate(-50%, -50%); /* Posición final centrada */
+    transform: translate(-50%, -50%);
     opacity: 1;
   }
 }
