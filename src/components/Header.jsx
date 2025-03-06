@@ -92,7 +92,7 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <a href="https://merkaharro.com/Aula/" onClick={handleLinkClick}>
+              <a href="https://merkahorro.com/Aula/" onClick={handleLinkClick}>
                 Aula
               </a>
             </li>
