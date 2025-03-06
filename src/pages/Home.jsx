@@ -14,17 +14,17 @@ const Home = () => {
   const playButtonRef = useRef(null);
 
   const images = [
-    { src: "/mk1.jpg"},
-    { src: "/mk2.jpg"},
-    { src: "/mk3.jpg"},
-    { src: "/mk4.jpg"},
+    { src: "/mk1.jpg" },
+    { src: "/mk2.jpg" },
+    { src: "/mk3.jpg" },
+    { src: "/mk4.jpg" },
   ];
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // 5 segundos como ya lo tenías
+    }, 5000);
     return () => clearInterval(interval);
   }, [images.length]);
 
@@ -84,132 +84,279 @@ const Home = () => {
           onClick={handlePlay}
           aria-label="Reproducir o pausar radio"
         >
-          <span className="play-icon">{isPlaying ? <FaPause /> : <FaPlay />}</span>
+          <span className="play-icon">
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </span>
         </button>
         <audio id="live-audio" preload="auto" ref={audioRef}>
-          <source src="https://radiolatina.info/8016/stream" type="audio/mpeg" />
+          <source
+            src="https://radiolatina.info/8016/stream"
+            type="audio/mpeg"
+          />
           Tu navegador no soporta la reproducción de audio.
         </audio>
         <ChatBot />
       </div>
 
       {/* Sección de sedes */}
-      <h1 className="title-sedes" data-aos="fade-up">Conoce nuestras sedes</h1>
-      <div className="tarjeta-container" data-aos="fade-up" data-aos-delay="200">
+      <h1 className="title-sedes" data-aos="fade-up">
+        Conoce nuestras sedes
+      </h1>
+      <div
+        className="tarjeta-container"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         <section className="tarjeta" id="tarjeta">
           <img className="logo-sedes" src="/Plaza.jpg" alt="Copacabana Plaza" />
           <h2>Copacabana Plaza</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Calle 52 #52-27
           </p>
           <p>
-            <a href="https://wa.me/573147956325" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573147956325"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3147956325
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/centro A.JPG" alt="Centro Administrativo" />
+          <img
+            className="logo-sedes"
+            src="/centro A.JPG"
+            alt="Centro Administrativo"
+          />
           <h2>Centro Administrativo</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Calle+52+%2352-27"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Calle 52 #52-27
           </p>
           <p>
-            <a href="https://wa.me/573147956325" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573147956325"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3147956325
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/villahermosa.jpg" alt="Villa Hermosa" />
+          <img
+            className="logo-sedes"
+            src="/villahermosa.jpg"
+            alt="Villa Hermosa"
+          />
           <h2>Villa Hermosa</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+40+%2364-51" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Carrera+40+%2364-51"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Carrera 40 #64-51
           </p>
           <p>
-            <a href="https://wa.me/573185369987" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573185369987"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3185369987
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/girardota parque.jpeg" alt="Girardota parque" />
+          <img
+            className="logo-sedes"
+            src="/girardota parque.jpeg"
+            alt="Girardota parque"
+          />
           <h2>Girardota parque</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Calle+7+%2315-61" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Calle+7+%2315-61"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Calle 7 #15-61
           </p>
           <p>
-            <a href="https://wa.me/573186247765" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573186247765"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3186247765
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/girardota llano.jpg" alt="Girardota llano" />
+          <img
+            className="logo-sedes"
+            src="/girardota llano.jpg"
+            alt="Girardota llano"
+          />
           <h2>Girardota llano</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Calle+11+%2316-43" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Calle+11+%2316-43"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Calle 11 #16-43
           </p>
           <p>
-            <a href="https://wa.me/573182681285" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573182681285"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3182681285
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/carnes barbosa.jpg" alt="Carnes barbosa" />
+          <img
+            className="logo-sedes"
+            src="/carnes barbosa.jpg"
+            alt="Carnes barbosa"
+          />
           <h2>Carnes barbosa</h2>
           <p>
-            <a href="https://maps.app.goo.gl/7jCPPiDha7FviHP58" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://maps.app.goo.gl/7jCPPiDha7FviHP58"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Carrera 14 #11-09
           </p>
           <p>
-            <a href="https://wa.me/573225105463" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573225105463"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3225105463
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/copacabana vegas.jpg" alt="Copacabana Vegas" />
+          <img
+            className="logo-sedes"
+            src="/copacabana vegas.jpg"
+            alt="Copacabana Vegas"
+          />
           <h2>Copacabana Vegas</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+56+%23+43-159" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Carrera+56+%23+43-159"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Carrera 56 # 43 - 159
           </p>
           <p>
-            <a href="https://wa.me/573243638526" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573243638526"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3243638526
           </p>
@@ -219,31 +366,67 @@ const Home = () => {
           <img className="logo-sedes" src="/barbosa.jpg" alt="Barbosa" />
           <h2>Barbosa</h2>
           <p>
-            <a href="https://maps.app.goo.gl/3K9oqWHPMk5WpXfK6" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://maps.app.goo.gl/3K9oqWHPMk5WpXfK6"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Carrera 14 # 11-18
           </p>
           <p>
-            <a href="https://wa.me/573006828595" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573006828595"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3006828595
           </p>
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/copacabana san juan.jpg" alt="Copacabana San Juan" />
+          <img
+            className="logo-sedes"
+            src="/copacabana san juan.jpg"
+            alt="Copacabana San Juan"
+          />
           <h2>Copacabana San Juan</h2>
           <p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Carrera+28+%23+45-41" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetas" src="/ubicacion.png" alt="Ubicación" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Carrera+28+%23+45-41"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetas"
+                src="/ubicacion.png"
+                alt="Ubicación"
+              />
             </a>
             Dirección: Carrera 28 # 45-41
           </p>
           <p>
-            <a href="https://wa.me/573165563838" target="_blank" rel="noopener noreferrer">
-              <img className="icono-tarjetatel" src="/wasap.png" alt="Teléfono" />
+            <a
+              href="https://wa.me/573165563838"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                className="icono-tarjetatel"
+                src="/wasap.png"
+                alt="Teléfono"
+              />
             </a>
             Teléfono: 3165563838
           </p>
@@ -266,12 +449,20 @@ const Home = () => {
           <div className="flip-card" id="compañia">
             <div className="flip-card-inner">
               <div className="flip-card-front">
-                <img className="logosmain" src="/carritomercado.png" alt="Nuestra Compañía" />
+                <img
+                  className="logosmain"
+                  src="/carritomercado.png"
+                  alt="Nuestra Compañía"
+                />
                 <h2>Nuestra Compañía</h2>
               </div>
               <div className="flip-card-back">
                 <p>
-                  Merkahorro es una entidad empresarial que ha destacado por su notable presencia en el mercado. Su expansión se fundamenta en el compromiso constante de perfeccionar y agilizar los procesos de pedidos, entregas, promociones, órdenes y servicios al cliente.
+                  Merkahorro es una entidad empresarial que ha destacado por su
+                  notable presencia en el mercado. Su expansión se fundamenta en
+                  el compromiso constante de perfeccionar y agilizar los
+                  procesos de pedidos, entregas, promociones, órdenes y
+                  servicios al cliente.
                 </p>
               </div>
             </div>
@@ -285,7 +476,11 @@ const Home = () => {
               </div>
               <div className="flip-card-back">
                 <p>
-                  Llevamos bienestar y felicidad a los hogares, a través de productos y servicios de alta calidad que distribuimos en cada uno de nuestros supermercados, con un ambiente de respeto y cuidado hacia nuestros visitantes, y un equipo humano que disfruta lo que hace.
+                  Llevamos bienestar y felicidad a los hogares, a través de
+                  productos y servicios de alta calidad que distribuimos en cada
+                  uno de nuestros supermercados, con un ambiente de respeto y
+                  cuidado hacia nuestros visitantes, y un equipo humano que
+                  disfruta lo que hace.
                 </p>
               </div>
             </div>
@@ -294,12 +489,19 @@ const Home = () => {
           <div className="flip-card" id="vision">
             <div className="flip-card-inner">
               <div className="flip-card-front">
-                <img className="logosmain" src="/visionymision.png" alt="Visión" />
+                <img
+                  className="logosmain"
+                  src="/visionymision.png"
+                  alt="Visión"
+                />
                 <h2>Visión</h2>
               </div>
               <div className="flip-card-back">
                 <p>
-                  En el año 2026, se proyecta que Merkahorro S.A.S tendrá 12 sedes en todo el territorio nacional en diversos municipios, con alrededor de 450 empleados, siendo líder en el segmento de supermercados independientes.
+                  En el año 2026, se proyecta que Merkahorro S.A.S tendrá 12
+                  sedes en todo el territorio nacional en diversos municipios,
+                  con alrededor de 450 empleados, siendo líder en el segmento de
+                  supermercados independientes.
                 </p>
               </div>
             </div>
@@ -313,10 +515,14 @@ const Home = () => {
               </div>
               <div className="flip-card-back">
                 <p>
-                  Supermercados Merkahorro surgió como la materialización de la visión compartida por dos hermanos en 2015, quienes, pese a la carencia inicial de recursos, se dedicaron a hacer realidad su ambicioso proyecto en Copacabana.
+                  Supermercados Merkahorro surgió como la materialización de la
+                  visión compartida por dos hermanos en 2015, quienes, pese a la
+                  carencia inicial de recursos, se dedicaron a hacer realidad su
+                  ambicioso proyecto en Copacabana.
                 </p>
                 <p>
-                  Su enfoque fue lograr ser el principal supermercado en la localidad.
+                  Su enfoque fue lograr ser el principal supermercado en la
+                  localidad.
                 </p>
               </div>
             </div>
@@ -325,18 +531,36 @@ const Home = () => {
           <div className="flip-card" id="principios">
             <div className="flip-card-inner">
               <div className="flip-card-front">
-                <img className="logosmain" src="/principios-morales.png" alt="Principios" />
+                <img
+                  className="logosmain"
+                  src="/principios-morales.png"
+                  alt="Principios"
+                />
                 <h2>Principios</h2>
               </div>
               <div className="flip-card-back">
                 <p>
-                  Nuestros principios se fundamentan en transformaciones significativas que surgen al romper con formas tradicionales. Estos incluyen:
+                  Nuestros principios se fundamentan en transformaciones
+                  significativas que surgen al romper con formas tradicionales.
+                  Estos incluyen:
                 </p>
                 <ul>
-                  <li><strong>La Verdad:</strong> Vivir con responsabilidad y confiabilidad.</li>
-                  <li><strong>La Belleza:</strong> Crear estética en todos los aspectos de la vida.</li>
-                  <li><strong>La Bondad:</strong> Fomentar empatía, compasión e integridad.</li>
-                  <li><strong>La Unidad:</strong> Promover la cohesión y colaboración.</li>
+                  <li>
+                    <strong>La Verdad:</strong> Vivir con responsabilidad y
+                    confiabilidad.
+                  </li>
+                  <li>
+                    <strong>La Belleza:</strong> Crear estética en todos los
+                    aspectos de la vida.
+                  </li>
+                  <li>
+                    <strong>La Bondad:</strong> Fomentar empatía, compasión e
+                    integridad.
+                  </li>
+                  <li>
+                    <strong>La Unidad:</strong> Promover la cohesión y
+                    colaboración.
+                  </li>
                 </ul>
               </div>
             </div>
@@ -345,15 +569,33 @@ const Home = () => {
       </main>
 
       {/* Video */}
-      <div className="video-container" data-aos="zoom-in">
-        <h1>Historia de nuestra compañía</h1>
-        <video className="video" controls muted loop>
-          <source src="Videomercahorro.mp4" type="video/mp4" />
-          Tu navegador no soporta el elemento de video.
-        </video>
-      </div>
+    <div className="video-container" data-aos="zoom-in">
+      <h1>Historia de nuestra compañía</h1>
+      <video className="video" controls muted loop>
+        <source src="Videomercahorro.mp4" type="video/mp4" />
+        Tu navegador no soporta el elemento de video.
+      </video>
+    </div>
 
-      <Footer />
+    {/* Olas detrás del video y footer */}
+    <div className="wave-container">
+      <svg
+        className="waves"
+        viewBox="0 0 2880 150"
+        preserveAspectRatio="none"
+      >
+        <path
+          className="wave wave1"
+          d="M0,75 C720,150 2160,0 2880,75 L2880,150 H0 Z"
+        />
+        <path
+          className="wave wave2"
+          d="M0,100 C960,125 1920,25 2880,100 L2880,150 H0 Z"
+        />
+      </svg>
+    </div>
+
+    <Footer />
     </div>
   );
 };
