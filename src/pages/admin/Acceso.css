@@ -2,6 +2,8 @@
 .emp-dashboard {
   min-height: 100vh;
   padding: 40px;
+  padding-bottom: 80px;
+  /* Espacio extra para el contenedor fijo al fondo */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Roboto', sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
@@ -23,18 +25,13 @@
   animation: fadeIn 1s ease-in;
 }
 
-.emp-dashboard-user {
-  font-size: 1.1rem;
-  color: #444;
+.fraseMotivacional {
+  font-size: 1.2rem;
+  color: #666;
+  font-style: italic;
   margin-bottom: 20px;
 }
 
-.emp-dashboard-user span {
-  font-weight: bold;
-  color: #210d65;
-}
-
-/* Botón de cerrar sesión en esquina superior derecha */
 .logout-container {
   position: absolute;
   top: 20px;
@@ -42,21 +39,22 @@
 }
 
 .logout-button {
-  padding: 10px 15px;
-  border: 2px solid #210d65;
-  border-radius: 5px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 1rem;
-  color: #210d65;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  transition: background 0.3s ease, color 0.3s ease;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #210d65;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.2);
+  transition: all 0.3sease;
 }
 
 .logout-button:hover {
-  background-color: #89dc00;
+  background-color: #210d65;
   color: #fff;
 }
 
@@ -75,20 +73,19 @@
   gap: 10px;
   padding: 15px 20px;
   background-color: #fff;
-  border: 2px solid #210d65;
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   font-size: 1.1rem;
   color: #210d65;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.2);
+  transition: all 0.3s ease;
 }
 
 .emp-dashboard-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  background-color: #89dc00;
-  color: #fff;
+  transform: translateY(-5px) rotateX(10deg);
+  box-shadow: 0 10px 20px rgba(33, 13, 101, 0.3);
+  background-color: #f5f7fa;
 }
 
 .button-icon {
@@ -105,10 +102,38 @@
   color: #888;
 }
 
+/* Sección de información del usuario */
+.user-info-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  text-align: center;
+  z-index: 10;
+}
+
+.emp-dashboard-user {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.emp-dashboard-user span {
+  font-weight: bold;
+  color: #210d65;
+}
+
 /* Animación de entrada */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsividad */
@@ -116,12 +141,15 @@
   .emp-dashboard {
     padding: 20px;
   }
+
   .emp-dashboard-title {
     font-size: 2rem;
   }
+
   .emp-dashboard-links {
     grid-template-columns: 1fr;
   }
+
   .logout-button {
     font-size: 0.9rem;
   }
