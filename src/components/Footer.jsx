@@ -58,7 +58,6 @@ const Footer = () => {
         {/* Logo y frase en el centro */}
         <div className="footer-brand">
           <img src="/logoMK.png" alt="Logo Merkahorro" className="footer-logo" />
-          
           <p>Calidad y ahorro, siempre.</p>
         </div>
 
@@ -79,7 +78,7 @@ const Footer = () => {
           2025 Supermercados Merkahorro - Todos los derechos reservados
         </p>
         <p className="developer-info">
-          Desarrollado por Johan Sánchez, Kevin Pineda, Juan Isaza
+          Desarrollado por Johan Sánchez, Kevin Pineda, Juan Manuel Isaza
         </p>
       </div>
     </footer>

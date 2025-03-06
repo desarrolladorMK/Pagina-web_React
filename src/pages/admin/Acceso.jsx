@@ -66,9 +66,7 @@ const Acceso = () => {
         <h4 className="fraseMotivacional">
           “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
         </h4>
-        <p className="emp-dashboard-user">
-          Has iniciado sesión con: <span>{correoUsuario}</span>
-        </p>
+  
         <div className="logout-container">
           <button className="logout-button" onClick={handleLogout}>
             <FaSignOutAlt /> <span>Cerrar Sesión</span>
@@ -93,6 +91,12 @@ const Acceso = () => {
         ) : (
           <p className="emp-dashboard-no-routes">No tienes rutas disponibles.</p>
         )}
+      </div>
+
+      <div className="user-info-container">
+        <p className="emp-dashboard-user">
+          Has iniciado sesión con: <span>{correoUsuario}</span>
+        </p>
       </div>
     </div>
   );
