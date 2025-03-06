@@ -224,3 +224,12 @@
     font-size: 11px;
   }
 }
+/* Estilos para los enlaces de contacto en el footer */
+.footer .contact-info ul li a {
+  color: #b0b0b0;               /* Color de texto blanco por defecto */
+  transition: color 0.3s ease; /* Suaviza la transición del color */
+}
+
+.footer .contact-info ul li a:hover {
+  color: #89DC00; /* Cambia aquí al color verde que desees */
+}
