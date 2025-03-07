@@ -173,6 +173,9 @@ const HistorialFormulario = () => {
       <p><strong>Correo:</strong> <span>{record.correo}</span></p>
       <p><strong>Fecha de Nacimiento:</strong> <span>{record.fechaNacimiento}</span></p>
       <p><strong>Ciudad de Nacimiento:</strong> <span>{record.ciudadNacimiento}</span></p>
+      <p><strong>Edad:</strong> <span>{record.edad}</span></p>
+      <p><strong>Peso:</strong> <span>{record.peso}</span></p>
+      <p><strong>Estatura:</strong> <span>{record.estatura}</span></p>
       <Typography variant="h6">Vivienda y Ubicación</Typography>
       <p><strong>Tipo de Vivienda:</strong> <span>{record.tipoVivienda}</span></p>
       <p><strong>Características de la Vivienda:</strong> <span>{record.caracteristicasVivienda}</span></p>
@@ -301,6 +304,24 @@ const HistorialFormulario = () => {
                 margin="normal"
                 label="Ciudad de Nacimiento"
                 {...register("ciudadNacimiento")}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Edad"
+                {...register("edad")}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Peso"
+                {...register("peso")}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Estatura"
+                {...register("estatura")}
               />
 
               <Typography variant="subtitle1">Vivienda y Ubicación</Typography>

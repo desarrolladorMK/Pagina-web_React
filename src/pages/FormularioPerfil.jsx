@@ -689,9 +689,9 @@ const FormularioPerfil = () => {
               {errors.cargoOperativo && <p className="error-text">{errors.cargoOperativo.message}</p>}
             </div>
             <div className="perfil-field">
-              <label>31. Departamento Operaciones</label>
+              <label>31. Departamento Operaciones area administrativa (SOLO RESPONDE AREA ADMINISTRATIVA)</label>
               <select
-                {...register("departamentoOperaciones", { required: "Seleccione un departamento" })}
+                {...register("departamentoOperaciones", {  })}
                 className="perfil-select"
               >
                 <option value="">Seleccione...</option>
@@ -708,9 +708,9 @@ const FormularioPerfil = () => {
               {errors.departamentoOperaciones && <p className="error-text">{errors.departamentoOperaciones.message}</p>}
             </div>
             <div className="perfil-field">
-              <label>32. Departamento Financiero</label>
+              <label>32. Departamento Financiero area administrativa (SOLO RESPONDE AREA ADMINISTRATIVA)</label>
               <select
-                {...register("departamentoFinanciero", { required: "Seleccione un departamento" })}
+                {...register("departamentoFinanciero", {  })}
                 className="perfil-select"
               >
                 <option value="">Seleccione...</option>
@@ -726,9 +726,9 @@ const FormularioPerfil = () => {
               {errors.departamentoFinanciero && <p className="error-text">{errors.departamentoFinanciero.message}</p>}
             </div>
             <div className="perfil-field">
-              <label>33. Departamento Comercial</label>
+              <label>33. Departamento Comercial (SOLO RESPONDE AREA ADMINISTRATIVA)</label>
               <select
-                {...register("departamentoComercial", { required: "Seleccione un departamento" })}
+                {...register("departamentoComercial", { })}
                 className="perfil-select"
               >
                 <option value="">Seleccione...</option>
@@ -740,9 +740,9 @@ const FormularioPerfil = () => {
               {errors.departamentoComercial && <p className="error-text">{errors.departamentoComercial.message}</p>}
             </div>
             <div className="perfil-field">
-              <label>34. Departamento Gestión Humana</label>
+              <label>34. Departamento Gestión Humana (SOLO RESPONDE AREA ADMINISTRATIVA)</label>
               <select
-                {...register("departamentoGestionHumana", { required: "Seleccione un departamento" })}
+                {...register("departamentoGestionHumana", {  })}
                 className="perfil-select"
               >
                 <option value="">Seleccione...</option>
