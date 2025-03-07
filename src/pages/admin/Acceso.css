@@ -3,7 +3,6 @@
   min-height: 100vh;
   padding: 40px;
   padding-bottom: 80px;
-  /* Espacio extra para el contenedor fijo al fondo */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Roboto', sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
@@ -20,42 +19,80 @@
 .emp-dashboard-title {
   font-size: 2.5rem;
   color: #210d65;
-  margin-bottom: 10px;
-  line-height: 1.2;
-  animation: fadeIn 1s ease-in;
+  margin-bottom: 20px;
+  line-height: 1.4;
 }
 
+/* Efecto de escritura fluido */
+.typing-greeting {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #210d65;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  animation: fluidReveal 2s ease-in-out forwards;
+}
+
+/* Frase motivacional */
 .fraseMotivacional {
   font-size: 1.2rem;
   color: #666;
   font-style: italic;
   margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeIn 1s ease-in 2s forwards;
 }
 
+/* Contenedor del logout interactivo */
 .logout-container {
   position: absolute;
   top: 20px;
   right: 20px;
 }
 
-.logout-button {
+.logout-icon-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 15px 20px;
-  background-color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  color: #210d65;
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.2);
-  transition: all 0.3sease;
 }
 
-.logout-button:hover {
+.logout-icon {
+  font-size: 2rem;
+  color: #210d65;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.2);
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-icon-wrapper:hover .logout-icon {
+  transform: scale(1.2) rotate(90deg); /* Escala y rota al hacer hover */
   background-color: #210d65;
   color: #fff;
+}
+
+.logout-label {
+  position: absolute;
+  right: 50px; /* Espacio desde el ícono */
+  background-color: #210d65;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none; /* Evita que el label interfiera con el clic */
+}
+
+.logout-icon-wrapper:hover .logout-label {
+  opacity: 1;
+  transform: translateX(0); /* Se desliza hacia afuera */
 }
 
 /* Contenedor de enlaces */
@@ -123,13 +160,26 @@
   color: #210d65;
 }
 
-/* Animación de entrada */
+/* Animaciones */
+@keyframes fluidReveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(-20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -146,11 +196,21 @@
     font-size: 2rem;
   }
 
+  .typing-greeting {
+    font-size: 2rem;
+  }
+
   .emp-dashboard-links {
     grid-template-columns: 1fr;
   }
 
-  .logout-button {
+  .logout-icon {
+    font-size: 1.5rem;
+    padding: 8px;
+  }
+
+  .logout-label {
     font-size: 0.9rem;
+    right: 40px;
   }
 }

@@ -43,7 +43,6 @@ const Acceso = () => {
     navigate('/login');
   };
 
-  // Mapeo de iconos para cada sección
   const iconMap = {
     'Inicio': <FaHome />,
     'Historial': <FaClipboardList />,
@@ -59,8 +58,7 @@ const Acceso = () => {
     <div className="emp-dashboard">
       <div className="emp-dashboard-header">
         <h2 className="emp-dashboard-title">
-          {greeting}, {userName}!<br />
-          Bienvenido al Panel de Control
+          <span className="typing-greeting">{greeting}, {userName}!</span>
         </h2>
         
         <h4 className="fraseMotivacional">
@@ -68,9 +66,10 @@ const Acceso = () => {
         </h4>
   
         <div className="logout-container">
-          <button className="logout-button" onClick={handleLogout}>
-            <FaSignOutAlt /> <span>Cerrar Sesión</span>
-          </button>
+          <div className="logout-icon-wrapper" onClick={handleLogout}>
+            <FaSignOutAlt className="logout-icon" />
+            <span className="logout-label">Cerrar Sesión</span>
+          </div>
         </div>
       </div>
 
