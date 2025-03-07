@@ -9,69 +9,41 @@ import "./Salones.css";
 import es from "date-fns/locale/es";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 
-const locales = {
-  es: es,
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
+const locales = { es };
+const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
 
 const Salones = () => {
   const [eventos, setEventos] = useState([]);
-  const [showCalendar, setShowCalendar] = useState(false); // Controla la visibilidad del calendario
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [filtroSalon, setFiltroSalon] = useState("todos");
 
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
-
-    // Si se muestra el calendario, desplazarse a su posición
     if (!showCalendar) {
       setTimeout(() => {
-        const calendarElement = document.getElementById("calendario");
-        if (calendarElement) {
-          calendarElement.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        document.getElementById("calendario")?.scrollIntoView({ behavior: "smooth" });
       }, 300);
     }
   };
 
   const consultarReservas = async (fecha) => {
     try {
-      // Cambié la URL para que apunte a Vercel
-      let url = `https://reservas-backend-ten.vercel.app/consulta?fecha=${fecha}`;
+      const url = `https://reservas-backend-ten.vercel.app/consulta?fecha=${fecha}`;
       const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error("Error al obtener las reservas");
-      }
-
+      if (!response.ok) throw new Error("Error al obtener las reservas");
       const data = await response.json();
 
-      if (data.horarios && data.horarios.length > 0) {
-        const eventosFormateados = data.horarios.map((reserva) => {
-          const inicio = new Date(`${reserva.fecha}T${reserva.hora_inicio}:00`);
-          const fin = new Date(`${reserva.fecha}T${reserva.hora_fin}:00`);
-
-          return {
-            title: `Salón: ${reserva.salon} | Reservado por: ${reserva.nombre || "Desconocido"}`,
-            start: inicio,
-            end: fin,
-            salon: reserva.salon,
-            reservadoPor: reserva.nombre || "Desconocido",
-            motivo: reserva.motivo || "Sin descripción",
-          };
-        });
-
-        setEventos(eventosFormateados);
-      } else {
-        setEventos([]);
-      }
+      const eventosFormateados = data.horarios.map((reserva) => ({
+        title: `Salón: ${reserva.salon} | ${reserva.nombre || "Desconocido"}`,
+        start: new Date(`${reserva.fecha}T${reserva.hora_inicio}:00`),
+        end: new Date(`${reserva.fecha}T${reserva.hora_fin}:00`),
+        salon: reserva.salon,
+        reservadoPor: reserva.nombre || "Desconocido",
+        motivo: reserva.motivo || "Sin descripción",
+      }));
+      setEventos(eventosFormateados);
     } catch (error) {
-      Swal.fire("Error", "No se pudieron cargar las reservas. Intente más tarde.", "error");
+      Swal.fire("Error", "No se pudieron cargar las reservas.", "error");
     }
   };
 
@@ -94,47 +66,74 @@ const Salones = () => {
     });
   };
 
+  const handleSelectSlot = (slotInfo) => {
+    const eventosDelDia = eventosFiltrados.filter((evento) =>
+      moment(evento.start).isSame(slotInfo.start, "day")
+    );
+    if (eventosDelDia.length > 0) {
+      const listaEventos = eventosDelDia
+        .map(
+          (e) => `
+          <li>
+            <b>${e.salon}</b> - ${moment(e.start).format("HH:mm")} a ${moment(e.end).format("HH:mm")}<br>
+            Reservado por: ${e.reservadoPor} | Motivo: ${e.motivo}
+          </li>`
+        )
+        .join("");
+      Swal.fire({
+        title: `Reservas del ${moment(slotInfo.start).format("DD/MM/YYYY")}`,
+        html: `<ul style="text-align: left;">${listaEventos}</ul>`,
+        icon: "info",
+        confirmButtonText: "Cerrar",
+      });
+    }
+  };
+
+  // Filtrar eventos y asegurarse de que solo los filtrados se pasen al calendario
+  const eventosFiltrados =
+    filtroSalon === "todos"
+      ? eventos
+      : eventos.filter((e) => e.salon === filtroSalon);
+
   return (
     <div className="Salones">
-      {/* Logo en la esquina superior izquierda */}
       <Link to="/" className="back-logo">
         <img src="/mkicono.png" alt="Logo" className="logo-image" />
       </Link>
       <h1>Reserva tus espacios</h1>
       <div className="image-wrapper">
         <div className="image-container">
-          <img
-            src="/img2.jpeg"
-            alt="Imagen 2"
-            className="Salones-image"
-            loading="lazy"
-          />
+          <img src="/img2.jpeg" alt="Auditorio" className="Salones-image" loading="lazy" />
           <p className="image-title">Auditorio Principal</p>
         </div>
         <div className="image-container">
-          <img
-            src="/img1.jpeg"
-            alt="Imagen 1"
-            className="Salones-image"
-            loading="lazy"
-          />
+          <img src="/img1.jpeg" alt="Sala" className="Salones-image" loading="lazy" />
           <p className="image-title">Sala de Juntas</p>
         </div>
       </div>
       <Link to="/reserva" className="reserve-link">
         Reserva aquí
       </Link>
-
-      {/* Botón flotante para mostrar/ocultar el calendario */}
       <button className="floating-calendar" onClick={toggleCalendar}>
         🗓️
       </button>
 
       {showCalendar && (
         <div id="calendario">
+          <div className="filtro-salon">
+            <label>Filtrar por salón: </label>
+            <select
+              value={filtroSalon}
+              onChange={(e) => setFiltroSalon(e.target.value)}
+            >
+              <option value="todos">Todos</option>
+              <option value="Sala de Juntas">Sala de Juntas</option>
+              <option value="Auditorio Principal">Auditorio Principal</option>
+            </select>
+          </div>
           <Calendar
             localizer={localizer}
-            events={eventos}
+            events={eventosFiltrados} // Solo pasar eventos filtrados
             startAccessor="start"
             endAccessor="end"
             culture="es"
@@ -152,24 +151,36 @@ const Salones = () => {
               event: "Evento",
               noEventsInRange: "No hay eventos en este rango.",
             }}
-            style={{
-              backgroundColor: "white",
-              color: "black",
-              height: 520,
-              margin: "50px",
-            }}
+            style={{ backgroundColor: "white", color: "black", height: 520, margin: "50px" }}
             onSelectEvent={handleSelectEvent}
+            onSelectSlot={handleSelectSlot}
+            selectable
             eventPropGetter={(event) => ({
               style: {
                 backgroundColor:
-                  event.salon === "Sala juntas reservas"
+                  event.salon === "Sala de Juntas"
                     ? "blue"
                     : event.salon === "Auditorio Principal"
                     ? "#89dc00"
                     : "#210d65",
                 color: "white",
+                fontSize: "12px", // Tamaño legible
+                padding: "2px 5px", // Espaciado interno
+                margin: "1px 0", // Espacio entre eventos
               },
             })}
+            dayPropGetter={(date) => {
+              const eventosDelDia = eventosFiltrados.filter((e) =>
+                moment(e.start).isSame(date, "day")
+              );
+              if (eventosDelDia.length > 2) {
+                return {
+                  className: "day-with-many-events",
+                  style: { position: "relative" },
+                };
+              }
+              return {};
+            }}
           />
         </div>
       )}
