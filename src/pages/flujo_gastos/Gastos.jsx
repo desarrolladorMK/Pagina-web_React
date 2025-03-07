@@ -74,7 +74,7 @@ const getEstadoClass = (estado) => {
 };
 
 const Gastos = () => {
-  const [fecha, setFecha] = useState(initialFormData.fecha);
+  const [fecha, setFecha] = useState(initialFormData.fecha_creacion); // Corregido a fecha_creacion
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
@@ -86,6 +86,7 @@ const Gastos = () => {
   const [historialGastos, setHistorialGastos] = useState([]);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [mostrarArchivos, setMostrarArchivos] = useState(false);
+  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false); // Nuevo estado para evitar envíos duplicados
   const [archivos, setArchivos] = useState([
     {
       nombre: "Documento interno",
@@ -262,7 +263,15 @@ const Gastos = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Si ya se ha enviado una vez y no se ha reiniciado el formulario, evitar nuevos envíos
+    if (hasSubmittedOnce) {
+      setErrorMessage("Ya has enviado este formulario. Por favor, espera la respuesta.");
+      return;
+    }
+
     setIsSubmitting(true);
+    setHasSubmittedOnce(true); // Marcar que se ha intentado enviar
 
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
     const valorNumericoAnticipo = formData.anticipo
@@ -275,15 +284,9 @@ const Gastos = () => {
     formDataToSend.append("area", formData.area);
     formDataToSend.append("procesos", formData.procesos);
 
-    formData.sede.forEach((item) => {
-      formDataToSend.append("sede[]", item);
-    });
-    formData.unidad.forEach((item) => {
-      formDataToSend.append("unidad[]", item);
-    });
-    formData.centro_costos.forEach((item) => {
-      formDataToSend.append("centro_costos[]", item);
-    });
+    formData.sede.forEach((item) => formDataToSend.append("sede[]", item));
+    formData.unidad.forEach((item) => formDataToSend.append("unidad[]", item));
+    formData.centro_costos.forEach((item) => formDataToSend.append("centro_costos[]", item));
     formDataToSend.append("descripcion", formData.descripcion);
     formDataToSend.append("monto_estimado", valorNumerico);
     if (formData.monto_sede.trim() !== "") {
@@ -305,6 +308,7 @@ const Gastos = () => {
       });
       setIsSubmitted(true);
       setDecision(response.data.decision);
+      setErrorMessage(""); // Limpiar mensaje de error si hubo éxito
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -312,10 +316,12 @@ const Gastos = () => {
           correo_empleado: formData.correo_empleado,
           nombre_completo: formData.nombre_completo,
         });
+        setHasSubmittedOnce(false); // Permitir un nuevo envío tras reiniciar
       }, 3000);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+      setHasSubmittedOnce(false); // Permitir reintentos si falla
     } finally {
       setIsSubmitting(false);
     }
@@ -337,7 +343,6 @@ const Gastos = () => {
     setMostrarArchivos((prev) => !prev);
   };
 
-  // Funciones para el modal
   const openModal = (content) => {
     setModalContent(content);
     setIsModalOpen(true);
@@ -348,7 +353,6 @@ const Gastos = () => {
     setModalContent("");
   };
 
-  // Función auxiliar que envuelve el contenido de la celda en un contenedor clickable
   const renderClickableCell = (content) => (
     <div
       onClick={(e) => {
@@ -442,7 +446,6 @@ const Gastos = () => {
     XLSX.writeFile(workbook, "historial_gastos.xlsx");
   };
 
-  // Definición de columnas para DataTable: todas las celdas se muestran envueltas en renderClickableCell, salvo en aquellas con enlaces (Cotización y Proveedor)
   const columns = [
     {
       name: "Fecha",
@@ -629,6 +632,7 @@ const Gastos = () => {
           <h4 className="fraseMotivacional">
             "Cuando cuidamos, nos protegemos todos."
           </h4>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
           <form onSubmit={handleSubmit} className="gastos-form">
             <div className="gastos-form-field">
               <label className="gastos-label">
@@ -833,7 +837,7 @@ const Gastos = () => {
             <button
               type="submit"
               className="gastos-submit-button"
-              disabled={isSubmitting}
+              disabled={isSubmitting || hasSubmittedOnce} // Deshabilitar si está enviando o ya se envió
             >
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
@@ -866,17 +870,25 @@ const Gastos = () => {
               striped
               customStyles={customStyles}
             />
-             <button onClick={exportToExcel} className="excel-button">
-            Exportar a Excel
-          </button>
+            <button onClick={exportToExcel} className="excel-button">
+              Exportar a Excel
+            </button>
           </div>
         )
+      )}
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>
+              &times;
+            </span>
+            <p>{modalContent}</p>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export { Gastos };
-
-
-
