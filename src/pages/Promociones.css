@@ -45,13 +45,14 @@ html, body {
 
 /* ======== LOGO ======== */
 .back-logo-promo {
-  position: absolute;
-  top: clamp(0.5rem, 2vw, 1rem);
-  left: clamp(0.5rem, 2vw, 1rem);
+  position: fixed; /* Se mantiene fixed para que el logo esté siempre visible */
+  top: 1rem;       /* Distancia desde la parte superior */
+  left: 1rem;      /* Distancia desde la izquierda */
+  z-index: 1002;   /* Asegura que esté por encima de otros elementos */
 }
 
 .logo-image-promo {
-  width: clamp(40px, 8vw, 60px); /* Ajusta el tamaño según sea necesario */
+  width: 50px; /* Ajusta el tamaño según sea necesario */
   height: auto;
   transition: transform 0.3s ease;
 }
@@ -60,6 +61,42 @@ html, body {
   transform: scale(1.1); /* Efecto de agrandamiento al pasar el mouse */
 }
 
+/* Media Queries para ajustar el tamaño del logo en distintos dispositivos */
+
+/* Ultra Ancho (1441px - 2560px) */
+@media (min-width: 1441px) {
+  .logo-image-promo {
+    width: 60px;
+  }
+}
+
+/* Pantallas grandes (1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .logo-image-promo {
+    width: 55px;
+  }
+}
+
+/* Tablets (769px - 1024px) */
+@media (max-width: 1024px) {
+  .logo-image-promo {
+    width: 50px;
+  }
+}
+
+/* Móviles grandes (481px - 768px) */
+@media (max-width: 768px) {
+  .logo-image-promo {
+    width: 45px;
+  }
+}
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .logo-image-promo {
+    width: 40px;
+  }
+}
 /* ======== OFERTAS ======== */
 .ofertas {
   border-radius: 12px;
@@ -190,11 +227,6 @@ html, body {
   .titulo-ofertas {
     font-size: 3em;
   }
-
-  .logo-image-promo {
-    width: 6%;
-    max-width: 180px;
-  }
 }
 
 /* Pantallas grandes (1025px - 1440px) */
@@ -206,11 +238,6 @@ html, body {
 
   .titulo-ofertas {
     font-size: 2.8em;
-  }
-
-  .logo-image-promo {
-    width: 8%;
-    max-width: 150px;
   }
 }
 
@@ -224,10 +251,6 @@ html, body {
   .titulo-ofertas {
     font-size: 2.2em;
   }
-
-  .logo-image-promo {
-    width: 10%;
-  }
 }
 
 /* Móviles grandes (481px - 768px) */
@@ -239,10 +262,6 @@ html, body {
 
   .titulo-ofertas {
     font-size: 1.8em;
-  }
-
-  .logo-image-promo {
-    width: 12%;
   }
 
   .modal-content {
@@ -259,10 +278,6 @@ html, body {
 
   .titulo-ofertas {
     font-size: 1.5em;
-  }
-
-  .logo-image-promo {
-    width: 15%;
   }
 
   .close {
