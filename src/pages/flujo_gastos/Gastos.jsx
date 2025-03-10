@@ -26,7 +26,8 @@ const initialFormData = {
   correo_empleado: sessionStorage.getItem("correo_empleado"),
 };
 
-const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public";
+const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+const SUPABASE_URL_EXCEL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public";
 const API_URL = "https://backend-gastos.vercel.app/api";
 
 const customStyles = {
@@ -90,11 +91,11 @@ const Gastos = () => {
   const [archivos, setArchivos] = useState([
     {
       nombre: "Documento interno",
-      url: `${SUPABASE_URL}/cotizaciones/proveedores/1738273714697_comprobante%20de%20gastos%20(1)%20(7).xlsx`,
+      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/1738273714697_comprobante%20de%20gastos%20(1)%20(7).xlsx`,
     },
     {
       nombre: "Documento proveedor",
-      url: `${SUPABASE_URL}/cotizaciones/proveedores/FORMATO%20DE%20COTIZACION%20(1)%20(1).xlsx`,
+      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/FORMATO%20DE%20COTIZACION%20(1)%20(1).xlsx`,
     },
   ]);
 
