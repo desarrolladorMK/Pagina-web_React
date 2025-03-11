@@ -885,6 +885,7 @@ const FormularioPerfil = () => {
               <Controller
                 control={control}
                 name="fechaIngresoEmpresa"
+                rules={{ required: "Campo obligatorio" }}
                 render={({ field }) => (
                   <DatePicker
                     selected={field.value}
@@ -893,19 +894,23 @@ const FormularioPerfil = () => {
                     className="perfil-input"
                     placeholderText="Selecciona una fecha o escribe en formato AAAA-MM-DD"
                     portalId="datepicker-portal"
-                    popperContainer={({ children }) =>
-                      portalContainer && children
-                    }
-                    showMonthDropdown // Habilitar dropdown de meses
-                    showYearDropdown // Habilitar dropdown de años
-                    dropdownMode="select" // Hacer que los dropdowns sean selectores
-                    minDate={new Date("1900-01-01")} // Fecha mínima razonable
-                    maxDate={new Date()} // Fecha máxima: hoy
-                    yearDropdownItemNumber={100} // Mostrar 100 años en el dropdown
-                    locale={es} // Mostrar meses en español
+                    popperContainer={({ children }) => portalContainer && children}
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    minDate={new Date("1900-01-01")}
+                    maxDate={new Date()}
+                    yearDropdownItemNumber={100}
+                    locale={es}
                   />
                 )}
               />
+              {errors.fechaIngresoEmpresa && (
+                <p className="error-text" style={{ color: 'red' }}>
+                  {errors.fechaIngresoEmpresa.message}
+                </p>
+              )}
+
             </div>
           </section>
         );

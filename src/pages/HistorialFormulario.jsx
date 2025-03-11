@@ -68,6 +68,7 @@ const HistorialFormulario = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'nombresApellidos', headerName: 'Nombre Completo', width: 200 },
+    { field: 'sede', headerName: 'Sede', width: 200 },
     { field: 'numeroDocumento', headerName: 'Documento', width: 150 },
     { field: 'celular', headerName: 'Celular', width: 130 },
     { field: 'correo', headerName: 'Correo', width: 200 },
@@ -356,6 +357,7 @@ const HistorialFormulario = () => {
                     onChange={field.onChange}
                     dateFormat="yyyy-MM-dd"
                     customInput={<TextField fullWidth margin="normal" label="Fecha de Ingreso a la Empresa" />}
+                   
                   />
                 )}
               />
