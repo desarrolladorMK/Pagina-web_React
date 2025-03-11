@@ -36,6 +36,7 @@ const Login = () => {
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
           { path: "/salones", label: "Reserva de salones" },
+          { path: "/historialformulario", label: "Historial formulario Perfil" },
         ],
       },
       {
