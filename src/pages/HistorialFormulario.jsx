@@ -357,7 +357,7 @@ const HistorialFormulario = () => {
                     onChange={field.onChange}
                     dateFormat="yyyy-MM-dd"
                     customInput={<TextField fullWidth margin="normal" label="Fecha de Ingreso a la Empresa" />}
-                   
+
                   />
                 )}
               />
@@ -398,13 +398,17 @@ const HistorialFormulario = () => {
                 render={({ field }) => (
                   <DatePicker
                     placeholderText="Fecha del Diligenciamiento"
-                    selected={field.value ? new Date(field.value) : null}
+                    // Interpretar la fecha como local
+                    selected={field.value ? new Date(field.value + 'T00:00:00') : null}
                     onChange={field.onChange}
                     dateFormat="yyyy-MM-dd"
-                    customInput={<TextField fullWidth margin="normal" label="Fecha del Diligenciamiento" />}
+                    customInput={
+                      <TextField fullWidth margin="normal" label="Fecha del Diligenciamiento" />
+                    }
                   />
                 )}
               />
+
             </form>
           ) : (
             selectedRecord && renderRecordDetails(selectedRecord)

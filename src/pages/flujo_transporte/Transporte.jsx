@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import ReactDatePicker from 'react-datepicker';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Transporte.css';
+import es from 'date-fns/locale/es'; // Importa la localización en español
+
+// Registra la localización en español
+registerLocale('es', es);
 
 // Componente para un input de fecha personalizado (botón)
-// Se agregó type="button" para evitar que se dispare el submit al hacer click.
 const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
   <button type="button" className="custom-date-input" onClick={onClick} ref={ref}>
     {value || placeholder || "Selecciona una fecha"}
@@ -24,6 +27,13 @@ const conductorOptions = [
   { value: 'conductor1', label: 'Juan Carlos Alvarez Saldarriaga' },
   { value: 'conductor2', label: 'Duvan Franco Morales' },
   { value: 'conductor3', label: 'Stiven Flores López' },
+  { value: 'conductor4', label: 'Juan Guillermo Arango Osorio' },
+  { value: 'conductor5', label: 'Ivan Dario Echavarria Torres' },
+  { value: 'conductor6', label: 'Jorge Luis Velasquez Giraldo' },
+  { value: 'conductor7', label: 'Edwin Leandro Guerra Gaviria' },
+  { value: 'conductor8', label: 'Manuel Alexander Lujan Meneses' },
+  { value: 'conductor9', label: 'Juan Felipe Diaz Serna' },
+  { value: 'conductor10', label: 'Norbey Zapata' },
   { value: 'otro', label: 'Otro' },
 ];
 
@@ -31,18 +41,31 @@ const conductorPlacas = {
   conductor1: 'TNH 033',
   conductor2: 'THX 973',
   conductor3: 'SVO 247',
+  conductor4: 'WNP585',
+  conductor5: 'ESQ501',
+  conductor6: 'GTX302',
+  conductor7: 'KSK176',
+  conductor8: 'KPP267',
+  conductor9: 'SUPERNUMERARIO',
+  conductor10: 'SUPERNUMERARIO',
 };
 
 const conductorDatos = {
-  conductor1: { cedula: "1035418709", cuenta: "1234567" },
-  conductor2: { cedula: "1041328787", cuenta: "7777777" },
-  conductor3: { cedula: "1001244007", cuenta: "10101010" },
+  conductor1: { cedula: "1035418709", cuenta: "3217203306" },
+  conductor2: { cedula: "1041328787", cuenta: "60959324231" },
+  conductor3: { cedula: "1001244007", cuenta: "3116950743" },
+  conductor4: { cedula: "15507093", cuenta: "" },
+  conductor5: { cedula: "3482971", cuenta: "" },
+  conductor6: { cedula: "1216713188", cuenta: "" },
+  conductor7: { cedula: "1001463806", cuenta: "" },
+  conductor8: { cedula: "15516297", cuenta: "" },
+  conductor9: { cedula: "1020482654", cuenta: "" },
+  conductor10: { cedula: "15516827", cuenta: "" },
 };
 
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
-  // Usamos objetos Date para las fechas
   const [fecha, setFecha] = useState(new Date());
   const [tipoServicio, setTipoServicio] = useState('');
   const [conductor, setConductor] = useState('');
@@ -52,18 +75,14 @@ const Transporte = () => {
   const [cuentaBancaria, setCuentaBancaria] = useState("");
   const [fechaViaje, setFechaViaje] = useState(null);
   const [observacion, setObservacion] = useState('');
-
   const [selectedOrigen, setSelectedOrigen] = useState([]);
   const [selectedSedes, setSelectedSedes] = useState([]);
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [pendingData, setPendingData] = useState(null);
 
-  // Actualiza la placa automáticamente si se selecciona un conductor predefinido
   useEffect(() => {
     if (conductor && conductor !== 'otro' && conductorPlacas[conductor]) {
       setPlaca(conductorPlacas[conductor]);
@@ -78,14 +97,12 @@ const Transporte = () => {
     }
   }, [conductor]);
 
-  // Al cambiar el tipo de servicio se limpian las selecciones previas
   const handleTipoServicioChange = (e) => {
     setTipoServicio(e.target.value);
     setSelectedOrigen([]);
     setSelectedSedes([]);
   };
 
-  // Handler genérico para las checkboxes
   const handleCheckboxChange = (e, setter, selectedItems) => {
     const { value, checked } = e.target;
     if (checked) {
@@ -109,15 +126,12 @@ const Transporte = () => {
     minimumFractionDigits: 0,
   }).format(totalValor);
 
-  // Validación: solo se habilita el botón si todos los campos requeridos tienen contenido
   const isFormValid =
     tipoServicio.trim() !== "" &&
     conductor.trim() !== "" &&
     (conductor !== "otro" || otroConductor.trim() !== "") &&
     placa.trim() !== "" &&
     fechaViaje !== null &&
-    // formData.sede?.trim() !== "" &&        // Línea original sin uso, se comenta para mantener el código
-    // formData.correo_asignado?.trim() !== "" &&  // Línea original sin uso, se comenta para mantener el código
     ((tipoServicio === "canastas" && selectedOrigen.length > 0) ||
       (tipoServicio === "transporte" && selectedSedes.length > 0));
 
@@ -145,26 +159,28 @@ const Transporte = () => {
         : ["CEDI"];
 
     const confirmationMsg = `Por favor, revise los datos ingresados:
+      
+      Fecha: ${fecha.toISOString().split('T')[0]}
+      Tipo de Servicio: ${tipoServicio}
+      Conductor: ${fullConductor}
+      Placa: ${placa}
+      Fecha de Viaje: ${fechaViaje ? fechaViaje.toISOString().split('T')[0] : "N/A"}
+      Origen: ${origenFull.join(", ")}
+      Sedes: ${sedesFull.join(", ")}
+      Total Valor: ${formattedTotalValor}
+      Observación: ${observacion}
+      
+      ¿Desea enviar el formulario?`;
 
-Fecha: ${fecha.toISOString().split('T')[0]}
-Tipo de Servicio: ${tipoServicio}
-Conductor: ${fullConductor}
-Placa: ${placa}
-Fecha de Viaje: ${fechaViaje ? fechaViaje.toISOString().split('T')[0] : "N/A"}
-Origen: ${origenFull.join(", ")}
-Sedes: ${sedesFull.join(", ")}
-Total Valor: ${formattedTotalValor}
-Observación: ${observacion}
-
-¿Desea enviar el formulario?`;
-
+    // Aquí se ajusta la propiedad cuenta_bancaria:
     setPendingData({
       fecha: fecha.toISOString().split('T')[0],
       tipo_formulario: tipoServicio,
       conductor: fullConductor,
       placa_vehiculo: placa,
       cedula: cedula,
-      cuenta_bancaria: cuentaBancaria,
+      // Si cuentaBancaria es cadena vacía, se envía null en lugar de ""
+      cuenta_bancaria: cuentaBancaria === "" ? null : cuentaBancaria,
       fecha_viaje: fechaViaje ? fechaViaje.toISOString().split('T')[0] : null,
       origen: origenFull,
       sedes: sedesFull,
@@ -174,6 +190,7 @@ Observación: ${observacion}
     setConfirmationMessage(confirmationMsg);
     setShowConfirmation(true);
   };
+
 
   const handleConfirm = async () => {
     setShowConfirmation(false);
@@ -240,8 +257,8 @@ Observación: ${observacion}
       <div className="transporte-form-container">
         <h2 className="transporte-form-title">Formulario de Registro</h2>
         <h4 className="fraseMotivacional">
-        “Hablar con verdad puede doler, pero vivir sin ella es perderse a uno mismo.”
-          </h4>
+          “Hablar con verdad puede doler, pero vivir sin ella es perderse a uno mismo.”
+        </h4>
         <form onSubmit={handleSubmit}>
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha:</label>
@@ -251,6 +268,7 @@ Observación: ${observacion}
               dateFormat="yyyy-MM-dd"
               customInput={<CustomDateInput />}
               disabled
+              locale="es" // Localización en español
             />
           </div>
 
@@ -268,7 +286,6 @@ Observación: ${observacion}
             </select>
           </div>
 
-          {/* Selección del Conductor */}
           <div className="transporte-form-field">
             <label className="transporte-label">Conductor:</label>
             <select
@@ -296,7 +313,6 @@ Observación: ${observacion}
             )}
           </div>
 
-          {/* Mostrar los campos de Placa, Cédula y Cuenta Bancaria solo si se ha seleccionado algún conductor */}
           {conductor !== '' && (
             <div className="detalles-conductor">
               <div className="transporte-form-field">
@@ -354,7 +370,7 @@ Observación: ${observacion}
                     placeholder="Ingrese cuenta bancaria"
                     value={cuentaBancaria}
                     onChange={(e) => setCuentaBancaria(e.target.value)}
-                    required
+                 
                   />
                 ) : (
                   <input
@@ -363,14 +379,12 @@ Observación: ${observacion}
                     value={cuentaBancaria}
                     readOnly
                     style={{ userSelect: 'none' }}
-                    required
                   />
                 )}
               </div>
+
             </div>
           )}
-
-
 
           <div className="transporte-form-field">
             <label className="transporte-label">Fecha de viaje:</label>
@@ -381,6 +395,7 @@ Observación: ${observacion}
               placeholderText="Seleccione fecha de viaje"
               required
               customInput={<CustomDateInput />}
+              locale="es" // Localización en español
             />
           </div>
 
