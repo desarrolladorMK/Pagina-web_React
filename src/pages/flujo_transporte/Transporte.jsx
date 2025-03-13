@@ -15,7 +15,7 @@ const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) 
 ));
 
 const sedesOptions = [
-  { id: 'sede1', name: 'Parque', value: 180000 },
+  { id: 'sede1', name: 'Parque', value: 200000 },
   { id: 'sede2', name: 'Llano', value: 100000 },
   { id: 'sede3', name: 'Plaza', value: 200000 },
   { id: 'sede4', name: 'Vegas', value: 100000 },

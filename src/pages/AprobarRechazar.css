@@ -1,220 +1,222 @@
-/* Estilo general para el contenedor principal */
+/* Reset básico para consistencia */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Contenedor principal con gradiente */
 .aprobar-rechazar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
+  justify-content: center;
   min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
-/* Estilo para el contenedor del logo */
+/* Logo con tamaño adaptable */
 .logo-container-aprobar {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .logo-container-aprobar img {
-  max-width: 150px;
-  animation: bounceInAprobarRechazar 1s ease-in-out forwards;
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  animation: fadeIn 1s ease-in-out;
 }
 
-/* Animación de rebote */
-@keyframes bounceInAprobarRechazar {
-  0% {
-    transform: scale(0.5);
+@keyframes fadeIn {
+  from {
     opacity: 0;
+    transform: scale(0.8);
   }
-  60% {
-    transform: scale(1.2);
+  to {
     opacity: 1;
-  }
-  100% {
     transform: scale(1);
   }
 }
 
-/* Estilo para el encabezado */
+/* Encabezado elegante */
 .header-gastos {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  animation: slideInDownAprobarRechazar 1s ease-in-out forwards;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Animación de deslizamiento */
-@keyframes slideInDownAprobarRechazar {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Estilo para el formulario */
+/* Formulario como tarjeta */
 .form {
   width: 100%;
-  max-width: 500px;
-  padding: 20px;
-  border-radius: 8px;
-  animation: bounceInAprobarRechazar 1s ease-in-out forwards,
-    slideInDownAprobarRechazar 1s ease-in-out forwards;
+  max-width: 600px;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-/* Estilo para los grupos de formulario */
+.form[aria-disabled='true'] {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Grupos de formulario */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.form-group label {
+.form-label {
   display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-.input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   font-size: 16px;
+  font-weight: 500;
+  color: #34495e;
+  margin-bottom: 8px;
 }
 
-/* Estilo para los botones de decisión */
+/* Campo de observación */
+.observacion-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.observacion-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+  outline: none;
+}
+
+.observacion-input::placeholder {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+/* Contenedor de botones */
 .decision-buttons {
   display: flex;
-  justify-content: space-between;
+  gap: 15px;
+  justify-content: center;
 }
 
-.decision-buttons button {
-  width: 48%;
-  padding: 10px;
+/* Estilo base para botones */
+.decision-btn {
+  flex: 1;
+  padding: 12px 20px;
   font-size: 16px;
+  font-weight: 500;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   color: #fff;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.decision-buttons button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
+/* Botón Aprobar */
 .btn-approve {
-  background-color: #89dc00; /* Verde para aprobar */
-  color: #fff;
+  background: linear-gradient(90deg, #89dc00, #89dc00);
 }
 
-.btn-approve:hover {
-  background-color: #218838;
-  transform: scale(1.05);
+.btn-approve:hover:not(:disabled) {
+  background: linear-gradient(90deg, #3fdd17, #3fdd17);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
 }
 
+/* Botón Rechazar */
 .btn-reject {
-  background-color: #df2638; /* Rojo para rechazar */
-  color: #fff;
+  background: linear-gradient(90deg, #df2638, #df2638);
 }
 
-.btn-reject:hover {
-  background-color: #ff0019;
-  transform: scale(1.05);
+.btn-reject:hover:not(:disabled) {
+  background: linear-gradient(90deg, #c0392b, #a93226);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
 }
 
-/* Estilo para el botón de envío */
-.submit-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.decision-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
-/* Estilo para el mensaje */
+/* Mensaje */
 .mensaje {
   margin-top: 20px;
   font-size: 16px;
-  color: #d9534f;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
 }
 
-/* Estilo para el mensaje de aprobación */
 .mensaje-aprobado {
-  color: #28a745; /* Verde */
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-top: 20px;
-  text-align: center;
+  color: #27ae60;
+  background: #e9f7ef;
 }
 
-/* Estilo para el mensaje de rechazo */
 .mensaje-rechazado {
-  color: #dc3545; /* Rojo */
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-top: 20px;
-  text-align: center;
+  color: #c0392b;
+  background: #fdedec;
 }
 
-
-/* Estilo para la fecha */
-.fecha {
-  font-size: 1.2em;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-/* Estilo para el documento */
-.documento {
-  font-size: 1.2em;
-  color: #007bff;
-  text-decoration: none;
-  margin-bottom: 10px;
-}
-
-.documento:hover {
-  text-decoration: underline;
-}
-
-/* Estilo para el indicador de carga */
+/* Spinner de carga */
 .loading-spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #007bff;
+  border-left-color: #3498db;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spinAprobarRechazar 1s linear infinite;
-  margin-top: 20px;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
 }
 
-
-/* Estilo para el campo de observación */
-.observacion-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  resize: vertical;
-  min-height: 80px;
-  margin-bottom: 15px;
-}
-
-@keyframes spinAprobarRechazar {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
+@keyframes spin {
+  to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+  .form {
+    padding: 20px;
+    margin: 0 10px;
+  }
+
+  .decision-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .decision-btn {
+    width: 100%;
+  }
+
+  .header-gastos {
+    font-size: 24px;
+  }
+
+  .logo-container-aprobar img {
+    max-width: 140px;
+  }
+}
+
+/* Accesibilidad: Reducir animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  .logo-container-aprobar img,
+  .form,
+  .decision-btn {
+    animation: none;
+    transition: none;
   }
 }
