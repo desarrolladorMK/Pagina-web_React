@@ -6,7 +6,7 @@ import { ChatBot } from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
-  const promocionesActivas = false;
+  const promocionesActivas = true;
 
   const openModal = (imgSrc) => {
     setModalImg(imgSrc);
@@ -28,26 +28,20 @@ const Promociones = () => {
 
           {promocionesActivas ? (
             <div className="container-ofertas">
-              <div className="ofertas" onClick={() => openModal('/im1.jpeg')}>
-                <img src="/im1.jpeg" alt="Promo 1" />
+              <div className="ofertas" onClick={() => openModal('/im1.jpg')}>
+                <img src="/im1.jpg" alt="Promo 1" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im2.jpeg')}>
-                <img src="/im2.jpeg" alt="Promo 2" />
+              <div className="ofertas" onClick={() => openModal('/im2.jpg')}>
+                <img src="/im2.jpg" alt="Promo 2" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im3.jpeg')}>
-                <img src="/im3.jpeg" alt="Promo 3" />
+              <div className="ofertas" onClick={() => openModal('/im3.jpg')}>
+                <img src="/im3.jpg" alt="Promo 3" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im4.jpeg')}>
-                <img src="/im4.jpeg" alt="Promo 4" />
+              <div className="ofertas" onClick={() => openModal('/im4.jpg')}>
+                <img src="/im4.jpg" alt="Promo 4" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im5.jpeg')}>
-                <img src="/im5.jpeg" alt="Promo 5" />
-              </div>
-              <div className="ofertas" onClick={() => openModal('/im6.jpeg')}>
-                <img src="/im6.jpeg" alt="Promo 6" />
-              </div>
-              <div className="ofertas" onClick={() => openModal('/im7.jpeg')}>
-                <img src="/im7.jpeg" alt="Promo 7" />
+              <div className="ofertas" onClick={() => openModal('/im5.jpg')}>
+                <img src="/im5.jpg" alt="Promo 5" />
               </div>
             </div>
           ) : (
