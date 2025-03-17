@@ -19,7 +19,7 @@ const Login = () => {
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
           { path: "/historialformulario", label: "Historial formulario Perfil" },
-          { path: "/automatizacion", label: "Automatización Fruver" },
+          { path: "/automatizacion", label: "Reposiciones Fruver" },
           { path: "/historialtransporte", label: "Historial de Transporte" },
           { path: "/solicitudaprobacion", label: "Perfil gestión humana" },
           { path: "/historialgastos", label: "Historial de Gastos" },
@@ -49,7 +49,7 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_4 || "",
         redirect: "/acceso", //Auditoriafruver@merkahorrosas.com
         routes: [
-          { path: "/automatizacion", label: "Automatización Fruver" },
+          { path: "/automatizacion", label: "Reposiciones Fruver" },
           { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
         ],
@@ -62,7 +62,7 @@ const Login = () => {
           { path: "/gastos", label: "Gastos" },
           { path: "/historialgastos", label: "Historial de Gastos" },
           { path: "/historialtransporte", label: "Historial de Transporte" },
-          { path: "/automatizacion", label: "Automatización Fruver" },
+          { path: "/automatizacion", label: "Reposiciones Fruver" },
           { path: "/salones", label: "Reserva de salones" },
         ],
       },
@@ -82,6 +82,7 @@ const Login = () => {
         routes: [
           { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
         ],
       },
       {
@@ -137,6 +138,7 @@ const Login = () => {
         routes: [
           { path: "/gastos", label: "Gastos" },
           { path: "/salones", label: "Reserva de salones" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
         ],
       },
       {
@@ -172,7 +174,7 @@ const Login = () => {
         redirect: "/acceso", //gerencia1@merkahorrosas.com
         routes: [
           { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
-          { path: "/automatizacion", label: "Automatización Fruver" },
+          { path: "/automatizacion", label: "Reposiciones Fruver" },
           { path: "/historialtransporte", label: "Historial de Transporte" },
           { path: "/solicitudaprobacion", label: "Perfil gestión humana" },
           { path: "/historialgastos", label: "Historial de Gastos" },

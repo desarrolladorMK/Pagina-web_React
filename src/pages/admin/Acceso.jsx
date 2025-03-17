@@ -50,7 +50,7 @@ const Acceso = () => {
     'Reserva de salones': <FaCalendarAlt />,
     'Transporte': <FaTruck />,
     'Perfil gestión humana': <FaUser />,
-    'Automatización Fruver': <FaAppleAlt />,
+    'Reposiciones Fruver': <FaAppleAlt />,
     'Base de datos Postulaciones': <FaDatabase />,
   };
 

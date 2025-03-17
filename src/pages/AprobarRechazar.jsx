@@ -102,7 +102,7 @@ const AprobarRechazar = () => {
                 className="observacion-input"
                 placeholder="Importante: decir quién está realizando la observación."
                 disabled={loading}
-                required
+                
               />
             </div>
             <div className="form-group">
