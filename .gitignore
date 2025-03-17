@@ -35,3 +35,4 @@ lerna-debug.log*
 
 # Windows-specific system files
 Thumbs.db
+.qodo

@@ -261,7 +261,7 @@ const Automatizacion = () => {
         </a>
       </div>
       <div className="automatizacion-container">
-        <h1 className="automatizacion-header">Automatización Fruver</h1>
+        <h1 className="automatizacion-header">Reposiciones Fruver</h1>
         <h4 className="fraseMotivacional">
           "Que otra cosa puede hacer el hombre bondadoso, si no es hacer el bien por los demás hombres."
           <br /> Marco Aurelio
