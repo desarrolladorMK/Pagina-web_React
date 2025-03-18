@@ -1,0 +1,330 @@
+/* =============================== */
+/*     Variables de Colores        */
+/* =============================== */
+:root {
+    --primary-color: #89DC00;   /* Verde Merkahorro */
+    --secondary-color: #210d65; /* Azul Oscuro Merkahorro */
+    --light-color: #f4f4f9;
+    --text-color: #333;
+    --error-color: #e63946;
+    --success-color: #89DC00;
+    --background-color: #f0f2f5;
+    --border-color: #e0e0e0;
+    --hover-color: #76c400;
+  }
+  
+  /* =============================== */
+  /*  Estilos Compartidos (Base)     */
+  /* =============================== */
+  
+  /* Contenedor principal de la vista */
+  .cartera-historial {
+    background-color: var(--background-color);
+    height: 100%;
+    padding: 20px;
+  }
+  
+  /* Header de la vista */
+  .cartera-header {
+    text-align: center;
+    font-size: 2.8rem;
+    margin: 20px 0 30px;
+    color: var(--secondary-color);
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Contenedor y estilo de la tabla del historial */
+  .cartera-historial-table {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+  
+  .cartera-historial-table h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+  }
+  
+  .cartera-historial-table table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 5px;
+  }
+  
+  .cartera-historial-table th,
+  .cartera-historial-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+  }
+  
+  /* Anchos fijos para columnas importantes */
+  .cartera-historial-table th:nth-child(8),
+  .cartera-historial-table td:nth-child(8) {
+    min-width: 300px;
+    max-width: 500px;
+    word-wrap: break-word;
+    text-align: center;
+  }
+  
+  .cartera-historial-table th:nth-child(14),
+  .cartera-historial-table td:nth-child(14) {
+    min-width: 150px;
+    max-width: 300px;
+    word-wrap: break-word;
+    text-align: center;
+  }
+  
+  .cartera-historial-table th {
+    background-color: var(--secondary-color);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .cartera-historial-table tr:nth-child(even) {
+    background-color: var(--light-color);
+  }
+  
+  .cartera-historial-table a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .cartera-historial-table a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Mensajes de estado */
+  .cartera-submitted-message {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--success-color);
+    color: #fff;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .cartera-error-message {
+    text-align: center;
+    padding: 18px;
+    background-color: var(--error-color);
+    color: #fff;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  /* =============================== */
+  /*       Responsive Design         */
+  /* =============================== */
+  @media (max-width: 600px) {
+    .cartera-historial {
+      padding: 20px;
+    }
+  
+    .cartera-header {
+      font-size: 2.2rem;
+    }
+  
+    .cartera-historial-table {
+      padding: 15px;
+    }
+  
+    .cartera-historial-table h2 {
+      font-size: 1.5rem;
+    }
+  
+    .cartera-historial-table th,
+    .cartera-historial-table td {
+      padding: 10px;
+      font-size: 0.85rem;
+    }
+  }
+  
+  /* =============================== */
+  /*       Scroll Horizontal         */
+  /* =============================== */
+  .scroll-container-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scroll-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scroll-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 40px;
+    border: none;
+    background-color: var(--secondary-color);
+    color: white;
+    font-size: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.4;
+    z-index: 1000;
+  }
+  
+  .scroll-button:hover {
+    opacity: 1;
+  }
+  
+  .scroll-button.left {
+    left: 10px;
+  }
+  
+  .scroll-button.right {
+    right: 10px;
+  }
+  
+  /* =============================== */
+  /*  Buscador y Exportación         */
+  /* =============================== */
+  .busqueda-export-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .busqueda-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: transparent;
+  }
+  
+  .busqueda-boton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .busqueda-boton:hover {
+    transform: scale(1.1);
+  }
+  
+  .busqueda-input {
+    width: 0;
+    opacity: 0;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-left: 10px;
+    animation: busqueda-animacion-desaparecer 0.4s forwards;
+  }
+  
+  .busqueda-input.active {
+    animation: busqueda-animacion-aparecer 0.4s forwards;
+  }
+  
+  @keyframes busqueda-animacion-aparecer {
+    from { width: 0; opacity: 0; }
+    to { width: 250px; opacity: 1; }
+  }
+  
+  @keyframes busqueda-animacion-desaparecer {
+    from { width: 250px; opacity: 1; }
+    to { width: 0; opacity: 0; }
+  }
+  
+  /* Botón para exportar a Excel */
+  .excel-button-cartera {
+    padding: 12px 25px;
+    margin-bottom: 20px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .excel-button-cartera:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* =============================== */
+  /*   Estilos para Dropzone/File    */
+  /* =============================== */
+  .dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    color: var(--text-color);
+    margin: 10px auto;
+  }
+  
+  .dropzone:hover {
+    border-color: var(--secondary-color);
+  }
+  
+  .dropzone.active {
+    border-color: var(--primary-color);
+  }
+  
+  .dropzone p {
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  /* Si se utiliza input[type="file"] en lugar de dropzone */
+  input[type="file"] {
+    padding: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  /* =============================== */
+  /*   Botón para eliminar Voucher   */
+  /* =============================== */
+  .delete-voucher-button {
+    margin-top: 5px;
+    padding: 4px 8px;
+    background-color: var(--error-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.3s ease;
+  }
+  
+  .delete-voucher-button:hover {
+    background-color: #c5303e;
+  }
+  
