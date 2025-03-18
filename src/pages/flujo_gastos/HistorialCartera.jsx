@@ -6,6 +6,7 @@ import Fuse from "fuse.js";
 import { useDropzone } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactWebcam from 'react-webcam';
 
 const HistorialCartera = () => {
   const currentUserEmail = sessionStorage.getItem("correo_empleado");
@@ -17,12 +18,16 @@ const HistorialCartera = () => {
   const [filteredHistorial, setFilteredHistorial] = useState([]);
   const [pendingNotifications, setPendingNotifications] = useState(new Set());
   const [sentVouchers, setSentVouchers] = useState(new Set());
+  // Estado para mostrar la cámara y el id seleccionado para capturar foto
+  const [showWebcam, setShowWebcam] = useState(false);
+  const [selectedIdForWebcam, setSelectedIdForWebcam] = useState(null);
 
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
   const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
 
   const scrollContainerRef = useRef(null);
+  const webcamRef = useRef(null);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -52,7 +57,6 @@ const HistorialCartera = () => {
         setErrorMessage("No se pudo cargar el historial de cartera.");
       }
     };
-
     obtenerHistorial();
   }, []);
 
@@ -79,30 +83,7 @@ const HistorialCartera = () => {
 
   const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
 
-  const VoucherNotification = ({ id, nombreCompleto, correo_empleado }) => {
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-    const handleClick = () => {
-      if (!isButtonDisabled) {
-        setIsButtonDisabled(true); // Desactiva inmediatamente al primer clic
-        handleSendVoucher(id, correo_empleado);
-      }
-    };
-
-    return (
-      <div>
-        Voucher asignado para {nombreCompleto}.<br />
-        <button
-          className="toast-send-button"
-          onClick={handleClick}
-          disabled={isButtonDisabled || sentVouchers.has(id)}
-        >
-          Enviar notificación
-        </button>
-      </div>
-    );
-  };
-
+  // Función para adjuntar voucher (usada tanto para dropzone como para webcam)
   const onDropVoucher = useCallback((acceptedFiles, id) => {
     const file = acceptedFiles[0];
     if (!file) return;
@@ -114,33 +95,33 @@ const HistorialCartera = () => {
     axios.post(`${UPDATE_URL}/adjuntarVoucher`, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
-    .then(response => {
-      if (response.status === 200) {
-        setHistorial(prev =>
-          prev.map(item =>
-            item.id === id ? { ...item, voucher: response.data.archivo_comprobante } : item
-          )
-        );
-        setPendingNotifications(prev => new Set(prev).add(id));
-        const gasto = historial.find(item => item.id === id);
-        const nombreCompleto = gasto?.nombre_completo || "Usuario desconocido";
-        const correo_empleado = gasto?.correo_empleado;
-        toast.info(
-          <VoucherNotification id={id} nombreCompleto={nombreCompleto} correo_empleado={correo_empleado} />,
-          {
-            position: "bottom-right",
-            autoClose: false,
-            closeOnClick: false,
-            draggable: true,
-            toastId: `voucher-${id}`,
-          }
-        );
-      }
-    })
-    .catch(error => {
-      console.error("Error al subir el voucher:", error);
-      toast.error("Error al subir el voucher.");
-    });
+      .then(response => {
+        if (response.status === 200) {
+          setHistorial(prev =>
+            prev.map(item =>
+              item.id === id ? { ...item, voucher: response.data.archivo_comprobante } : item
+            )
+          );
+          setPendingNotifications(prev => new Set(prev).add(id));
+          const gasto = historial.find(item => item.id === id);
+          const nombreCompleto = gasto?.nombre_completo || "Usuario desconocido";
+          const correo_empleado = gasto?.correo_empleado;
+          toast.info(
+            <VoucherNotification id={id} nombreCompleto={nombreCompleto} correo_empleado={correo_empleado} />,
+            {
+              position: "bottom-right",
+              autoClose: false,
+              closeOnClick: false,
+              draggable: true,
+              toastId: `voucher-${id}`,
+            }
+          );
+        }
+      })
+      .catch(error => {
+        console.error("Error al subir el voucher:", error);
+        toast.error("Error al subir el voucher.");
+      });
   }, [UPDATE_URL, currentUserEmail, historial, sentVouchers]);
 
   const handleDeleteVoucher = async (id) => {
@@ -157,14 +138,12 @@ const HistorialCartera = () => {
           newSet.delete(id);
           return newSet;
         });
-
         const updatedResponse = await axios.get(API_URL);
         if (updatedResponse.status === 200) {
           const updatedData = updatedResponse.data.data || [];
           setHistorial(updatedData);
           setFilteredHistorial(updatedData);
         }
-
         toast.success("Voucher eliminado correctamente.");
       } else {
         throw new Error(`Respuesta inesperada del servidor: ${response.status}`);
@@ -177,7 +156,6 @@ const HistorialCartera = () => {
 
   const handleSendVoucher = async (id, correo_empleado) => {
     if (sentVouchers.has(id)) return;
-
     try {
       setSentVouchers(prev => new Set(prev).add(id));
       const response = await axios.post(`${UPDATE_URL}/enviarVoucher`, { id, correo_empleado });
@@ -201,7 +179,7 @@ const HistorialCartera = () => {
     }
   };
 
-  const FileDropzone = ({ id }) => {
+  const FileDropzone = ({ id, hidePrompt = false }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop: acceptedFiles => onDropVoucher(acceptedFiles, id),
       multiple: false,
@@ -210,14 +188,69 @@ const HistorialCartera = () => {
 
     return (
       <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
-        <input {...getInputProps({ capture: "environment" })} />
-        {isDragActive ? (
-          <p>Suelta el archivo aquí...</p>
-        ) : (
-          <p>Arrastra un archivo o toma una foto.</p>
+        <input {...getInputProps()} capture="environment" />
+        {!hidePrompt && (
+          isDragActive ? (
+            <p>Suelta el archivo aquí...</p>
+          ) : (
+            <p>Arrastra un archivo o toma una foto.</p>
+          )
         )}
       </div>
     );
+  };
+
+
+  // Componente para notificación de voucher
+  const VoucherNotification = ({ id, nombreCompleto, correo_empleado }) => {
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const handleClick = () => {
+      if (!isButtonDisabled) {
+        setIsButtonDisabled(true);
+        handleSendVoucher(id, correo_empleado);
+      }
+    };
+    return (
+      <div>
+        Voucher asignado para {nombreCompleto}.<br />
+        <button
+          className="toast-send-button"
+          onClick={handleClick}
+          disabled={isButtonDisabled || sentVouchers.has(id)}
+        >
+          Enviar notificación
+        </button>
+      </div>
+    );
+  };
+
+  // Función para activar la cámara mediante webcam
+  const handleUseWebcam = (id) => {
+    setSelectedIdForWebcam(id);
+    setShowWebcam(true);
+  };
+
+  // Función para capturar imagen desde la webcam y enviarla
+  const handleCaptureWebcam = async () => {
+    if (webcamRef.current) {
+      const screenshot = webcamRef.current.getScreenshot();
+      if (screenshot && selectedIdForWebcam) {
+        // Convertir dataURL a blob
+        const res = await fetch(screenshot);
+        const blob = await res.blob();
+        // Crear un File a partir del blob
+        const file = new File([blob], "captura.jpg", { type: blob.type });
+        // Llamar onDropVoucher con este file
+        onDropVoucher([file], selectedIdForWebcam);
+        setShowWebcam(false);
+        setSelectedIdForWebcam(null);
+      }
+    }
+  };
+
+  const handleCancelWebcam = () => {
+    setShowWebcam(false);
+    setSelectedIdForWebcam(null);
   };
 
   const getEstadoClass = (estado) => {
@@ -229,7 +262,8 @@ const HistorialCartera = () => {
     }
   };
 
-  if (errorMessage) return <div className="cartera-historial"><p>Error: {errorMessage}</p></div>;
+  if (errorMessage)
+    return <div className="cartera-historial"><p>Error: {errorMessage}</p></div>;
 
   return (
     <div className="cartera-historial">
@@ -331,11 +365,28 @@ const HistorialCartera = () => {
                           >
                             Eliminar Voucher
                           </button>
+                          <button
+                            className="webcam-button"
+                            onClick={() => handleUseWebcam(gasto.id)}
+                          >
+                            Usar cámara
+                          </button>
+                          {/* Si ya existe un voucher, se oculta el mensaje en el dropzone */}
+                          <FileDropzone id={gasto.id} hidePrompt={true} />
                         </>
                       ) : (
-                        <FileDropzone id={gasto.id} />
+                        <>
+                          <FileDropzone id={gasto.id} hidePrompt={false} />
+                          <button
+                            className="webcam-button"
+                            onClick={() => handleUseWebcam(gasto.id)}
+                          >
+                            Usar cámara
+                          </button>
+                        </>
                       )}
                     </td>
+
                     <td>
                       {gasto.archivos_proveedor ? (
                         Array.isArray(JSON.parse(gasto.archivos_proveedor)) ? (
@@ -376,6 +427,22 @@ const HistorialCartera = () => {
           <button className="scroll-button right" onClick={scrollRight}>›</button>
         </div>
       </div>
+
+      {/* Se muestra la cámara cuando showWebcam es true */}
+      {showWebcam && (
+        <div className="webcam-modal">
+          <ReactWebcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={{ facingMode: "user" }}
+          />
+          <div className="webcam-controls">
+            <button onClick={handleCaptureWebcam}>Capturar foto</button>
+            <button onClick={handleCancelWebcam}>Cancelar</button>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </div>

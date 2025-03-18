@@ -142,19 +142,15 @@
   .cartera-historial {
     padding: 15px;
   }
-
   .cartera-header {
     font-size: 2.2rem;
   }
-
   .cartera-historial-table {
     padding: 15px;
   }
-
   .cartera-historial-table h2 {
     font-size: 1.5rem;
   }
-
   .cartera-historial-table th,
   .cartera-historial-table td {
     padding: 8px;
@@ -401,7 +397,80 @@
 }
 
 .toast-send-button:disabled {
-  background-color: #cccccc; /* Gris para estado deshabilitado */
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* =============================== */
+/*   Estilos para el Modal de Webcam */
+/* =============================== */
+.webcam-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--light-color);
+  padding: 20px;
+  border: 2px solid var(--secondary-color);
+  border-radius: 10px;
+  z-index: 2000;
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  width: 90%;
+  max-width: 600px;
+}
+
+.webcam-modal video,
+.webcam-modal canvas {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.webcam-controls {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.webcam-controls button {
+  padding: 8px 16px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.webcam-controls button:hover {
+  background-color: var(--hover-color);
+}
+
+.webcam-controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.webcam-button {
+  padding: 8px 16px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.webcam-button:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
+
+.webcam-button:disabled {
+  background-color: #cccccc;
   cursor: not-allowed;
   opacity: 0.7;
 }
