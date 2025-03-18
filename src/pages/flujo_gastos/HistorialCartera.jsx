@@ -4,9 +4,10 @@ import './HistorialCartera.css';
 import * as XLSX from "xlsx";
 import Fuse from "fuse.js";
 import { useDropzone } from 'react-dropzone';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HistorialCartera = () => {
-  // Recupera el correo del usuario autenticado
   const currentUserEmail = sessionStorage.getItem("correo_empleado");
 
   const [historial, setHistorial] = useState([]);
@@ -14,6 +15,8 @@ const HistorialCartera = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [filteredHistorial, setFilteredHistorial] = useState([]);
+  const [pendingNotifications, setPendingNotifications] = useState(new Set());
+  const [sentVouchers, setSentVouchers] = useState(new Set());
 
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
@@ -21,26 +24,18 @@ const HistorialCartera = () => {
 
   const scrollContainerRef = useRef(null);
 
-  // Funciones para scroll horizontal
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: -500,
-        behavior: 'smooth'
-      });
+      scrollContainerRef.current.scrollBy({ left: -500, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: 500,
-        behavior: 'smooth'
-      });
+      scrollContainerRef.current.scrollBy({ left: 500, behavior: 'smooth' });
     }
   };
 
-  // Cargar historial desde la API
   useEffect(() => {
     const obtenerHistorial = async () => {
       try {
@@ -61,22 +56,13 @@ const HistorialCartera = () => {
     obtenerHistorial();
   }, []);
 
-  // Integración de Fuse.js para búsqueda
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredHistorial(historial);
       return;
     }
     const fuse = new Fuse(historial, {
-      keys: [
-        'fecha_creacion',
-        'nombre_completo',
-        'descripcion',
-        'area',
-        'sede',
-        'unidad',
-        'centro_costos'
-      ],
+      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos'],
       threshold: 0.3,
       includeScore: true,
     });
@@ -84,7 +70,6 @@ const HistorialCartera = () => {
     setFilteredHistorial(results.map(result => result.item));
   }, [searchQuery, historial]);
 
-  // Función para exportar a Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(historial);
     const workbook = XLSX.utils.book_new();
@@ -92,10 +77,32 @@ const HistorialCartera = () => {
     XLSX.writeFile(workbook, "historial_cartera.xlsx");
   };
 
-  // Formateo de moneda en COP
   const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
 
-  // Función para manejar la carga del voucher (llama al endpoint /adjuntarVoucher)
+  const VoucherNotification = ({ id, nombreCompleto, correo_empleado }) => {
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const handleClick = () => {
+      if (!isButtonDisabled) {
+        setIsButtonDisabled(true); // Desactiva inmediatamente al primer clic
+        handleSendVoucher(id, correo_empleado);
+      }
+    };
+
+    return (
+      <div>
+        Voucher subido por {nombreCompleto}.<br />
+        <button
+          className="toast-send-button"
+          onClick={handleClick}
+          disabled={isButtonDisabled || sentVouchers.has(id)}
+        >
+          Enviar notificación
+        </button>
+      </div>
+    );
+  };
+
   const onDropVoucher = useCallback((acceptedFiles, id) => {
     const file = acceptedFiles[0];
     if (!file) return;
@@ -109,20 +116,33 @@ const HistorialCartera = () => {
     })
     .then(response => {
       if (response.status === 200) {
-        // Actualiza el historial con la URL del comprobante que devuelve el backend
         setHistorial(prev =>
           prev.map(item =>
             item.id === id ? { ...item, voucher: response.data.archivo_comprobante } : item
           )
         );
+        setPendingNotifications(prev => new Set(prev).add(id));
+        const gasto = historial.find(item => item.id === id);
+        const nombreCompleto = gasto?.nombre_completo || "Usuario desconocido";
+        const correo_empleado = gasto?.correo_empleado;
+        toast.info(
+          <VoucherNotification id={id} nombreCompleto={nombreCompleto} correo_empleado={correo_empleado} />,
+          {
+            position: "bottom-right",
+            autoClose: false,
+            closeOnClick: false,
+            draggable: true,
+            toastId: `voucher-${id}`,
+          }
+        );
       }
     })
     .catch(error => {
       console.error("Error al subir el voucher:", error);
+      toast.error("Error al subir el voucher.");
     });
-  }, [UPDATE_URL, currentUserEmail]);
+  }, [UPDATE_URL, currentUserEmail, historial, sentVouchers]);
 
-  // Función para eliminar el voucher (establece voucher a null)
   const handleDeleteVoucher = async (id) => {
     try {
       const response = await axios.put(`${UPDATE_URL}/${id}`, { voucher: null });
@@ -132,38 +152,62 @@ const HistorialCartera = () => {
             item.id === id ? { ...item, voucher: null } : item
           )
         );
+        setPendingNotifications(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+
+        const updatedResponse = await axios.get(API_URL);
+        if (updatedResponse.status === 200) {
+          const updatedData = updatedResponse.data.data || [];
+          setHistorial(updatedData);
+          setFilteredHistorial(updatedData);
+        }
+
+        toast.success("Voucher eliminado correctamente.");
+      } else {
+        throw new Error(`Respuesta inesperada del servidor: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error al eliminar el voucher:", error);
+      console.error("Error al eliminar el voucher:", error.response?.data || error.message);
+      toast.error(`Error al eliminar el voucher: ${error.message}`);
     }
   };
 
-  // Función para enviar el voucher al correo del solicitante
-  // NOTA: Debes implementar en el backend un endpoint que se encargue de reenviar el voucher,
-  // por ejemplo, en POST /enviarVoucher.
   const handleSendVoucher = async (id, correo_empleado) => {
+    if (sentVouchers.has(id)) return;
+
     try {
+      setSentVouchers(prev => new Set(prev).add(id));
       const response = await axios.post(`${UPDATE_URL}/enviarVoucher`, { id, correo_empleado });
       if (response.status === 200) {
-        alert("Voucher enviado al correo del solicitante.");
+        setPendingNotifications(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        toast.success("Voucher enviado al correo del solicitante.");
+        toast.dismiss(`voucher-${id}`);
       }
     } catch (error) {
       console.error("Error al enviar el voucher:", error);
-      alert("Error al enviar el voucher.");
+      toast.error("Error al enviar el voucher.");
+      setSentVouchers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   };
 
-  // Componente para la zona de dropzone del voucher, con atributo capture para habilitar la cámara
   const FileDropzone = ({ id }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop: acceptedFiles => onDropVoucher(acceptedFiles, id),
       multiple: false,
-      accept: {
-        'image/*': [],
-        'application/pdf': []
-      }
+      accept: { 'image/*': [], 'application/pdf': [] }
     });
-  
+
     return (
       <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
         <input {...getInputProps({ capture: "environment" })} />
@@ -175,29 +219,22 @@ const HistorialCartera = () => {
       </div>
     );
   };
-  
-  // Función para asignar la clase CSS según el estado
+
   const getEstadoClass = (estado) => {
     switch (estado) {
-      case "Pendiente":
-        return "estado-pendiente";
-      case "Necesario":
-        return "estado-aprobado";
-      case "No necesario":
-        return "estado-rechazado";
-      default:
-        return "";
+      case "Pendiente": return "estado-pendiente";
+      case "Necesario": return "estado-aprobado";
+      case "No necesario": return "estado-rechazado";
+      default: return "";
     }
   };
 
-  if (errorMessage)
-    return <div className="cartera-historial"><p>Error: {errorMessage}</p></div>;
+  if (errorMessage) return <div className="cartera-historial"><p>Error: {errorMessage}</p></div>;
 
   return (
     <div className="cartera-historial">
       <h2>Historial de Cartera</h2>
 
-      {/* Contenedor de búsqueda y exportación */}
       <div className="busqueda-export-container">
         <div className="busqueda-container">
           <button
@@ -279,28 +316,21 @@ const HistorialCartera = () => {
                     <td>
                       {gasto.voucher ? (
                         <>
-                         <a
-                          href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="view-pdf-button"
-                        >
-                          Ver Voucher
-                        </a>
+                          <a
+                            href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="view-pdf-button"
+                          >
+                            Ver Voucher
+                          </a>
                           <br />
                           <button
                             className="delete-voucher-button"
                             onClick={() => handleDeleteVoucher(gasto.id)}
                           >
-                            Eliminar voucher
+                            Eliminar Voucher
                           </button>
-                          <button
-                            className="send-voucher-button"
-                            onClick={() => handleSendVoucher(gasto.id, gasto.correo_empleado)}
-                          >
-                            Enviar voucher
-                          </button>
-                          <FileDropzone id={gasto.id} />
                         </>
                       ) : (
                         <FileDropzone id={gasto.id} />
@@ -346,6 +376,8 @@ const HistorialCartera = () => {
           <button className="scroll-button right" onClick={scrollRight}>›</button>
         </div>
       </div>
+
+      <ToastContainer />
     </div>
   );
 };
