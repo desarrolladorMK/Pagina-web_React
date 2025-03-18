@@ -11,11 +11,7 @@ const useDecisionHandler = (initialToken) => {
   const [observacion, setObservacion] = useState('');
 
   const handleSubmit = async (decision) => {
-    if (!observacion.trim()) {
-      setMensaje('Por favor, ingresa una observación.');
-      return;
-    }
-
+    // Ahora se permite enviar la decisión sin que se haya ingresado una observación.
     setLoading(true);
     try {
       const response = await axios.post(
@@ -62,7 +58,7 @@ const AprobarRechazar = () => {
   const {
     estado,
     mensaje,
-    setMensaje, // Extraemos setMensaje
+    setMensaje,
     loading,
     decisionTomada,
     observacion,
@@ -77,7 +73,7 @@ const AprobarRechazar = () => {
       setMensaje('Token no encontrado en la URL.');
     }
     setToken(tokenFromUrl);
-  }, [setMensaje]); // Agregamos setMensaje como dependencia
+  }, [setMensaje]);
 
   return (
     <div className="aprobar-rechazar-container">
@@ -102,33 +98,4 @@ const AprobarRechazar = () => {
                 className="observacion-input"
                 placeholder="Importante: decir quién está realizando la observación."
                 disabled={loading}
-                
-              />
-            </div>
-            <div className="form-group">
-              <div className="decision-buttons">
-                <DecisionButton
-                  label="Necesario"
-                  onClick={() => handleSubmit('Necesario')}
-                  disabled={loading}
-                  type="approve"
-                />
-                <DecisionButton
-                  label="No necesario"
-                  onClick={() => handleSubmit('No necesario')}
-                  disabled={loading}
-                  type="reject"
-                />
-              </div>
-            </div>
-          </>
-        ) : (
-          <p className={`mensaje mensaje-${estado}`}>{mensaje}</p>
-        )}
-        {loading && <div className="loading-spinner"></div>}
-      </div>
-    </div>
-  );
-};
 
-export { AprobarRechazar };
