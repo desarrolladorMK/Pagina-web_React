@@ -95,20 +95,24 @@ const HistorialCartera = () => {
   // Formateo de moneda en COP
   const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
 
-  // Función para manejar la carga del voucher (reemplaza el anterior si existe)
+  // Función para manejar la carga del voucher (llama al endpoint /adjuntarVoucher)
   const onDropVoucher = useCallback((acceptedFiles, id) => {
     const file = acceptedFiles[0];
     if (!file) return;
     const formData = new FormData();
     formData.append('voucher', file);
-    axios.put(`${UPDATE_URL}/${id}`, formData, {
+    formData.append('id', id);
+    formData.append('correo_empleado', currentUserEmail);
+
+    axios.post(`${UPDATE_URL}/adjuntarVoucher`, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
     .then(response => {
       if (response.status === 200) {
+        // Actualiza el historial con la URL del comprobante que devuelve el backend
         setHistorial(prev =>
           prev.map(item =>
-            item.id === id ? { ...item, voucher: response.data.voucher } : item
+            item.id === id ? { ...item, voucher: response.data.archivo_comprobante } : item
           )
         );
       }
@@ -116,9 +120,9 @@ const HistorialCartera = () => {
     .catch(error => {
       console.error("Error al subir el voucher:", error);
     });
-  }, [UPDATE_URL]);
+  }, [UPDATE_URL, currentUserEmail]);
 
-  // Función para eliminar el voucher (enviar voucher: null)
+  // Función para eliminar el voucher (establece voucher a null)
   const handleDeleteVoucher = async (id) => {
     try {
       const response = await axios.put(`${UPDATE_URL}/${id}`, { voucher: null });
@@ -134,14 +138,32 @@ const HistorialCartera = () => {
     }
   };
 
+  // Función para enviar el voucher al correo del solicitante
+  // NOTA: Debes implementar en el backend un endpoint que se encargue de reenviar el voucher,
+  // por ejemplo, en POST /enviarVoucher.
+  const handleSendVoucher = async (id, correo_empleado) => {
+    try {
+      const response = await axios.post(`${UPDATE_URL}/enviarVoucher`, { id, correo_empleado });
+      if (response.status === 200) {
+        alert("Voucher enviado al correo del solicitante.");
+      }
+    } catch (error) {
+      console.error("Error al enviar el voucher:", error);
+      alert("Error al enviar el voucher.");
+    }
+  };
+
   // Componente para la zona de dropzone del voucher, con atributo capture para habilitar la cámara
   const FileDropzone = ({ id }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop: acceptedFiles => onDropVoucher(acceptedFiles, id),
       multiple: false,
-      accept: 'image/*,application/pdf'
+      accept: {
+        'image/*': [],
+        'application/pdf': []
+      }
     });
-
+  
     return (
       <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
         <input {...getInputProps({ capture: "environment" })} />
@@ -153,7 +175,7 @@ const HistorialCartera = () => {
       </div>
     );
   };
-
+  
   // Función para asignar la clase CSS según el estado
   const getEstadoClass = (estado) => {
     switch (estado) {
@@ -257,12 +279,26 @@ const HistorialCartera = () => {
                     <td>
                       {gasto.voucher ? (
                         <>
-                          <a href={gasto.voucher} target="_blank" rel="noopener noreferrer" className="view-pdf-button">
-                            Ver voucher
-                          </a>
+                         <a
+                          href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-pdf-button"
+                        >
+                          Ver Voucher
+                        </a>
                           <br />
-                          <button className="delete-voucher-button" onClick={() => handleDeleteVoucher(gasto.id)}>
+                          <button
+                            className="delete-voucher-button"
+                            onClick={() => handleDeleteVoucher(gasto.id)}
+                          >
                             Eliminar voucher
+                          </button>
+                          <button
+                            className="send-voucher-button"
+                            onClick={() => handleSendVoucher(gasto.id, gasto.correo_empleado)}
+                          >
+                            Enviar voucher
                           </button>
                           <FileDropzone id={gasto.id} />
                         </>
