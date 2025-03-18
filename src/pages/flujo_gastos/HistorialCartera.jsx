@@ -91,7 +91,7 @@ const HistorialCartera = () => {
 
     return (
       <div>
-        Voucher subido por {nombreCompleto}.<br />
+        Voucher asignado para {nombreCompleto}.<br />
         <button
           className="toast-send-button"
           onClick={handleClick}
