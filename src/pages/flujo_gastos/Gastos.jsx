@@ -186,6 +186,21 @@ const Gastos = () => {
     }
   };
 
+// Eliminar registro
+  const eliminarRegistro = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que quieres eliminar este registro?");
+    if (!confirmacion) return;
+
+    try {
+      await axios.delete(`${API_URL}/requerimientos/eliminar/${id}`);
+      setHistorialGastos((prev) => prev.filter((gasto) => gasto.id !== id));
+      alert("Registro eliminado correctamente.");
+    } catch (error) {
+      console.error("Error al eliminar el registro:", error);
+      alert("Hubo un error al eliminar el registro.");
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "monto_estimado" || name === "anticipo") {
@@ -598,6 +613,14 @@ const Gastos = () => {
     {
       name: "Obs..Claudia",
       cell: (row) => renderClickableCell(row.observacionC || "Sin observación"),
+    },
+    {
+      name: "Eliminar",
+      cell: (row) => (
+        <button onClick={() => eliminarRegistro(row.id)} className="delete-button">
+          ❌ Eliminar
+        </button>
+      ),
     },
   ];
 
