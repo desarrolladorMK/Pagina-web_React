@@ -98,4 +98,32 @@ const AprobarRechazar = () => {
                 className="observacion-input"
                 placeholder="Importante: decir quién está realizando la observación."
                 disabled={loading}
+              />
+            </div>
+            <div className="form-group">
+              <div className="decision-buttons">
+                <DecisionButton
+                  label="Necesario"
+                  onClick={() => handleSubmit('Necesario')}
+                  disabled={loading}
+                  type="approve"
+                />
+                <DecisionButton
+                  label="No necesario"
+                  onClick={() => handleSubmit('No necesario')}
+                  disabled={loading}
+                  type="reject"
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className={`mensaje mensaje-${estado}`}>{mensaje}</p>
+        )}
+        {loading && <div className="loading-spinner"></div>}
+      </div>
+    </div>
+  );
+};
 
+export { AprobarRechazar };
