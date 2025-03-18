@@ -9,6 +9,14 @@ const HistorialGastos = () => {
   const currentUserEmail = sessionStorage.getItem("correo_empleado");
   const isUsuario10 = currentUserEmail === import.meta.env.VITE_LOGIN_EMAIL_10;
 
+  // Define un mapeo entre líderes y áreas
+  const mapaAreaLideres = {
+    'operaciones@merkahorrosas.com': 'Operaciones',
+    'johanmerkahorro777@gmail.com': 'Gestión humana',
+    'juanmerkahorro@gmail.com': 'Comercial',
+    'administracion@merkahorrosas.com': 'Administración'
+  };
+
   const [historial, setHistorial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -56,15 +64,20 @@ const HistorialGastos = () => {
     }
   };
 
-  // Cargar historial de la API
+  // Cargar historial de la API con filtrado según área del líder si aplica
   useEffect(() => {
     const obtenerHistorial = async () => {
       try {
         const response = await axios.get(API_URL);
         if (response.status === 200) {
-          const data = response.data.data || [];
+          let data = response.data.data || [];
+          // Si el usuario autenticado es un líder, filtra por su área
+          const areaLider = mapaAreaLideres[currentUserEmail];
+          if (areaLider) {
+            data = data.filter(gasto => gasto.area === areaLider);
+          }
           setHistorial(data);
-          setFilteredHistorial(data); // Inicialmente se muestran todos los registros
+          setFilteredHistorial(data); // Inicialmente se muestran todos los registros filtrados
         } else {
           setErrorMessage("No se pudo cargar el historial de gastos.");
         }
@@ -75,7 +88,7 @@ const HistorialGastos = () => {
     };
 
     obtenerHistorial();
-  }, []);
+  }, [currentUserEmail]);
 
   // Cargar hiddenRows desde localStorage al montar el componente
   useEffect(() => {
@@ -92,7 +105,7 @@ const HistorialGastos = () => {
 
   // Integración de Fuse.js: Filtrar historial según searchQuery
   useEffect(() => {
-    // Si la búsqueda está vacía, muestra todos los registros
+    // Si la búsqueda está vacía, muestra todos los registros filtrados previamente
     if (searchQuery.trim() === "") {
       setFilteredHistorial(historial);
       return;
@@ -100,7 +113,7 @@ const HistorialGastos = () => {
     // Configuración de Fuse.js con las claves deseadas
     const fuse = new Fuse(historial, {
       keys: [
-        'fecha_creacion',  // Puedes incluir este campo si quieres buscar por fecha
+        'fecha_creacion',
         'nombre_completo',
         'descripcion',
         'monto_estimado',
@@ -110,7 +123,7 @@ const HistorialGastos = () => {
         'centro_costos',
         'estado'
       ],
-      threshold: 0.3, // Ajusta la sensibilidad de la búsqueda
+      threshold: 0.3,
       includeScore: true,
     });
     const results = fuse.search(searchQuery);
@@ -469,6 +482,3 @@ const HistorialGastos = () => {
 };
 
 export { HistorialGastos };
-
-
-
