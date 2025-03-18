@@ -200,6 +200,16 @@ const Login = () => {
           { path: "/historialformulario", label: "Historial formulario Perfil" },
         ],
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_20 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_20 || "",
+        redirect: "/acceso", //desarrollo@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },
+          { path: "/gastos", label: "Gastos" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
+        ],
+      },
     ];
 
     const usuarioValido = credenciales.find(
