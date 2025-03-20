@@ -224,7 +224,7 @@ const Home = () => {
           </p>
           <p>
             <a
-              href="https://wa.me/573147956325"
+              href="https://wa.me/573245597862"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -234,7 +234,7 @@ const Home = () => {
                 alt="Teléfono"
               />
             </a>
-            Teléfono: 3147956325
+            Teléfono: 3245597862
           </p>
         </section>
 
