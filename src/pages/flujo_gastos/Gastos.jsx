@@ -599,6 +599,29 @@ const Gastos = () => {
       cell: (row) => renderClickableCell(row.observacion || "Sin observación"),
     },
     {
+      name: "Voucher",
+      cell: (row) => {
+        if (row.voucher) {
+          const nombreArchivo = row.voucher.split("/").pop();
+          const voucherUrl = `${SUPABASE_URL}/comprobante/${nombreArchivo}`;
+          return (
+            <div style={{ textAlign: "center", width: "100%" }}>
+              <a
+                href={voucherUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="view-pdf-button"
+              >
+                Ver Voucher
+              </a>
+            </div>
+          );
+        } else {
+          return renderClickableCell("No hay voucher");
+        }
+      },
+    },
+    {
       name: "Estado",
       cell: (row) => (
         <div
@@ -622,6 +645,7 @@ const Gastos = () => {
         </button>
       ),
     },
+    
   ];
 
   return (
