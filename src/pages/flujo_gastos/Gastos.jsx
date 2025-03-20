@@ -4,6 +4,7 @@ import "./Gastos.css";
 import Select from "react-select";
 import * as XLSX from "xlsx";
 import DataTable from "react-data-table-component";
+import Swal from "sweetalert2";
 
 const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
 const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
@@ -48,15 +49,16 @@ const customStyles = {
   },
   cells: {
     style: {
-      padding: "10px",
-      whiteSpace: "normal",
-      wordBreak: "break-word",
-      overflow: "visible",
+      padding: "7px",
+      textAlign: "start",
       verticalAlign: "middle",
-      textAlign: "center",
-      minHeight: "50px",
-      height: "auto",
-      lineHeight: "1.5",
+      whiteSpace: "normal", // Permite que el texto se divida en varias líneas
+      wordBreak: "break-word", // Divide palabras largas si es necesario
+      overflowWrap: "break-word", // Compatibilidad con navegadores
+      height: "auto", // Altura automática según contenido
+      maxWidth: "300px", // Limita el ancho máximo, ajustable según tus necesidades
+      overflow: "auto", // Agrega scroll si el contenido excede el ancho
+      fontSize: "0.80rem",
     },
   },
 };
@@ -186,18 +188,28 @@ const Gastos = () => {
     }
   };
 
-// Eliminar registro
+  // Eliminar registro con SweetAlert2
   const eliminarRegistro = async (id) => {
-    const confirmacion = window.confirm("¿Estás seguro de que quieres eliminar este registro?");
-    if (!confirmacion) return;
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará el registro de forma permanente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
 
-    try {
-      await axios.delete(`${API_URL}/requerimientos/eliminar/${id}`);
-      setHistorialGastos((prev) => prev.filter((gasto) => gasto.id !== id));
-      alert("Registro eliminado correctamente.");
-    } catch (error) {
-      console.error("Error al eliminar el registro:", error);
-      alert("Hubo un error al eliminar el registro.");
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`${API_URL}/requerimientos/eliminar/${id}`);
+        setHistorialGastos((prev) => prev.filter((gasto) => gasto.id !== id));
+        Swal.fire("Eliminado", "El registro ha sido eliminado.", "success");
+      } catch (error) {
+        console.error("Error al eliminar el registro:", error);
+        Swal.fire("Error", "Hubo un problema al eliminar el registro.", "error");
+      }
     }
   };
 
@@ -640,8 +652,11 @@ const Gastos = () => {
     {
       name: "Eliminar",
       cell: (row) => (
-        <button onClick={() => eliminarRegistro(row.id)} className="delete-button">
-          ❌ Eliminar
+        <button
+          onClick={() => eliminarRegistro(row.id)}
+          className="delete-button"
+        >
+          ❌ 
         </button>
       ),
     },

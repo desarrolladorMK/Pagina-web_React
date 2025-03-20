@@ -1,431 +1,933 @@
-import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Typography,
-  Snackbar,
-  Alert,
-} from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import * as XLSX from 'xlsx';
-import './HistorialFormulario.css';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import "./Gastos.css";
+import Select from "react-select";
+import * as XLSX from "xlsx";
+import DataTable from "react-data-table-component";
+import Swal from "sweetalert2";
 
-const HistorialFormulario = () => {
-  const [rows, setRows] = useState([]);
-  const [selectedRecord, setSelectedRecord] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
+const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
 
-  const { register, handleSubmit, control, reset, watch, formState: { errors, isDirty } } = useForm({
-    mode: 'onChange',
+const initialFormData = {
+  fecha_creacion: new Date().toISOString().split("T")[0],
+  nombre_completo: "",
+  area: "",
+  procesos: "",
+  sede: [],
+  unidad: [],
+  centro_costos: [],
+  descripcion: "",
+  monto_estimado: "",
+  monto_sede: "",
+  anticipo: "",
+  tiempo_fecha_pago: "",
+  archivo_cotizacion: null,
+  archivos_proveedor: [],
+  correo_empleado: sessionStorage.getItem("correo_empleado"),
+};
+
+const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+const SUPABASE_URL_EXCEL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public";
+const API_URL = "https://backend-gastos.vercel.app/api";
+
+const customStyles = {
+  headRow: {
+    style: {
+      backgroundColor: "var(--secondary-color)",
+      color: "#fff",
+      fontWeight: "600",
+      verticalAlign: "middle",
+    },
+  },
+  headCells: {
+    style: {
+      padding: "5px",
+      verticalAlign: "middle",
+      textAlign: "center",
+    },
+  },
+  cells: {
+    style: {
+      padding: "7px",
+      textAlign: "start",
+      verticalAlign: "middle",
+      whiteSpace: "normal", // Permite que el texto se divida en varias líneas
+      wordBreak: "break-word", // Divide palabras largas si es necesario
+      overflowWrap: "break-word", // Compatibilidad con navegadores
+      height: "auto", // Altura automática según contenido
+      maxWidth: "300px", // Limita el ancho máximo, ajustable según tus necesidades
+      overflow: "auto", // Agrega scroll si el contenido excede el ancho
+      fontSize: "0.80rem",
+    },
+  },
+};
+
+const getEstadoClass = (estado) => {
+  switch (estado) {
+    case "Pendiente":
+      return "estado-pendiente";
+    case "Necesario":
+      return "estado-aprobado";
+    case "No necesario":
+      return "estado-rechazado";
+    default:
+      return "";
+  }
+};
+
+const Gastos = () => {
+  const [fecha, setFecha] = useState(initialFormData.fecha_creacion); // Corregido a fecha_creacion
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [token, setToken] = useState("");
+  const [decision, setDecision] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [historial, setHistorial] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
+  const [historialGastos, setHistorialGastos] = useState([]);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [mostrarArchivos, setMostrarArchivos] = useState(false);
+  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false); // Nuevo estado para evitar envíos duplicados
+  const [archivos, setArchivos] = useState([
+    {
+      nombre: "Documento interno",
+      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/1738273714697_comprobante%20de%20gastos%20(1)%20(7).xlsx`,
+    },
+    {
+      nombre: "Documento proveedor",
+      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/FORMATO%20DE%20COTIZACION%20(1)%20(1).xlsx`,
+    },
+  ]);
+
+  // Estados para el modal que muestra el contenido completo
+  const [modalContent, setModalContent] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const historialRef = useRef(null);
+
+  const formatoCOP = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
   });
 
-  // Mostrar notificaciones con Snackbar
-  const showSnackbar = (message, severity = 'info') => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setOpenSnackbar(true);
+  const obtenerNombrePorCorreo = (correo) => {
+    const index = correosAutorizados.indexOf(correo);
+    if (index !== -1) {
+      return nombresAutorizados[index];
+    }
+    return "Empleado no autorizado";
   };
 
-  // Cargar datos iniciales con mejor manejo de errores
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://backend-formulario-ruby.vercel.app/api/form/list');
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setRows(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        showSnackbar('Error al cargar los datos del historial', 'error');
-      }
-    };
-    fetchData();
+    const correo = sessionStorage.getItem("correo_empleado");
+    if (correo) {
+      setFormData((prevData) => ({
+        ...prevData,
+        correo_empleado: correo,
+        nombre_completo: obtenerNombrePorCorreo(correo),
+      }));
+    }
   }, []);
 
-  // Exportar a Excel
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Historial');
-    XLSX.writeFile(workbook, 'historial_registros.xlsx');
-    showSnackbar('Datos exportados a Excel correctamente', 'success');
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const correoStorage = sessionStorage.getItem("correo_empleado");
+      if (correoStorage && correoStorage !== formData.correo_empleado) {
+        setFormData((prevData) => ({
+          ...prevData,
+          correo_empleado: correoStorage,
+          nombre_completo: obtenerNombrePorCorreo(correoStorage),
+        }));
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [formData.correo_empleado]);
+
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      const fetchHistorialGastos = async () => {
+        setIsLoadingHistorial(true);
+        try {
+          const response = await axios.get(`${API_URL}/requerimientos/historial`, {
+            params: { correo_empleado: formData.correo_empleado },
+            headers: { "Cache-Control": "no-cache" },
+          });
+          if (response.status === 200) {
+            setHistorialGastos(response.data);
+          }
+        } catch (error) {
+          console.error("Error al obtener el historial de gastos:", error);
+        } finally {
+          setIsLoadingHistorial(false);
+        }
+      };
+
+      fetchHistorialGastos();
+      const interval = setInterval(() => {
+        fetchHistorialGastos();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [formData.correo_empleado]);
+
+  const checkDecision = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/requerimientos/estado/${token}`);
+      if (response.status === 200) {
+        const data = response.data;
+        setDecision(data.decision);
+      } else {
+        setErrorMessage("No se pudo obtener el estado de la solicitud.");
+      }
+    } catch (error) {
+      console.error("Error al obtener el estado de la solicitud:", error);
+      setErrorMessage("Hubo un error al obtener el estado.");
+    }
   };
 
-  // Columnas de la tabla
+  // Eliminar registro con SweetAlert2
+  const eliminarRegistro = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará el registro de forma permanente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`${API_URL}/requerimientos/eliminar/${id}`);
+        setHistorialGastos((prev) => prev.filter((gasto) => gasto.id !== id));
+        Swal.fire("Eliminado", "El registro ha sido eliminado.", "success");
+      } catch (error) {
+        console.error("Error al eliminar el registro:", error);
+        Swal.fire("Error", "Hubo un problema al eliminar el registro.", "error");
+      }
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "monto_estimado" || name === "anticipo") {
+      const valorNumerico = value.replace(/\D/g, "");
+      const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
+      setFormData({ ...formData, [name]: valorFormateado });
+    } else if (name === "tiempo_fecha_pago") {
+      setFormData({ ...formData, tiempo_fecha_pago: value });
+    } else if (name === "monto_sede") {
+      setFormData({ ...formData, [name]: value });
+    } else if (["unidad", "centro_costos", "sede"].includes(name)) {
+      const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
+      setFormData({ ...formData, [name]: selectedOptions });
+    } else if (name === "archivo_cotizacion") {
+      setFormData({ ...formData, archivo_cotizacion: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, files } = e.target;
+    if (name === "archivos_proveedor") {
+      setFormData({
+        ...formData,
+        archivos_proveedor: files ? Array.from(files) : [],
+      });
+    } else {
+      setFormData({ ...formData, [name]: e.target.value });
+    }
+  };
+
+  const handleSelectChange = (name, selectedOptions) => {
+    const selectedValues = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+    setFormData({ ...formData, [name]: selectedValues });
+  };
+
+  const unidadOptions = [
+    { value: "Carnes", label: "Carnes" },
+    { value: "Fruver", label: "Fruver" },
+    { value: "Abarrotes", label: "Abarrotes" },
+    { value: "Administrativo", label: "Administrativo" },
+  ];
+
+  const sedeOptions = [
+    { value: "Copacabana Plaza", label: "Copacabana Plaza" },
+    { value: "Copacabana Vegas", label: "Copacabana Vegas" },
+    { value: "Copacabana San Juan", label: "Copacabana San Juan" },
+    { value: "Girardota Parque", label: "Girardota Parque" },
+    { value: "Girardota Llano", label: "Girardota Llano" },
+    { value: "Barbosa", label: "Barbosa" },
+    { value: "Carnes Barbosa", label: "Carnes Barbosa" },
+    { value: "Villa Hermosa", label: "Villa Hermosa" },
+    { value: "Todas las sedes", label: "Todas las sedes" },
+  ];
+
+  const centroCostosOptions = [
+    { value: "Gerencia", label: "Gerencia" },
+    { value: "Contabilidad", label: "Contabilidad" },
+    { value: "Tesoreria", label: "Tesoreria" },
+    { value: "Gestion humana", label: "Gestion humana" },
+    { value: "Generales administrativos", label: "Generales administrativos" },
+    { value: "Puntos de venta", label: "Puntos de venta" },
+    { value: "Domicilios", label: "Domicilios" },
+    { value: "Carnicos", label: "Carnicos" },
+    { value: "Fruver", label: "Fruver" },
+    { value: "Panaderia", label: "Panaderia" },
+    { value: "Bodega", label: "Bodega" },
+    { value: "Generales operaciones", label: "Generales operaciones" },
+    { value: "Compras", label: "Compras" },
+    { value: "Tienda virtual", label: "Tienda virtual" },
+    { value: "Callcenter", label: "Callcenter" },
+    { value: "Generales comerciales", label: "Generales comerciales" },
+    { value: "Generico", label: "Generico" },
+  ];
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Si ya se ha enviado una vez y no se ha reiniciado el formulario, evitar nuevos envíos
+    if (hasSubmittedOnce) {
+      setErrorMessage("Ya has enviado este formulario. Por favor, espera la respuesta.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setHasSubmittedOnce(true); // Marcar que se ha intentado enviar
+
+    const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
+    const valorNumericoAnticipo = formData.anticipo
+      ? formData.anticipo.replace(/\D/g, "")
+      : "0";
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("fecha_creacion", formData.fecha_creacion);
+    formDataToSend.append("nombre_completo", formData.nombre_completo);
+    formDataToSend.append("area", formData.area);
+    formDataToSend.append("procesos", formData.procesos);
+
+    formData.sede.forEach((item) => formDataToSend.append("sede[]", item));
+    formData.unidad.forEach((item) => formDataToSend.append("unidad[]", item));
+    formData.centro_costos.forEach((item) => formDataToSend.append("centro_costos[]", item));
+    formDataToSend.append("descripcion", formData.descripcion);
+    formDataToSend.append("monto_estimado", valorNumerico);
+    if (formData.monto_sede.trim() !== "") {
+      formDataToSend.append("monto_sede", formData.monto_sede);
+    }
+    formDataToSend.append("anticipo", valorNumericoAnticipo);
+    formDataToSend.append("tiempo_fecha_pago", formData.tiempo_fecha_pago);
+    formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
+    formData.archivos_proveedor.forEach((file) => {
+      formDataToSend.append("archivos_proveedor", file);
+    });
+    formDataToSend.append("correo_empleado", formData.correo_empleado);
+
+    console.log("Datos enviados al backend:", Object.fromEntries(formDataToSend.entries()));
+
+    try {
+      const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setIsSubmitted(true);
+      setDecision(response.data.decision);
+      setErrorMessage(""); // Limpiar mensaje de error si hubo éxito
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          ...initialFormData,
+          correo_empleado: formData.correo_empleado,
+          nombre_completo: formData.nombre_completo,
+        });
+        setHasSubmittedOnce(false); // Permitir un nuevo envío tras reiniciar
+      }, 3000);
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
+      setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
+      setHasSubmittedOnce(false); // Permitir reintentos si falla
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const toggleHistorial = () => {
+    setMostrarHistorial((prev) => {
+      const nuevoEstado = !prev;
+      if (nuevoEstado) {
+        setTimeout(() => {
+          historialRef.current.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+      return nuevoEstado;
+    });
+  };
+
+  const toggleArchivos = () => {
+    setMostrarArchivos((prev) => !prev);
+  };
+
+  const openModal = (content) => {
+    setModalContent(content);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent("");
+  };
+
+  const renderClickableCell = (content) => (
+    <div
+      onClick={(e) => {
+        if (e.target.tagName !== "A") {
+          openModal(content);
+        }
+      }}
+      style={{ cursor: "pointer" }}
+      title="Haz clic para ver el contenido completo"
+    >
+      {content}
+    </div>
+  );
+
+  useEffect(() => {
+    if (token) {
+      const interval = setInterval(() => {
+        checkDecision();
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      const nombreResponsable = obtenerNombrePorCorreo(formData.correo_empleado);
+      setFormData((prevData) => ({
+        ...prevData,
+        nombre_completo: nombreResponsable,
+      }));
+    }
+  }, [formData.correo_empleado]);
+
+  useEffect(() => {
+    if (formData.correo_empleado) {
+      setIsLoadingHistorial(true);
+      axios
+        .get(`${API_URL}/requerimientos/historial`, {
+          params: { correo_empleado: formData.correo_empleado },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setHistorialGastos(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener el historial de gastos:", error);
+        })
+        .finally(() => {
+          setIsLoadingHistorial(false);
+        });
+    }
+  }, [formData.correo_empleado]);
+
+  const exportToExcel = () => {
+    if (!historialGastos || historialGastos.length === 0) return;
+    const dataForSheet = historialGastos.map((gasto) => {
+      let sedeString = "";
+      if (typeof gasto.sede === "string") {
+        try {
+          const sedesArray = JSON.parse(gasto.sede);
+          sedeString = Array.isArray(sedesArray) ? sedesArray.join(", ") : gasto.sede;
+        } catch (error) {
+          sedeString = gasto.sede.includes(",")
+            ? gasto.sede.split(",").map((s) => s.trim()).join(", ")
+            : gasto.sede;
+        }
+      } else if (Array.isArray(gasto.sede)) {
+        sedeString = gasto.sede.join(", ");
+      }
+      return {
+        fecha_creacion: gasto.fecha_creacion || "",
+        Nombre: gasto.nombre_completo || "",
+        Área: gasto.area || "",
+        Procesos: gasto.procesos || "",
+        Sede: sedeString,
+        "Unidad de negocio": Array.isArray(gasto.unidad) ? gasto.unidad.join(", ") : "",
+        "Centro de costos": Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : "",
+        Descripción: gasto.descripcion || "",
+        Monto: gasto.monto_estimado || "",
+        "Monto por sede": gasto.monto_sede || "",
+        Cotización: gasto.archivo_cotizacion || "",
+        Proveedor: Array.isArray(gasto.archivos_proveedor) ? gasto.archivos_proveedor.join(", ") : "",
+        Observación: gasto.observacion || "",
+        Estado: gasto.estado || "",
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(dataForSheet);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
+    XLSX.writeFile(workbook, "historial_gastos.xlsx");
+  };
+
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'nombresApellidos', headerName: 'Nombre Completo', width: 200 },
-    { field: 'numeroDocumento', headerName: 'Documento', width: 150 },
-    { field: 'celular', headerName: 'Celular', width: 130 },
-    { field: 'correo', headerName: 'Correo', width: 200 },
-    { field: 'fechaNacimiento', headerName: 'F. Nacimiento', width: 130 },
     {
-      field: 'actions',
-      headerName: 'Acciones',
-      width: 150,
-      renderCell: (params) => (
-        <Button variant="contained" size="small" onClick={() => handleOpenDialog(params.row)}>
-          Ver Detalles
-        </Button>
+      name: "Fecha",
+      selector: (row) => row.fecha_creacion,
+      cell: (row) =>
+        renderClickableCell(
+          row.fecha_creacion ? row.fecha_creacion.slice(0, 10) : "-"
+        ),
+      sortable: true,
+    },
+    {
+      name: "Nombre",
+      cell: (row) => renderClickableCell(row.nombre_completo),
+    },
+    {
+      name: "Área",
+      cell: (row) => renderClickableCell(row.area),
+    },
+    {
+      name: "Procesos",
+      cell: (row) => renderClickableCell(row.procesos),
+    },
+    {
+      name: "Sede",
+      cell: (row) => {
+        let sedesArray = [];
+        if (typeof row.sede === "string") {
+          try {
+            sedesArray = JSON.parse(row.sede);
+            if (!Array.isArray(sedesArray))
+              throw new Error("No es un array");
+          } catch (error) {
+            sedesArray = row.sede.includes(",")
+              ? row.sede.split(",").map((s) => s.trim())
+              : [row.sede];
+          }
+        } else if (Array.isArray(row.sede)) {
+          sedesArray = row.sede;
+        }
+        return renderClickableCell(sedesArray.length > 0 ? sedesArray.join(", ") : "Sin sede");
+      },
+    },
+    {
+      name: "Unidad de negocio",
+      cell: (row) => renderClickableCell(Array.isArray(row.unidad) ? row.unidad.join(", ") : row.unidad),
+    },
+    {
+      name: "Centro de costos",
+      cell: (row) => renderClickableCell(Array.isArray(row.centro_costos) ? row.centro_costos.join(", ") : row.centro_costos),
+    },
+    {
+      name: "Descripción",
+      cell: (row) => renderClickableCell(row.descripcion),
+    },
+    {
+      name: "Monto",
+      cell: (row) => renderClickableCell(formatoCOP.format(row.monto_estimado)),
+    },
+    {
+      name: "Monto por sede",
+      cell: (row) => {
+        let montoSede = row.monto_sede || "No especificado";
+        if (montoSede && typeof montoSede === "string") {
+          montoSede = montoSede
+            .split(",")
+            .map((entry) => {
+              const [sede, monto] = entry.split(":");
+              if (monto) {
+                return `${sede.trim()}: ${formatoCOP.format(parseFloat(monto.replace(/\D/g, "")))}`;
+              } else {
+                return `${sede.trim()}: No especificado`;
+              }
+            })
+            .join(", ");
+        }
+        return renderClickableCell(montoSede);
+      },
+    },
+    {
+      name: "Anticipo",
+      cell: (row) => renderClickableCell(formatoCOP.format(row.anticipo)),
+    },
+    {
+      name: "Tiempo/Fecha Pago",
+      cell: (row) => renderClickableCell(row.tiempo_fecha_pago ? row.tiempo_fecha_pago.slice(0, 10) : "No especificado"),
+    },
+    {
+      name: "Cotización",
+      cell: (row) => {
+        const nombreArchivo = row.archivo_cotizacion?.split("/").pop();
+        const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
+        return (
+          <div style={{ textAlign: "center", width: "100%" }}>
+            <a
+              onClick={(e) => e.stopPropagation()}
+              href={archivoCotizacionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="view-pdf-button"
+            >
+              Ver
+            </a>
+          </div>
+        );
+      },
+    },
+    {
+      name: "Proveedor",
+      cell: (row) => {
+        const archivosProveedor =
+          typeof row.archivos_proveedor === "string"
+            ? JSON.parse(row.archivos_proveedor)
+            : row.archivos_proveedor;
+        return Array.isArray(archivosProveedor) && archivosProveedor.length > 0 ? (
+          archivosProveedor.map((url, index) => (
+            <div key={index}>
+              <a
+                onClick={(e) => e.stopPropagation()}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="view-pdf-button"
+              >
+                Ver
+              </a>
+            </div>
+          ))
+        ) : (
+          renderClickableCell("No hay archivos de proveedor")
+        );
+      },
+    },
+    {
+      name: "Observación",
+      cell: (row) => renderClickableCell(row.observacion || "Sin observación"),
+    },
+    {
+      name: "Estado",
+      cell: (row) => (
+        <div
+          className={`estado-cell ${getEstadoClass(row.estado)}`}
+          onClick={() => openModal(row.estado)}
+          title="Haz clic para ver el contenido completo"
+        >
+          {row.estado}
+        </div>
+      ),
+    },
+    {
+      name: "Obs..Claudia",
+      cell: (row) => renderClickableCell(row.observacionC || "Sin observación"),
+    },
+    {
+      name: "Eliminar",
+      cell: (row) => (
+        <button
+          onClick={() => eliminarRegistro(row.id)}
+          className="delete-button"
+        >
+          ❌ 
+        </button>
       ),
     },
   ];
 
-  // Abrir el diálogo con los detalles del registro
-  const handleOpenDialog = (record) => {
-    setSelectedRecord(record);
-    reset(record);
-    setEditMode(false);
-    setOpenDialog(true);
-  };
-
-  // Cerrar el diálogo principal
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedRecord(null);
-    setEditMode(false);
-  };
-
-  // Manejar el envío del formulario
-  const onSubmit = async (data) => {
-    const normalizeValue = (value) => (value == null ? '' : String(value));
-    const changesMade = Object.keys(data).some(
-      (key) => normalizeValue(data[key]) !== normalizeValue(selectedRecord[key])
-    );
-
-    if (!changesMade) {
-      showSnackbar('No se detectaron cambios. Ingresando al modo edición...', 'info');
-      setEditMode(true);
-      return;
-    }
-
-    try {
-      const formattedData = {
-        ...data,
-        fechaNacimiento: data.fechaNacimiento
-          ? new Date(data.fechaNacimiento).toISOString().slice(0, 10)
-          : '',
-        fechaIngresoEmpresa: data.fechaIngresoEmpresa
-          ? new Date(data.fechaIngresoEmpresa).toISOString().slice(0, 10)
-          : '',
-        fechaDiligenciamiento: data.fechaDiligenciamiento
-          ? new Date(data.fechaDiligenciamiento).toISOString().slice(0, 10)
-          : '',
-      };
-
-      const response = await fetch(
-        `https://backend-formulario-ruby.vercel.app/api/form/update/${selectedRecord.id}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formattedData),
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok && result.message === 'Datos actualizados correctamente') {
-        setRows((prevRows) =>
-          prevRows.map((r) => (r.id === selectedRecord.id ? result.data[0] : r))
-        );
-        showSnackbar('Registro actualizado correctamente', 'success');
-        handleCloseDialog();
-      } else {
-        showSnackbar(`Error al actualizar: ${result.error || 'Respuesta inesperada'}`, 'error');
-      }
-    } catch (error) {
-      console.error('Error al actualizar el registro:', error);
-      showSnackbar('Error al actualizar el registro', 'error');
-    }
-  };
-
-  // Verificar si hay cambios usando watch
-  const formValues = watch();
-
-  const hasChanges = () => {
-    if (!selectedRecord) return false;
-    const normalizeValue = (value) => (value == null ? '' : String(value));
-    return Object.keys(formValues).some(
-      (key) => normalizeValue(formValues[key]) !== normalizeValue(selectedRecord[key])
-    );
-  };
-
-  // Renderizar los detalles del registro
-  const renderRecordDetails = (record) => (
-    <div className="record-details">
-      <Typography variant="h6">Datos Personales</Typography>
-      <p><strong>Nombres y Apellidos:</strong> <span>{record.nombresApellidos}</span></p>
-      <p><strong>Documento:</strong> <span>{record.numeroDocumento}</span></p>
-      <p><strong>Celular:</strong> <span>{record.celular}</span></p>
-      <p><strong>Correo:</strong> <span>{record.correo}</span></p>
-      <p><strong>Fecha de Nacimiento:</strong> <span>{record.fechaNacimiento}</span></p>
-      <p><strong>Ciudad de Nacimiento:</strong> <span>{record.ciudadNacimiento}</span></p>
-      <Typography variant="h6">Vivienda y Ubicación</Typography>
-      <p><strong>Tipo de Vivienda:</strong> <span>{record.tipoVivienda}</span></p>
-      <p><strong>Características de la Vivienda:</strong> <span>{record.caracteristicasVivienda}</span></p>
-      <p><strong>Estrato:</strong> <span>{record.estrato}</span></p>
-      <p><strong>Zona:</strong> <span>{record.zona}</span></p>
-      <p><strong>País de Origen:</strong> <span>{record.paisOrigen}</span></p>
-      <p><strong>Municipio de Residencia:</strong> <span>{record.municipioResidencia}</span></p>
-      <p><strong>Barrio:</strong> <span>{record.barrio}</span></p>
-      <p><strong>Dirección:</strong> <span>{record.direccion}</span></p>
-      <Typography variant="h6">Datos Demográficos</Typography>
-      <p><strong>Género:</strong> <span>{record.genero}</span></p>
-      <p><strong>Grupo Étnico:</strong> <span>{record.grupoEtnico}</span></p>
-      <p><strong>Población en Movilidad:</strong> <span>{record.poblacionMovilidad}</span></p>
-      <p><strong>Grupo Religioso:</strong> <span>{record.grupoReligioso}</span></p>
-      <Typography variant="h6">Afiliación y Escolaridad</Typography>
-      <p><strong>EPS:</strong> <span>{record.eps}</span></p>
-      <p><strong>Fondo de Pensión:</strong> <span>{record.fondoPension}</span></p>
-      <p><strong>Grado de Escolaridad:</strong> <span>{record.gradoEscolaridad}</span></p>
-      <p><strong>Estado Civil:</strong> <span>{record.estadoCivil}</span></p>
-      <p><strong>Tipo de Contrato:</strong> <span>{record.tipoContrato}</span></p>
-      <p><strong>Fecha de Ingreso a la Empresa:</strong> <span>{record.fechaIngresoEmpresa}</span></p>
-      <Typography variant="h6">Información Laboral</Typography>
-      <p><strong>Sede:</strong> <span>{record.sede}</span></p>
-      <p><strong>Cargo Operativo:</strong> <span>{record.cargoOperativo}</span></p>
-      <p><strong>Departamento Operaciones:</strong> <span>{record.departamentoOperaciones}</span></p>
-      <p><strong>Departamento Financiero:</strong> <span>{record.departamentoFinanciero}</span></p>
-      <p><strong>Departamento Comercial:</strong> <span>{record.departamentoComercial}</span></p>
-      <p><strong>Departamento Gestión Humana:</strong> <span>{record.departamentoGestionHumana}</span></p>
-      <p><strong>Solo Gerencia:</strong> <span>{record.soloGerencia}</span></p>
-      <Typography variant="h6">Datos Adicionales</Typography>
-      <p><strong>Antigüedad:</strong> <span>{record.antiguedad}</span></p>
-      <p><strong>Grupo Sanguíneo:</strong> <span>{record.grupoSanguineo}</span></p>
-      <p><strong>Personas Dependientes:</strong> <span>{record.dependientesEconomicos}</span></p>
-      <p><strong>Embarazo:</strong> <span>{record.embarazo}</span></p>
-      <p><strong>Sufre Enfermedad:</strong> <span>{record.sufreEnfermedad}</span></p>
-      <p><strong>Descripción de Enfermedad:</strong> <span>{record.descripcionEnfermedad}</span></p>
-      <Typography variant="h6">Actualización de Datos - Hijos</Typography>
-      <p><strong>¿Tiene Hijos?:</strong> <span>{record.tieneHijos}</span></p>
-      <p><strong>Cantidad de Hijos:</strong> <span>{record.cuantosHijos}</span></p>
-      <p><strong>Nombres de Hijos:</strong> <span>{record.nombresHijos}</span></p>
-      <p><strong>Edades de Hijos:</strong> <span>{record.edadesHijos}</span></p>
-      <p><strong>Grado Escolar de Hijos:</strong> <span>{record.gradoEscolaridadHijos}</span></p>
-      <Typography variant="h6">Contacto en Caso de Emergencia</Typography>
-      <p><strong>Nombres y Apellidos:</strong> <span>{record.contactoNombres}</span></p>
-      <p><strong>Celular:</strong> <span>{record.contactoCelular}</span></p>
-      <p><strong>Parentesco:</strong> <span>{record.parentescoContacto}</span></p>
-      <Typography variant="h6">Fecha del Diligenciamiento</Typography>
-      <p><strong>Fecha:</strong> <span>{record.fechaDiligenciamiento}</span></p>
-    </div>
-  );
-
   return (
-    <div className="historial-container">
-      <h2>Historial de Registros</h2>
-      <Button className="export-button" variant="contained" onClick={exportToExcel}>
-        Exportar a Excel
-      </Button>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
-        disableSelectionOnClick
-        hideFooterSelectedRowCount
-      />
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {editMode
-            ? "Editar Registro"
-            : `Detalles del Registro #${selectedRecord ? selectedRecord.id : ""}`}
-        </DialogTitle>
-        <DialogContent dividers>
-          {editMode ? (
-            <form id="edit-form" className="edit-form" onSubmit={handleSubmit(onSubmit)}>
-              <Typography variant="subtitle1">Datos Personales</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nombres y Apellidos"
-                {...register("nombresApellidos", {
-                  required: "Obligatorio",
-                  maxLength: { value: 50, message: "Máximo 50 caracteres" },
-                })}
-                error={!!errors.nombresApellidos}
-                helperText={errors.nombresApellidos?.message}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Documento"
-                {...register("numeroDocumento", { required: "Obligatorio" })}
-                error={!!errors.numeroDocumento}
-                helperText={errors.numeroDocumento?.message}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Celular"
-                {...register("celular", { required: "Obligatorio" })}
-                error={!!errors.celular}
-                helperText={errors.celular?.message}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Correo"
-                {...register("correo", { required: "Obligatorio" })}
-                error={!!errors.correo}
-                helperText={errors.correo?.message}
-              />
-              <Controller
-                name="fechaNacimiento"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    placeholderText="Fecha de Nacimiento"
-                    selected={field.value ? new Date(field.value) : null}
-                    onChange={field.onChange}
-                    dateFormat="yyyy-MM-dd"
-                    customInput={<TextField fullWidth margin="normal" label="Fecha de Nacimiento" />}
-                  />
-                )}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Ciudad de Nacimiento"
-                {...register("ciudadNacimiento")}
-              />
+    <div className="gastos-container">
+      <div className="logo-container">
+        <a href="/">
+          <img src="logoMK.png" alt="Logo Merkahorro" />
+        </a>
+      </div>
+      <h1 className="gastos-header">Conciencia del gasto</h1>
 
-              <Typography variant="subtitle1">Vivienda y Ubicación</Typography>
-              <TextField fullWidth margin="normal" label="Tipo de Vivienda" {...register("tipoVivienda")} />
-              <TextField fullWidth margin="normal" label="Características de la Vivienda" {...register("caracteristicasVivienda")} />
-              <TextField fullWidth margin="normal" label="Estrato" {...register("estrato")} />
-              <TextField fullWidth margin="normal" label="Zona" {...register("zona")} />
-              <TextField fullWidth margin="normal" label="País de Origen" {...register("paisOrigen")} />
-              <TextField fullWidth margin="normal" label="Municipio de Residencia" {...register("municipioResidencia")} />
-              <TextField fullWidth margin="normal" label="Barrio" {...register("barrio")} />
-              <TextField fullWidth margin="normal" label="Dirección" {...register("direccion")} />
+      <button onClick={toggleArchivos} className="gastos-flotante-button">
+        📂
+      </button>
+      {mostrarArchivos && (
+        <div className="gastos-archivos-desplegados">
+          <ul>
+            {archivos.map((archivo, index) => (
+              <li key={index}>
+                <a href={archivo.url} target="_blank" rel="noopener noreferrer">
+                  {archivo.nombre}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-              <Typography variant="subtitle1">Datos Demográficos</Typography>
-              <TextField fullWidth margin="normal" label="Género" {...register("genero")} />
-              <TextField fullWidth margin="normal" label="Grupo Étnico" {...register("grupoEtnico")} />
-              <TextField fullWidth margin="normal" label="Población en Movilidad" {...register("poblacionMovilidad")} />
-              <TextField fullWidth margin="normal" label="Grupo Religioso" {...register("grupoReligioso")} />
-
-              <Typography variant="subtitle1">Afiliación y Escolaridad</Typography>
-              <TextField fullWidth margin="normal" label="EPS" {...register("eps")} />
-              <TextField fullWidth margin="normal" label="Fondo de Pensión" {...register("fondoPension")} />
-              <TextField fullWidth margin="normal" label="Grado de Escolaridad" {...register("gradoEscolaridad")} />
-              <TextField fullWidth margin="normal" label="Estado Civil" {...register("estadoCivil")} />
-              <TextField fullWidth margin="normal" label="Tipo de Contrato" {...register("tipoContrato")} />
-              <Controller
-                name="fechaIngresoEmpresa"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    placeholderText="Fecha de Ingreso a la Empresa"
-                    selected={field.value ? new Date(field.value) : null}
-                    onChange={field.onChange}
-                    dateFormat="yyyy-MM-dd"
-                    customInput={<TextField fullWidth margin="normal" label="Fecha de Ingreso a la Empresa" />}
-                  />
-                )}
+      {!isSubmitted ? (
+        <div className="gastos-form-container">
+          <h2 className="gastos-form-title">Formulario cuidado del gasto</h2>
+          <h4 className="fraseMotivacional">
+            "Cuando cuidamos, nos protegemos todos."
+          </h4>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <form onSubmit={handleSubmit} className="gastos-form">
+            <div className="gastos-form-field">
+              <label className="gastos-label">
+                Responsable de la gestión del cuidado gasto:
+              </label>
+              <input
+                type="text"
+                name="nombre_completo"
+                value={formData.nombre_completo || ""}
+                onChange={handleChange}
+                required
+                disabled
+                className="gastos-input"
               />
-
-              <Typography variant="subtitle1">Información Laboral</Typography>
-              <TextField fullWidth margin="normal" label="Sede" {...register("sede")} />
-              <TextField fullWidth margin="normal" label="Cargo Operativo" {...register("cargoOperativo")} />
-              <TextField fullWidth margin="normal" label="Departamento Operaciones" {...register("departamentoOperaciones")} />
-              <TextField fullWidth margin="normal" label="Departamento Financiero" {...register("departamentoFinanciero")} />
-              <TextField fullWidth margin="normal" label="Departamento Comercial" {...register("departamentoComercial")} />
-              <TextField fullWidth margin="normal" label="Departamento Gestión Humana" {...register("departamentoGestionHumana")} />
-              <TextField fullWidth margin="normal" label="Solo Gerencia" {...register("soloGerencia")} />
-
-              <Typography variant="subtitle1">Datos Adicionales</Typography>
-              <TextField fullWidth margin="normal" label="Antigüedad" {...register("antiguedad")} />
-              <TextField fullWidth margin="normal" label="Grupo Sanguíneo" {...register("grupoSanguineo")} />
-              <TextField fullWidth margin="normal" label="Personas Dependientes" {...register("dependientesEconomicos")} />
-              <TextField fullWidth margin="normal" label="Embarazo" {...register("embarazo")} />
-              <TextField fullWidth margin="normal" label="Sufre Enfermedad" {...register("sufreEnfermedad")} />
-              <TextField fullWidth margin="normal" label="Descripción de Enfermedad" {...register("descripcionEnfermedad")} />
-
-              <Typography variant="subtitle1">Actualización de Datos - Hijos</Typography>
-              <TextField fullWidth margin="normal" label="¿Tiene Hijos?" {...register("tieneHijos")} />
-              <TextField fullWidth margin="normal" label="Cantidad de Hijos" {...register("cuantosHijos")} />
-              <TextField fullWidth margin="normal" label="Nombres de Hijos" {...register("nombresHijos")} />
-              <TextField fullWidth margin="normal" label="Edades de Hijos" {...register("edadesHijos")} />
-              <TextField fullWidth margin="normal" label="Grado Escolar de Hijos" {...register("gradoEscolaridadHijos")} />
-
-              <Typography variant="subtitle1">Contacto en Caso de Emergencia</Typography>
-              <TextField fullWidth margin="normal" label="Nombres y Apellidos" {...register("contactoNombres")} />
-              <TextField fullWidth margin="normal" label="Celular" {...register("contactoCelular")} />
-              <TextField fullWidth margin="normal" label="Parentesco" {...register("parentescoContacto")} />
-
-              <Typography variant="subtitle1">Fecha del Diligenciamiento</Typography>
-              <Controller
-                name="fechaDiligenciamiento"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    placeholderText="Fecha del Diligenciamiento"
-                    selected={field.value ? new Date(field.value) : null}
-                    onChange={field.onChange}
-                    dateFormat="yyyy-MM-dd"
-                    customInput={<TextField fullWidth margin="normal" label="Fecha del Diligenciamiento" />}
-                  />
-                )}
-              />
-            </form>
-          ) : (
-            selectedRecord && renderRecordDetails(selectedRecord)
-          )}
-        </DialogContent>
-        <DialogActions>
-          {editMode ? (
-            <>
-              <Button onClick={() => setEditMode(false)}>Cancelar Edición</Button>
-              <Button
-                form="edit-form"
-                type="submit"
-                variant="contained"
-                disabled={!hasChanges()} // Deshabilitar si no hay cambios
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Área:</label>
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+                className="gastos-input"
               >
-                Guardar
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={handleCloseDialog}>Cerrar</Button>
-              <Button onClick={() => setEditMode(true)} variant="contained">Editar</Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
+                <option value="" disabled>
+                  Seleccione un área:
+                </option>
+                <option value="Gerencia">Gerencia</option>
+                <option value="Gestión humana">
+                  Dirección Gestión humana
+                </option>
+                <option value="Operaciones">Dirección Operaciones</option>
+                <option value="Contabilidad">
+                  Dirección Administrativa y Financiera
+                </option>
+                <option value="Comercial">Dirección Comercial</option>
+              </select>
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Procesos:</label>
+              <select
+                name="procesos"
+                value={formData.procesos}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              >
+                <option value="" disabled>
+                  Seleccione un Proceso:
+                </option>
+                <option value="Logística">Logística</option>
+                <option value="Inventarios">Inventarios</option>
+                <option value="Sistemas">Sistemas</option>
+                <option value="Desarrollo">Desarrollo</option>
+                <option value="Procesos">Procesos</option>
+                <option value="Fruver">Fruver</option>
+                <option value="Cárnicos">Cárnicos</option>
+                <option value="Proyectos">Proyectos</option>
+                <option value="Operaciones-Comerciales">
+                  Operaciones Comerciales
+                </option>
+              </select>
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Sedes:</label>
+              <Select
+                name="sede"
+                value={sedeOptions.filter((option) =>
+                  formData.sede.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("sede", selectedOptions)
+                }
+                options={sedeOptions}
+                isMulti
+                className="gastos-input"
+                placeholder="Seleccione las sedes"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Unidad de negocio:</label>
+              <Select
+                name="unidad"
+                value={unidadOptions.filter((option) =>
+                  formData.unidad.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("unidad", selectedOptions)
+                }
+                options={unidadOptions}
+                isMulti
+                className="gastos-input"
+                placeholder="Seleccione las unidades"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Centro de costos:</label>
+              <Select
+                name="centro_costos"
+                value={centroCostosOptions.filter((option) =>
+                  formData.centro_costos.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleSelectChange("centro_costos", selectedOptions)
+                }
+                options={centroCostosOptions}
+                isMulti
+                className="gastos-input"
+                placeholder="Seleccione los centros de costos"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">
+                Describe tu necesidad y la razón:
+              </label>
+              <input
+                type="text"
+                name="descripcion"
+                value={formData.descripcion}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Monto estimado:</label>
+              <input
+                type="text"
+                name="monto_estimado"
+                value={formData.monto_estimado}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Monto por sede:</label>
+              <textarea
+                name="monto_sede"
+                value={formData.monto_sede}
+                onChange={handleChange}
+                placeholder="Ejemplo: Girardota: 300.000, Barbosa: 400.000"
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Anticipo:</label>
+              <input
+                type="text"
+                name="anticipo"
+                value={formData.anticipo}
+                onChange={handleChange}
+                placeholder="Ingrese el monto del anticipo"
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Fecha estimada de pago:</label>
+              <input
+                type="date"
+                name="tiempo_fecha_pago"
+                value={formData.tiempo_fecha_pago}
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Cotización:</label>
+              <input
+                type="file"
+                name="archivo_cotizacion"
+                onChange={handleChange}
+                required
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">
+                Documentos nuevos proveedores:
+              </label>
+              <input
+                type="file"
+                name="archivos_proveedor"
+                onChange={handleInputChange}
+                multiple
+                className="gastos-input"
+              />
+            </div>
+            <div className="gastos-form-field">
+              <label className="gastos-label">Correo del empleado:</label>
+              <input
+                type="email"
+                name="correo_empleado"
+                value={formData.correo_empleado}
+                onChange={handleChange}
+                required
+                disabled
+                className="gastos-input"
+              />
+            </div>
+            <button
+              type="submit"
+              className="gastos-submit-button"
+              disabled={isSubmitting || hasSubmittedOnce} // Deshabilitar si está enviando o ya se envió
+            >
+              {isSubmitting ? "Enviando..." : "Enviar"}
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="gastos-submitted-message">
+          <h2>¡Solicitud Enviada Exitosamente!</h2>
+        </div>
+      )}
 
-      {/* Snackbar para notificaciones */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      <button onClick={toggleHistorial} className="historial-flotante-button">
+        📜
+      </button>
+      {isLoadingHistorial ? (
+        <p>Cargando historial...</p>
+      ) : (
+        mostrarHistorial && (
+          <div
+            id="gastos-historial"
+            className="gastos-historial desplegado"
+            ref={historialRef}
+          >
+            <DataTable
+              columns={columns}
+              data={historialGastos}
+              pagination
+              responsive
+              highlightOnHover
+              striped
+              customStyles={customStyles}
+            />
+            <button onClick={exportToExcel} className="excel-button">
+              Exportar a Excel
+            </button>
+          </div>
+        )
+      )}
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>
+              &times;
+            </span>
+            <p>{modalContent}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export { HistorialFormulario };
+export { Gastos };

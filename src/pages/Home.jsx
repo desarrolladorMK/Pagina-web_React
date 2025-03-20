@@ -5,13 +5,19 @@ import { Footer } from "../components/Footer";
 import { ChatBot } from "../components/ChatBot";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { FaPlay, FaPause } from "react-icons/fa";
+import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaExpand } from "react-icons/fa";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const playButtonRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const images = [
     { src: "/mk1.jpg" },
@@ -44,6 +50,61 @@ const Home = () => {
         playButtonRef.current?.classList.remove("playing");
       }
     }
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const handleVolumeChange = (e) => {
+    const newVolume = e.target.value;
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      setIsMuted(newVolume === 0);
+    }
+  };
+
+  const handleProgress = () => {
+    if (videoRef.current) {
+      const progressValue = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setProgress(progressValue);
+    }
+  };
+
+  const handleSeek = (e) => {
+    if (videoRef.current) {
+      const seekTime = (e.target.value / 100) * videoRef.current.duration;
+      videoRef.current.currentTime = seekTime;
+      setProgress(e.target.value);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      if (videoRef.current.requestFullscreen) {
+        videoRef.current.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+    setIsFullscreen(!isFullscreen);
   };
 
   return (
@@ -539,19 +600,12 @@ const Home = () => {
                 <h2>Principios</h2>
               </div>
               <div className="flip-card-back">
-                <p>
-                  Nuestros principios se fundamentan en transformaciones
-                  significativas que surgen al romper con formas tradicionales.
-                  Estos incluyen:
-                </p>
                 <ul>
                   <li>
-                    <strong>La Verdad:</strong> Vivir con responsabilidad y
-                    confiabilidad.
+                    <strong>La Verdad:</strong> Es la razón de ser, que nos lleva a vivir en responsabilidad y confiabilidad, fortaleciendo el carácter y las relaciones de valor impactando vidas. 
                   </li>
                   <li>
-                    <strong>La Belleza:</strong> Crear estética en todos los
-                    aspectos de la vida.
+                    <strong>La Belleza:</strong> Es el estado de conciencia que nos permite admitir cada detalle, transformando lo común en extraordinario, creando signifcado en cada encuentro de vida.
                   </li>
                   <li>
                     <strong>La Bondad:</strong> Fomentar empatía, compasión e
@@ -567,35 +621,78 @@ const Home = () => {
           </div>
         </div>
       </main>
+<br />
+<br />
+<br />
 
-      {/* Video */}
-    <div className="video-container" data-aos="zoom-in">
-      <h1>Historia de nuestra compañía</h1>
-      <video className="video" controls muted loop>
-        <source src="Videomercahorro.mp4" type="video/mp4" />
-        Tu navegador no soporta el elemento de video.
-      </video>
-    </div>
+      {/* Sección de video*/}
+      <div className="video-container" data-aos="zoom-in">
+        <h1>Historia de nuestra compañía</h1>
+        <div className="video-wrapper">
+          <video
+            ref={videoRef}
+            className="video"
+            onTimeUpdate={handleProgress}
+            onEnded={() => setIsVideoPlaying(false)}
+            loop
+          >
+            <source src="Videomercahorro.mp4" type="video/mp4" />
+            Tu navegador no soporta el elemento de video.
+          </video>
+          <div className="video-overlay">
+            <div className="video-controls">
+              <button onClick={togglePlay} className="control-button">
+                {isVideoPlaying ? <FaPause /> : <FaPlay />}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={progress}
+                onChange={handleSeek}
+                className="progress-bar"
+              />
+              <div className="volume-control">
+                <button onClick={toggleMute} className="control-button">
+                  {isMuted || volume === 0 ? <FaVolumeMute /> : <FaVolumeUp />}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="volume-slider"
+                />
+              </div>
+              <button onClick={toggleFullscreen} className="control-button">
+                <FaExpand />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    {/* Olas detrás del video y footer */}
-    <div className="wave-container">
-      <svg
-        className="waves"
-        viewBox="0 0 2880 150"
-        preserveAspectRatio="none"
-      >
-        <path
-          className="wave wave1"
-          d="M0,75 C720,150 2160,0 2880,75 L2880,150 H0 Z"
-        />
-        <path
-          className="wave wave2"
-          d="M0,100 C960,125 1920,25 2880,100 L2880,150 H0 Z"
-        />
-      </svg>
-    </div>
+      {/* Olas detrás del video y footer */}
+      <div className="wave-container">
+        <svg
+          className="waves"
+          viewBox="0 0 2880 150"
+          preserveAspectRatio="none"
+        >
+          <path
+            className="wave wave1"
+            d="M0,75 C720,150 2160,0 2880,75 L2880,150 H0 Z"
+          />
+          <path
+            className="wave wave2"
+            d="M0,100 C960,125 1920,25 2880,100 L2880,150 H0 Z"
+          />
+        </svg>
+      </div>
 
-    <Footer />
+      <Footer />
     </div>
   );
 };
