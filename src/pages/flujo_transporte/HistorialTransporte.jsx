@@ -1,3 +1,4 @@
+// HistorialTransporte.js
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
@@ -54,7 +55,7 @@ const HistorialTransporte = () => {
       if (res.status === 200) {
         setUpdateMessage({ type: "success", text: "Registro actualizado correctamente" });
         setRegistros((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, ...editValues } : r))
+          prev.map((r) => (r.id === id ? { ...r, ...res.data.data } : r)) // Usar datos del backend
         );
         setEditingId(null);
       } else {
@@ -86,6 +87,8 @@ const HistorialTransporte = () => {
       tipo_formulario: reg.tipo_formulario,
       conductor: reg.conductor,
       placa_vehiculo: reg.placa_vehiculo,
+      cedula: reg.cedula,
+      cuenta_bancaria: reg.cuenta_bancaria,
       fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : "-",
       origen: Array.isArray(reg.origen) ? reg.origen.join(", ") : reg.origen,
       sedes: Array.isArray(reg.sedes) ? reg.sedes.join(", ") : reg.sedes,
@@ -104,7 +107,6 @@ const HistorialTransporte = () => {
     XLSX.writeFile(workbook, "HistorialTransporte.xlsx");
   };
 
-  // Función para obtener la clase del estado
   const getEstadoClass = (estado) => {
     switch (estado) {
       case "Pendiente":
@@ -330,6 +332,7 @@ const HistorialTransporte = () => {
         striped
         responsive
         customStyles={customStyles}
+        keyField="id" // Clave única para mantener el orden
       />
       <button onClick={handleExportExcel} className="excel-button">
         Exportar a Excel
