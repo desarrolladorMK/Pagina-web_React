@@ -9,7 +9,8 @@ import {
   FaTruck,
   FaUser,
   FaAppleAlt,
-  FaDatabase
+  FaDatabase,
+  FaWallet 
 } from 'react-icons/fa';
 import './Acceso.css';
 
@@ -52,6 +53,7 @@ const Acceso = () => {
     'Perfil gestión humana': <FaUser />,
     'Reposiciones Fruver': <FaAppleAlt />,
     'Base de datos Postulaciones': <FaDatabase />,
+    'Historial Cartera': <FaWallet /> 
   };
 
   return (
