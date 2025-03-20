@@ -66,7 +66,7 @@ const HistorialCartera = () => {
       return;
     }
     const fuse = new Fuse(historial, {
-      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos'],
+      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos, '],
       threshold: 0.3,
       includeScore: true,
     });

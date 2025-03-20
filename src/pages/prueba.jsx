@@ -1,933 +1,491 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import "./Gastos.css";
-import Select from "react-select";
+import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import './HistorialGastos.css';
 import * as XLSX from "xlsx";
-import DataTable from "react-data-table-component";
-import Swal from "sweetalert2";
+import Fuse from "fuse.js";
 
-const correosAutorizados = import.meta.env.VITE_EMPLEADOS.split(",");
-const nombresAutorizados = import.meta.env.VITE_EMPLEADOS_NOMBRES.split(",");
+const HistorialGastos = () => {
+  // Recupera el correo del usuario autenticado desde sessionStorage
+  const currentUserEmail = sessionStorage.getItem("correo_empleado");
+  const isUsuario10 = currentUserEmail === import.meta.env.VITE_LOGIN_EMAIL_10;
 
-const initialFormData = {
-  fecha_creacion: new Date().toISOString().split("T")[0],
-  nombre_completo: "",
-  area: "",
-  procesos: "",
-  sede: [],
-  unidad: [],
-  centro_costos: [],
-  descripcion: "",
-  monto_estimado: "",
-  monto_sede: "",
-  anticipo: "",
-  tiempo_fecha_pago: "",
-  archivo_cotizacion: null,
-  archivos_proveedor: [],
-  correo_empleado: sessionStorage.getItem("correo_empleado"),
-};
-
-const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
-const SUPABASE_URL_EXCEL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public";
-const API_URL = "https://backend-gastos.vercel.app/api";
-
-const customStyles = {
-  headRow: {
-    style: {
-      backgroundColor: "var(--secondary-color)",
-      color: "#fff",
-      fontWeight: "600",
-      verticalAlign: "middle",
-    },
-  },
-  headCells: {
-    style: {
-      padding: "5px",
-      verticalAlign: "middle",
-      textAlign: "center",
-    },
-  },
-  cells: {
-    style: {
-      padding: "7px",
-      textAlign: "start",
-      verticalAlign: "middle",
-      whiteSpace: "normal", // Permite que el texto se divida en varias líneas
-      wordBreak: "break-word", // Divide palabras largas si es necesario
-      overflowWrap: "break-word", // Compatibilidad con navegadores
-      height: "auto", // Altura automática según contenido
-      maxWidth: "300px", // Limita el ancho máximo, ajustable según tus necesidades
-      overflow: "auto", // Agrega scroll si el contenido excede el ancho
-      fontSize: "0.80rem",
-    },
-  },
-};
-
-const getEstadoClass = (estado) => {
-  switch (estado) {
-    case "Pendiente":
-      return "estado-pendiente";
-    case "Necesario":
-      return "estado-aprobado";
-    case "No necesario":
-      return "estado-rechazado";
-    default:
-      return "";
-  }
-};
-
-const Gastos = () => {
-  const [fecha, setFecha] = useState(initialFormData.fecha_creacion); // Corregido a fecha_creacion
-  const [formData, setFormData] = useState(initialFormData);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [token, setToken] = useState("");
-  const [decision, setDecision] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [historial, setHistorial] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
-  const [historialGastos, setHistorialGastos] = useState([]);
-  const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const [mostrarArchivos, setMostrarArchivos] = useState(false);
-  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false); // Nuevo estado para evitar envíos duplicados
-  const [archivos, setArchivos] = useState([
-    {
-      nombre: "Documento interno",
-      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/1738273714697_comprobante%20de%20gastos%20(1)%20(7).xlsx`,
-    },
-    {
-      nombre: "Documento proveedor",
-      url: `${SUPABASE_URL_EXCEL}/cotizaciones/proveedores/FORMATO%20DE%20COTIZACION%20(1)%20(1).xlsx`,
-    },
-  ]);
-
-  // Estados para el modal que muestra el contenido completo
-  const [modalContent, setModalContent] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const historialRef = useRef(null);
-
-  const formatoCOP = new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    minimumFractionDigits: 0,
-  });
-
-  const obtenerNombrePorCorreo = (correo) => {
-    const index = correosAutorizados.indexOf(correo);
-    if (index !== -1) {
-      return nombresAutorizados[index];
-    }
-    return "Empleado no autorizado";
+  // Define un mapeo entre líderes y áreas
+  const mapaAreaLideres = {
+    'operaciones@merkahorrosas.com': 'Operaciones',
+    'johanmerkahorro777@gmail.com': 'Gestión humana',
+    'juanmerkahorro@gmail.com': 'Comercial',
+    'administracion@merkahorrosas.com': 'Administración'
   };
 
+  const [historial, setHistorial] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [mostrarHistorial, setMostrarHistorial] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  // Estado de edición (incluye observacionC)
+  const [editingId, setEditingId] = useState(null);
+  const [editValues, setEditValues] = useState({ estado: 'Pendiente', observacion: '', observacionC: '' });
+  const [updateMessage, setUpdateMessage] = useState(null);
+
+  // Estados para búsqueda
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchInput, setShowSearchInput] = useState(false);
+  // Estado que almacenará el resultado filtrado usando Fuse.js
+  const [filteredHistorial, setFilteredHistorial] = useState([]);
+
+  // Estado para guardar los IDs de filas ocultas
+  const [hiddenRows, setHiddenRows] = useState([]);
+  // Estado para controlar la visibilidad de la sección de filas ocultas
+  const [showHiddenRowsList, setShowHiddenRowsList] = useState(false);
+
+  // URL de la API
+  const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
+  const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
+  // URL base de Supabase para archivos (se usará para cotizaciones y vouchers)
+  const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
+
+  const scrollContainerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -500,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 500,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Cargar historial de la API con filtrado según área del líder si aplica
   useEffect(() => {
-    const correo = sessionStorage.getItem("correo_empleado");
-    if (correo) {
-      setFormData((prevData) => ({
-        ...prevData,
-        correo_empleado: correo,
-        nombre_completo: obtenerNombrePorCorreo(correo),
-      }));
+    const obtenerHistorial = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        if (response.status === 200) {
+          let data = response.data.data || [];
+          // Si el usuario autenticado es un líder, filtra por su área
+          const areaLider = mapaAreaLideres[currentUserEmail];
+          if (areaLider) {
+            data = data.filter(gasto => gasto.area === areaLider);
+          }
+          setHistorial(data);
+          setFilteredHistorial(data); // Inicialmente se muestran todos los registros filtrados
+        } else {
+          setErrorMessage("No se pudo cargar el historial de gastos.");
+        }
+      } catch (error) {
+        console.error("Error al obtener el historial de gastos:", error);
+        setErrorMessage("No se pudo cargar el historial de gastos.");
+      }
+    };
+
+    obtenerHistorial();
+  }, [currentUserEmail]);
+
+  // Cargar hiddenRows desde localStorage al montar el componente
+  useEffect(() => {
+    const storedHiddenRows = localStorage.getItem('hiddenRows');
+    if (storedHiddenRows) {
+      setHiddenRows(JSON.parse(storedHiddenRows));
     }
   }, []);
 
+  // Guardar hiddenRows en localStorage cada vez que cambie
   useEffect(() => {
-    const interval = setInterval(() => {
-      const correoStorage = sessionStorage.getItem("correo_empleado");
-      if (correoStorage && correoStorage !== formData.correo_empleado) {
-        setFormData((prevData) => ({
-          ...prevData,
-          correo_empleado: correoStorage,
-          nombre_completo: obtenerNombrePorCorreo(correoStorage),
-        }));
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [formData.correo_empleado]);
+    localStorage.setItem('hiddenRows', JSON.stringify(hiddenRows));
+  }, [hiddenRows]);
 
+  // Integración de Fuse.js: Filtrar historial según searchQuery
   useEffect(() => {
-    if (formData.correo_empleado) {
-      const fetchHistorialGastos = async () => {
-        setIsLoadingHistorial(true);
-        try {
-          const response = await axios.get(`${API_URL}/requerimientos/historial`, {
-            params: { correo_empleado: formData.correo_empleado },
-            headers: { "Cache-Control": "no-cache" },
-          });
-          if (response.status === 200) {
-            setHistorialGastos(response.data);
-          }
-        } catch (error) {
-          console.error("Error al obtener el historial de gastos:", error);
-        } finally {
-          setIsLoadingHistorial(false);
-        }
-      };
-
-      fetchHistorialGastos();
-      const interval = setInterval(() => {
-        fetchHistorialGastos();
-      }, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [formData.correo_empleado]);
-
-  const checkDecision = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/requerimientos/estado/${token}`);
-      if (response.status === 200) {
-        const data = response.data;
-        setDecision(data.decision);
-      } else {
-        setErrorMessage("No se pudo obtener el estado de la solicitud.");
-      }
-    } catch (error) {
-      console.error("Error al obtener el estado de la solicitud:", error);
-      setErrorMessage("Hubo un error al obtener el estado.");
-    }
-  };
-
-  // Eliminar registro con SweetAlert2
-  const eliminarRegistro = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "Esta acción eliminará el registro de forma permanente.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`${API_URL}/requerimientos/eliminar/${id}`);
-        setHistorialGastos((prev) => prev.filter((gasto) => gasto.id !== id));
-        Swal.fire("Eliminado", "El registro ha sido eliminado.", "success");
-      } catch (error) {
-        console.error("Error al eliminar el registro:", error);
-        Swal.fire("Error", "Hubo un problema al eliminar el registro.", "error");
-      }
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "monto_estimado" || name === "anticipo") {
-      const valorNumerico = value.replace(/\D/g, "");
-      const valorFormateado = valorNumerico ? formatoCOP.format(valorNumerico) : "";
-      setFormData({ ...formData, [name]: valorFormateado });
-    } else if (name === "tiempo_fecha_pago") {
-      setFormData({ ...formData, tiempo_fecha_pago: value });
-    } else if (name === "monto_sede") {
-      setFormData({ ...formData, [name]: value });
-    } else if (["unidad", "centro_costos", "sede"].includes(name)) {
-      const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
-      setFormData({ ...formData, [name]: selectedOptions });
-    } else if (name === "archivo_cotizacion") {
-      setFormData({ ...formData, archivo_cotizacion: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, files } = e.target;
-    if (name === "archivos_proveedor") {
-      setFormData({
-        ...formData,
-        archivos_proveedor: files ? Array.from(files) : [],
-      });
-    } else {
-      setFormData({ ...formData, [name]: e.target.value });
-    }
-  };
-
-  const handleSelectChange = (name, selectedOptions) => {
-    const selectedValues = selectedOptions ? selectedOptions.map((option) => option.value) : [];
-    setFormData({ ...formData, [name]: selectedValues });
-  };
-
-  const unidadOptions = [
-    { value: "Carnes", label: "Carnes" },
-    { value: "Fruver", label: "Fruver" },
-    { value: "Abarrotes", label: "Abarrotes" },
-    { value: "Administrativo", label: "Administrativo" },
-  ];
-
-  const sedeOptions = [
-    { value: "Copacabana Plaza", label: "Copacabana Plaza" },
-    { value: "Copacabana Vegas", label: "Copacabana Vegas" },
-    { value: "Copacabana San Juan", label: "Copacabana San Juan" },
-    { value: "Girardota Parque", label: "Girardota Parque" },
-    { value: "Girardota Llano", label: "Girardota Llano" },
-    { value: "Barbosa", label: "Barbosa" },
-    { value: "Carnes Barbosa", label: "Carnes Barbosa" },
-    { value: "Villa Hermosa", label: "Villa Hermosa" },
-    { value: "Todas las sedes", label: "Todas las sedes" },
-  ];
-
-  const centroCostosOptions = [
-    { value: "Gerencia", label: "Gerencia" },
-    { value: "Contabilidad", label: "Contabilidad" },
-    { value: "Tesoreria", label: "Tesoreria" },
-    { value: "Gestion humana", label: "Gestion humana" },
-    { value: "Generales administrativos", label: "Generales administrativos" },
-    { value: "Puntos de venta", label: "Puntos de venta" },
-    { value: "Domicilios", label: "Domicilios" },
-    { value: "Carnicos", label: "Carnicos" },
-    { value: "Fruver", label: "Fruver" },
-    { value: "Panaderia", label: "Panaderia" },
-    { value: "Bodega", label: "Bodega" },
-    { value: "Generales operaciones", label: "Generales operaciones" },
-    { value: "Compras", label: "Compras" },
-    { value: "Tienda virtual", label: "Tienda virtual" },
-    { value: "Callcenter", label: "Callcenter" },
-    { value: "Generales comerciales", label: "Generales comerciales" },
-    { value: "Generico", label: "Generico" },
-  ];
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Si ya se ha enviado una vez y no se ha reiniciado el formulario, evitar nuevos envíos
-    if (hasSubmittedOnce) {
-      setErrorMessage("Ya has enviado este formulario. Por favor, espera la respuesta.");
+    // Si la búsqueda está vacía, muestra todos los registros filtrados previamente
+    if (searchQuery.trim() === "") {
+      setFilteredHistorial(historial);
       return;
     }
-
-    setIsSubmitting(true);
-    setHasSubmittedOnce(true); // Marcar que se ha intentado enviar
-
-    const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
-    const valorNumericoAnticipo = formData.anticipo
-      ? formData.anticipo.replace(/\D/g, "")
-      : "0";
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("fecha_creacion", formData.fecha_creacion);
-    formDataToSend.append("nombre_completo", formData.nombre_completo);
-    formDataToSend.append("area", formData.area);
-    formDataToSend.append("procesos", formData.procesos);
-
-    formData.sede.forEach((item) => formDataToSend.append("sede[]", item));
-    formData.unidad.forEach((item) => formDataToSend.append("unidad[]", item));
-    formData.centro_costos.forEach((item) => formDataToSend.append("centro_costos[]", item));
-    formDataToSend.append("descripcion", formData.descripcion);
-    formDataToSend.append("monto_estimado", valorNumerico);
-    if (formData.monto_sede.trim() !== "") {
-      formDataToSend.append("monto_sede", formData.monto_sede);
-    }
-    formDataToSend.append("anticipo", valorNumericoAnticipo);
-    formDataToSend.append("tiempo_fecha_pago", formData.tiempo_fecha_pago);
-    formDataToSend.append("archivo_cotizacion", formData.archivo_cotizacion);
-    formData.archivos_proveedor.forEach((file) => {
-      formDataToSend.append("archivos_proveedor", file);
+    // Configuración de Fuse.js con las claves deseadas
+    const fuse = new Fuse(historial, {
+      keys: [
+        'fecha_creacion',
+        'nombre_completo',
+        'descripcion',
+        'monto_estimado',
+        'area',
+        'sede',
+        'unidad',
+        'centro_costos',
+        'estado',
+        'procesos'
+      ],
+      threshold: 0.3,
+      includeScore: true,
     });
-    formDataToSend.append("correo_empleado", formData.correo_empleado);
+    const results = fuse.search(searchQuery);
+    setFilteredHistorial(results.map(result => result.item));
+  }, [searchQuery, historial]);
 
-    console.log("Datos enviados al backend:", Object.fromEntries(formDataToSend.entries()));
-
-    try {
-      const response = await axios.post(`${API_URL}/requerimientos/crear`, formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setIsSubmitted(true);
-      setDecision(response.data.decision);
-      setErrorMessage(""); // Limpiar mensaje de error si hubo éxito
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({
-          ...initialFormData,
-          correo_empleado: formData.correo_empleado,
-          nombre_completo: formData.nombre_completo,
-        });
-        setHasSubmittedOnce(false); // Permitir un nuevo envío tras reiniciar
-      }, 3000);
-    } catch (error) {
-      console.error("Error al enviar la solicitud:", error);
-      setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
-      setHasSubmittedOnce(false); // Permitir reintentos si falla
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const toggleHistorial = () => {
-    setMostrarHistorial((prev) => {
-      const nuevoEstado = !prev;
-      if (nuevoEstado) {
-        setTimeout(() => {
-          historialRef.current.scrollIntoView({ behavior: "smooth" });
-        }, 300);
-      }
-      return nuevoEstado;
-    });
-  };
-
-  const toggleArchivos = () => {
-    setMostrarArchivos((prev) => !prev);
-  };
-
-  const openModal = (content) => {
-    setModalContent(content);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent("");
-  };
-
-  const renderClickableCell = (content) => (
-    <div
-      onClick={(e) => {
-        if (e.target.tagName !== "A") {
-          openModal(content);
-        }
-      }}
-      style={{ cursor: "pointer" }}
-      title="Haz clic para ver el contenido completo"
-    >
-      {content}
-    </div>
-  );
-
-  useEffect(() => {
-    if (token) {
-      const interval = setInterval(() => {
-        checkDecision();
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (formData.correo_empleado) {
-      const nombreResponsable = obtenerNombrePorCorreo(formData.correo_empleado);
-      setFormData((prevData) => ({
-        ...prevData,
-        nombre_completo: nombreResponsable,
-      }));
-    }
-  }, [formData.correo_empleado]);
-
-  useEffect(() => {
-    if (formData.correo_empleado) {
-      setIsLoadingHistorial(true);
-      axios
-        .get(`${API_URL}/requerimientos/historial`, {
-          params: { correo_empleado: formData.correo_empleado },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setHistorialGastos(response.data);
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener el historial de gastos:", error);
-        })
-        .finally(() => {
-          setIsLoadingHistorial(false);
-        });
-    }
-  }, [formData.correo_empleado]);
-
+  // Función para exportar a Excel
   const exportToExcel = () => {
-    if (!historialGastos || historialGastos.length === 0) return;
-    const dataForSheet = historialGastos.map((gasto) => {
-      let sedeString = "";
-      if (typeof gasto.sede === "string") {
-        try {
-          const sedesArray = JSON.parse(gasto.sede);
-          sedeString = Array.isArray(sedesArray) ? sedesArray.join(", ") : gasto.sede;
-        } catch (error) {
-          sedeString = gasto.sede.includes(",")
-            ? gasto.sede.split(",").map((s) => s.trim()).join(", ")
-            : gasto.sede;
-        }
-      } else if (Array.isArray(gasto.sede)) {
-        sedeString = gasto.sede.join(", ");
-      }
-      return {
-        fecha_creacion: gasto.fecha_creacion || "",
-        Nombre: gasto.nombre_completo || "",
-        Área: gasto.area || "",
-        Procesos: gasto.procesos || "",
-        Sede: sedeString,
-        "Unidad de negocio": Array.isArray(gasto.unidad) ? gasto.unidad.join(", ") : "",
-        "Centro de costos": Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : "",
-        Descripción: gasto.descripcion || "",
-        Monto: gasto.monto_estimado || "",
-        "Monto por sede": gasto.monto_sede || "",
-        Cotización: gasto.archivo_cotizacion || "",
-        Proveedor: Array.isArray(gasto.archivos_proveedor) ? gasto.archivos_proveedor.join(", ") : "",
-        Observación: gasto.observacion || "",
-        Estado: gasto.estado || "",
-      };
-    });
-    const worksheet = XLSX.utils.json_to_sheet(dataForSheet);
+    const worksheet = XLSX.utils.json_to_sheet(historial);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
     XLSX.writeFile(workbook, "historial_gastos.xlsx");
   };
 
-  const columns = [
-    {
-      name: "Fecha",
-      selector: (row) => row.fecha_creacion,
-      cell: (row) =>
-        renderClickableCell(
-          row.fecha_creacion ? row.fecha_creacion.slice(0, 10) : "-"
-        ),
-      sortable: true,
-    },
-    {
-      name: "Nombre",
-      cell: (row) => renderClickableCell(row.nombre_completo),
-    },
-    {
-      name: "Área",
-      cell: (row) => renderClickableCell(row.area),
-    },
-    {
-      name: "Procesos",
-      cell: (row) => renderClickableCell(row.procesos),
-    },
-    {
-      name: "Sede",
-      cell: (row) => {
-        let sedesArray = [];
-        if (typeof row.sede === "string") {
-          try {
-            sedesArray = JSON.parse(row.sede);
-            if (!Array.isArray(sedesArray))
-              throw new Error("No es un array");
-          } catch (error) {
-            sedesArray = row.sede.includes(",")
-              ? row.sede.split(",").map((s) => s.trim())
-              : [row.sede];
-          }
-        } else if (Array.isArray(row.sede)) {
-          sedesArray = row.sede;
-        }
-        return renderClickableCell(sedesArray.length > 0 ? sedesArray.join(", ") : "Sin sede");
-      },
-    },
-    {
-      name: "Unidad de negocio",
-      cell: (row) => renderClickableCell(Array.isArray(row.unidad) ? row.unidad.join(", ") : row.unidad),
-    },
-    {
-      name: "Centro de costos",
-      cell: (row) => renderClickableCell(Array.isArray(row.centro_costos) ? row.centro_costos.join(", ") : row.centro_costos),
-    },
-    {
-      name: "Descripción",
-      cell: (row) => renderClickableCell(row.descripcion),
-    },
-    {
-      name: "Monto",
-      cell: (row) => renderClickableCell(formatoCOP.format(row.monto_estimado)),
-    },
-    {
-      name: "Monto por sede",
-      cell: (row) => {
-        let montoSede = row.monto_sede || "No especificado";
-        if (montoSede && typeof montoSede === "string") {
-          montoSede = montoSede
-            .split(",")
-            .map((entry) => {
-              const [sede, monto] = entry.split(":");
-              if (monto) {
-                return `${sede.trim()}: ${formatoCOP.format(parseFloat(monto.replace(/\D/g, "")))}`;
-              } else {
-                return `${sede.trim()}: No especificado`;
-              }
-            })
-            .join(", ");
-        }
-        return renderClickableCell(montoSede);
-      },
-    },
-    {
-      name: "Anticipo",
-      cell: (row) => renderClickableCell(formatoCOP.format(row.anticipo)),
-    },
-    {
-      name: "Tiempo/Fecha Pago",
-      cell: (row) => renderClickableCell(row.tiempo_fecha_pago ? row.tiempo_fecha_pago.slice(0, 10) : "No especificado"),
-    },
-    {
-      name: "Cotización",
-      cell: (row) => {
-        const nombreArchivo = row.archivo_cotizacion?.split("/").pop();
-        const archivoCotizacionUrl = `${SUPABASE_URL}/cotizaciones/${nombreArchivo}`;
-        return (
-          <div style={{ textAlign: "center", width: "100%" }}>
-            <a
-              onClick={(e) => e.stopPropagation()}
-              href={archivoCotizacionUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="view-pdf-button"
-            >
-              Ver
-            </a>
-          </div>
+  // Formateo de moneda en COP
+  const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
+
+  // Asigna clases CSS según el estado
+  const getEstadoClass = (estado) => {
+    switch (estado) {
+      case "Pendiente":
+        return "estado-pendiente";
+      case "Necesario":
+        return "estado-aprobado";
+      case "No necesario":
+        return "estado-rechazado";
+      default:
+        return "";
+    }
+  };
+
+  // Maneja el clic en "Editar"
+  const handleEditClick = (gasto) => {
+    setEditingId(gasto.id);
+    setEditValues({
+      estado: gasto.estado || 'Pendiente',
+      observacion: gasto.observacion || '',
+      observacionC: gasto.observacionC || '',
+    });
+    setUpdateMessage(null);
+  };
+
+  // Maneja el clic en "Cancelar"
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditValues({ estado: 'Pendiente', observacion: '', observacionC: '' });
+    setUpdateMessage(null);
+  };
+
+  // Maneja los cambios en campos de edición
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Actualiza el registro; si es Usuario 10, solo actualiza observacionC
+  const handleSaveEdit = async (id) => {
+    try {
+      const payload = isUsuario10 ? { observacionC: editValues.observacionC } : editValues;
+      const response = await axios.put(`${UPDATE_URL}/${id}`, payload);
+      if (response.status === 200) {
+        setHistorial((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, ...payload } : item
+          )
         );
-      },
-    },
-    {
-      name: "Proveedor",
-      cell: (row) => {
-        const archivosProveedor =
-          typeof row.archivos_proveedor === "string"
-            ? JSON.parse(row.archivos_proveedor)
-            : row.archivos_proveedor;
-        return Array.isArray(archivosProveedor) && archivosProveedor.length > 0 ? (
-          archivosProveedor.map((url, index) => (
-            <div key={index}>
-              <a
-                onClick={(e) => e.stopPropagation()}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="view-pdf-button"
-              >
-                Ver
-              </a>
-            </div>
-          ))
-        ) : (
-          renderClickableCell("No hay archivos de proveedor")
+        setEditingId(null);
+        setUpdateMessage({ type: 'success', text: 'Registro actualizado correctamente' });
+      } else {
+        setUpdateMessage({ type: 'error', text: 'Error al actualizar el registro' });
+      }
+    } catch (error) {
+      console.error("Error al actualizar el registro:", error);
+      setUpdateMessage({ type: 'error', text: 'Error al actualizar el registro' });
+    }
+  };
+
+  // Actualiza la verificación
+  const handleToggleVerified = async (id, currentValue) => {
+    try {
+      const newValue = !currentValue;
+      const response = await axios.put(`${UPDATE_URL}/${id}`, { verificado: newValue });
+      if (response.status === 200) {
+        setHistorial((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, verificado: newValue } : item
+          )
         );
-      },
-    },
-    {
-      name: "Observación",
-      cell: (row) => renderClickableCell(row.observacion || "Sin observación"),
-    },
-    {
-      name: "Estado",
-      cell: (row) => (
-        <div
-          className={`estado-cell ${getEstadoClass(row.estado)}`}
-          onClick={() => openModal(row.estado)}
-          title="Haz clic para ver el contenido completo"
-        >
-          {row.estado}
-        </div>
-      ),
-    },
-    {
-      name: "Obs..Claudia",
-      cell: (row) => renderClickableCell(row.observacionC || "Sin observación"),
-    },
-    {
-      name: "Eliminar",
-      cell: (row) => (
-        <button
-          onClick={() => eliminarRegistro(row.id)}
-          className="delete-button"
-        >
-          ❌ 
-        </button>
-      ),
-    },
-  ];
+      } else {
+        alert('Error al actualizar la verificación');
+      }
+    } catch (error) {
+      console.error("Error al actualizar la verificación:", error);
+      alert('Error al actualizar la verificación');
+    }
+  };
+
+  // Se excluyen las filas ocultas para la tabla principal
+  const visibleHistorial = filteredHistorial.filter((gasto) => !hiddenRows.includes(gasto.id));
+
+  // Función para ocultar una fila
+  const handleHideRow = (id) => {
+    setHiddenRows([...hiddenRows, id]);
+  };
+
+  // Función para restaurar (mostrar) una fila oculta individualmente
+  const handleShowHiddenRow = (id) => {
+    setHiddenRows(hiddenRows.filter(hiddenId => hiddenId !== id));
+  };
+
+
+  if (isSubmitted || !mostrarHistorial) return null;
+  if (errorMessage) return <div className="gastos-historial"><p>Error: {errorMessage}</p></div>;
 
   return (
-    <div className="gastos-container">
-      <div className="logo-container">
-        <a href="/">
-          <img src="logoMK.png" alt="Logo Merkahorro" />
-        </a>
-      </div>
-      <h1 className="gastos-header">Conciencia del gasto</h1>
+    <div className="gastos-historial">
+      <h2>Historial de Gastos</h2>
+      <h4 className="fraseMotivacional">
+        “No es la abundancia de bienes lo que define una vida plena, sino la prudencia con que utilizamos lo que tenemos.”
+      </h4>
 
-      <button onClick={toggleArchivos} className="gastos-flotante-button">
-        📂
-      </button>
-      {mostrarArchivos && (
-        <div className="gastos-archivos-desplegados">
+      {/* Contenedor de búsqueda y exportación */}
+      <div className="busqueda-export-container">
+        <div className="busqueda-container">
+          <button
+            className="busqueda-boton"
+            onClick={() => {
+              setShowSearchInput(!showSearchInput);
+              if (showSearchInput) setSearchQuery('');
+            }}
+          >
+            🔍
+          </button>
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
+          />
+        </div>
+        <button className="excel-button-gastos" onClick={exportToExcel}>
+          Exportar a Excel
+        </button>
+      </div>
+
+      {/* Botón para revelar u ocultar filas ocultas */}
+      {hiddenRows.length > 0 && (
+        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+          <button
+            className="boton-mostrar-ocultos"
+            onClick={() => setShowHiddenRowsList(!showHiddenRowsList)}
+          >
+            {showHiddenRowsList ? "Ocultar" : "Mostrar filas ocultas"}
+          </button>
+        </div>
+      )}
+
+      {/* Sección de filas ocultas */}
+      {showHiddenRowsList && hiddenRows.length > 0 && (
+        <div className="hidden-rows-container">
+          <h3>Filas Ocultas</h3>
           <ul>
-            {archivos.map((archivo, index) => (
-              <li key={index}>
-                <a href={archivo.url} target="_blank" rel="noopener noreferrer">
-                  {archivo.nombre}
-                </a>
+            {historial.filter(gasto => hiddenRows.includes(gasto.id)).map((gasto) => (
+              <li key={gasto.id}>
+                <span>
+                  {gasto.nombre_completo} - {gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''} - Obs... Claudia: {gasto.observacionC || "Sin observación"}
+                </span>
+                <button
+                  className="boton-mostrar-oculto-individual"
+                  onClick={() => handleShowHiddenRow(gasto.id)}
+                >
+                  Mostrar
+                </button>
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      {!isSubmitted ? (
-        <div className="gastos-form-container">
-          <h2 className="gastos-form-title">Formulario cuidado del gasto</h2>
-          <h4 className="fraseMotivacional">
-            "Cuando cuidamos, nos protegemos todos."
-          </h4>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          <form onSubmit={handleSubmit} className="gastos-form">
-            <div className="gastos-form-field">
-              <label className="gastos-label">
-                Responsable de la gestión del cuidado gasto:
-              </label>
-              <input
-                type="text"
-                name="nombre_completo"
-                value={formData.nombre_completo || ""}
-                onChange={handleChange}
-                required
-                disabled
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Área:</label>
-              <select
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              >
-                <option value="" disabled>
-                  Seleccione un área:
-                </option>
-                <option value="Gerencia">Gerencia</option>
-                <option value="Gestión humana">
-                  Dirección Gestión humana
-                </option>
-                <option value="Operaciones">Dirección Operaciones</option>
-                <option value="Contabilidad">
-                  Dirección Administrativa y Financiera
-                </option>
-                <option value="Comercial">Dirección Comercial</option>
-              </select>
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Procesos:</label>
-              <select
-                name="procesos"
-                value={formData.procesos}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              >
-                <option value="" disabled>
-                  Seleccione un Proceso:
-                </option>
-                <option value="Logística">Logística</option>
-                <option value="Inventarios">Inventarios</option>
-                <option value="Sistemas">Sistemas</option>
-                <option value="Desarrollo">Desarrollo</option>
-                <option value="Procesos">Procesos</option>
-                <option value="Fruver">Fruver</option>
-                <option value="Cárnicos">Cárnicos</option>
-                <option value="Proyectos">Proyectos</option>
-                <option value="Operaciones-Comerciales">
-                  Operaciones Comerciales
-                </option>
-              </select>
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Sedes:</label>
-              <Select
-                name="sede"
-                value={sedeOptions.filter((option) =>
-                  formData.sede.includes(option.value)
-                )}
-                onChange={(selectedOptions) =>
-                  handleSelectChange("sede", selectedOptions)
-                }
-                options={sedeOptions}
-                isMulti
-                className="gastos-input"
-                placeholder="Seleccione las sedes"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Unidad de negocio:</label>
-              <Select
-                name="unidad"
-                value={unidadOptions.filter((option) =>
-                  formData.unidad.includes(option.value)
-                )}
-                onChange={(selectedOptions) =>
-                  handleSelectChange("unidad", selectedOptions)
-                }
-                options={unidadOptions}
-                isMulti
-                className="gastos-input"
-                placeholder="Seleccione las unidades"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Centro de costos:</label>
-              <Select
-                name="centro_costos"
-                value={centroCostosOptions.filter((option) =>
-                  formData.centro_costos.includes(option.value)
-                )}
-                onChange={(selectedOptions) =>
-                  handleSelectChange("centro_costos", selectedOptions)
-                }
-                options={centroCostosOptions}
-                isMulti
-                className="gastos-input"
-                placeholder="Seleccione los centros de costos"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">
-                Describe tu necesidad y la razón:
-              </label>
-              <input
-                type="text"
-                name="descripcion"
-                value={formData.descripcion}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Monto estimado:</label>
-              <input
-                type="text"
-                name="monto_estimado"
-                value={formData.monto_estimado}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Monto por sede:</label>
-              <textarea
-                name="monto_sede"
-                value={formData.monto_sede}
-                onChange={handleChange}
-                placeholder="Ejemplo: Girardota: 300.000, Barbosa: 400.000"
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Anticipo:</label>
-              <input
-                type="text"
-                name="anticipo"
-                value={formData.anticipo}
-                onChange={handleChange}
-                placeholder="Ingrese el monto del anticipo"
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Fecha estimada de pago:</label>
-              <input
-                type="date"
-                name="tiempo_fecha_pago"
-                value={formData.tiempo_fecha_pago}
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Cotización:</label>
-              <input
-                type="file"
-                name="archivo_cotizacion"
-                onChange={handleChange}
-                required
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">
-                Documentos nuevos proveedores:
-              </label>
-              <input
-                type="file"
-                name="archivos_proveedor"
-                onChange={handleInputChange}
-                multiple
-                className="gastos-input"
-              />
-            </div>
-            <div className="gastos-form-field">
-              <label className="gastos-label">Correo del empleado:</label>
-              <input
-                type="email"
-                name="correo_empleado"
-                value={formData.correo_empleado}
-                onChange={handleChange}
-                required
-                disabled
-                className="gastos-input"
-              />
-            </div>
-            <button
-              type="submit"
-              className="gastos-submit-button"
-              disabled={isSubmitting || hasSubmittedOnce} // Deshabilitar si está enviando o ya se envió
-            >
-              {isSubmitting ? "Enviando..." : "Enviar"}
-            </button>
-          </form>
-        </div>
-      ) : (
-        <div className="gastos-submitted-message">
-          <h2>¡Solicitud Enviada Exitosamente!</h2>
-        </div>
-      )}
-
-      <button onClick={toggleHistorial} className="historial-flotante-button">
-        📜
-      </button>
-      {isLoadingHistorial ? (
-        <p>Cargando historial...</p>
-      ) : (
-        mostrarHistorial && (
-          <div
-            id="gastos-historial"
-            className="gastos-historial desplegado"
-            ref={historialRef}
-          >
-            <DataTable
-              columns={columns}
-              data={historialGastos}
-              pagination
-              responsive
-              highlightOnHover
-              striped
-              customStyles={customStyles}
-            />
-            <button onClick={exportToExcel} className="excel-button">
-              Exportar a Excel
-            </button>
+      <div id="gastos-historial" className="gastos-historial desplegado">
+        <div className="scroll-container-wrapper">
+          <button className="scroll-button left" onClick={scrollLeft} style={{ display: 'none' }}>‹</button>
+          <div className="scroll-container" ref={scrollContainerRef}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Nombre</th>
+                  <th>Área</th>
+                  <th>Procesos</th>
+                  <th>Sede</th>
+                  <th>Unidad de negocio</th>
+                  <th>Centro de costos</th>
+                  <th>Descripción</th>
+                  <th>Monto</th>
+                  <th>Monto por sede</th>
+                  <th>Anticipo</th>
+                  <th>Tiempo/Fecha Pago</th>
+                  <th>Cotización</th>
+                  <th>Proveedor</th>
+                  <th>Observación</th>
+                  <th>Voucher</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                  <th>Verificado</th>
+                  <th>Observación Claudia</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleHistorial.map((gasto) => (
+                  <tr key={gasto.id}>
+                    <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''}</td>
+                    <td>{gasto.nombre_completo}</td>
+                    <td>{gasto.area}</td>
+                    <td>{gasto.procesos}</td>
+                    <td>{Array.isArray(gasto.sede) ? gasto.sede.join(", ") : gasto.sede}</td>
+                    <td>{Array.isArray(gasto.unidad) ? gasto.unidad.join(", ") : gasto.unidad}</td>
+                    <td>{Array.isArray(gasto.centro_costos) ? gasto.centro_costos.join(", ") : gasto.centro_costos}</td>
+                    <td>{gasto.descripcion}</td>
+                    <td>{formatoCOP.format(gasto.monto_estimado)}</td>
+                    <td>{gasto.monto_sede}</td>
+                    <td>{formatoCOP.format(gasto.anticipo)}</td>
+                    <td>{gasto.tiempo_fecha_pago ? gasto.tiempo_fecha_pago.slice(0, 10) : "No especificado"}</td>
+                    <td>
+                      {gasto.archivo_cotizacion && (
+                        <a
+                          href={`${SUPABASE_URL}/cotizaciones/${gasto.archivo_cotizacion.split("/").pop()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-pdf-button"
+                        >
+                          Ver
+                        </a>
+                      )}
+                    </td>
+                    <td>
+                            {gasto.archivos_proveedor ? (
+                              Array.isArray(JSON.parse(gasto.archivos_proveedor)) ? (
+                                JSON.parse(gasto.archivos_proveedor).map((url, index) => (
+                                  <div key={index}>
+                                    <a
+                                      href={url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="view-pdf-button"
+                                    >
+                                      Ver
+                                    </a>
+                                  </div>
+                                ))
+                              ) : (
+                                <a
+                                  href={gasto.archivos_proveedor}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="view-pdf-button"
+                                >
+                                  Ver
+                                </a>
+                              )
+                            ) : (
+                              <span>No hay archivos de proveedor</span>
+                            )}
+                          </td>
+                  
+                    <td>{isUsuario10 ? (gasto.observacion || "Sin observación") : (editingId === gasto.id ? (
+                      <textarea
+                        name="observacion"
+                        value={editValues.observacion}
+                        onChange={handleEditChange}
+                        rows={3}
+                        className="observacion-textarea"
+                        placeholder="Observación"
+                      />
+                    ) : (
+                      gasto.observacion || "Sin observación"
+                    ))}</td>
+                      {/* Nueva columna para Voucher */}
+                      <td>
+                      {gasto.voucher ? (
+                        <a
+                          href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-pdf-button"
+                          >
+                          Ver Voucher
+                        </a>
+                      ) : (
+                        <span>Sin voucher</span>
+                      )}
+                  
+                    </td>
+                    <td className={!isUsuario10 && editingId === gasto.id ? "" : getEstadoClass(gasto.estado)}>
+                      {isUsuario10 ? gasto.estado : (editingId === gasto.id ? (
+                        <select name="estado" value={editValues.estado} onChange={handleEditChange}>
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Necesario">Necesario</option>
+                          <option value="No necesario">No necesario</option>
+                        </select>
+                      ) : (
+                        gasto.estado
+                      ))}
+                    </td>
+                    <td>
+                      {editingId === gasto.id ? (
+                        <>
+                          <button className="accion-button guardar" onClick={() => handleSaveEdit(gasto.id)}>
+                            Guardar
+                          </button>
+                          <button className="accion-button cancelar" onClick={handleCancelEdit}>
+                            Cancelar
+                          </button>
+                          {updateMessage && (
+                            <p className={`automatizacion-submitted-message ${updateMessage.type}`}>
+                              {updateMessage.text}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <button className="accion-button editar" onClick={() => handleEditClick(gasto)}>
+                            Editar
+                          </button>
+                          <button className="accion-button ocultar" onClick={() => handleHideRow(gasto.id)}>
+                            Ocultar
+                          </button>
+                        </>
+                      )}
+                    </td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={gasto.verificado || false}
+                        onChange={() => handleToggleVerified(gasto.id, gasto.verificado)}
+                      />
+                    </td>
+                    <td>{editingId === gasto.id ? (
+                      <textarea
+                        name="observacionC"
+                        value={editValues.observacionC}
+                        onChange={handleEditChange}
+                        rows={3}
+                        className="observacion-textarea"
+                        placeholder="Observación Claudia"
+                      />
+                    ) : (
+                      gasto.observacionC || "Sin observación"
+                    )}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )
-      )}
-
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={closeModal}>
-              &times;
-            </span>
-            <p>{modalContent}</p>
-          </div>
+          <button className="scroll-button right" onClick={scrollRight}>›</button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export { Gastos };
+export { HistorialGastos };
