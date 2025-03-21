@@ -757,6 +757,7 @@ const Gastos = () => {
                 <option value="Operaciones-Comerciales">
                   Operaciones Comerciales
                 </option>
+                <option value="Mantenimiento">Mantenimiento</option>
               </select>
             </div>
             <div className="gastos-form-field">

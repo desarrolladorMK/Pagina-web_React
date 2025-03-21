@@ -63,6 +63,20 @@ const conductorDatos = {
   conductor10: { cedula: "15516827", cuenta: "" },
 };
 
+// Mapeo para autocompletar el tipo de cuenta según el conductor
+const conductorTipoCuenta = {
+  conductor1: 'Nequi',
+  conductor2: 'Ahorros',
+  conductor3: 'Nequi',
+  conductor4: '',
+  conductor5: '',
+  conductor6: '',
+  conductor7: '',
+  conductor8: '',
+  conductor9: '',
+  conductor10: '',
+};
+
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
 
 const Transporte = () => {
@@ -72,6 +86,7 @@ const Transporte = () => {
   const [otroConductor, setOtroConductor] = useState('');
   const [placa, setPlaca] = useState('');
   const [cedula, setCedula] = useState("");
+  const [tipoCuenta, setTipoCuenta] = useState("");
   const [cuentaBancaria, setCuentaBancaria] = useState("");
   const [fechaViaje, setFechaViaje] = useState(null);
   const [observacion, setObservacion] = useState('');
@@ -90,10 +105,13 @@ const Transporte = () => {
         setCedula(conductorDatos[conductor].cedula);
         setCuentaBancaria(conductorDatos[conductor].cuenta);
       }
+      // Asigna el tipo de cuenta automáticamente usando el mapeo
+      setTipoCuenta(conductorTipoCuenta[conductor] || "");
     } else {
       setPlaca('');
       setCedula("");
       setCuentaBancaria("");
+      setTipoCuenta("");
     }
   }, [conductor]);
 
@@ -114,11 +132,11 @@ const Transporte = () => {
 
   const totalValor =
     tipoServicio === 'canastas'
-      ? selectedOrigen.length * 100000
+      ? selectedOrigen.length > 0 ? 100000 : 0
       : selectedSedes.reduce((acc, sedeId) => {
-        const sede = sedesOptions.find((s) => s.id === sedeId);
-        return sede ? acc + sede.value : acc;
-      }, 0);
+          const sede = sedesOptions.find((s) => s.id === sedeId);
+          return sede ? acc + sede.value : acc;
+        }, 0);
 
   const formattedTotalValor = new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -133,7 +151,8 @@ const Transporte = () => {
     placa.trim() !== "" &&
     fechaViaje !== null &&
     ((tipoServicio === "canastas" && selectedOrigen.length > 0) ||
-      (tipoServicio === "transporte" && selectedSedes.length > 0));
+      (tipoServicio === "transporte" && selectedSedes.length > 0)) &&
+    tipoCuenta.trim() !== ""; // Se valida que el tipo de cuenta no esté vacío
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -146,16 +165,16 @@ const Transporte = () => {
     const origenFull =
       tipoServicio === 'canastas'
         ? selectedOrigen.map((id) => {
-          const sede = sedesOptions.find((s) => s.id === id);
-          return sede ? sede.name : id;
-        })
+            const sede = sedesOptions.find((s) => s.id === id);
+            return sede ? sede.name : id;
+          })
         : ["CEDI"];
     const sedesFull =
       tipoServicio === 'transporte'
         ? selectedSedes.map((id) => {
-          const sede = sedesOptions.find((s) => s.id === id);
-          return sede ? sede.name : id;
-        })
+            const sede = sedesOptions.find((s) => s.id === id);
+            return sede ? sede.name : id;
+          })
         : ["CEDI"];
 
     const confirmationMsg = `Por favor, revise los datos ingresados:
@@ -167,12 +186,13 @@ const Transporte = () => {
       Fecha de Viaje: ${fechaViaje ? fechaViaje.toISOString().split('T')[0] : "N/A"}
       Origen: ${origenFull.join(", ")}
       Sedes: ${sedesFull.join(", ")}
+      Tipo de Cuenta: ${tipoCuenta}
       Total Valor: ${formattedTotalValor}
       Observación: ${observacion}
       
       ¿Desea enviar el formulario?`;
 
-    // Aquí se ajusta la propiedad cuenta_bancaria:
+    // Se agrega la propiedad tipo_cuenta en el objeto pendingData
     setPendingData({
       fecha: fecha.toISOString().split('T')[0],
       tipo_formulario: tipoServicio,
@@ -181,6 +201,7 @@ const Transporte = () => {
       cedula: cedula,
       // Si cuentaBancaria es cadena vacía, se envía null en lugar de ""
       cuenta_bancaria: cuentaBancaria === "" ? null : cuentaBancaria,
+      tipo_cuenta: tipoCuenta,
       fecha_viaje: fechaViaje ? fechaViaje.toISOString().split('T')[0] : null,
       origen: origenFull,
       sedes: sedesFull,
@@ -190,7 +211,6 @@ const Transporte = () => {
     setConfirmationMessage(confirmationMsg);
     setShowConfirmation(true);
   };
-
 
   const handleConfirm = async () => {
     setShowConfirmation(false);
@@ -362,6 +382,31 @@ const Transporte = () => {
               </div>
 
               <div className="transporte-form-field">
+                <label className="transporte-label">Tipo de Cuenta:</label>
+                {conductor === 'otro' ? (
+                  <select
+                    className="transporte-select"
+                    value={tipoCuenta}
+                    onChange={(e) => setTipoCuenta(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>Seleccione tipo de cuenta</option>
+                    <option value="Ahorros">Ahorros</option>
+                    <option value="Nequi">Nequi</option>
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    className="transporte-input"
+                    value={tipoCuenta}
+                    readOnly
+                    style={{ userSelect: 'none' }}
+                    required
+                  />
+                )}
+              </div>
+
+              <div className="transporte-form-field">
                 <label className="transporte-label">Cuenta Bancaria:</label>
                 {conductor === 'otro' ? (
                   <input
@@ -370,7 +415,6 @@ const Transporte = () => {
                     placeholder="Ingrese cuenta bancaria"
                     value={cuentaBancaria}
                     onChange={(e) => setCuentaBancaria(e.target.value)}
-                 
                   />
                 ) : (
                   <input
@@ -382,7 +426,6 @@ const Transporte = () => {
                   />
                 )}
               </div>
-
             </div>
           )}
 

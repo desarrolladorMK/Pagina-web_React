@@ -73,6 +73,7 @@ const HistorialTransporte = () => {
       "conductor",
       "placa_vehiculo",
       "cedula",
+      "tipo_cuenta",
       "cuenta_bancaria",
       "fecha_viaje",
       "origen",
@@ -88,6 +89,7 @@ const HistorialTransporte = () => {
       conductor: reg.conductor,
       placa_vehiculo: reg.placa_vehiculo,
       cedula: reg.cedula,
+      tipo_cuenta: reg.tipo_cuenta,
       cuenta_bancaria: reg.cuenta_bancaria,
       fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : "-",
       origen: Array.isArray(reg.origen) ? reg.origen.join(", ") : reg.origen,
@@ -145,6 +147,11 @@ const HistorialTransporte = () => {
     {
       name: "Documento de identidad",
       selector: (row) => row.cedula,
+      wrap: true,
+    },
+    {
+      name: "Tipo de Cuenta",
+      selector: (row) => row.tipo_cuenta,
       wrap: true,
     },
     {
