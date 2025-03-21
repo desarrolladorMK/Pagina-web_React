@@ -505,7 +505,7 @@ const FormularioPerfil = () => {
               )}
             </div>
             <div className="perfil-field">
-              <label>10. Estatura (cm)</label>
+              <label>10. Estatura (cm)  Ejemplo: 170 (sin comas)</label>
               <input
                 {...register("estatura", {
                   pattern: {
@@ -949,7 +949,7 @@ const FormularioPerfil = () => {
               <label>30. Cargo Operativo</label>
               <select
                 {...register("cargoOperativo", {
-                  required: "Seleccione un cargo",
+                  
                 })}
                 className="perfil-select"
               >
