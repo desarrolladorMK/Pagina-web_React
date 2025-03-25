@@ -128,7 +128,7 @@ function ChatBot({ showInviteMessage = true }) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !loading) {
       if (isPQR) {
-        const whatsappLink = `https://wa.me/573103926576?text=${encodeURIComponent(message)}`;
+        const whatsappLink = `https://wa.me/573245597862?text=${encodeURIComponent(message)}`;
         setResponses((prev) => [
           ...prev,
           {
