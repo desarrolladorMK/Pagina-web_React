@@ -238,6 +238,15 @@ const Login = () => {
           { path: "/historialformulario", label: "Historial formulario Perfil" },
         ],
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_23 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_23 || "",
+        redirect: "/acceso", //auxiliarsst@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },
+          { path: "/historialformulario", label: "Historial formulario Perfil" },
+        ],
+      },
     ];
 
     const usuarioValido = credenciales.find(
