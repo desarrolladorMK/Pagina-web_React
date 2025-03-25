@@ -6,7 +6,7 @@ import { ChatBot } from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
-  const promocionesActivas = true;
+  const promocionesActivas = false;
 
   const openModal = (imgSrc) => {
     setModalImg(imgSrc);
