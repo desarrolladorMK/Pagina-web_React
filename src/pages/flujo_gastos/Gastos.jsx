@@ -613,26 +613,29 @@ const Gastos = () => {
     {
       name: "Voucher",
       cell: (row) => {
-        if (row.voucher) {
-          const nombreArchivo = row.voucher.split("/").pop();
-          const voucherUrl = `${SUPABASE_URL}/comprobante/${nombreArchivo}`;
+        if (Array.isArray(row.vouchers) && row.vouchers.length > 0) {
           return (
             <div style={{ textAlign: "center", width: "100%" }}>
-              <a
-                href={voucherUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="view-pdf-button"
-              >
-                Ver Voucher
-              </a>
+              {row.vouchers.map((url, index) => (
+                <div key={index} style={{ marginBottom: "4px" }}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="view-pdf-button"
+                  >
+                    Ver Voucher {index + 1}
+                  </a>
+                </div>
+              ))}
             </div>
           );
         } else {
-          return renderClickableCell("No hay voucher");
+          return renderClickableCell("No hay vouchers");
         }
       },
     },
+    
     {
       name: "Estado",
       cell: (row) => (

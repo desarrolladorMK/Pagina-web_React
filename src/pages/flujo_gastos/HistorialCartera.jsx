@@ -18,11 +18,12 @@ const HistorialCartera = () => {
   const [filteredHistorial, setFilteredHistorial] = useState([]);
   const [pendingNotifications, setPendingNotifications] = useState(new Set());
   const [sentVouchers, setSentVouchers] = useState(new Set());
-  // Estado para mostrar la cámara y el id seleccionado para capturar foto
   const [showWebcam, setShowWebcam] = useState(false);
   const [selectedIdForWebcam, setSelectedIdForWebcam] = useState(null);
   const [cameraFacingMode, setCameraFacingMode] = useState("environment");
-
+  const [showVoucherModal, setShowVoucherModal] = useState(false);
+  const [selectedVouchers, setSelectedVouchers] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
@@ -85,139 +86,78 @@ const HistorialCartera = () => {
 
   const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
 
-  // Función para adjuntar voucher (usada tanto para dropzone como para webcam)
   const onDropVoucher = useCallback((acceptedFiles, id) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
+    const gastoActual = historial.find(item => item.id === id);
+    const cantidadActual = gastoActual?.vouchers?.length || 0;
+  
+    if (cantidadActual >= 4) {
+      toast.warning("Solo puedes adjuntar hasta 4 vouchers.");
+      return;
+    }
+  
+    const disponibles = 4 - cantidadActual;
+    const filesToUpload = acceptedFiles.slice(0, disponibles);
+  
     const formData = new FormData();
-    formData.append('voucher', file);
+    filesToUpload.forEach(file => formData.append('vouchers', file));
     formData.append('id', id);
     formData.append('correo_empleado', currentUserEmail);
-
-    axios.post(`${UPDATE_URL}/adjuntarVoucher`, formData, {
+  
+    axios.post(`${UPDATE_URL}/adjuntarVouchers`, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
       .then(response => {
         if (response.status === 200) {
+          const nuevosVouchers = response.data.archivos_comprobantes;
           setHistorial(prev =>
             prev.map(item =>
-              item.id === id ? { ...item, voucher: response.data.archivo_comprobante } : item
+              item.id === id
+                ? { ...item, vouchers: [...(item.vouchers || []), ...nuevosVouchers] }
+                : item
             )
           );
           setPendingNotifications(prev => new Set(prev).add(id));
           const gasto = historial.find(item => item.id === id);
-          const nombreCompleto = gasto?.nombre_completo || "Usuario desconocido";
-          const correo_empleado = gasto?.correo_empleado;
-          toast.info(
-            <VoucherNotification id={id} nombreCompleto={nombreCompleto} correo_empleado={correo_empleado} />,
-            {
-              position: "bottom-right",
-              autoClose: false,
-              closeOnClick: false,
-              draggable: true,
-              toastId: `voucher-${id}`,
-            }
-          );
+          toast.info(<VoucherNotification id={id} nombreCompleto={gasto?.nombre_completo} correo_empleado={gasto?.correo_empleado} />, {
+            position: "bottom-right",
+            autoClose: false,
+            closeOnClick: false,
+            draggable: true,
+            toastId: `voucher-${id}`
+          });
         }
       })
       .catch(error => {
-        console.error("Error al subir el voucher:", error);
-        toast.error("Error al subir el voucher.");
+        console.error("Error al subir los vouchers:", error);
+        toast.error("Error al subir los vouchers.");
       });
-  }, [UPDATE_URL, currentUserEmail, historial, sentVouchers]);
+  }, [UPDATE_URL, currentUserEmail, historial]);  
 
-  const handleDeleteVoucher = async (id) => {
-    try {
-      const response = await axios.put(`${UPDATE_URL}/${id}`, { voucher: null });
-      if (response.status === 200) {
-        setHistorial(prev =>
-          prev.map(item =>
-            item.id === id ? { ...item, voucher: null } : item
-          )
-        );
-        setPendingNotifications(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
-        const updatedResponse = await axios.get(API_URL);
-        if (updatedResponse.status === 200) {
-          const updatedData = updatedResponse.data.data || [];
-          setHistorial(updatedData);
-          setFilteredHistorial(updatedData);
-        }
-        toast.success("Voucher eliminado correctamente.");
-      } else {
-        throw new Error(`Respuesta inesperada del servidor: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Error al eliminar el voucher:", error.response?.data || error.message);
-      toast.error(`Error al eliminar el voucher: ${error.message}`);
-    }
-  };
-
-  const handleSendVoucher = async (id, correo_empleado) => {
-    if (sentVouchers.has(id)) return;
-    try {
-      setSentVouchers(prev => new Set(prev).add(id));
-      const response = await axios.post(`${UPDATE_URL}/enviarVoucher`, { id, correo_empleado });
-      if (response.status === 200) {
-        setPendingNotifications(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
-        toast.success("Voucher enviado al correo del solicitante.");
-        toast.dismiss(`voucher-${id}`);
-      }
-    } catch (error) {
-      console.error("Error al enviar el voucher:", error);
-      toast.error("Error al enviar el voucher.");
-      setSentVouchers(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet;
-      });
-    }
-  };
-
-  const FileDropzone = ({ id, hidePrompt = false }) => {
+  const FileDropzone = ({ id }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop: acceptedFiles => onDropVoucher(acceptedFiles, id),
-      multiple: false,
+      multiple: true,
       accept: { 'image/*': [], 'application/pdf': [] }
     });
-
     return (
       <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
         <input {...getInputProps()} capture="environment" />
-        {!hidePrompt && (
-          isDragActive ? (
-            <p>Suelta el archivo aquí...</p>
-          ) : (
-            <p>Arrastra un archivo o toma una foto.</p>
-          )
-        )}
+        {isDragActive ? <p>Suelta aquí</p> : <p>Adjuntar</p>}
       </div>
     );
   };
 
-
-  // Componente para notificación de voucher
   const VoucherNotification = ({ id, nombreCompleto, correo_empleado }) => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-    const handleClick = () => {
-      if (!isButtonDisabled) {
-        setIsButtonDisabled(true);
-        handleSendVoucher(id, correo_empleado);
-      }
-    };
     return (
       <div>
         Voucher asignado para {nombreCompleto}.<br />
         <button
           className="toast-send-button"
-          onClick={handleClick}
+          onClick={() => {
+            setIsButtonDisabled(true);
+            handleSendVoucher(id, correo_empleado);
+          }}
           disabled={isButtonDisabled || sentVouchers.has(id)}
         >
           Enviar notificación
@@ -226,23 +166,62 @@ const HistorialCartera = () => {
     );
   };
 
-  // Función para activar la cámara mediante webcam
+  const handleSendVoucher = async (id, correo_empleado) => {
+    if (sentVouchers.has(id)) return;
+    try {
+      setSentVouchers(prev => new Set(prev).add(id));
+      const response = await axios.post(`${UPDATE_URL}/enviarVouchers`, { id, correo_empleado });
+      if (response.status === 200) {
+        setPendingNotifications(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        toast.success("Vouchers enviados al correo del solicitante.");
+        toast.dismiss(`voucher-${id}`);
+      }
+    } catch (error) {
+      console.error("Error al enviar los vouchers:", error);
+      toast.error("Error al enviar los vouchers.");
+      setSentVouchers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    }
+  };
+
+  const handleDeleteVoucherFile = async (id, voucherURL) => {
+    try {
+      const response = await axios.post(`${UPDATE_URL}/eliminarVoucher`, { id, voucherURL });
+      if (response.status === 200) {
+        const nuevosVouchers = response.data.nuevosVouchers;
+        setHistorial(prev =>
+          prev.map(item =>
+            item.id === id ? { ...item, vouchers: nuevosVouchers } : item
+          )
+        );
+        setSelectedVouchers(nuevosVouchers);
+        toast.success("Voucher eliminado correctamente.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar voucher:", error);
+      toast.error("Error al eliminar el voucher.");
+    }
+  };
+
   const handleUseWebcam = (id) => {
     setSelectedIdForWebcam(id);
     setShowWebcam(true);
   };
 
-  // Función para capturar imagen desde la webcam y enviarla
   const handleCaptureWebcam = async () => {
     if (webcamRef.current) {
       const screenshot = webcamRef.current.getScreenshot();
       if (screenshot && selectedIdForWebcam) {
-        // Convertir dataURL a blob
         const res = await fetch(screenshot);
         const blob = await res.blob();
-        // Crear un File a partir del blob
         const file = new File([blob], "captura.jpg", { type: blob.type });
-        // Llamar onDropVoucher con este file
         onDropVoucher([file], selectedIdForWebcam);
         setShowWebcam(false);
         setSelectedIdForWebcam(null);
@@ -264,37 +243,89 @@ const HistorialCartera = () => {
     }
   };
 
-  if (errorMessage)
-    return <div className="cartera-historial"><p>Error: {errorMessage}</p></div>;
+  const openVoucherModal = (vouchers, id) => {
+    setSelectedVouchers(vouchers || []);
+    setSelectedId(id);
+    setShowVoucherModal(true);
+  };
+
+  const closeVoucherModal = () => {
+    setShowVoucherModal(false);
+    setSelectedVouchers([]);
+    setSelectedId(null);
+  };
+
+  const VoucherSection = ({ vouchers, id }) => {
+    return (
+      <div className="voucher-section">
+        <button 
+          className="view-vouchers-button" 
+          onClick={() => openVoucherModal(vouchers, id)}
+        >
+          Ver vouchers ({vouchers?.length || 0})
+        </button>
+        <div className="voucher-actions">
+          <FileDropzone id={id} />
+          <button 
+            className="webcam-button" 
+            onClick={() => handleUseWebcam(id)}
+          >
+            📷
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const VoucherModal = ({ vouchers, id, onClose }) => {
+    return (
+      <div className="voucher-modal">
+        <div className="voucher-modal-content">
+          <h3>Vouchers Adjuntados</h3>
+          <div className="vouchers-list">
+            {vouchers.length > 0 ? (
+              vouchers.map((url, idx) => (
+                <div key={idx} className="voucher-item">
+                  <a 
+                    href={`${SUPABASE_URL}/comprobante/${url.split("/").pop()}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="view-pdf-button"
+                  >
+                    Voucher {idx + 1}
+                  </a>
+                  <button 
+                    className="delete-voucher-button"
+                    onClick={() => handleDeleteVoucherFile(id, url)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>No hay vouchers adjuntados.</p>
+            )}
+          </div>
+          <button className="close-modal-button" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  if (errorMessage) return <div className="cartera-historial"><p className="cartera-error-message">Error: {errorMessage}</p></div>;
 
   return (
     <div className="cartera-historial">
       <h2>Historial de Cartera</h2>
-
       <div className="busqueda-export-container">
         <div className="busqueda-container">
-          <button
-            className="busqueda-boton"
-            onClick={() => {
-              setShowSearchInput(!showSearchInput);
-              if (showSearchInput) setSearchQuery('');
-            }}
-          >
-            🔍
-          </button>
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={`busqueda-input ${showSearchInput ? 'active' : ''}`}
-          />
+          <button className="busqueda-boton" onClick={() => { setShowSearchInput(!showSearchInput); if (showSearchInput) setSearchQuery(''); }}>🔍</button>
+          <input type="text" placeholder="Buscar..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className={`busqueda-input ${showSearchInput ? 'active' : ''}`} />
         </div>
-        <button className="excel-button-cartera" onClick={exportToExcel}>
-          Exportar a Excel
-        </button>
+        <button className="excel-button-cartera" onClick={exportToExcel}>Exportar a Excel</button>
       </div>
-
       <div id="cartera-historial" className="cartera-historial-table desplegado">
         <div className="scroll-container-wrapper">
           <button className="scroll-button left" onClick={scrollLeft}>‹</button>
@@ -323,9 +354,9 @@ const HistorialCartera = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredHistorial.map((gasto) => (
+                {filteredHistorial.map(gasto => (
                   <tr key={gasto.id}>
-                    <td>{gasto.fecha_creacion ? gasto.fecha_creacion.slice(0, 10) : ''}</td>
+                    <td>{gasto.fecha_creacion?.slice(0, 10)}</td>
                     <td>{gasto.nombre_completo}</td>
                     <td>{gasto.area}</td>
                     <td>{gasto.procesos}</td>
@@ -336,88 +367,12 @@ const HistorialCartera = () => {
                     <td>{formatoCOP.format(gasto.monto_estimado)}</td>
                     <td>{gasto.monto_sede}</td>
                     <td>{formatoCOP.format(gasto.anticipo)}</td>
-                    <td>{gasto.tiempo_fecha_pago ? gasto.tiempo_fecha_pago.slice(0, 10) : "No especificado"}</td>
+                    <td>{gasto.tiempo_fecha_pago?.slice(0, 10) || "No especificado"}</td>
+                    <td>{gasto.archivo_cotizacion && <a href={`${SUPABASE_URL}/cotizaciones/${gasto.archivo_cotizacion.split("/").pop()}`} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>}</td>
                     <td>
-                      {gasto.archivo_cotizacion && (
-                        <a
-                          href={`${SUPABASE_URL}/cotizaciones/${gasto.archivo_cotizacion.split("/").pop()}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="view-pdf-button"
-                        >
-                          Ver
-                        </a>
-                      )}
+                      <VoucherSection vouchers={gasto.vouchers} id={gasto.id} />
                     </td>
-                    <td>
-                      {gasto.voucher ? (
-                        <>
-                          <a
-                            href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="view-pdf-button"
-                          >
-                            Ver Voucher
-                          </a>
-                          <br />
-                          <button
-                            className="delete-voucher-button"
-                            onClick={() => handleDeleteVoucher(gasto.id)}
-                          >
-                            Eliminar Voucher
-                          </button>
-                          <button
-                            className="webcam-button"
-                            onClick={() => handleUseWebcam(gasto.id)}
-                          >
-                            Usar cámara
-                          </button>
-                          {/* Si ya existe un voucher, se oculta el mensaje en el dropzone */}
-                          <FileDropzone id={gasto.id} hidePrompt={true} />
-                        </>
-                      ) : (
-                        <>
-                          <FileDropzone id={gasto.id} hidePrompt={false} />
-                          <button
-                            className="webcam-button"
-                            onClick={() => handleUseWebcam(gasto.id)}
-                          >
-                            Usar cámara
-                          </button>
-                        </>
-                      )}
-                    </td>
-
-                    <td>
-                      {gasto.archivos_proveedor ? (
-                        Array.isArray(JSON.parse(gasto.archivos_proveedor)) ? (
-                          JSON.parse(gasto.archivos_proveedor).map((url, index) => (
-                            <div key={index}>
-                              <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="view-pdf-button"
-                              >
-                                Ver
-                              </a>
-                            </div>
-                          ))
-                        ) : (
-                          <a
-                            href={gasto.archivos_proveedor}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="view-pdf-button"
-                          >
-                            Ver
-                          </a>
-                        )
-                      ) : (
-                        <span>No hay archivos de proveedor</span>
-                      )}
-                    </td>
+                    <td>{gasto.archivos_proveedor ? JSON.parse(gasto.archivos_proveedor).map((url, i) => <div key={i}><a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a></div>) : <span>No hay archivos de proveedor</span>}</td>
                     <td>{gasto.observacion || "Sin observación"}</td>
                     <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
                     <td>{gasto.observacionC || "Sin observación"}</td>
@@ -430,30 +385,16 @@ const HistorialCartera = () => {
         </div>
       </div>
 
-      {/* Se muestra la cámara cuando showWebcam es true */}
       {showWebcam && (
         <div className="webcam-modal">
           <div className="camera-selector">
             <label htmlFor="cameraMode">Seleccionar cámara:</label>
-            <select
-              id="cameraMode"
-              value={cameraFacingMode}
-              onChange={(e) => setCameraFacingMode(e.target.value)}
-              style={{ margin: '10px 0', padding: '5px' }}
-            >
+            <select id="cameraMode" value={cameraFacingMode} onChange={(e) => setCameraFacingMode(e.target.value)} style={{ margin: '10px 0', padding: '5px' }}>
               <option value="user">Frontal</option>
               <option value="environment">Trasera</option>
             </select>
           </div>
-
-          <ReactWebcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            videoConstraints={{ facingMode: cameraFacingMode }}
-            style={{ width: "100%", maxWidth: "480px" }}
-          />
-
+          <ReactWebcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" videoConstraints={{ facingMode: cameraFacingMode }} style={{ width: "100%", maxWidth: "480px" }} />
           <div className="webcam-controls">
             <button onClick={handleCaptureWebcam}>Capturar foto</button>
             <button onClick={handleCancelWebcam}>Cancelar</button>
@@ -461,6 +402,13 @@ const HistorialCartera = () => {
         </div>
       )}
 
+      {showVoucherModal && (
+        <VoucherModal 
+          vouchers={selectedVouchers} 
+          id={selectedId} 
+          onClose={closeVoucherModal} 
+        />
+      )}
 
       <ToastContainer />
     </div>
