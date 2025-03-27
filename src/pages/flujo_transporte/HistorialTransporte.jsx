@@ -55,7 +55,7 @@ const HistorialTransporte = () => {
       if (res.status === 200) {
         setUpdateMessage({ type: "success", text: "Registro actualizado correctamente" });
         setRegistros((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, ...res.data.data } : r)) // Usar datos del backend
+          prev.map((r) => (r.id === id ? { ...r, ...res.data.data } : r))
         );
         setEditingId(null);
       } else {
@@ -83,6 +83,7 @@ const HistorialTransporte = () => {
       "estado",
       "observacion_anny",
     ];
+
     const exportData = registros.map((reg) => ({
       fecha: reg.fecha ? reg.fecha.slice(0, 10) : "-",
       tipo_formulario: reg.tipo_formulario,
@@ -94,15 +95,12 @@ const HistorialTransporte = () => {
       fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : "-",
       origen: Array.isArray(reg.origen) ? reg.origen.join(", ") : reg.origen,
       sedes: Array.isArray(reg.sedes) ? reg.sedes.join(", ") : reg.sedes,
-      valor_total: new Intl.NumberFormat("es-CO", {
-        style: "currency",
-        currency: "COP",
-        minimumFractionDigits: 0,
-      }).format(reg.valor_total),
+      valor_total: reg.valor_total, // EXPORTA COMO NÚMERO ✔️
       observacion: reg.observacion,
       estado: reg.estado || "Pendiente",
       observacion_anny: reg.observacion_anny || "",
     }));
+
     const worksheet = XLSX.utils.json_to_sheet(exportData, { header: headers });
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "HistorialTransporte");
@@ -339,7 +337,7 @@ const HistorialTransporte = () => {
         striped
         responsive
         customStyles={customStyles}
-        keyField="id" // Clave única para mantener el orden
+        keyField="id"
       />
       <button onClick={handleExportExcel} className="excel-button">
         Exportar a Excel
