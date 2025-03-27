@@ -51,16 +51,16 @@ const conductorPlacas = {
 };
 
 const conductorDatos = {
-  conductor1: { cedula: "1035418709", cuenta: "3217203306" },
+  conductor1: { cedula: "1035418709", cuenta: "3216376176" },
   conductor2: { cedula: "1041328787", cuenta: "60959324231" },
   conductor3: { cedula: "1001244007", cuenta: "3116950743" },
-  conductor4: { cedula: "15507093", cuenta: "" },
-  conductor5: { cedula: "3482971", cuenta: "" },
-  conductor6: { cedula: "1216713188", cuenta: "" },
-  conductor7: { cedula: "1001463806", cuenta: "" },
-  conductor8: { cedula: "15516297", cuenta: "" },
-  conductor9: { cedula: "1020482654", cuenta: "" },
-  conductor10: { cedula: "15516827", cuenta: "" },
+  conductor4: { cedula: "15507093", cuenta: "0" },
+  conductor5: { cedula: "3482971", cuenta: "0" },
+  conductor6: { cedula: "1216713188", cuenta: "0" },
+  conductor7: { cedula: "1001463806", cuenta: "0" },
+  conductor8: { cedula: "15516297", cuenta: "0" },
+  conductor9: { cedula: "1020482654", cuenta: "0" },
+  conductor10: { cedula: "15516827", cuenta: "0" },
 };
 
 // Mapeo para autocompletar el tipo de cuenta según el conductor
@@ -68,13 +68,13 @@ const conductorTipoCuenta = {
   conductor1: 'Nequi',
   conductor2: 'Ahorros',
   conductor3: 'Nequi',
-  conductor4: '',
-  conductor5: '',
-  conductor6: '',
-  conductor7: '',
-  conductor8: '',
-  conductor9: '',
-  conductor10: '',
+  conductor4: 'Null',
+  conductor5: 'Null',
+  conductor6: 'Null',
+  conductor7: 'Null',
+  conductor8: 'Null',
+  conductor9: 'Null',
+  conductor10: 'Null',
 };
 
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
