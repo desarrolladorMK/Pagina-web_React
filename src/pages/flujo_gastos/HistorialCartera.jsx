@@ -21,6 +21,8 @@ const HistorialCartera = () => {
   // Estado para mostrar la cámara y el id seleccionado para capturar foto
   const [showWebcam, setShowWebcam] = useState(false);
   const [selectedIdForWebcam, setSelectedIdForWebcam] = useState(null);
+  const [cameraFacingMode, setCameraFacingMode] = useState("environment");
+
 
   const API_URL = "https://backend-gastos.vercel.app/api/requerimientos/obtenerRequerimientos";
   const UPDATE_URL = "https://backend-gastos.vercel.app/api/requerimientos";
@@ -66,7 +68,7 @@ const HistorialCartera = () => {
       return;
     }
     const fuse = new Fuse(historial, {
-      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos, '],
+      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos', 'estado'],
       threshold: 0.3,
       includeScore: true,
     });
@@ -431,18 +433,34 @@ const HistorialCartera = () => {
       {/* Se muestra la cámara cuando showWebcam es true */}
       {showWebcam && (
         <div className="webcam-modal">
+          <div className="camera-selector">
+            <label htmlFor="cameraMode">Seleccionar cámara:</label>
+            <select
+              id="cameraMode"
+              value={cameraFacingMode}
+              onChange={(e) => setCameraFacingMode(e.target.value)}
+              style={{ margin: '10px 0', padding: '5px' }}
+            >
+              <option value="user">Frontal</option>
+              <option value="environment">Trasera</option>
+            </select>
+          </div>
+
           <ReactWebcam
             audio={false}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
-            videoConstraints={{ facingMode: "user" }}
+            videoConstraints={{ facingMode: cameraFacingMode }}
+            style={{ width: "100%", maxWidth: "480px" }}
           />
+
           <div className="webcam-controls">
             <button onClick={handleCaptureWebcam}>Capturar foto</button>
             <button onClick={handleCancelWebcam}>Cancelar</button>
           </div>
         </div>
       )}
+
 
       <ToastContainer />
     </div>
