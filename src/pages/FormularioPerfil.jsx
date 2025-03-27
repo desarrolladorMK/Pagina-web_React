@@ -1339,7 +1339,7 @@ const FormularioPerfil = () => {
       ref={formRef}
       onSubmit={handleSubmit(onSubmit)}
       className="formulario-perfil"
-      lang="en"
+      lang="es"
     >
       <div className="logo-container">
         <a href="/">
