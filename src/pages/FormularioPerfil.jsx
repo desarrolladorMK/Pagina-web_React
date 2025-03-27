@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"; // Añadimos useEffect
 import { useForm, Controller } from "react-hook-form";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import {
   FaUser,
   FaHome,
@@ -91,21 +89,6 @@ const FormularioPerfil = () => {
   const tieneHijos = watch("tieneHijos");
   const formRef = useRef(null);
 
-  // Crear un contenedor para el portal del DatePicker
-  const [portalContainer, setPortalContainer] = useState(null);
-
-  useEffect(() => {
-    // Crear un div para el portal y añadirlo al body
-    const div = document.createElement("div");
-    div.id = "datepicker-portal";
-    document.body.appendChild(div);
-    setPortalContainer(div);
-
-    // Limpiar al desmontar el componente
-    return () => {
-      document.body.removeChild(div);
-    };
-  }, []);
 
   const onSubmit = async (data) => {
     const isValid = await trigger();
@@ -137,13 +120,10 @@ const FormularioPerfil = () => {
 
     const formattedData = {
       ...data,
-      fechaNacimiento: data.fechaNacimiento
-        ? data.fechaNacimiento.toISOString().slice(0, 10)
-        : "",
-      fechaIngresoEmpresa: data.fechaIngresoEmpresa
-        ? data.fechaIngresoEmpresa.toISOString().slice(0, 10)
-        : "",
+      fechaNacimiento: data.fechaNacimiento || "",
+      fechaIngresoEmpresa: data.fechaIngresoEmpresa || "",
     };
+    
     console.log("Datos del formulario:", formattedData);
     try {
       const response = await fetch(
@@ -424,30 +404,12 @@ const FormularioPerfil = () => {
             </div>
             <div className="perfil-field">
               <label>6. Fecha de Nacimiento</label>
-              <Controller
-                control={control}
-                name="fechaNacimiento"
-                rules={{ required: "Campo obligatorio" }}
-                render={({ field }) => (
-                  <DatePicker
-                    selected={field.value}
-                    onChange={(date) => field.onChange(date)}
-                    dateFormat="yyyy-MM-dd" // Formato esperado
-                    className="perfil-input"
-                    placeholderText="AAAA-MM-DD"
-                    portalId="datepicker-portal"
-                    popperContainer={({ children }) =>
-                      portalContainer && children
-                    }
-                    showMonthDropdown // Habilitar dropdown de meses
-                    showYearDropdown // Habilitar dropdown de años
-                    dropdownMode="select" // Hacer que los dropdowns sean selectores en lugar de scroll
-                    minDate={new Date("1900-01-01")} // Fecha mínima razonable para nacimiento
-                    maxDate={new Date()} // Fecha máxima: hoy
-                    yearDropdownItemNumber={100} // Mostrar 100 años en el dropdown de años
-                    locale={es}
-                  />
-                )}
+              <input
+                {...register("fechaNacimiento", {
+                  required: "Campo obligatorio",
+                })}
+                type="date"
+                className="perfil-input"
               />
               <p className="date-instruction" style={{ color: "grey" }}>
                 (por ejemplo, 1990-05-15)
@@ -505,7 +467,7 @@ const FormularioPerfil = () => {
               )}
             </div>
             <div className="perfil-field">
-              <label>10. Estatura (cm)  Ejemplo: 170 (sin comas)</label>
+              <label>10. Estatura (cm) Ejemplo: 170 (sin comas)</label>
               <input
                 {...register("estatura", {
                   pattern: {
@@ -882,35 +844,18 @@ const FormularioPerfil = () => {
             </div>
             <div className="perfil-field">
               <label>28. Fecha de Ingreso a la Empresa</label>
-              <Controller
-                control={control}
-                name="fechaIngresoEmpresa"
-                rules={{ required: "Campo obligatorio" }}
-                render={({ field }) => (
-                  <DatePicker
-                    selected={field.value}
-                    onChange={(date) => field.onChange(date)}
-                    dateFormat="yyyy-MM-dd"
-                    className="perfil-input"
-                    placeholderText="Selecciona una fecha o escribe en formato AAAA-MM-DD"
-                    portalId="datepicker-portal"
-                    popperContainer={({ children }) => portalContainer && children}
-                    showMonthDropdown
-                    showYearDropdown
-                    dropdownMode="select"
-                    minDate={new Date("1900-01-01")}
-                    maxDate={new Date()}
-                    yearDropdownItemNumber={100}
-                    locale={es}
-                  />
-                )}
+              <input
+                {...register("fechaIngresoEmpresa", {
+                  required: "Campo obligatorio",
+                })}
+                type="date"
+                className="perfil-input"
               />
               {errors.fechaIngresoEmpresa && (
-                <p className="error-text" style={{ color: 'red' }}>
+                <p className="error-text" style={{ color: "red" }}>
                   {errors.fechaIngresoEmpresa.message}
                 </p>
               )}
-
             </div>
           </section>
         );
@@ -948,9 +893,7 @@ const FormularioPerfil = () => {
             <div className="perfil-field">
               <label>30. Cargo Operativo</label>
               <select
-                {...register("cargoOperativo", {
-                  
-                })}
+                {...register("cargoOperativo", {})}
                 className="perfil-select"
               >
                 <option value="">Seleccione...</option>

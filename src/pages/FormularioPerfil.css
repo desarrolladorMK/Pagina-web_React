@@ -35,16 +35,33 @@
 }
 
 .progress-bar {
-  height: 10px;
-  background-color: #89dc00;
-  border-radius: 5px;
-  transition: width 0.3s ease;
+  height: 12px; /* Aumentado ligeramente para mejor visibilidad */
+  background: linear-gradient(to right, #89dc00, #6bb300); /* Gradiente verde */
+  border-radius: 6px; /* Bordes más suaves */
+  box-shadow: 0 2px 4px rgba(137, 220, 0, 0.3); /* Sombra verde sutil */
+  transition: width 0.4s ease-in-out; /* Transición más suave */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fondo gris para la parte no completada */
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0; /* Gris claro como base */
+  z-index: -1; /* Debajo del verde */
+  border-radius: 6px;
 }
 
 .progress-container p {
   margin-top: 0.5rem;
   font-size: 1rem;
   color: #210d65;
+  font-weight: 500; /* Negrita ligera para destacar */
 }
 
 /* Secciones */
