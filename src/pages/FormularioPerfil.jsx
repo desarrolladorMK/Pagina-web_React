@@ -34,7 +34,7 @@ const FormularioPerfil = () => {
       numeroDocumento: "",
       celular: "",
       correo: "",
-      fechaNacimiento: null,
+      fechaNacimiento: "",
       ciudadNacimiento: "",
       edad: "",
       peso: "",
@@ -56,7 +56,7 @@ const FormularioPerfil = () => {
       gradoEscolaridad: "",
       estadoCivil: "",
       tipoContrato: "",
-      fechaIngresoEmpresa: null,
+      fechaIngresoEmpresa: "",
       sede: "",
       cargoOperativo: "",
       departamentoOperaciones: "",
@@ -123,7 +123,7 @@ const FormularioPerfil = () => {
       fechaNacimiento: data.fechaNacimiento || "",
       fechaIngresoEmpresa: data.fechaIngresoEmpresa || "",
     };
-    
+
     console.log("Datos del formulario:", formattedData);
     try {
       const response = await fetch(
