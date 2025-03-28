@@ -593,23 +593,26 @@
   color: white;
 }
 
-
+.cartera-historial-table a:hover {
+  text-decoration: underline;
+  
+}
 
 /* =============================== */
 /*   Estilos para Estado Cartera   */
 /* =============================== */
 .estado-cartera-pendiente {
-  background-color: #fff3cd; /* Amarillo claro */
+  background-color: #ebd076e3; /* Amarillo claro */
   color: #856404;
 }
 
 .estado-cartera-anticipo {
-  background-color: #cce5ff; /* Azul claro */
+  background-color: #7db3ece7; /* Azul claro */
   color: #004085;
 }
 
 .estado-cartera-cancelado {
-  background-color: #d4edda; /* Verde claro */
+  background-color:  #5aff81b6; /* Verde claro */
   color: #155724;
 }
 

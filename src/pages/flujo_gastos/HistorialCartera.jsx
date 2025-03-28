@@ -380,11 +380,11 @@ const HistorialCartera = () => {
                   <th>Anticipo</th>
                   <th>Tiempo/Fecha Pago</th>
                   <th>Cotización</th>
-                  <th>Voucher</th>
                   <th>Proveedor</th>
+                  <th>Voucher</th>
+                  <th>Estado Cartera</th>
                   <th>Observación</th>
                   <th>Estado</th>
-                  <th>Estado Cartera</th>
                   <th>Observación Claudia</th>
                 </tr>
               </thead>
@@ -404,12 +404,10 @@ const HistorialCartera = () => {
                     <td>{formatoCOP.format(gasto.anticipo)}</td>
                     <td>{gasto.tiempo_fecha_pago?.slice(0, 10) || "No especificado"}</td>
                     <td>{gasto.archivo_cotizacion && <a href={`${SUPABASE_URL}/cotizaciones/${gasto.archivo_cotizacion.split("/").pop()}`} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a>}</td>
+                    <td>{gasto.archivos_proveedor ? JSON.parse(gasto.archivos_proveedor).map((url, i) => <div key={i}><a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a></div>) : <span>No hay archivos de proveedor</span>}</td>
                     <td>
                       <VoucherSection vouchers={gasto.vouchers} id={gasto.id} />
                     </td>
-                    <td>{gasto.archivos_proveedor ? JSON.parse(gasto.archivos_proveedor).map((url, i) => <div key={i}><a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a></div>) : <span>No hay archivos de proveedor</span>}</td>
-                    <td>{gasto.observacion || "Sin observación"}</td>
-                    <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
                     <td className={getEstadoCarteraClass(gasto.estado_cartera)}>
                       <select
                         value={gasto.estado_cartera}
@@ -421,6 +419,9 @@ const HistorialCartera = () => {
                         <option value="Cancelado">Cancelado</option>
                       </select>
                     </td>
+                    <td>{gasto.observacion || "Sin observación"}</td>
+                    <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
+                   
                     <td>{gasto.observacionC || "Sin observación"}</td>
                   </tr>
                 ))}
