@@ -290,17 +290,110 @@
 }
 
 /* =============================== */
+/*   Estilos para Voucher Section  */
+/* =============================== */
+.voucher-section {
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.view-vouchers-button {
+  padding: 4px 8px;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.view-vouchers-button:hover {
+  background-color: var(--hover-color);
+}
+
+.voucher-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* =============================== */
+/*   Estilos para Voucher Modal    */
+/* =============================== */
+.voucher-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.voucher-modal-content {
+  background-color: var(--light-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.voucher-modal-content h3 {
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+}
+
+.vouchers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voucher-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.close-modal-button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.close-modal-button:hover {
+  background-color: var(--hover-color);
+}
+
+/* =============================== */
 /*   Estilos para Dropzone/File    */
 /* =============================== */
 .dropzone {
   border: 2px dashed var(--border-color);
   border-radius: 6px;
-  padding: 15px;
+  padding: 4px 8px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.3s ease, background-color 0.3s ease;
   color: var(--text-color);
-  margin: 10px auto;
+  font-size: 0.8rem;
+  min-height: 30px;
+  width: 80px;
 }
 
 .dropzone:hover {
@@ -315,26 +408,42 @@
 
 .dropzone p {
   margin: 0;
-  font-size: 0.9rem;
 }
 
 /* =============================== */
 /*   Botón para eliminar Voucher   */
 /* =============================== */
 .delete-voucher-button {
-  margin-top: 8px;
-  padding: 6px 12px;
+  padding: 4px 8px;
   background-color: var(--error-color);
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: background-color 0.3s ease;
 }
 
 .delete-voucher-button:hover {
   background-color: #c5303e;
+}
+
+/* =============================== */
+/*   Estilos para Webcam Button    */
+/* =============================== */
+.webcam-button {
+  padding: 4px 8px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.webcam-button:hover {
+  background-color: var(--hover-color);
 }
 
 /* =============================== */
@@ -452,25 +561,40 @@
   opacity: 0.7;
 }
 
-.webcam-button {
-  padding: 8px 16px;
+
+
+/* =============================== */
+/*   Estilos para Botón Ver PDF    */
+/* =============================== */
+.view-pdf-button {
+  display: inline-block;
+  padding: 4px 8px;
   background-color: var(--secondary-color);
-  color: #fff;
-  border: none;
+  color: white;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
 }
 
-.webcam-button:hover {
+.view-pdf-button:hover {
   background-color: var(--hover-color);
-  transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
 }
 
-.webcam-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.7;
+/* Especificidad para la columna Cotización */
+.cartera-historial-table td:nth-child(13) .view-pdf-button {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.cartera-historial-table td:nth-child(13) .view-pdf-button:hover {
+  background-color: var(--hover-color);
+  color: white;
 }
