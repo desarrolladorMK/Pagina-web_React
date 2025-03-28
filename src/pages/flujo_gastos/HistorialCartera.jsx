@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactWebcam from 'react-webcam';
+import { FaSearchPlus } from "react-icons/fa"; // Importamos el nuevo ícono
 
 const HistorialCartera = () => {
   const currentUserEmail = sessionStorage.getItem("correo_empleado");
@@ -14,7 +15,7 @@ const HistorialCartera = () => {
   const [historial, setHistorial] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState('');
-  const [showSearchInput, setShowSearchInput] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // Nuevo estado para el buscador
   const [filteredHistorial, setFilteredHistorial] = useState([]);
   const [pendingNotifications, setPendingNotifications] = useState(new Set());
   const [sentVouchers, setSentVouchers] = useState(new Set());
@@ -50,7 +51,6 @@ const HistorialCartera = () => {
         const response = await axios.get(API_URL);
         if (response.status === 200) {
           const data = response.data.data || [];
-          // Aseguramos que cada elemento tenga un estado_cartera por defecto
           const updatedData = data.map(item => ({
             ...item,
             estado_cartera: item.estado_cartera || "Pendiente"
@@ -289,6 +289,11 @@ const HistorialCartera = () => {
     setSelectedId(null);
   };
 
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (isSearchOpen) setSearchQuery("");
+  };
+
   const VoucherSection = ({ vouchers, id }) => {
     return (
       <div className="voucher-section">
@@ -354,9 +359,18 @@ const HistorialCartera = () => {
     <div className="cartera-historial">
       <h2>Historial de Cartera</h2>
       <div className="busqueda-export-container">
-        <div className="busqueda-container">
-          <button className="busqueda-boton" onClick={() => { setShowSearchInput(!showSearchInput); if (showSearchInput) setSearchQuery(''); }}>🔍</button>
-          <input type="text" placeholder="Buscar..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className={`busqueda-input ${showSearchInput ? 'active' : ''}`} />
+        <div className="search-container">
+          <button className="search-toggle" onClick={toggleSearch}>
+            <FaSearchPlus />
+          </button>
+          <input
+            type="text"
+            placeholder="Buscar en todos los campos..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`search-input ${isSearchOpen ? "visible" : ""}`}
+            onBlur={() => !searchQuery && setIsSearchOpen(false)}
+          />
         </div>
         <button className="excel-button-cartera" onClick={exportToExcel}>Exportar a Excel</button>
       </div>
@@ -421,7 +435,6 @@ const HistorialCartera = () => {
                     </td>
                     <td>{gasto.observacion || "Sin observación"}</td>
                     <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
-                   
                     <td>{gasto.observacionC || "Sin observación"}</td>
                   </tr>
                 ))}
