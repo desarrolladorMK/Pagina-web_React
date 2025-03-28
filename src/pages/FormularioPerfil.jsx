@@ -1,13 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"; // Añadimos useEffect
 import { useForm, Controller } from "react-hook-form";
 import {
-  FaUser,
-  FaHome,
-  FaUsers,
-  FaBriefcase,
-  FaHeartbeat,
-  FaChild,
-  FaPhone,
+
 } from "react-icons/fa";
 import "./FormularioPerfil.css";
 import { es } from "date-fns/locale";
@@ -317,7 +311,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaUser /> Datos Personales
+               Datos Personales
             </h2>
             <p className="perfil-step-desc">
               ¡Empecemos con lo básico! Cuéntanos quién eres.
@@ -491,7 +485,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaHome /> Vivienda y Ubicación
+               Vivienda y Ubicación
             </h2>
             <p className="perfil-step-desc">
               ¡Cuéntanos dónde vives! Esto nos ayuda a conocerte mejor.
@@ -627,7 +621,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaUsers /> Datos Demográficos
+               Datos Demográficos
             </h2>
             <p className="perfil-step-desc">
               ¡Tu identidad importa! Comparte un poco más sobre ti.
@@ -729,7 +723,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaBriefcase /> Afiliación y Escolaridad
+               Afiliación y Escolaridad
             </h2>
             <p className="perfil-step-desc">
               Hablemos de tu formación y afiliaciones.
@@ -863,7 +857,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaHeartbeat /> Información Laboral y Adicional
+               Información Laboral y Adicional
             </h2>
             <p className="perfil-step-desc">
               ¡Tu rol en Merkahorro y más datos importantes!
@@ -1166,7 +1160,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaChild /> Información Familiar
+               Información Familiar
             </h2>
             <p className="perfil-step-desc">
               ¿Tienes hijos? Cuéntanos sobre ellos.
@@ -1260,7 +1254,7 @@ const FormularioPerfil = () => {
         return (
           <section className="perfil-section animate-in">
             <h2 className="perfil-section-title">
-              <FaPhone /> Contacto y Finalización
+               Contacto y Finalización
             </h2>
             <p className="perfil-step-desc">
               Último paso: datos de emergencia y fecha.
