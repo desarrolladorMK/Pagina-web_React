@@ -1,8 +1,9 @@
 // HistorialTransporte.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { FaSearchPlus } from "react-icons/fa"; // Cambiamos FaSearch por FaSearchPlus
 import "./HistorialTransporte.css";
 
 const API_URL = "https://backend-transporte.vercel.app/api/historial";
@@ -14,6 +15,8 @@ const HistorialTransporte = () => {
   const [editingId, setEditingId] = useState(null);
   const [editValues, setEditValues] = useState({ estado: "Pendiente", observacion_anny: "" });
   const [updateMessage, setUpdateMessage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const fetchHistorial = async () => {
@@ -28,6 +31,31 @@ const HistorialTransporte = () => {
     };
     fetchHistorial();
   }, []);
+
+  const filteredRegistros = useMemo(() => {
+    if (!searchTerm) return registros;
+    
+    const lowerSearch = searchTerm.toLowerCase();
+    return registros.filter((registro) => {
+      return Object.values(registro).some((value) => {
+        if (Array.isArray(value)) {
+          return value.some((item) => 
+            item.toString().toLowerCase().includes(lowerSearch)
+          );
+        }
+        return value?.toString().toLowerCase().includes(lowerSearch);
+      });
+    });
+  }, [registros, searchTerm]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (isSearchOpen) setSearchTerm("");
+  };
 
   const handleEditClick = (registro) => {
     setEditingId(registro.id);
@@ -95,7 +123,7 @@ const HistorialTransporte = () => {
       fecha_viaje: reg.fecha_viaje ? reg.fecha_viaje.slice(0, 10) : "-",
       origen: Array.isArray(reg.origen) ? reg.origen.join(", ") : reg.origen,
       sedes: Array.isArray(reg.sedes) ? reg.sedes.join(", ") : reg.sedes,
-      valor_total: reg.valor_total, // EXPORTA COMO NÚMERO ✔️
+      valor_total: reg.valor_total,
       observacion: reg.observacion,
       estado: reg.estado || "Pendiente",
       observacion_anny: reg.observacion_anny || "",
@@ -329,15 +357,29 @@ const HistorialTransporte = () => {
   return (
     <div className="automatizacion-historial">
       <h2 className="historialTitle">Historial de Transporte</h2>
+      <div className="search-container">
+        <button className="search-toggle" onClick={toggleSearch}>
+          <FaSearchPlus />
+        </button>
+        <input
+          type="text"
+          placeholder="Buscar en todos los campos..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className={`search-input ${isSearchOpen ? "visible" : ""}`}
+          onBlur={() => !searchTerm && setIsSearchOpen(false)}
+        />
+      </div>
       <DataTable
         columns={columns}
-        data={registros}
+        data={filteredRegistros}
         pagination
         highlightOnHover
         striped
         responsive
         customStyles={customStyles}
         keyField="id"
+        noDataComponent="No hay registros que coincidan con la búsqueda"
       />
       <button onClick={handleExportExcel} className="excel-button">
         Exportar a Excel
