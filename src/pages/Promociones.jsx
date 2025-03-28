@@ -6,7 +6,7 @@ import { ChatBot } from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
-  const promocionesActivas = false;
+  const promocionesActivas = true;
 
   const openModal = (imgSrc) => {
     setModalImg(imgSrc);
@@ -28,21 +28,21 @@ const Promociones = () => {
 
           {promocionesActivas ? (
             <div className="container-ofertas">
-              <div className="ofertas" onClick={() => openModal('/im1.jpg')}>
-                <img src="/im1.jpg" alt="Promo 1" />
+              <div className="ofertas" onClick={() => openModal('/prom1.jpg')}>
+                <img src="/prom1.jpg" alt="Promo 1" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im2.jpg')}>
-                <img src="/im2.jpg" alt="Promo 2" />
+              <div className="ofertas" onClick={() => openModal('/prom2.jpg')}>
+                <img src="/prom2.jpg" alt="Promo 2" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im3.jpg')}>
-                <img src="/im3.jpg" alt="Promo 3" />
+              <div className="ofertas" onClick={() => openModal('/prom3.jpg')}>
+                <img src="/prom3.jpg" alt="Promo 3" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/im4.jpg')}>
+          {/*     <div className="ofertas" onClick={() => openModal('/im4.jpg')}>
                 <img src="/im4.jpg" alt="Promo 4" />
               </div>
               <div className="ofertas" onClick={() => openModal('/im5.jpg')}>
                 <img src="/im5.jpg" alt="Promo 5" />
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className="no-promociones">

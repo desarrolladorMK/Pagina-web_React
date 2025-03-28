@@ -103,14 +103,8 @@
 }
 
 .cartera-historial-table a {
-  color: var(--secondary-color);
   text-decoration: none;
   font-weight: 600;
-}
-
-.cartera-historial-table a:hover {
-  text-decoration: underline;
-  color: var(--hover-color);
 }
 
 /* Mensajes de estado */
@@ -561,12 +555,10 @@
   opacity: 0.7;
 }
 
-
-
 /* =============================== */
 /*   Estilos para Botón Ver PDF    */
 /* =============================== */
-.view-pdf-button {
+.view-pdf-button-cartera {
   display: inline-block;
   padding: 4px 8px;
   background-color: var(--secondary-color);
@@ -575,16 +567,18 @@
   text-decoration: none;
   font-size: 0.8rem;
   transition: background-color 0.3s ease;
+  text-align: center;
+  width: 100%;
 }
 
-.view-pdf-button:hover {
+.view-pdf-button-cartera:hover {
   background-color: var(--hover-color);
   color: white;
   text-decoration: none;
 }
 
 /* Especificidad para la columna Cotización */
-.cartera-historial-table td:nth-child(13) .view-pdf-button {
+.cartera-historial-table td:nth-child(13) .view-pdf-button-cartera {
   background-color: var(--secondary-color);
   color: white;
   padding: 4px 8px;
@@ -594,7 +588,49 @@
   transition: background-color 0.3s ease;
 }
 
-.cartera-historial-table td:nth-child(13) .view-pdf-button:hover {
+.cartera-historial-table td:nth-child(13) .view-pdf-button-cartera:hover {
   background-color: var(--hover-color);
   color: white;
+}
+
+
+
+/* =============================== */
+/*   Estilos para Estado Cartera   */
+/* =============================== */
+.estado-cartera-pendiente {
+  background-color: #fff3cd; /* Amarillo claro */
+  color: #856404;
+}
+
+.estado-cartera-anticipo {
+  background-color: #cce5ff; /* Azul claro */
+  color: #004085;
+}
+
+.estado-cartera-cancelado {
+  background-color: #d4edda; /* Verde claro */
+  color: #155724;
+}
+
+.estado-cartera-select {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.estado-cartera-select:hover {
+  border-color: var(--secondary-color);
+}
+
+.estado-cartera-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(137, 220, 0, 0.5);
 }

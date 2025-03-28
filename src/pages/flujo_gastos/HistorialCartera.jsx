@@ -50,8 +50,13 @@ const HistorialCartera = () => {
         const response = await axios.get(API_URL);
         if (response.status === 200) {
           const data = response.data.data || [];
-          setHistorial(data);
-          setFilteredHistorial(data);
+          // Aseguramos que cada elemento tenga un estado_cartera por defecto
+          const updatedData = data.map(item => ({
+            ...item,
+            estado_cartera: item.estado_cartera || "Pendiente"
+          }));
+          setHistorial(updatedData);
+          setFilteredHistorial(updatedData);
         } else {
           setErrorMessage("No se pudo cargar el historial de cartera.");
         }
@@ -69,7 +74,7 @@ const HistorialCartera = () => {
       return;
     }
     const fuse = new Fuse(historial, {
-      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos', 'estado'],
+      keys: ['fecha_creacion', 'nombre_completo', 'descripcion', 'area', 'sede', 'unidad', 'centro_costos', 'estado', 'estado_cartera'],
       threshold: 0.3,
       includeScore: true,
     });
@@ -243,6 +248,35 @@ const HistorialCartera = () => {
     }
   };
 
+  const getEstadoCarteraClass = (estadoCartera) => {
+    switch (estadoCartera) {
+      case "Pendiente": return "estado-cartera-pendiente";
+      case "Anticipo": return "estado-cartera-anticipo";
+      case "Cancelado": return "estado-cartera-cancelado";
+      default: return "";
+    }
+  };
+
+  const handleEstadoCarteraChange = async (id, newEstadoCartera) => {
+    try {
+      const response = await axios.put(`${UPDATE_URL}/actualizarEstadoCartera`, {
+        id,
+        estado_cartera: newEstadoCartera
+      });
+      if (response.status === 200) {
+        setHistorial(prev =>
+          prev.map(item =>
+            item.id === id ? { ...item, estado_cartera: newEstadoCartera } : item
+          )
+        );
+        toast.success("Estado de cartera actualizado correctamente.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar estado de cartera:", error);
+      toast.error("Error al actualizar el estado de cartera.");
+    }
+  };
+
   const openVoucherModal = (vouchers, id) => {
     setSelectedVouchers(vouchers || []);
     setSelectedId(id);
@@ -350,6 +384,7 @@ const HistorialCartera = () => {
                   <th>Proveedor</th>
                   <th>Observación</th>
                   <th>Estado</th>
+                  <th>Estado Cartera</th>
                   <th>Observación Claudia</th>
                 </tr>
               </thead>
@@ -375,6 +410,17 @@ const HistorialCartera = () => {
                     <td>{gasto.archivos_proveedor ? JSON.parse(gasto.archivos_proveedor).map((url, i) => <div key={i}><a href={url} target="_blank" rel="noopener noreferrer" className="view-pdf-button">Ver</a></div>) : <span>No hay archivos de proveedor</span>}</td>
                     <td>{gasto.observacion || "Sin observación"}</td>
                     <td className={getEstadoClass(gasto.estado)}>{gasto.estado}</td>
+                    <td className={getEstadoCarteraClass(gasto.estado_cartera)}>
+                      <select
+                        value={gasto.estado_cartera}
+                        onChange={(e) => handleEstadoCarteraChange(gasto.id, e.target.value)}
+                        className="estado-cartera-select"
+                      >
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Anticipo">Anticipo</option>
+                        <option value="Cancelado">Cancelado</option>
+                      </select>
+                    </td>
                     <td>{gasto.observacionC || "Sin observación"}</td>
                   </tr>
                 ))}
