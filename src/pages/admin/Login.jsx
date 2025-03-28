@@ -247,6 +247,25 @@ const Login = () => {
           { path: "/historialformulario", label: "Historial formulario Perfil" },
         ],
       },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_24 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_24 || "",
+        redirect: "/acceso", //cartera@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },
+          { path: "/historialcartera", label: "Historial Cartera" },
+        ],
+      },
+      {
+        correo: import.meta.env.VITE_LOGIN_EMAIL_25 || "",
+        password: import.meta.env.VITE_LOGIN_PASSWORD_25 || "",
+        redirect: "/acceso",// analistatesoreria@merkahorrosas.com
+        routes: [
+          { path: "/salones", label: "Reserva de salones" },
+          { path: "/historialcartera", label: "Historial Cartera" },
+        ],
+      },
+      
     ];
 
     const usuarioValido = credenciales.find(
