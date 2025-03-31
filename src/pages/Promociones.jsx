@@ -22,20 +22,20 @@ const Promociones = () => {
       <div className="page-container">
         <div className="main-container">
           <h1 className="titulo-ofertas">Súper Ofertas Merkahorro</h1>
-          <Link to="/" className="back-logo-promo">
-            <img src="/mkicono.png" alt="Logo" className="logo-image-promo" />
+          <Link to="/" className="back-logo">
+            <img src="/mkicono.png" alt="Logo" className="logo-image" />
           </Link>
 
           {promocionesActivas ? (
             <div className="container-ofertas">
-              <div className="ofertas" onClick={() => openModal('/prom1.jpeg')}>
-                <img src="/prom1.jpeg" alt="Promo 1" />
+              <div className="ofertas" onClick={() => openModal('/prom3.jpeg')}>
+                <img src="/prom3.jpeg" alt="Promo 1" />
               </div>
               <div className="ofertas" onClick={() => openModal('/prom2.jpeg')}>
                 <img src="/prom2.jpeg" alt="Promo 2" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/prom3.jpeg')}>
-                <img src="/prom3.jpeg" alt="Promo 3" />
+              <div className="ofertas" onClick={() => openModal('/prom1.jpeg')}>
+                <img src="/prom1.jpeg" alt="Promo 3" />
               </div>
               <div className="ofertas" onClick={() => openModal('/prom4.jpeg')}>
                 <img src="/prom4.jpeg" alt="Promo 4" />

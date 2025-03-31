@@ -89,7 +89,6 @@ const Salones = () => {
     }
   };
 
-  // Filtrar eventos y asegurarse de que solo los filtrados se pasen al calendario
   const eventosFiltrados =
     filtroSalon === "todos"
       ? eventos
@@ -133,7 +132,7 @@ const Salones = () => {
           </div>
           <Calendar
             localizer={localizer}
-            events={eventosFiltrados} // Solo pasar eventos filtrados
+            events={eventosFiltrados}
             startAccessor="start"
             endAccessor="end"
             culture="es"
@@ -164,9 +163,9 @@ const Salones = () => {
                     ? "#89dc00"
                     : "#210d65",
                 color: "white",
-                fontSize: "12px", // Tamaño legible
-                padding: "2px 5px", // Espaciado interno
-                margin: "1px 0", // Espacio entre eventos
+                fontSize: "12px",
+                padding: "2px 5px",
+                margin: "1px 0",
               },
             })}
             dayPropGetter={(date) => {

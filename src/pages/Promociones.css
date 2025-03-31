@@ -1,5 +1,6 @@
 /* Aseguramos que html y body ocupen el 100% de la altura */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -24,7 +25,7 @@ html, body {
 
 /* ======== RESETEO GENERAL PARA EVITAR DESBORDES ======== */
 .body-promociones {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
@@ -43,60 +44,7 @@ html, body {
   margin: 0 auto;
 }
 
-/* ======== LOGO ======== */
-.back-logo-promo {
-  position: fixed; /* Se mantiene fixed para que el logo esté siempre visible */
-  top: 1rem;       /* Distancia desde la parte superior */
-  left: 1rem;      /* Distancia desde la izquierda */
-  z-index: 1002;   /* Asegura que esté por encima de otros elementos */
-}
 
-.logo-image-promo {
-  width: 50px; /* Ajusta el tamaño según sea necesario */
-  height: auto;
-  transition: transform 0.3s ease;
-}
-
-.logo-image-promo:hover {
-  transform: scale(1.1); /* Efecto de agrandamiento al pasar el mouse */
-}
-
-/* Media Queries para ajustar el tamaño del logo en distintos dispositivos */
-
-/* Ultra Ancho (1441px - 2560px) */
-@media (min-width: 1441px) {
-  .logo-image-promo {
-    width: 60px;
-  }
-}
-
-/* Pantallas grandes (1025px - 1440px) */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .logo-image-promo {
-    width: 55px;
-  }
-}
-
-/* Tablets (769px - 1024px) */
-@media (max-width: 1024px) {
-  .logo-image-promo {
-    width: 50px;
-  }
-}
-
-/* Móviles grandes (481px - 768px) */
-@media (max-width: 768px) {
-  .logo-image-promo {
-    width: 45px;
-  }
-}
-
-/* Móviles pequeños (hasta 480px) */
-@media (max-width: 480px) {
-  .logo-image-promo {
-    width: 40px;
-  }
-}
 /* ======== OFERTAS ======== */
 .ofertas {
   border-radius: 12px;
@@ -125,7 +73,7 @@ html, body {
 /* ======== TÍTULO DE OFERTAS ======== */
 .titulo-ofertas {
   text-align: center;
-  color: #210D65;
+  color: #210d65;
   margin: 20px 0;
   font-size: 2.5em;
   font-weight: bold;
@@ -135,7 +83,7 @@ html, body {
 .modal {
   overflow-y: auto; /* Scroll si la imagen es muy grande */
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #210D65 #f4f4f4; /* Color del scroll y fondo */
+  scrollbar-color: #210d65 #f4f4f4; /* Color del scroll y fondo */
   display: none;
   position: fixed;
   z-index: 1000;
@@ -191,14 +139,14 @@ html, body {
 
 .mensaje-promociones {
   font-size: 1.5em;
-  color: #210D65; /* Mantiene el color de las ofertas */
+  color: #210d65; /* Mantiene el color de las ofertas */
   font-weight: bold;
   margin: 0;
 }
 
 .mensaje-icono {
   font-size: 4em;
-  color: #FF6347; /* Color llamativo para el icono */
+  color: #ff6347; /* Color llamativo para el icono */
   margin-bottom: 15px;
 }
 
@@ -292,5 +240,5 @@ html, body {
 }
 
 .footer .contact-info ul li a:hover {
-  color: #89DC00;
+  color: #89dc00;
 }

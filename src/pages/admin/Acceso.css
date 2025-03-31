@@ -2,7 +2,7 @@
 .emp-dashboard {
   min-height: 100vh;
   padding: 40px;
-  padding-bottom: 80px;
+  padding-bottom: 100px; /* Aumentado para dar espacio al user-info-container */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Roboto', sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
@@ -70,14 +70,14 @@
 }
 
 .logout-icon-wrapper:hover .logout-icon {
-  transform: scale(1.2) rotate(90deg); /* Escala y rota al hacer hover */
+  transform: scale(1.2) rotate(90deg);
   background-color: #210d65;
   color: #fff;
 }
 
 .logout-label {
   position: absolute;
-  right: 50px; /* Espacio desde el ícono */
+  right: 50px;
   background-color: #210d65;
   color: #fff;
   padding: 5px 10px;
@@ -87,12 +87,12 @@
   opacity: 0;
   transform: translateX(10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none; /* Evita que el label interfiera con el clic */
+  pointer-events: none;
 }
 
 .logout-icon-wrapper:hover .logout-label {
   opacity: 1;
-  transform: translateX(0); /* Se desliza hacia afuera */
+  transform: translateX(0);
 }
 
 /* Contenedor de enlaces */
@@ -101,7 +101,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 40px; /* Añadido margen inferior para separar del user-info */
 }
 
 .emp-dashboard-button {
@@ -147,12 +147,15 @@
   right: 0;
   padding: 15px;
   text-align: center;
+  background: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
   z-index: 10;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Sombra superior */
 }
 
 .emp-dashboard-user {
   font-size: 1.1rem;
   color: #444;
+  margin: 0; /* Elimina márgenes por defecto */
 }
 
 .emp-dashboard-user span {
@@ -190,6 +193,7 @@
 @media (max-width: 768px) {
   .emp-dashboard {
     padding: 20px;
+    padding-bottom: 80px; /* Espacio suficiente para el user-info-container */
   }
 
   .emp-dashboard-title {
@@ -201,7 +205,8 @@
   }
 
   .emp-dashboard-links {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Una columna en móviles */
+    margin-bottom: 60px; /* Más espacio para evitar superposición */
   }
 
   .logout-icon {
@@ -212,5 +217,41 @@
   .logout-label {
     font-size: 0.9rem;
     right: 40px;
+  }
+
+  .user-info-container {
+    padding: 10px;
+  }
+
+  .emp-dashboard-user {
+    font-size: 0.9rem; /* Tamaño de texto reducido en móviles */
+  }
+}
+
+@media (max-width: 480px) {
+  .emp-dashboard {
+    padding: 15px;
+    padding-bottom: 70px;
+  }
+
+  .emp-dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .typing-greeting {
+    font-size: 1.5rem;
+  }
+
+  .fraseMotivacional {
+    font-size: 1rem;
+  }
+
+  .emp-dashboard-button {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+
+  .button-icon {
+    font-size: 1.2rem;
   }
 }
