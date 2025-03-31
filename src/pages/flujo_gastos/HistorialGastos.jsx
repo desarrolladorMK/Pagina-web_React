@@ -326,7 +326,7 @@ const HistorialGastos = () => {
                   <th>Cotización</th>
                   <th>Proveedor</th>
                   <th>Observación</th>
-                  <th>Voucher</th>
+            
                   <th>Estado</th>
                   <th>Acciones</th>
                   <th>Verificado</th>
@@ -407,22 +407,9 @@ const HistorialGastos = () => {
                         )
                       )}
                     </td>
-                     {/* Nueva columna para Voucher */}
-                     <td>
-                      {gasto.voucher ? (
-                        <a
-                          href={`${SUPABASE_URL}/comprobante/${gasto.voucher.split("/").pop()}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="view-pdf-button"
-                          >
-                          Ver Voucher
-                        </a>
-                      ) : (
-                        <span>Sin voucher</span>
-                      )}
                   
-                    </td>
+
+
                     <td className={!isUsuario10 && editingId === gasto.id ? "" : getEstadoClass(gasto.estado)}>
                       {isUsuario10 ? (
                         gasto.estado
