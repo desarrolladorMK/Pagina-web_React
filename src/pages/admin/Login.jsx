@@ -226,7 +226,6 @@ const Login = () => {
         routes: [
           { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
-          { path: "/historialgastos", label: "Historial de Gastos" },
         ],
       },
       {
