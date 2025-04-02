@@ -35,6 +35,7 @@ const conductorOptions = [
   { value: 'conductor9', label: 'Juan Felipe Diaz Serna' },
   { value: 'conductor10', label: 'Norbey Zapata' },
   { value: 'conductor11', label: 'Andrés Rios Rojas ' },
+  { value: 'conductor12', label: 'Juan Felipe Ramirez Giraldo' },
   { value: 'otro', label: 'Otro' },
 ];
 
@@ -50,6 +51,7 @@ const conductorPlacas = {
   conductor9: 'SUPERNUMERARIO',
   conductor10: 'SUPERNUMERARIO',
   conductor11: 'LKL 648',
+  conductor12: 'STV 270',
 };
 
 const conductorDatos = {
@@ -63,7 +65,8 @@ const conductorDatos = {
   conductor8: { cedula: "15516297", cuenta: "0" },
   conductor9: { cedula: "1020482654", cuenta: "0" },
   conductor10: { cedula: "15516827", cuenta: "0" },
-  conductor11: { cedula: "1007291888", cuenta: "99123892450" }, 
+  conductor11: { cedula: "1007291888", cuenta: "99123892450" },
+  conductor12: { cedula: "98662902", cuenta: "10382371091" },
 };
 
 // Mapeo para autocompletar el tipo de cuenta según el conductor
@@ -79,6 +82,8 @@ const conductorTipoCuenta = {
   conductor9: 'Null',
   conductor10: 'Null',
   conductor11: 'Ahorros',
+  conductor12: 'Ahorros',
+
 };
 
 const API_URL = 'https://backend-transporte.vercel.app/api/registro';
