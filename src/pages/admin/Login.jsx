@@ -94,9 +94,17 @@ const Login = () => {
         password: import.meta.env.VITE_LOGIN_PASSWORD_7 || "",
         redirect: "/acceso",
         routes: [
+          { path: "/postulacionesTable", label: "Base de datos Postulaciones" },
+          { path: "/historialformulario", label: "Historial formulario Perfil" },
+          { path: "/automatizacion", label: "Reposiciones Fruver" },
+          { path: "/historialtransporte", label: "Historial de Transporte" },
+          { path: "/solicitudaprobacion", label: "Perfil gestión humana" },
+          { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/formularioperfil", label: "Formulario Perfil" },
+          { path: "/transporte", label: "Transporte" },
           { path: "/salones", label: "Reserva de salones" },
           { path: "/gastos", label: "Gastos" },
-          { path: "/historialgastos", label: "Historial de Gastos" },
+          { path: "/historialcartera", label: "Historial Cartera" }, 
         ],
       },
       {

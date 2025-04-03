@@ -21,8 +21,8 @@ import {Transporte} from "../pages/flujo_transporte/Transporte";
 import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte";
 import {PanoramaViewer} from "../pages/PanoramaViewer";
 import {Contador} from "../pages/Contador";
-import {FormularioPerfil} from "../pages/FormularioPerfil";
-import {HistorialFormulario} from "../pages/HistorialFormulario";
+import {FormularioPerfil} from "../pages/Sociodemografico/FormularioPerfil";
+import {HistorialFormulario} from "../pages/Sociodemografico/HistorialFormulario";
 import { HistorialCartera } from "../pages/flujo_gastos/HistorialCartera";
 
 export let routes = [
