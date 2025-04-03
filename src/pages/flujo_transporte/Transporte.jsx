@@ -67,6 +67,7 @@ const conductorDatos = {
   conductor10: { cedula: "15516827", cuenta: "0" },
   conductor11: { cedula: "1007291888", cuenta: "99123892450" },
   conductor12: { cedula: "98662902", cuenta: "10382371091" },
+  
 };
 
 // Mapeo para autocompletar el tipo de cuenta según el conductor
