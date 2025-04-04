@@ -340,156 +340,39 @@ main.Home {
   animation: flyIn 1s ease-out;
 }
 
-.video-wrapper {
+.video-historia{
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.822);
+}
+
+
+/* Contenedor de la ola */
+.wave-container {
   position: relative;
   width: 100%;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(33, 13, 101, 0.3);
+  height: 150px;
+  overflow: hidden; /* Oculta cualquier exceso */
+  pointer-events: none;
 }
 
-.video {
-  width: 100%;
-  height: auto;
-  display: block;
-  transition: border-color 0.3s ease;
-}
-
-
-
-.video-overlay {
+/* Posición y estilo del SVG de la ola */
+.wave {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  background: rgba(33, 13, 101, 0.7);
-  padding: 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  width: 200%; /* Ancho suficiente para la animación */
+  height: 150px; /* Ajustado a la altura del contenedor */
+  fill: #1a0b4d; /* Color original */
+  animation: moverOla 7s ease-in-out infinite alternate; /* Animación */
 }
 
-.video-wrapper:hover .video-overlay {
-  opacity: 1;
-}
-
-.video-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 0 10px;
-}
-
-.control-button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: clamp(16px, 2vw, 20px);
-  cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.control-button:hover {
-  color: #89dc00;
-  transform: scale(1.2);
-}
-
-.progress-bar {
-  flex-grow: 1;
-  height: 5px;
-  background: linear-gradient(90deg, #e0e0e0, #fff);
-  border-radius: 5px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none; /* Compatibilidad con más navegadores */
-  outline: none; /* Elimina el borde al hacer clic */
-  transition: background 0.3s ease; /* Transición suave al interactuar */
-}
-
-.progress-bar::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
-  background: #89dc00;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.volume-control {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.volume-slider {
-  width: 80px;
-  height: 5px;
-  background: linear-gradient(90deg, #e0e0e0, #fff);
-  border-radius: 5px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none; /* Compatibilidad con más navegadores */
-  outline: none; /* Elimina el borde al hacer clic */
-  transition: background 0.3s ease; /* Transición suave al interactuar */
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  background: #89dc00;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-
-.video-wrapper:hover{
-  opacity: 1;
-}
-
-/* Contenedor de las olas */
-.wave-container {
-  position: relative;
-  width: 150%;
-  height: 150px;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-  margin-top: -5px;
-}
-
-/* Estilo general de las olas */
-.waves {
-  width: 100%;
-  height: 104%;
-  fill: #1a0b4d;
-}
-
-/* Animación de las olas */
-.wave {
-  fill: #1a0b4d;
-}
-
-.wave1 {
-  animation: waveMove1 5s ease-in-out infinite;
-}
-
-.wave2 {
-  opacity: 0.9;
-  animation: waveMove2 6s ease-in-out infinite;
-}
-
-@keyframes waveMove1 {
+/* Animación que solo mueve la parte superior */
+@keyframes moverOla {
   0% { transform: translateX(0); }
-  50% { transform: translateX(-500px); }
-  100% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes waveMove2 {
-  0% { transform: translateX(-300px); }
-  50% { transform: translateX(200px); }
-  100% { transform: translateX(-300px); }
-}
+
 
 /* Media Queries para diferentes tamaños */
 @media (max-width: 480px) {

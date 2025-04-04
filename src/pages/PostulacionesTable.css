@@ -1,6 +1,6 @@
 .postulaciones-container {
   padding: 20px;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: "Roboto", Arial, sans-serif;
   background-color: #d9dfe6;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -58,7 +58,8 @@
 }
 
 .postulaciones-table tr:hover {
-  background-color: #eaf3fb;
+  background-color: #d9e6f2;
+  transition: background-color 0.3s ease;
 }
 
 .download-button {
@@ -110,7 +111,8 @@
   opacity: 0;
   padding: 0;
   border: 2px solid transparent;
-  transition: width 0.4s ease, opacity 0.4s ease, padding 0.4s ease, border-color 0.4s ease;
+  transition: width 0.4s ease, opacity 0.4s ease, padding 0.4s ease,
+    border-color 0.4s ease;
   margin-right: 10px;
 }
 
@@ -123,7 +125,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #007BFF;
+  border-color: #007bff;
 }
 
 .search-icon {
@@ -135,4 +137,76 @@
 
 .search-icon:hover {
   transform: scale(1.1);
+}
+
+/* Added styles for modal and improved overall design */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #210d65;
+}
+
+.modal-content p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Improved input field for observation */
+.postulaciones-table input[type="text"] {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-size: 0.9rem;
+  width: 100%;
+  text-align: left;
+  padding: 5px;
+}
+
+.postulaciones-table input[type="text"]:focus {
+  outline: none;
+  border-bottom: 2px solid #210d65;
+}
+
+/* Added styles for the save button in the modal */
+.save-observation-button {
+  padding: 10px 20px;
+  background-color: #210d65;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.save-observation-button:hover {
+  background-color: #89dc00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
