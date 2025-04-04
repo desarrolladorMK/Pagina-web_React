@@ -9,12 +9,44 @@ const PostulacionesTable = () => {
   const [loading, setLoading] = useState(true);
   const [filterText, setFilterText] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [selectedObservation, setSelectedObservation] = useState(null);
+  const [editingObservation, setEditingObservation] = useState("");
 
-  // Objeto de estilos personalizados para DataTable
+  // Updated the modal opening logic to handle empty observations
+  const openObservationModal = (observation, id) => {
+    setSelectedObservation({ id, observation });
+    setEditingObservation(observation || "");
+  };
+
+  const closeObservationModal = () => {
+    setSelectedObservation(null);
+    setEditingObservation("");
+  };
+
+  const saveObservation = async (id) => {
+    try {
+      await handleObservacionBlur(id, editingObservation);
+
+      // Update the local state to reflect the changes immediately
+      setPostulaciones((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, observacion_BD: editingObservation }
+            : item
+        )
+      );
+
+      closeObservationModal();
+    } catch (error) {
+      console.error("Error al guardar la observación:", error);
+    }
+  };
+
+  // Estilos personalizados para DataTable
   const customStyles = {
     headRow: {
       style: {
-        backgroundColor: "#210d65", // Fondo azul para el encabezado
+        backgroundColor: "#210d65",
       },
     },
     headCells: {
@@ -40,7 +72,7 @@ const PostulacionesTable = () => {
           "https://backend-mk.vercel.app/api/postulaciones"
         );
         const data = await response.json();
-        setPostulaciones(data.data); // Asumiendo que los datos están en data.data
+        setPostulaciones(data.data);
       } catch (error) {
         console.error("Error al obtener las postulaciones:", error);
       } finally {
@@ -73,6 +105,74 @@ const PostulacionesTable = () => {
     }
   };
 
+  // Actualizar el campo check_BD
+  const handleCheckChange = async (id, newValue) => {
+    try {
+      // Actualizar el estado local para reflejar el cambio inmediatamente
+      setPostulaciones((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, check_BD: newValue } : item
+        )
+      );
+
+      // Realizar la llamada PATCH al backend
+      const response = await fetch(
+        `https://backend-mk.vercel.app/api/postulaciones/${id}/check`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ check_BD: newValue }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Error al actualizar en la base de datos."
+        );
+      }
+
+      console.log(`Fila ${id} actualizada en la base de datos a ${newValue}`);
+    } catch (error) {
+      console.error(`Error al actualizar la fila ${id}:`, error.message);
+    }
+  };
+
+  // Actualizar el campo observacion_BD: actualiza localmente y en el backend al salir del input
+  const handleObservacionChange = (id, newValue) => {
+    setPostulaciones((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, observacion_BD: newValue } : item
+      )
+    );
+  };
+
+  const handleObservacionBlur = async (id, newValue) => {
+    try {
+      const response = await fetch(
+        `https://backend-mk.vercel.app/api/postulaciones/${id}/observacion`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ observacion_BD: newValue }),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          result.message || "Error al actualizar observacion_BD."
+        );
+      }
+      console.log(`Observación actualizada para la fila ${id}`);
+    } catch (error) {
+      console.error(
+        `Error al actualizar observación para la fila ${id}:`,
+        error.message
+      );
+    }
+  };
+
   const exportToExcel = () => {
     if (postulaciones.length === 0) {
       alert("No hay datos para exportar.");
@@ -96,16 +196,24 @@ const PostulacionesTable = () => {
     )
   );
 
-  // Función para formatear el nombre de la columna (capitaliza y reemplaza guiones bajos)
+  // Ordenar por fechaPostulacion de forma descendente (más recientes primero)
+  const sortedItems = [...filteredItems].sort(
+    (a, b) => new Date(b.fechaPostulacion) - new Date(a.fechaPostulacion)
+  );
+
+  // Formatear el nombre de las columnas (capitalizando y reemplazando guiones bajos)
   const formatHeader = (header) => {
     let formatted = header.replace(/_/g, " ");
     formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
     return formatted;
   };
 
-  // Generar columnas dinámicamente, excluyendo "created_at" y personalizando "hojaVida"
-  const columns = Object.keys(postulaciones[0])
-    .filter((key) => key !== "created_at")
+  // Generar columnas dinámicamente, excluyendo los campos: created_at, check_BD y observacion_BD
+  const baseColumns = Object.keys(postulaciones[0])
+    .filter(
+      (key) =>
+        key !== "created_at" && key !== "check_BD" && key !== "observacion_BD"
+    )
     .map((key) => {
       if (key === "hojaVida") {
         return {
@@ -136,15 +244,60 @@ const PostulacionesTable = () => {
             key.includes("fecha") && row[key]
               ? formatFecha(row[key])
               : row[key],
-          sortable: key === "id", // Solo la columna "id" será sortable
+          sortable: key === "id",
           wrap: true,
         };
       }
     });
 
+  // Columna para check_BD
+  const checkColumn = {
+    name: "Revisado",
+    cell: (row) => (
+      <input
+        type="checkbox"
+        checked={row.check_BD}
+        onChange={(e) => handleCheckChange(row.id, e.target.checked)}
+      />
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+  };
+
+  // Columna para observacion_BD
+  const observacionColumn = {
+    name: "Observación",
+    cell: (row) => (
+      <div
+        onClick={() => openObservationModal(row.observacion_BD, row.id)}
+        style={{ cursor: "pointer", width: "100%" }}
+      >
+        <input
+          type="text"
+          value={row.observacion_BD || ""}
+          onChange={(e) => handleObservacionChange(row.id, e.target.value)}
+          onBlur={(e) => handleObservacionBlur(row.id, e.target.value)}
+          placeholder="..."
+          readOnly
+          style={{
+            width: "100%",
+            backgroundColor: "transparent",
+            border: "none",
+          }}
+        />
+      </div>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+  };
+
+  // Combinar las columnas dinámicas con las columnas de check y observación
+  const columns = [...baseColumns, checkColumn, observacionColumn];
+
   const toggleSearch = () => {
     setShowSearch(!showSearch);
-    console.log("Toggle search:", !showSearch);
     if (showSearch) setFilterText("");
   };
 
@@ -157,7 +310,7 @@ const PostulacionesTable = () => {
 
       <DataTable
         columns={columns}
-        data={filteredItems}
+        data={sortedItems}
         pagination
         highlightOnHover
         pointerOnHover
@@ -184,6 +337,31 @@ const PostulacionesTable = () => {
       <button onClick={exportToExcel} className="excel-button">
         Exportar a Excel
       </button>
+
+      {selectedObservation && (
+        <div className="modal-overlay" onClick={closeObservationModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Observación</h3>
+            <textarea
+              value={editingObservation}
+              onChange={(e) => setEditingObservation(e.target.value)}
+              style={{
+                width: "100%",
+                height: "100px",
+                padding: "10px",
+                fontSize: "1rem",
+              }}
+            />
+            <button
+              onClick={() => saveObservation(selectedObservation.id)}
+              className="save-observation-button"
+              style={{ marginTop: "10px" }}
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

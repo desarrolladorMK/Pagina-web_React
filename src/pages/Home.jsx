@@ -5,7 +5,13 @@ import { Footer } from "../components/Footer";
 import { ChatBot } from "../components/ChatBot";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaExpand } from "react-icons/fa";
+import {
+  FaPlay,
+  FaPause,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaExpand,
+} from "react-icons/fa";
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -81,7 +87,8 @@ const Home = () => {
 
   const handleProgress = () => {
     if (videoRef.current) {
-      const progressValue = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      const progressValue =
+        (videoRef.current.currentTime / videoRef.current.duration) * 100;
       setProgress(progressValue);
     }
   };
@@ -602,10 +609,16 @@ const Home = () => {
               <div className="flip-card-back">
                 <ul>
                   <li>
-                    <strong>La Verdad:</strong> Es la razón de ser, que nos lleva a vivir en responsabilidad y confiabilidad, fortaleciendo el carácter y las relaciones de valor impactando vidas. 
+                    <strong>La Verdad:</strong> Es la razón de ser, que nos
+                    lleva a vivir en responsabilidad y confiabilidad,
+                    fortaleciendo el carácter y las relaciones de valor
+                    impactando vidas.
                   </li>
                   <li>
-                    <strong>La Belleza:</strong> Es el estado de conciencia que nos permite admitir cada detalle, transformando lo común en extraordinario, creando signifcado en cada encuentro de vida.
+                    <strong>La Belleza:</strong> Es el estado de conciencia que
+                    nos permite admitir cada detalle, transformando lo común en
+                    extraordinario, creando signifcado en cada encuentro de
+                    vida.
                   </li>
                   <li>
                     <strong>La Bondad:</strong> Fomentar empatía, compasión e
@@ -621,74 +634,48 @@ const Home = () => {
           </div>
         </div>
       </main>
-<br />
-<br />
-<br />
+      <br />
+      <br />
+      <br />
 
       {/* Sección de video*/}
       <div className="video-container" data-aos="zoom-in">
         <h1>Historia de nuestra compañía</h1>
-        <div className="video-wrapper">
-          <video
-            ref={videoRef}
-            className="video"
-            onTimeUpdate={handleProgress}
-            onEnded={() => setIsVideoPlaying(false)}
-            loop
-          >
-            <source src="Videomercahorro.mp4" type="video/mp4" />
-            Tu navegador no soporta el elemento de video.
-          </video>
-          <div className="video-overlay">
-            <div className="video-controls">
-              <button onClick={togglePlay} className="control-button">
-                {isVideoPlaying ? <FaPause /> : <FaPlay />}
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={progress}
-                onChange={handleSeek}
-                className="progress-bar"
-              />
-              <div className="volume-control">
-                <button onClick={toggleMute} className="control-button">
-                  {isMuted || volume === 0 ? <FaVolumeMute /> : <FaVolumeUp />}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="volume-slider"
-                />
-              </div>
-              <button onClick={toggleFullscreen} className="control-button">
-                <FaExpand />
-              </button>
-            </div>
-          </div>
-        </div>
+        <video
+          controls
+          muted
+          loop
+          preload="auto"
+          width="760"
+          height="428"
+          src="/Videomercahorro.mp4"
+          className="video-historia"
+          poster="/mk1.jpg"
+          onPlay={(e) => {
+            if (e.target.currentTime > 0) {
+              e.target.currentTime = 0;
+            }
+          }}
+        ></video>
       </div>
 
-      {/* Olas detrás del video y footer */}
+      {/* Sección de olas*/}
       <div className="wave-container">
-        <svg
-          className="waves"
-          viewBox="0 0 2880 150"
-          preserveAspectRatio="none"
-        >
+        <svg className="wave" viewBox="0 0 2880 150" preserveAspectRatio="none">
           <path
-            className="wave wave1"
-            d="M0,75 C720,150 2160,0 2880,75 L2880,150 H0 Z"
-          />
-          <path
-            className="wave wave2"
-            d="M0,100 C960,125 1920,25 2880,100 L2880,150 H0 Z"
-          />
+            d="M0,150 C960,100 1920,100 2880,150 L2880,150 H0 Z"
+            style={{ transform: "translateY(0)" }} // Base fija
+          >
+            <animate
+              attributeName="d"
+              values="
+          M0,150 C960,100 1920,100 2880,150 L2880,150 H0 Z;
+          M0,150 C960,80 1920,80 2880,150 L2880,150 H0 Z;
+          M0,150 C960,100 1920,100 2880,150 L2880,150 H0 Z"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+          </path>
         </svg>
       </div>
 
