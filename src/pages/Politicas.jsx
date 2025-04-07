@@ -5,7 +5,7 @@ const Politicas = () => {
     <div className="politicas-body">
       <div className="container-politicas">
         <a href="/">
-          <img src="/logoMK.png" alt="Logo Merkahorro" />
+          <img src="/logoMK.webp" alt="Logo Merkahorro" />
         </a>
         <h1>Política de Privacidad</h1>
         <p className="p-politicas">

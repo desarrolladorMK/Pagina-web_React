@@ -97,7 +97,7 @@ const Salones = () => {
   return (
     <div className="Salones">
       <Link to="/" className="back-logo">
-        <img src="/mkicono.png" alt="Logo" className="logo-image" />
+        <img src="/mkicono.webp" alt="Logo" className="logo-image" />
       </Link>
       <h1>Reserva tus espacios</h1>
       <div className="image-wrapper">

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import './Header.css';
-import { Link } from 'react-router-dom';
-import { FaUserTie, FaTimes } from 'react-icons/fa'; // Cambié FaUserCircle por FaUserTie
-import { GiHamburgerMenu } from 'react-icons/gi';
+import React, { useState } from "react";
+import "./Header.css";
+import { Link } from "react-router-dom";
+import { FaUserTie, FaTimes } from "react-icons/fa"; // Cambié FaUserCircle por FaUserTie
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,7 +27,11 @@ const Header = () => {
       <nav className="navbar-header">
         <div className="container-navbar-header">
           <Link to="/" className="logo-header" onClick={handleLinkClick}>
-            <img src="/logoMK.png" alt="Logo de Merkaharro" />
+            <img
+              src="/logoMK.webp"
+              alt="Logo Merkahorro"
+              className="header-logo"
+            />
           </Link>
 
           <button
@@ -38,7 +42,7 @@ const Header = () => {
             {isMenuOpen ? <FaTimes /> : <GiHamburgerMenu />}
           </button>
 
-          <ul className={`nav-list ${isMenuOpen ? 'show' : ''}`}>
+          <ul className={`nav-list ${isMenuOpen ? "show" : ""}`}>
             <li className="nav-item-with-submenu">
               <button
                 className="nav-item submenu-trigger"
@@ -48,7 +52,7 @@ const Header = () => {
               >
                 Nosotros
               </button>
-              <ul className={`sub-nav-list ${isSubMenuOpen ? 'show' : ''}`}>
+              <ul className={`sub-nav-list ${isSubMenuOpen ? "show" : ""}`}>
                 <li>
                   <a href="#compañia" onClick={handleLinkClick}>
                     Nuestra Compañía
@@ -99,7 +103,8 @@ const Header = () => {
             <li className="login-icon">
               <Link to="/login" onClick={handleLinkClick}>
                 <FaUserTie className="default-icon" /> {/* Ícono por defecto */}
-                <FaUserTie className="hover-icon" />  {/* Ícono al hacer hover */}
+                <FaUserTie className="hover-icon" />{" "}
+                {/* Ícono al hacer hover */}
               </Link>
             </li>
           </ul>

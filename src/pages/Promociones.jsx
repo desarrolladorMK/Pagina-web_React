@@ -6,7 +6,7 @@ import { ChatBot } from '../components/ChatBot';
 
 const Promociones = () => {
   const [modalImg, setModalImg] = useState('');
-  const promocionesActivas = true;
+  const promocionesActivas = false;
 
   const openModal = (imgSrc) => {
     setModalImg(imgSrc);
@@ -23,27 +23,26 @@ const Promociones = () => {
         <div className="main-container">
           <h1 className="titulo-ofertas">Súper Ofertas Merkahorro</h1>
           <Link to="/" className="back-logo">
-            <img src="/mkicono.png" alt="Logo" className="logo-image" />
+            <img src="/mkicono.webp" alt="Logo" className="logo-image" />
           </Link>
 
           {promocionesActivas ? (
             <div className="container-ofertas">
-              <div className="ofertas" onClick={() => openModal('/prom3.jpeg')}>
-                <img src="/prom3.jpeg" alt="Promo 1" />
+              <div className="ofertas" onClick={() => openModal('/prom1.webp')}>
+                <img src="/prom1.webp" alt="Promo 1" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/prom2.jpeg')}>
-                <img src="/prom2.jpeg" alt="Promo 2" />
+              <div className="ofertas" onClick={() => openModal('/prom2.webp')}>
+                <img src="/prom2.webp" alt="Promo 2" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/prom1.jpeg')}>
-                <img src="/prom1.jpeg" alt="Promo 3" />
+              <div className="ofertas" onClick={() => openModal('/prom3.webp')}>
+                <img src="/prom3.webp" alt="Promo 3" />
               </div>
-              <div className="ofertas" onClick={() => openModal('/prom4.jpeg')}>
-                <img src="/prom4.jpeg" alt="Promo 4" />
+              <div className="ofertas" onClick={() => openModal('/prom4.webp')}>
+                <img src="/prom4.webp" alt="Promo 4" />
               </div>
-              {/* 
-              <div className="ofertas" onClick={() => openModal('/im5.jpg')}>
-                <img src="/im5.jpg" alt="Promo 5" />
-              </div> */}
+              <div className="ofertas" onClick={() => openModal('/prom5.webp')}>
+                <img src="/prom5.webp" alt="Promo 5" />
+              </div>
             </div>
           ) : (
             <div className="no-promociones">

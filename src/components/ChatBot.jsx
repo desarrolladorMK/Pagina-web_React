@@ -164,7 +164,7 @@ function ChatBot({ showInviteMessage = true }) {
         aria-label="Abrir chatbot de asistencia"
         title="Habla con nuestro asistente virtual"
       >
-        <img src="chatbot.png" alt="Ícono del chatbot" />
+        <img src="chatbot.webp" alt="Ícono del chatbot" />
       </button>
 
       {inviteVisible && showInviteMessage && (

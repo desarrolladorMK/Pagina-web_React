@@ -1,7 +1,7 @@
 .main-container-contador {
   margin: 0;
   padding: 0;
-  background-image: url('../../public/mesa-pingpong.jpg'); /* Ruta relativa a la carpeta public */
+  background-image: url('../../public/mesa-pingpong.webp'); /* Ruta relativa a la carpeta public */
   background-size: cover;      /* Ajusta para cubrir todo el contenedor */
   background-position: center; /* Centra la imagen */
   background-repeat: no-repeat; /* Evita que la imagen se repita */

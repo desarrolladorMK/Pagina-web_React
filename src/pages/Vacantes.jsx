@@ -9,7 +9,7 @@ const Vacantes = () => {
     <div className="vacantes-body">
       <div className="logo-container">
         <a href="/">
-          <img src="/logoMK.png" alt="Logo" className="logo-vacantes" />
+          <img src="/logoMK.webp" alt="Logo" className="logo-vacantes" />
         </a>
       </div>
 

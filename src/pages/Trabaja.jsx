@@ -221,7 +221,7 @@ const Trabaja = () => {
       </header>
 
       <div className="container-trabaja">
-        <img src="/img_fondo.jpg" alt="Logo de la Compañía" className="logo" />
+        <img src="/img_fondo.webp" alt="Logo de la Compañía" className="logo" />
 
         <div className="intro">
           <h2>¿Quieres ser parte de nuestra compañía?</h2>
