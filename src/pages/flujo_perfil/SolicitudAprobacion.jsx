@@ -142,7 +142,7 @@ const SolicitudAprobacion = () => {
     <div className="solicitud-aprobacion-container">
       <div className="logo-container-solicitud">
         <a href="/">
-          <img src="logoMK.png" alt="Logo Merkahorro" />
+          <img src="logoMK.webp" alt="Logo Merkahorro" />
         </a>
       </div>
       <h1 className="solicitud-aprobacion-header">Descripción de Perfil</h1>

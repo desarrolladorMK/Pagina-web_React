@@ -1337,7 +1337,7 @@ const FormularioPerfil = () => {
     >
       <div className="logo-container">
         <a href="/">
-          <img src="logoMK.png" alt="Logo Merkahorro" />
+          <img src="logoMK.webp" alt="Logo Merkahorro" />
         </a>
       </div>
 

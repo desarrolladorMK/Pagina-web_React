@@ -12,7 +12,7 @@ const PostulacionesTable = () => {
   const [selectedObservation, setSelectedObservation] = useState(null);
   const [editingObservation, setEditingObservation] = useState("");
 
-  // Updated the modal opening logic to handle empty observations
+  // Actualiza la apertura del modal, permitiendo que el campo de observación se edite
   const openObservationModal = (observation, id) => {
     setSelectedObservation({ id, observation });
     setEditingObservation(observation || "");
@@ -27,7 +27,7 @@ const PostulacionesTable = () => {
     try {
       await handleObservacionBlur(id, editingObservation);
 
-      // Update the local state to reflect the changes immediately
+      // Actualiza el estado local para reflejar los cambios inmediatamente
       setPostulaciones((prev) =>
         prev.map((item) =>
           item.id === id
@@ -39,6 +39,23 @@ const PostulacionesTable = () => {
       closeObservationModal();
     } catch (error) {
       console.error("Error al guardar la observación:", error);
+    }
+  };
+
+  const deleteObservation = async (id) => {
+    try {
+      await handleObservacionBlur(id, ""); // Actualizar en el backend con un valor vacío
+
+      // Actualizar el estado local para reflejar el cambio
+      setPostulaciones((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, observacion_BD: "" } : item
+        )
+      );
+
+      closeObservationModal();
+    } catch (error) {
+      console.error("Error al eliminar la observación:", error);
     }
   };
 
@@ -108,14 +125,14 @@ const PostulacionesTable = () => {
   // Actualizar el campo check_BD
   const handleCheckChange = async (id, newValue) => {
     try {
-      // Actualizar el estado local para reflejar el cambio inmediatamente
+      // Actualiza el estado local para reflejar el cambio inmediatamente
       setPostulaciones((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, check_BD: newValue } : item
         )
       );
 
-      // Realizar la llamada PATCH al backend
+      // Realiza la llamada PATCH al backend
       const response = await fetch(
         `https://backend-mk.vercel.app/api/postulaciones/${id}/check`,
         {
@@ -139,7 +156,7 @@ const PostulacionesTable = () => {
     }
   };
 
-  // Actualizar el campo observacion_BD: actualiza localmente y en el backend al salir del input
+  // Actualiza el campo observacion_BD localmente
   const handleObservacionChange = (id, newValue) => {
     setPostulaciones((prev) =>
       prev.map((item) =>
@@ -148,6 +165,7 @@ const PostulacionesTable = () => {
     );
   };
 
+  // Actualiza el campo observacion_BD en el backend al salir del input
   const handleObservacionBlur = async (id, newValue) => {
     try {
       const response = await fetch(
@@ -231,7 +249,7 @@ const PostulacionesTable = () => {
                 }
                 className="download-button"
               >
-                Descargar PDF
+                Descargar
               </button>
             ),
           ignoreRowClick: true,
@@ -250,50 +268,51 @@ const PostulacionesTable = () => {
       }
     });
 
-  // Columna para check_BD
+  // Columna para check_BD con checkbox centrado
   const checkColumn = {
     name: "Revisado",
     cell: (row) => (
-      <input
-        type="checkbox"
-        checked={row.check_BD}
-        onChange={(e) => handleCheckChange(row.id, e.target.checked)}
-      />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={row.check_BD}
+          onChange={(e) => handleCheckChange(row.id, e.target.checked)}
+        />
+      </div>
     ),
     ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
   };
 
-  // Columna para observacion_BD
+  // Columna para observacion_BD con estilos mejorados
   const observacionColumn = {
     name: "Observación",
     cell: (row) => (
       <div
         onClick={() => openObservationModal(row.observacion_BD, row.id)}
-        style={{ cursor: "pointer", width: "100%" }}
+        className="editable-observation"
       >
         <input
           type="text"
           value={row.observacion_BD || ""}
           onChange={(e) => handleObservacionChange(row.id, e.target.value)}
           onBlur={(e) => handleObservacionBlur(row.id, e.target.value)}
-          placeholder="..."
+          placeholder="Editar✏️"
           readOnly
-          style={{
-            width: "100%",
-            backgroundColor: "transparent",
-            border: "none",
-          }}
+          className="editable-input"
         />
       </div>
     ),
     ignoreRowClick: true,
-    allowOverflow: true,
-    button: true,
   };
 
-  // Combinar las columnas dinámicas con las columnas de check y observación
+  // Combina las columnas dinámicas con las columnas de check y observación
   const columns = [...baseColumns, checkColumn, observacionColumn];
 
   const toggleSearch = () => {
@@ -304,7 +323,7 @@ const PostulacionesTable = () => {
   return (
     <div className="postulaciones-container">
       <Link to="/" className="back-logo">
-        <img src="/mkicono.png" alt="Logo" className="logo-image" />
+        <img src="/mkicono.webp" alt="Logo" className="logo-image" />
       </Link>
       <h2>Postulaciones</h2>
 
@@ -352,13 +371,26 @@ const PostulacionesTable = () => {
                 fontSize: "1rem",
               }}
             />
-            <button
-              onClick={() => saveObservation(selectedObservation.id)}
-              className="save-observation-button"
-              style={{ marginTop: "10px" }}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
             >
-              Guardar
-            </button>
+              <button
+                onClick={() => saveObservation(selectedObservation.id)}
+                className="save-observation-button"
+              >
+                Guardar
+              </button>
+              <button
+                onClick={() => deleteObservation(selectedObservation.id)}
+                className="delete-observation-button"
+              >
+                Eliminar
+              </button>
+            </div>
           </div>
         </div>
       )}

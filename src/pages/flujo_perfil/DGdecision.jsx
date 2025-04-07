@@ -59,7 +59,7 @@ const DGdecision = () => {
     <div className="aprobar-rechazar-container">
       <div className="logo-container-aprobar">
         <a href="/">
-          <img src="/logoMK.png" alt="Logo Merkahorro" />
+          <img src="/logoMK.webp" alt="Logo Merkahorro" />
         </a>
       </div>
       <h1 className="header-gastos">Revisión de Solicitud</h1>

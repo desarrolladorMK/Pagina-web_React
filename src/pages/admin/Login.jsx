@@ -318,7 +318,7 @@ const Login = () => {
     <div className="body-login">
       <div className="logo-containermk">
         <a href="/">
-          <img src="/logoMK.png" alt="Logo" className="logo-animated" />
+          <img src="/logoMK.webp" alt="Logo" className="logo-animated" />
         </a>
       </div>
       <div className="grad"></div>

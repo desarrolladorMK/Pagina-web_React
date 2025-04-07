@@ -69,7 +69,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
@@ -139,7 +139,7 @@
   transform: scale(1.1);
 }
 
-/* Added styles for modal and improved overall design */
+/* Estilos para el modal y diseño mejorado */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -175,7 +175,24 @@
   line-height: 1.5;
 }
 
-/* Improved input field for observation */
+/* Estilos para el campo de observación editable */
+.editable-observation {
+  cursor: pointer;
+  width: 100%;
+  padding: 5px;
+  border: 1px dashed transparent;
+  transition: border 0.3s ease, background-color 0.3s ease;
+  font-size: 0.7rem;
+}
+
+/* Opcional: estilos para el input interno */
+.editable-input {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  pointer-events: none; /* Evita la interacción directa con el input */
+}
+
 .postulaciones-table input[type="text"] {
   cursor: pointer;
   background-color: transparent;
@@ -192,7 +209,7 @@
   border-bottom: 2px solid #210d65;
 }
 
-/* Added styles for the save button in the modal */
+/* Estilos para el botón de guardar en el modal */
 .save-observation-button {
   padding: 10px 20px;
   background-color: #210d65;
@@ -209,4 +226,20 @@
   background-color: #89dc00;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para el botón de eliminar observación */
+.delete-observation-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.delete-observation-button:hover {
+  background-color: #e60000;
 }

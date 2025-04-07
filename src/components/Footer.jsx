@@ -1,7 +1,12 @@
 import React from "react";
 import "./Footer.css";
 import { Link } from "react-router-dom";
-import { FaFacebookF, FaInstagram, FaYoutube, FaRegCopyright } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+  FaRegCopyright,
+} from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 
 const Footer = () => {
@@ -50,14 +55,20 @@ const Footer = () => {
           <h3>Contacto</h3>
           <ul>
             <li>Calle 52 #52-27, Copacabana, Antioquia</li>
-            <li><a href="tel:+573245597862">324 5597862</a></li>
-            <li><a href="mailto:paginaweb@merkahorrosas.com">paginaweb@merkahorrosas.com</a></li>
+            <li>
+              <a href="tel:+573245597862">324 5597862</a>
+            </li>
+            <li>
+              <a href="mailto:paginaweb@merkahorrosas.com">
+                paginaweb@merkahorrosas.com
+              </a>
+            </li>
           </ul>
         </div>
 
         {/* Logo y frase en el centro */}
         <div className="footer-brand">
-          <img src="/logoMK.png" alt="Logo Merkahorro" className="footer-logo" />
+          <img src="/logoMK.webp" alt="Footer Logo" className="footer-logo" />
           <p>Calidad y ahorro, siempre.</p>
         </div>
 
@@ -65,8 +76,12 @@ const Footer = () => {
         <div className="footer-section quick-links">
           <h3>Legal</h3>
           <ul>
-            <li><Link to="/politicas">Políticas de Privacidad</Link></li>
-            <li><Link to="/condiciones">Términos y Condiciones</Link></li>
+            <li>
+              <Link to="/politicas">Políticas de Privacidad</Link>
+            </li>
+            <li>
+              <Link to="/condiciones">Términos y Condiciones</Link>
+            </li>
           </ul>
         </div>
       </div>

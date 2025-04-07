@@ -26,10 +26,10 @@ const Home = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const images = [
-    { src: "/mk1.jpg" },
-    { src: "/mk2.jpg" },
-    { src: "/mk3.jpg" },
-    { src: "/mk4.jpg" },
+    { src: "/mk1.webp" },
+    { src: "/mk2.webp" },
+    { src: "/mk3.webp" },
+    { src: "/mk4.webp" },
   ];
 
   useEffect(() => {
@@ -176,7 +176,11 @@ const Home = () => {
         data-aos-delay="200"
       >
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/Plaza.jpg" alt="Copacabana Plaza" />
+          <img
+            className="logo-sedes"
+            src="/Plaza.webp"
+            alt="Copacabana Plaza"
+          />
           <h2>Copacabana Plaza</h2>
           <p>
             <a
@@ -186,7 +190,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -200,7 +204,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -211,7 +215,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/centro A.jpg"
+            src="/centro A.webp"
             alt="Centro Administrativo"
           />
           <h2>Centro Administrativo</h2>
@@ -223,7 +227,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -237,7 +241,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -248,7 +252,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/villahermosa.jpg"
+            src="/villahermosa.webp"
             alt="Villa Hermosa"
           />
           <h2>Villa Hermosa</h2>
@@ -260,7 +264,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -274,7 +278,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -285,7 +289,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/girardota parque.jpeg"
+            src="/girardota parque.webp"
             alt="Girardota parque"
           />
           <h2>Girardota parque</h2>
@@ -297,7 +301,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -311,7 +315,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -322,7 +326,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/girardota llano.jpg"
+            src="/girardota llano.webp"
             alt="Girardota llano"
           />
           <h2>Girardota llano</h2>
@@ -334,7 +338,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -348,7 +352,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -359,7 +363,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/carnes barbosa.jpg"
+            src="/carnes barbosa.webp"
             alt="Carnes barbosa"
           />
           <h2>Carnes barbosa</h2>
@@ -371,7 +375,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -385,7 +389,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -396,7 +400,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/copacabana vegas.jpg"
+            src="/copacabana vegas.webp"
             alt="Copacabana Vegas"
           />
           <h2>Copacabana Vegas</h2>
@@ -408,7 +412,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -422,7 +426,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -431,7 +435,7 @@ const Home = () => {
         </section>
 
         <section className="tarjeta" id="tarjeta">
-          <img className="logo-sedes" src="/barbosa.jpg" alt="Barbosa" />
+          <img className="logo-sedes" src="/barbosa.webp" alt="Barbosa" />
           <h2>Barbosa</h2>
           <p>
             <a
@@ -441,7 +445,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -455,7 +459,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -466,7 +470,7 @@ const Home = () => {
         <section className="tarjeta" id="tarjeta">
           <img
             className="logo-sedes"
-            src="/copacabana san juan.jpg"
+            src="/copacabana san juan.webp"
             alt="Copacabana San Juan"
           />
           <h2>Copacabana San Juan</h2>
@@ -478,7 +482,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetas"
-                src="/ubicacion.png"
+                src="/ubicacion.webp"
                 alt="Ubicación"
               />
             </a>
@@ -492,7 +496,7 @@ const Home = () => {
             >
               <img
                 className="icono-tarjetatel"
-                src="/wasap.png"
+                src="/wasap.webp"
                 alt="Teléfono"
               />
             </a>
@@ -506,7 +510,7 @@ const Home = () => {
         <img
           id="logocorporativo"
           className="logocorporativo"
-          src="/logoMK.png"
+          src="/logoMK.webp"
           alt="Logo corporativo"
         />
       </div>
@@ -519,7 +523,7 @@ const Home = () => {
               <div className="flip-card-front">
                 <img
                   className="logosmain"
-                  src="/carritomercado.png"
+                  src="/carritomercado.webp"
                   alt="Nuestra Compañía"
                 />
                 <h2>Nuestra Compañía</h2>
@@ -539,7 +543,7 @@ const Home = () => {
           <div className="flip-card" id="mision">
             <div className="flip-card-inner">
               <div className="flip-card-front">
-                <img className="logosmain" src="/objetivo.png" alt="Misión" />
+                <img className="logosmain" src="/objetivo.webp" alt="Misión" />
                 <h2>Misión</h2>
               </div>
               <div className="flip-card-back">
@@ -559,7 +563,7 @@ const Home = () => {
               <div className="flip-card-front">
                 <img
                   className="logosmain"
-                  src="/visionymision.png"
+                  src="/visionymision.webp"
                   alt="Visión"
                 />
                 <h2>Visión</h2>
@@ -578,7 +582,7 @@ const Home = () => {
           <div className="flip-card" id="fundadores">
             <div className="flip-card-inner">
               <div className="flip-card-front">
-                <img className="logosmain" src="/Ceo.png" alt="Fundadores" />
+                <img className="logosmain" src="/Ceo.webp" alt="Fundadores" />
                 <h2>Fundadores</h2>
               </div>
               <div className="flip-card-back">
@@ -601,7 +605,7 @@ const Home = () => {
               <div className="flip-card-front">
                 <img
                   className="logosmain"
-                  src="/principios-morales.png"
+                  src="/principios-morales.webp"
                   alt="Principios"
                 />
                 <h2>Principios</h2>
@@ -638,25 +642,20 @@ const Home = () => {
       <br />
       <br />
 
-      {/* Sección de video*/}
+      {/* Sección de video */}
       <div className="video-container" data-aos="zoom-in">
         <h1>Historia de nuestra compañía</h1>
-        <video
-          controls
-          muted
-          loop
-          preload="auto"
-          width="760"
-          height="428"
-          src="/Videomercahorro.mp4"
-          className="video-historia"
-          poster="/mk1.jpg"
-          onPlay={(e) => {
-            if (e.target.currentTime > 0) {
-              e.target.currentTime = 0;
-            }
-          }}
-        ></video>
+        <div className="responsive-video-wrapper">
+          <video
+            controls
+            muted
+            loop
+            preload="auto"
+            src="/Videomercahorro.mp4"
+            className="video-historia"
+            poster="/mk1.webp"
+          ></video>
+        </div>
       </div>
 
       {/* Sección de olas*/}
