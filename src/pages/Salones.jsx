@@ -102,11 +102,11 @@ const Salones = () => {
       <h1>Reserva tus espacios</h1>
       <div className="image-wrapper">
         <div className="image-container">
-          <img src="/img2.jpeg" alt="Auditorio" className="Salones-image" loading="lazy" />
+          <img src="/img2.webp" alt="Auditorio" className="Salones-image" loading="lazy" />
           <p className="image-title">Auditorio Principal</p>
         </div>
         <div className="image-container">
-          <img src="/img1.jpeg" alt="Sala" className="Salones-image" loading="lazy" />
+          <img src="/img1.webp" alt="Sala" className="Salones-image" loading="lazy" />
           <p className="image-title">Sala de Juntas</p>
         </div>
       </div>
