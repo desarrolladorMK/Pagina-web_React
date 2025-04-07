@@ -361,14 +361,15 @@ const HistorialGastos = () => {
                   <th>Tiempo/Fecha Pago</th>
                   <th>Cotización</th>
                   <th>Proveedor</th>
-                  <th>Observación</th>
-                  <th>Voucher</th>
+                  <th>Voucher</th> {/* posición correcta */}
+                  <th>Observación</th> {/* estilo ancho debe ir aquí */}
                   <th>Estado</th>
                   <th>Acciones</th>
                   <th>Verificado</th>
                   <th>Observación Claudia</th>
                 </tr>
               </thead>
+
               <tbody>
                 {visibleHistorial.map((gasto) => (
                   <tr key={gasto.id}>
@@ -419,22 +420,21 @@ const HistorialGastos = () => {
                       )}
                     </td>
                     <td>
+                      {/* Proveedor */}
                       {gasto.archivos_proveedor ? (
                         Array.isArray(JSON.parse(gasto.archivos_proveedor)) ? (
-                          JSON.parse(gasto.archivos_proveedor).map(
-                            (url, index) => (
-                              <div key={index}>
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="view-pdf-button"
-                                >
-                                  Ver
-                                </a>
-                              </div>
-                            )
-                          )
+                          JSON.parse(gasto.archivos_proveedor).map((url, index) => (
+                            <div key={index}>
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="view-pdf-button"
+                              >
+                                Ver
+                              </a>
+                            </div>
+                          ))
                         ) : (
                           <a
                             href={gasto.archivos_proveedor}
@@ -449,24 +449,9 @@ const HistorialGastos = () => {
                         <span>No hay archivos de proveedor</span>
                       )}
                     </td>
-                    <td style={{ width: "300px" }}>
-                      {isUsuario10 ? (
-                        gasto.observacion || "Sin observación"
-                      ) : editingId === gasto.id ? (
-                        <textarea
-                          name="observacion"
-                          value={editValues.observacion}
-                          onChange={handleEditChange}
-                          rows={3}
-                          className="observacion-textarea"
-                          placeholder="Observación"
-                          style={{ width: "100%" }}
-                        />
-                      ) : (
-                        gasto.observacion || "Sin observación"
-                      )}
-                    </td>
-                    <td style={{ width: "250px" }}>
+
+                    <td style={{ width: "180px" }}>
+                      {/* Voucher */}
                       {(() => {
                         let vouchers = gasto.vouchers;
                         if (typeof vouchers === "string") {
@@ -476,8 +461,7 @@ const HistorialGastos = () => {
                             vouchers = [];
                           }
                         }
-                        return Array.isArray(vouchers) &&
-                          vouchers.length > 0 ? (
+                        return Array.isArray(vouchers) && vouchers.length > 0 ? (
                           vouchers.map((url, index) => (
                             <div key={index} style={{ marginBottom: "4px" }}>
                               <a
@@ -494,6 +478,25 @@ const HistorialGastos = () => {
                           <span>No hay vouchers</span>
                         );
                       })()}
+                    </td>
+
+                    <td style={{ width: "300px" }}>
+                      {/* Observación */}
+                      {isUsuario10 ? (
+                        gasto.observacion || "Sin observación"
+                      ) : editingId === gasto.id ? (
+                        <textarea
+                          name="observacion"
+                          value={editValues.observacion}
+                          onChange={handleEditChange}
+                          rows={3}
+                          className="observacion-textarea"
+                          placeholder="Observación"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        gasto.observacion || "Sin observación"
+                      )}
                     </td>
                     <td
                       className={

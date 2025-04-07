@@ -71,20 +71,20 @@
   text-align: center;
 }
 
-/* Ajuste de ancho para la columna de Observación */
+/* Ajuste de ancho para la columna de Voucher */
 .gastos-historial th:nth-child(15),
 .gastos-historial td:nth-child(15) {
-  min-width: 300px;
-  max-width: 500px;
+  min-width: 120px;
+  max-width: 400px;
   word-wrap: break-word;
   text-align: center;
 }
 
-/* Ajuste de ancho para la columna de Voucher */
-.gastos-historial th:nth-child(15),
-.gastos-historial td:nth-child(15) {
+/* Ajuste de ancho para la columna de Observación */
+.gastos-historial th:nth-child(16),
+.gastos-historial td:nth-child(16) {
   min-width: 300px;
-  max-width: 400px;
+  max-width: 500px;
   word-wrap: break-word;
   text-align: center;
 }
