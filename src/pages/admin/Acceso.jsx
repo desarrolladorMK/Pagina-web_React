@@ -12,6 +12,7 @@ import {
   FaDatabase,
   FaWallet 
 } from 'react-icons/fa';
+import { eliminarToken } from '../../helpers/funciones'; 
 import './Acceso.css';
 
 const Acceso = () => {
@@ -40,7 +41,10 @@ const Acceso = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.clear();
+    eliminarToken(); // Eliminar el token de localStorage
+    localStorage.removeItem("correo_empleado"); // Eliminar el correo
+    localStorage.removeItem("rutas_permitidas"); // Eliminar las rutas permitidas
+    sessionStorage.clear(); // Limpiar sessionStorage por si se usa en otro lugar
     navigate('/login');
   };
 

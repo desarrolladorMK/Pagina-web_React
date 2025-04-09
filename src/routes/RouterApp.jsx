@@ -8,129 +8,131 @@ import { Login } from "../pages/admin/Login";
 import { Vacantes } from "../pages/Vacantes";
 import { Salones } from "../pages/Salones";
 import { ReservaForm } from "../pages/Reserva";
-import { PostulacionesTable } from "../pages/PostulacionesTable"; // Importa Postulaciones
-import {Gastos} from "../pages/flujo_gastos/Gastos";
-import {HistorialGastos} from "../pages/flujo_gastos/HistorialGastos";
+import { PostulacionesTable } from "../pages/PostulacionesTable";
+import { Gastos } from "../pages/flujo_gastos/Gastos";
+import { HistorialGastos } from "../pages/flujo_gastos/HistorialGastos";
 import { Automatizacion } from "../pages/flujo_fruver/Automatizacion";
-import {AprobarRechazar} from "../pages/AprobarRechazar";
-import {HistorialRegistros} from "../pages/flujo_fruver/HistorialRegistros";
-import {Acceso} from "../pages/admin/Acceso";
-import {SolicitudAprobacion} from "../pages/flujo_perfil/SolicitudAprobacion";
-import {DGdecision} from "../pages/flujo_perfil/DGdecision";
-import {Transporte} from "../pages/flujo_transporte/Transporte";
-import {HistorialTransporte} from "../pages/flujo_transporte/HistorialTransporte";
-import {PanoramaViewer} from "../pages/PanoramaViewer";
-import {Contador} from "../pages/Contador";
-import {FormularioPerfil} from "../pages/Sociodemografico/FormularioPerfil";
-import {HistorialFormulario} from "../pages/Sociodemografico/HistorialFormulario";
+import { AprobarRechazar } from "../pages/AprobarRechazar";
+import { HistorialRegistros } from "../pages/flujo_fruver/HistorialRegistros";
+import { Acceso } from "../pages/admin/Acceso";
+import { SolicitudAprobacion } from "../pages/flujo_perfil/SolicitudAprobacion";
+import { DGdecision } from "../pages/flujo_perfil/DGdecision";
+import { Transporte } from "../pages/flujo_transporte/Transporte";
+import { HistorialTransporte } from "../pages/flujo_transporte/HistorialTransporte";
+import { PanoramaViewer } from "../pages/PanoramaViewer";
+import { Contador } from "../pages/Contador";
+import { FormularioPerfil } from "../pages/Sociodemografico/FormularioPerfil";
+import { HistorialFormulario } from "../pages/Sociodemografico/HistorialFormulario";
 import { HistorialCartera } from "../pages/flujo_gastos/HistorialCartera";
+import RutaProtegida from "../components/RutaProtegida.jsx";
 
 export let routes = [
   {
-    path: '/',
+    path: "/",
     element: <Home />,
   },
   {
-    path: '/contribucion',
+    path: "/contribucion",
     element: <Contribucion />,
   },
   {
-    path: '/promociones',
+    path: "/promociones",
     element: <Promociones />,
   },
   {
-    path: '/politicas',
+    path: "/politicas",
     element: <Politicas />,
   },
   {
-    path: '/condiciones',
+    path: "/condiciones",
     element: <Condiciones />,
   },
   {
-    path: '/trabaja-con-nosotros',
+    path: "/trabaja-con-nosotros",
     element: <Vacantes />,
   },
   {
-    path: '/aplicar',
+    path: "/aplicar",
     element: <Trabaja />,
   },
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
   {
-    path: '/acceso',
-    element: <Acceso />,
+    path: "/acceso",
+    element: <RutaProtegida proteger={<Acceso />} />,
   },
   {
-    path: '/salones',
-    element: <Salones />,
+    path: "/salones",
+    element: <RutaProtegida proteger={<Salones />} />,
   },
   {
-    path: '/gastos',
-    element: <Gastos />,
+    path: "/gastos",
+    element: <RutaProtegida proteger={<Gastos />} />,
   },
   {
-    path: '/historialgastos',
-    element: <HistorialGastos />,
+    path: "/historialgastos",
+    element: <RutaProtegida proteger={<HistorialGastos />} />,
   },
   {
-    path: '/reserva',
-    element: <ReservaForm />,
+    path: "/reserva",
+    element: <RutaProtegida proteger={<ReservaForm />} />,
   },
   {
-    path: '/postulacionesTable', 
-    element: <PostulacionesTable />,
-  } , 
-  {
-    path: '/automatizacion',
-    element: <Automatizacion />,
+    path: "/postulacionesTable",
+    element: <RutaProtegida proteger={<PostulacionesTable />} />,
   },
   {
-    path: '/aprobarrechazar',
-    element: <AprobarRechazar />,
+    path: "/automatizacion",
+    element: <RutaProtegida proteger={<Automatizacion />} />,
   },
   {
-    path: '/historial/:correo',
-    element: <HistorialRegistros />,
+    path: "/aprobarrechazar",
+    element: <RutaProtegida proteger={<AprobarRechazar />} />, // Proteger esta ruta
   },
   {
-    path: '/solicitudaprobacion',
-    element: <SolicitudAprobacion />,
+    path: "/historial/:correo",
+    element: <RutaProtegida proteger={<HistorialRegistros />} />,
   },
   {
-    path: '/dgdecision/:workflow_id/:role',
-    element: <DGdecision />,
+    path: "/solicitudaprobacion",
+    element: <RutaProtegida proteger={<SolicitudAprobacion />} />,
   },
   {
-    path: '/transporte',
-    element: <Transporte />,
+    path: "/dgdecision/:workflow_id/:role",
+    element: <RutaProtegida proteger={<DGdecision />} />, // Proteger esta ruta
   },
   {
-    path: '/historialtransporte',
-    element: <HistorialTransporte />,
+    path: "/transporte",
+    element: <RutaProtegida proteger={<Transporte />} />,
   },
   {
-    path: '/panoramaViewer',
-    element: <PanoramaViewer />,
+    path: "/historialtransporte",
+    element: <RutaProtegida proteger={<HistorialTransporte />} />,
   },
   {
-    path: '/contador',
-    element: <Contador />,
+    path: "/panoramaViewer",
+    element: <PanoramaViewer />, // Dejar sin protección si es público
   },
   {
-    path: '/formularioperfil',
-    element: <FormularioPerfil />, 
+    path: "/contador",
+    element: <Contador />, // Dejar sin protección si es público
   },
   {
-    path: '/historialformulario',
-    element: <HistorialFormulario />, 
+    path: "/formularioperfil",
+    element: <RutaProtegida proteger={<FormularioPerfil />} />,
   },
   {
-    path: '/historialcartera',
-    element: <HistorialCartera />, 
+    path: "/historialformulario",
+    element: <RutaProtegida proteger={<HistorialFormulario />} />,
   },
   {
-    path: '/https://merkahorro.com/Aula/', 
-  }
+    path: "/historialcartera",
+    element: <RutaProtegida proteger={<HistorialCartera />} />,
+  },
+  {
+    path: "/https://merkahorro.com/Aula/",
+    element: <div>Redirigiendo...</div>, // Ajusta según necesites
+  },
 ];
