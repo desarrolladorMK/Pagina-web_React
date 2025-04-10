@@ -2,7 +2,7 @@
 .emp-dashboard {
   min-height: 100vh;
   padding: 40px;
-  padding-bottom: 100px; /* Aumentado para dar espacio al user-info-container */
+  padding-bottom: 100px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Roboto', sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
@@ -44,6 +44,56 @@
   margin-bottom: 20px;
   opacity: 0;
   animation: fadeIn 1s ease-in 2s forwards;
+}
+
+/* Contenedor del home interactivo */
+.home-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.home-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.home-icon {
+  font-size: 2rem;
+  color: #210d65;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(33, 13, 101, 0.2);
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.home-icon-wrapper:hover .home-icon {
+  transform: scale(1.2) rotate(-15deg);
+  background-color: #210d65;
+  color: #fff;
+}
+
+.home-label {
+  position: absolute;
+  left: 50px;
+  background-color: #210d65;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.home-icon-wrapper:hover .home-label {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Contenedor del logout interactivo */
@@ -102,7 +152,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   max-width: 1200px;
-  margin: 0 auto 40px; /* Añadido margen inferior para separar del user-info */
+  margin: 0 auto 40px;
 }
 
 .emp-dashboard-button {
@@ -148,15 +198,15 @@
   right: 0;
   padding: 15px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+  background: rgba(255, 255, 255, 0.9);
   z-index: 10;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Sombra superior */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .emp-dashboard-user {
   font-size: 1.1rem;
   color: #444;
-  margin: 0; /* Elimina márgenes por defecto */
+  margin: 0;
 }
 
 .emp-dashboard-user span {
@@ -194,7 +244,7 @@
 @media (max-width: 768px) {
   .emp-dashboard {
     padding: 20px;
-    padding-bottom: 80px; /* Espacio suficiente para el user-info-container */
+    padding-bottom: 80px;
   }
 
   .emp-dashboard-title {
@@ -206,13 +256,19 @@
   }
 
   .emp-dashboard-links {
-    grid-template-columns: 1fr; /* Una columna en móviles */
-    margin-bottom: 60px; /* Más espacio para evitar superposición */
+    grid-template-columns: 1fr;
+    margin-bottom: 60px;
   }
 
+  .home-icon,
   .logout-icon {
     font-size: 1.5rem;
     padding: 8px;
+  }
+
+  .home-label {
+    font-size: 0.9rem;
+    left: 40px;
   }
 
   .logout-label {
@@ -225,7 +281,7 @@
   }
 
   .emp-dashboard-user {
-    font-size: 0.9rem; /* Tamaño de texto reducido en móviles */
+    font-size: 0.9rem;
   }
 }
 
@@ -254,5 +310,10 @@
 
   .button-icon {
     font-size: 1.2rem;
+  }
+
+  .home-container {
+    top: 15px;
+    left: 15px;
   }
 }

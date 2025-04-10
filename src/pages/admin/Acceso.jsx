@@ -12,6 +12,7 @@ import {
   FaDatabase,
   FaWallet 
 } from 'react-icons/fa';
+import { eliminarToken } from '../../helpers/funciones'; 
 import './Acceso.css';
 
 const Acceso = () => {
@@ -40,6 +41,9 @@ const Acceso = () => {
   };
 
   const handleLogout = () => {
+    eliminarToken();
+    localStorage.removeItem("correo_empleado");
+    localStorage.removeItem("rutas_permitidas");
     sessionStorage.clear();
     navigate('/login');
   };
@@ -59,6 +63,13 @@ const Acceso = () => {
   return (
     <div className="emp-dashboard">
       <div className="emp-dashboard-header">
+        <div className="home-container">
+          <div className="home-icon-wrapper" onClick={() => handleNavigation('/')}>
+            <FaHome className="home-icon" />
+            <span className="home-label">Inicio</span>
+          </div>
+        </div>
+
         <h2 className="emp-dashboard-title">
           <span className="typing-greeting">{greeting}, {userName}!</span>
         </h2>
@@ -66,7 +77,7 @@ const Acceso = () => {
         <h4 className="fraseMotivacional">
           “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
         </h4>
-  
+
         <div className="logout-container">
           <div className="logout-icon-wrapper" onClick={handleLogout}>
             <FaSignOutAlt className="logout-icon" />
