@@ -41,10 +41,10 @@ const Acceso = () => {
   };
 
   const handleLogout = () => {
-    eliminarToken(); // Eliminar el token de localStorage
-    localStorage.removeItem("correo_empleado"); // Eliminar el correo
-    localStorage.removeItem("rutas_permitidas"); // Eliminar las rutas permitidas
-    sessionStorage.clear(); // Limpiar sessionStorage por si se usa en otro lugar
+    eliminarToken();
+    localStorage.removeItem("correo_empleado");
+    localStorage.removeItem("rutas_permitidas");
+    sessionStorage.clear();
     navigate('/login');
   };
 
@@ -63,6 +63,13 @@ const Acceso = () => {
   return (
     <div className="emp-dashboard">
       <div className="emp-dashboard-header">
+        <div className="home-container">
+          <div className="home-icon-wrapper" onClick={() => handleNavigation('/')}>
+            <FaHome className="home-icon" />
+            <span className="home-label">Inicio</span>
+          </div>
+        </div>
+
         <h2 className="emp-dashboard-title">
           <span className="typing-greeting">{greeting}, {userName}!</span>
         </h2>
@@ -70,7 +77,7 @@ const Acceso = () => {
         <h4 className="fraseMotivacional">
           “La unidad nace cuando dejamos de lado el ‘yo’ para construir el ‘nosotros’.”
         </h4>
-  
+
         <div className="logout-container">
           <div className="logout-icon-wrapper" onClick={handleLogout}>
             <FaSignOutAlt className="logout-icon" />

@@ -89,7 +89,7 @@ export let routes = [
   },
   {
     path: "/aprobarrechazar",
-    element: <RutaProtegida proteger={<AprobarRechazar />} />, // Proteger esta ruta
+    element: <RutaProtegida proteger={<AprobarRechazar />} />, 
   },
   {
     path: "/historial/:correo",
@@ -101,7 +101,7 @@ export let routes = [
   },
   {
     path: "/dgdecision/:workflow_id/:role",
-    element: <RutaProtegida proteger={<DGdecision />} />, // Proteger esta ruta
+    element: <RutaProtegida proteger={<DGdecision />} />, 
   },
   {
     path: "/transporte",

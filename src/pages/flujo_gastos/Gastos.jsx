@@ -24,7 +24,7 @@ const initialFormData = {
   tiempo_fecha_pago: "",
   archivo_cotizacion: null,
   archivos_proveedor: [],
-  correo_empleado: sessionStorage.getItem("correo_empleado"),
+  correo_empleado: localStorage.getItem("correo_empleado") || "", // Cambiado a localStorage
 };
 
 const SUPABASE_URL = "https://pitpougbnibmfrjykzet.supabase.co/storage/v1/object/public/cotizaciones";
@@ -52,12 +52,12 @@ const customStyles = {
       padding: "7px",
       textAlign: "start",
       verticalAlign: "middle",
-      whiteSpace: "normal", // Permite que el texto se divida en varias líneas
-      wordBreak: "break-word", // Divide palabras largas si es necesario
-      overflowWrap: "break-word", // Compatibilidad con navegadores
-      height: "auto", // Altura automática según contenido
-      maxWidth: "300px", // Limita el ancho máximo, ajustable según tus necesidades
-      overflow: "auto", // Agrega scroll si el contenido excede el ancho
+      whiteSpace: "normal",
+      wordBreak: "break-word",
+      overflowWrap: "break-word",
+      height: "auto",
+      maxWidth: "300px",
+      overflow: "auto",
       fontSize: "0.80rem",
     },
   },
@@ -77,7 +77,7 @@ const getEstadoClass = (estado) => {
 };
 
 const Gastos = () => {
-  const [fecha, setFecha] = useState(initialFormData.fecha_creacion); // Corregido a fecha_creacion
+  const [fecha, setFecha] = useState(initialFormData.fecha_creacion);
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [token, setToken] = useState("");
@@ -89,7 +89,7 @@ const Gastos = () => {
   const [historialGastos, setHistorialGastos] = useState([]);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [mostrarArchivos, setMostrarArchivos] = useState(false);
-  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false); // Nuevo estado para evitar envíos duplicados
+  const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false);
   const [archivos, setArchivos] = useState([
     {
       nombre: "Documento interno",
@@ -101,7 +101,6 @@ const Gastos = () => {
     },
   ]);
 
-  // Estados para el modal que muestra el contenido completo
   const [modalContent, setModalContent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -122,19 +121,22 @@ const Gastos = () => {
   };
 
   useEffect(() => {
-    const correo = sessionStorage.getItem("correo_empleado");
+    const correo = localStorage.getItem("correo_empleado"); // Cambiado a localStorage
     if (correo) {
       setFormData((prevData) => ({
         ...prevData,
         correo_empleado: correo,
         nombre_completo: obtenerNombrePorCorreo(correo),
       }));
+    } else {
+      // Si no hay correo, redirigir al login (opcional, dependiendo de tu lógica)
+      setErrorMessage("No se encontró el correo del usuario. Por favor, inicia sesión nuevamente.");
     }
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const correoStorage = sessionStorage.getItem("correo_empleado");
+      const correoStorage = localStorage.getItem("correo_empleado"); // Cambiado a localStorage
       if (correoStorage && correoStorage !== formData.correo_empleado) {
         setFormData((prevData) => ({
           ...prevData,
@@ -188,7 +190,6 @@ const Gastos = () => {
     }
   };
 
-  // Eliminar registro con SweetAlert2
   const eliminarRegistro = async (id) => {
     const result = await Swal.fire({
       title: "¿Estás seguro?",
@@ -292,14 +293,13 @@ const Gastos = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Si ya se ha enviado una vez y no se ha reiniciado el formulario, evitar nuevos envíos
     if (hasSubmittedOnce) {
       setErrorMessage("Ya has enviado este formulario. Por favor, espera la respuesta.");
       return;
     }
 
     setIsSubmitting(true);
-    setHasSubmittedOnce(true); // Marcar que se ha intentado enviar
+    setHasSubmittedOnce(true);
 
     const valorNumerico = formData.monto_estimado.replace(/\D/g, "");
     const valorNumericoAnticipo = formData.anticipo
@@ -336,7 +336,7 @@ const Gastos = () => {
       });
       setIsSubmitted(true);
       setDecision(response.data.decision);
-      setErrorMessage(""); // Limpiar mensaje de error si hubo éxito
+      setErrorMessage("");
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -344,12 +344,12 @@ const Gastos = () => {
           correo_empleado: formData.correo_empleado,
           nombre_completo: formData.nombre_completo,
         });
-        setHasSubmittedOnce(false); // Permitir un nuevo envío tras reiniciar
+        setHasSubmittedOnce(false);
       }, 3000);
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
       setErrorMessage("Error al enviar la solicitud. Por favor, inténtalo de nuevo.");
-      setHasSubmittedOnce(false); // Permitir reintentos si falla
+      setHasSubmittedOnce(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -635,7 +635,6 @@ const Gastos = () => {
         }
       },
     },
-    
     {
       name: "Estado",
       cell: (row) => (
@@ -659,11 +658,10 @@ const Gastos = () => {
           onClick={() => eliminarRegistro(row.id)}
           className="delete-button"
         >
-          ❌ 
+          ❌
         </button>
       ),
     },
-    
   ];
 
   return (
@@ -904,7 +902,7 @@ const Gastos = () => {
             <button
               type="submit"
               className="gastos-submit-button"
-              disabled={isSubmitting || hasSubmittedOnce} // Deshabilitar si está enviando o ya se envió
+              disabled={isSubmitting || hasSubmittedOnce}
             >
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
@@ -948,7 +946,7 @@ const Gastos = () => {
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={closeModal}>
-              &times;
+              ×
             </span>
             <p>{modalContent}</p>
           </div>
